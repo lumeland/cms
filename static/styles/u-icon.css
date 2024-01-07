@@ -1,0 +1,8 @@
+u-icon {
+  display: inline-block;
+
+  & svg {
+    display: block;
+    fill: currentColor;
+  }
+}

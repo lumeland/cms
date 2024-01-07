@@ -1,0 +1,26 @@
+.preview {
+  background: var(--color-highlight);
+  padding: 1rem;
+  margin: 0;
+  border-radius: var(--border-radius);
+  border: solid 1px var(--color-line-light);
+  display: grid;
+  gap: 1rem;
+
+  & img {
+    display: block;
+    max-width: 100%;
+  }
+}
+.preview-caption {
+  font: var(--font-small);
+  color: var(--color-dim);
+}
+.preview-media > p {
+  font: var(--font-ui);
+  color: var(--color-dim);
+  text-align: center;
+  padding: 6rem 0;
+  background: var(--color-line-light);
+  margin: 0;
+}

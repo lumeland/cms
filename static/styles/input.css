@@ -1,0 +1,34 @@
+.input {
+  display: block;
+  width: 100%;
+  padding: .5em;
+  min-height: 40px;
+  border-radius: var(--border-radius);
+  border: solid 1px var(--color-line);
+  background: var(--color-white);
+  font: var(--font-ui);
+
+  &:focus-visible {
+    border-color: var(--color-primary);
+  }
+
+  &.is-narrow {
+    max-width: 300px;
+  }
+  &.is-xnarrow {
+    max-width: 150px;
+  }
+  &.is-inline {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+[type="color"].input {
+  width: 80px;
+  padding: 4px;
+}
+
+textarea.input {
+  resize: vertical;
+  height: auto;
+}

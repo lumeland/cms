@@ -1,0 +1,32 @@
+u-draggable {
+  display: flex;
+  align-items: start;
+  border-radius: var(--border-radius);
+
+  > .buttonIcon:first-child {
+    cursor: move;
+  }
+
+  > :not(button) {
+    flex: 1 1 auto;
+    margin: 0 !important;
+  }
+
+  &[draggable] {
+    &.is-dragging {
+      opacity: 1;
+    }
+    &.is-drag-hint {
+      opacity: 0.4;
+
+      & * {
+        pointer-events: none;
+      }
+    }
+    &.is-drag-over {
+      opacity: 1;
+      outline: solid 1px var(--color-line);
+      outline-offset: 2px;
+    }
+  }
+}

@@ -1,0 +1,47 @@
+@import "https://cdn.jsdelivr.net/npm/modern-normalize@2.0.0/modern-normalize.min.css";
+
+html {
+  scroll-padding-top: 120px;
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  font: var(--font-ui);
+  color: var(--color-base);
+  background-color: var(--color-background);
+  overflow-wrap: break-word;
+}
+
+pre,
+code {
+  font: var(--font-code);
+  letter-spacing: 0;
+  font-variant-ligatures: none;
+}
+
+:not(pre) > code {
+  background: var(--color-line);
+  padding: 0 .2rem;
+  border-radius: 4px;
+}
+
+
+:focus {
+  outline: 0;
+  z-index: 1;
+}
+:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in hsl, var(--color-primary), transparent 75%);
+}
+::selection {
+  background: color-mix(in hsl, var(--color-primary), transparent 85%);
+}
+strong, b {
+  font-weight: 600;
+}
+
+hr {
+  color: var(--color-line);
+  margin: var(--row-gap-medium) 0;
+}

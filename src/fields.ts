@@ -1,0 +1,91 @@
+import { join } from "std/path/posix/join.ts";
+
+import type { FielType, ResolvedField } from "./types.ts";
+
+const fields = new Map<string, FielType>();
+
+// Logic-less fields
+const inputs = [
+  "text",
+  "textarea",
+  "date",
+  "datetime",
+  "time",
+  "hidden",
+  "color",
+  "email",
+  "url",
+  "select",
+  "object",
+];
+
+for (const input of inputs) {
+  fields.set(input, {
+    tag: `f-${input}`,
+    jsImport: `/components/f-${input}.js`,
+  });
+}
+
+// Add fields with custom logic
+fields.set("checkbox", {
+  tag: "f-checkbox",
+  jsImport: "/components/f-checkbox.js",
+  transformData: (value: unknown) => value === "true",
+});
+
+fields.set("number", {
+  tag: "f-number",
+  jsImport: "/components/f-number.js",
+  transformData: (value: unknown) => value === "" ? null : Number(value),
+});
+
+fields.set("choose-list", {
+  tag: "f-choose-list",
+  jsImport: "/components/f-choose-list.js",
+  transformData: (value: unknown) => Object.values(value || {}),
+});
+
+fields.set("list", {
+  tag: "f-list",
+  jsImport: "/components/f-list.js",
+  transformData: (value: unknown) => Object.values(value || {}),
+});
+
+fields.set("object-list", {
+  tag: "f-object-list",
+  jsImport: "/components/f-object-list.js",
+  transformData: (value: unknown) => Object.values(value || {}),
+});
+
+fields.set("file", {
+  tag: "f-file",
+  jsImport: "/components/f-file.js",
+  async transformData(
+    value: { current?: string; uploaded?: File } | undefined,
+    field: ResolvedField,
+  ) {
+    if (!value) {
+      return;
+    }
+
+    const { current, uploaded } = value;
+
+    if (!uploaded) {
+      return current;
+    }
+
+    const storage = field.cmsContent.files[field.storage || "default"];
+
+    if (!storage) {
+      throw new Error(
+        `No storage found for file field '${field.name}'`,
+      );
+    }
+
+    const entry = storage.get(uploaded.name);
+    await entry.write(uploaded);
+    return join("/", field.publicPath || "", uploaded.name);
+  },
+});
+
+export default fields;

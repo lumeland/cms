@@ -1,0 +1,23 @@
+@import "./styles/variables.css";
+@import "./styles/reset.css";
+@import "./styles/form.css";
+@import "./styles/header.css";
+@import "./styles/preview.css";
+@import "./styles/footer.css";
+@import "./styles/field.css";
+@import "./styles/input.css";
+@import "./styles/input-file.css";
+@import "./styles/select.css";
+@import "./styles/checkbox.css";
+@import "./styles/accordion.css";
+@import "./styles/button.css";
+@import "./styles/layouts.css";
+@import "./styles/list.css";
+@import "./styles/button-icon.css";
+@import "./styles/u-icon.css";
+@import "./styles/u-draggable.css";
+
+.cms {
+  margin: 2rem auto;
+  max-width: min(100% - 10vw, 900px);
+}

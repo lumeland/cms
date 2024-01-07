@@ -1,0 +1,75 @@
+.field {
+  display: grid;
+  gap: 0.3em;
+
+  & label {
+    font: var(--font-ui-bold);
+    width: fit-content;
+    min-with: 100px;
+    cursor: pointer;
+  }
+
+  &:has(.fieldset) {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+.field-check {
+  display: flex;
+  column-gap: .5rem;
+  align-items: center;
+
+  & label {
+    cursor: pointer;
+  }
+  + .field-description {
+    margin-top: .5rem;
+  }
+}
+.field-title {
+  font: var(--font-ui-bold);
+  margin: 0;
+}
+.field-description {
+  font: var(--font-small);
+  color: var(--color-dim);
+  margin-top: -0.3em;
+  margin-bottom: 0.3em;
+}
+.field-value {
+  margin: 0;
+  font: var(--font-small);
+  color: var(--color-dim);
+  margin-bottom: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+
+  & p {
+    margin: 0;
+  }
+
+  & a {
+    color: var(--color-primary);
+  }
+}
+.field-footer {
+  margin-top: .5em;
+}
+
+.fieldset {
+  display: grid;
+  row-gap: 1.5em;
+  list-style: none;
+  margin: .5em 0 0 .5em;
+  padding: .3rem 0 .3rem 1rem;;
+  border-left: solid 1px var(--color-line);
+
+  &:empty {
+    display: none;
+  }
+}
+
+f-hidden {
+  display: none;
+}

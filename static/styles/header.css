@@ -1,0 +1,13 @@
+.header {
+  border-bottom: solid 1px var(--color-line);
+  padding: var(--row-gap-small) 0;
+}
+.header-title {
+  margin: 0;
+  font: var(--font-title);
+}
+.header-description {
+  margin: .5em 0;
+  font: var(--font-ui);
+  color: var(--color-dim);
+}

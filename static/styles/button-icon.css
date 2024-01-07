@@ -1,0 +1,33 @@
+.buttonIcon {
+  display: inline-flex;
+  column-gap: .5em;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  color: inherit;
+  background: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius);
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    cursor: default;
+    opacity: .33;
+    pointer-events: none;
+  }
+
+  & svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    background-color: #0001;
+  }
+}
+
+a.buttonIcon {
+  color: var(--color-foreground);
+}
