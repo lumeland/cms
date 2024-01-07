@@ -14,9 +14,15 @@ export default function Template({ collection, files }: Props) {
           Back
         </a>
         <h1 class="header-title">Content of {collection}</h1>
+        <u-filter
+          class="header-filter"
+          data-placeholder={`Filter ${collection}`}
+          data-selector="#list > li"
+        >
+        </u-filter>
       </header>
 
-      <ul class="list">
+      <ul id="list" class="list">
         {files.map((file) => (
           <li>
             <a

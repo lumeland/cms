@@ -33,15 +33,8 @@ export interface CmsOptions {
 
 const defaults: Required<CmsOptions> = {
   cwd: Deno.cwd(),
-  async previewUrl(path: string) {
-    const content = await Deno.readTextFile(
-      join(Deno.cwd(), "/probas/ensino/_paths.json"),
-    );
-    const paths: [string, string][] = JSON.parse(content);
-    const entry = paths.find(([src]) => src === path);
-    if (entry) {
-      return Promise.resolve(entry[1]);
-    }
+  previewUrl() {
+    return Promise.resolve(undefined);
   },
 };
 
@@ -58,6 +51,7 @@ export default class Cms {
   constructor(options?: CmsOptions) {
     this.#jsImports.add("/components/u-draggable.js");
     this.#jsImports.add("/components/u-icon.js");
+    this.#jsImports.add("/components/u-filter.js");
     this.#jsImports.add("/components/f-hidden.js");
     this.options = {
       ...defaults,
