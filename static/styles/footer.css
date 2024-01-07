@@ -1,10 +1,12 @@
 .footer {
   position: sticky;
   bottom: 0;
-  padding: var(--row-gap-small) 0;
+  padding: var(--row-gap-small) 10px;
+  margin: 0 -10px;
   background-color: var(--color-background);
   border-top: solid 1px var(--color-line);
   display: grid;
   gap: .5rem;
   justify-items: start;
+  z-index: 2;
 }
