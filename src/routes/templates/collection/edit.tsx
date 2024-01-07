@@ -1,19 +1,21 @@
+import { getUrl } from "../../../utils/string.ts";
 import type { Data, ResolvedField } from "../../../types.ts";
 
 interface Props {
   collection: string;
-  document: string[];
+  document: string;
   fields: ResolvedField[];
   data: Data;
+  previewUrl?: string;
 }
 
 export default function Template(
-  { collection, document, fields, data }: Props,
+  { collection, document, fields, data, previewUrl }: Props,
 ) {
   return (
     <>
       <header class="header">
-        <a href={`/collection/${collection}`} class="button is-link">
+        <a href={getUrl("collection", collection)} class="button is-link">
           <u-icon name="arrow-left"></u-icon>
           Back
         </a>
@@ -31,9 +33,20 @@ export default function Template(
             required
           />
         </h1>
+        {previewUrl &&
+          (
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+          window.parent.changePreview("${previewUrl}");
+        `,
+              }}
+            >
+            </script>
+          )}
       </header>
       <form
-        action={`/collection/${collection}/edit/${document}`}
+        action={getUrl("collection", collection, "edit", document)}
         method="post"
         class="form"
         enctype="multipart/form-data"
@@ -57,7 +70,7 @@ export default function Template(
           <button
             class="button is-secondary"
             type="submit"
-            formAction={`/collection/${collection}/delete/${document}`}
+            formAction={getUrl("collection", collection, "delete", document)}
             data-confirm="Are you sure?"
           >
             <u-icon name="trash" />

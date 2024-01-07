@@ -6,10 +6,15 @@
   },
   "lock": false,
   "tasks": {
-    "dev": "deno run --unstable --watch -A probas/schema.ts"
+    "dev": "deno run --unstable --watch -A probas/ensino.ts"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx"
+  },
+  "fmt": {
+    "exclude": [
+      "probas"
+    ]
   }
 }

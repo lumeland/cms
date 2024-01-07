@@ -24,7 +24,7 @@ export default function ({ jsImports }: Options) {
           {jsImports.map((src) => <script type="module" src={src}></script>)}
         </head>
         <body>
-          <div class="cms">
+          <div class="app">
             {children}
           </div>
         </body>

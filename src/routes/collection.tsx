@@ -2,7 +2,7 @@ import { changesToData } from "../utils/data.ts";
 import CollectionList from "./templates/collection/list.tsx";
 import CollectionEdit from "./templates/collection/edit.tsx";
 import CollectionCreate from "./templates/collection/create.tsx";
-import { slugify } from "../utils/string.ts";
+import { getUrl, slugify } from "../utils/string.ts";
 
 import type { Context, Hono } from "hono/mod.ts";
 import type { CMSContent } from "../types.ts";
@@ -21,12 +21,15 @@ export default function (app: Hono) {
 
   app
     .get("/collection/:collection/edit/:document", async (c: Context) => {
-      const { collections } = c.get("options") as CMSContent;
+      const { collections, previewUrl } = c.get("options") as CMSContent;
       const collectionId = c.req.param("collection");
       const collection = collections[collectionId];
       const documentId = c.req.param("document");
       const document = collection.get(documentId);
       const data = await document.read();
+
+      const src = document.src;
+      const preview = src && await previewUrl(src);
 
       return c.render(
         <CollectionEdit
@@ -34,6 +37,7 @@ export default function (app: Hono) {
           document={documentId}
           fields={document.fields}
           data={data}
+          previewUrl={preview}
         />,
       );
     })
@@ -52,7 +56,7 @@ export default function (app: Hono) {
       const document = collection.get(documentId);
       await document.write(changesToData(body));
 
-      return c.redirect(`/collection/${collectionId}/edit/${documentId}`);
+      return c.redirect(getUrl("collection", collectionId, "edit", documentId));
     });
 
   app.post("/collection/:collection/delete/:document", async (c: Context) => {
@@ -63,7 +67,7 @@ export default function (app: Hono) {
 
     await collection.delete(documentId);
 
-    return c.redirect(`/collection/${collectionId}`);
+    return c.redirect(getUrl("collection", collectionId));
   });
 
   app
@@ -89,6 +93,6 @@ export default function (app: Hono) {
 
       await document.write(changesToData(body));
 
-      return c.redirect(`/collection/${collectionId}/edit/${documentId}`);
+      return c.redirect(getUrl("collection", collectionId, "edit", documentId));
     });
 }

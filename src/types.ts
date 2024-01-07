@@ -14,6 +14,7 @@ export interface Storage<T> extends AsyncIterable<string> {
 }
 
 export interface Entry<T> {
+  src?: string;
   read(): Promise<T>;
   write(content: T): Promise<void>;
 }
@@ -58,4 +59,5 @@ export interface CMSContent {
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
   files: Record<string, Storage<File>>;
+  previewUrl: (path: string) => Promise<string | undefined>;
 }

@@ -17,6 +17,7 @@ import { labelify } from "./utils/string.ts";
 
 import type { Context, Next } from "hono/mod.ts";
 import type {
+  CMSContent,
   Data,
   Entry,
   Field,
@@ -27,10 +28,21 @@ import type {
 
 export interface CmsOptions {
   cwd?: string;
+  previewUrl?: (path: string) => Promise<string | undefined>;
 }
 
 const defaults: Required<CmsOptions> = {
   cwd: Deno.cwd(),
+  async previewUrl(path: string) {
+    const content = await Deno.readTextFile(
+      join(Deno.cwd(), "/probas/ensino/_paths.json"),
+    );
+    const paths: [string, string][] = JSON.parse(content);
+    const entry = paths.find(([src]) => src === path);
+    if (entry) {
+      return Promise.resolve(entry[1]);
+    }
+  },
 };
 
 export default class Cms {
@@ -54,23 +66,23 @@ export default class Cms {
   }
 
   /**
-   * Returns the full path to the src directory.
+   * Returns the full path to the root directory.
    * Use the arguments to return a subpath
    */
-  src(...path: string[]): string {
+  root(...path: string[]): string {
     return normalizePath(join(this.options.cwd, ...path));
   }
 
-  data(name: string, storage: Storage<Data> | string) {
+  data(name: string, storage: Storage<Data> | string = "") {
     if (typeof storage === "string") {
-      storage = new FsDataStorage({ src: this.src(), path: storage });
+      storage = new FsDataStorage({ root: this.root(), path: storage });
     }
     this.dataStorage.set(name, storage);
   }
 
-  files(name: string, storage: Storage<File> | string) {
+  files(name: string, storage: Storage<File> | string = "") {
     if (typeof storage === "string") {
-      storage = new FsFileStorage({ src: this.src(), path: storage });
+      storage = new FsFileStorage({ root: this.root(), path: storage });
     }
     this.fileStorage.set(name, storage);
   }
@@ -92,6 +104,7 @@ export default class Cms {
 
   init(): Hono {
     const content: CMSContent = {
+      previewUrl: this.options.previewUrl,
       collections: {},
       documents: {},
       files: {},
@@ -204,10 +217,4 @@ export default class Cms {
       return resolvedField;
     });
   }
-}
-
-interface CMSContent {
-  collections: Record<string, Collection>;
-  documents: Record<string, Document>;
-  files: Record<string, Storage<File>>;
 }

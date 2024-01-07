@@ -1,3 +1,4 @@
+import { getUrl } from "../../../utils/string.ts";
 import { format } from "std/fmt/bytes.ts";
 
 interface Props {
@@ -8,12 +9,12 @@ interface Props {
 }
 
 export default function Template({ type, file, collection, size }: Props) {
-  const src = `/files/${collection}/raw/${file}`;
+  const src = getUrl("files", collection, "raw", file);
 
   return (
     <>
       <header class="header">
-        <a href={`/files/${collection}`} class="button is-link">
+        <a href={getUrl("files", collection)} class="button is-link">
           <u-icon name="arrow-left"></u-icon>
           Back
         </a>
@@ -58,7 +59,7 @@ export default function Template({ type, file, collection, size }: Props) {
           </button>
           <button
             class="button is-secondary"
-            formAction={`/files/${collection}/delete/${file}`}
+            formAction={getUrl("files", collection, "delete", file)}
             data-confirm="Are you sure?"
           >
             <u-icon name="trash" />

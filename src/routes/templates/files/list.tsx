@@ -1,3 +1,5 @@
+import { getUrl } from "../../../utils/string.ts";
+
 interface Props {
   collection: string;
   files: string[];
@@ -18,7 +20,7 @@ export default function Template({ collection, files }: Props) {
         {files.map((file) => (
           <li>
             <a
-              href={`/files/${collection}/file/${file}`}
+              href={getUrl("files", collection, "file", file)}
               class="list-item"
             >
               <u-icon name="image-square-fill"></u-icon>

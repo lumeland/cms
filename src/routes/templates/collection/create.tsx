@@ -1,3 +1,4 @@
+import { getUrl } from "../../../utils/string.ts";
 import type { ResolvedField } from "../../../types.ts";
 
 interface Props {
@@ -9,7 +10,7 @@ export default function Template({ collection, fields }: Props) {
   return (
     <>
       <header class="header">
-        <a href={`/collection/${collection}`} class="button is-link">
+        <a href={getUrl("collection", collection)} class="button is-link">
           <u-icon name="arrow-left"></u-icon>
           Back
         </a>
@@ -28,7 +29,7 @@ export default function Template({ collection, fields }: Props) {
         </h1>
       </header>
       <form
-        action={`/collection/${collection}/create`}
+        action={getUrl("collection", collection, "create")}
         method="post"
         class="form"
         enctype="multipart/form-data"

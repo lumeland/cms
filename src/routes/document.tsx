@@ -1,3 +1,4 @@
+import { getUrl } from "../utils/string.ts";
 import { changesToData } from "../utils/data.ts";
 import DocumentEdit from "./templates/document/edit.tsx";
 
@@ -28,6 +29,6 @@ export default function (app: Hono) {
 
       await document.write(changesToData(body));
 
-      return c.redirect(`/document/${documentId}`);
+      return c.redirect(getUrl("document", documentId));
     });
 }

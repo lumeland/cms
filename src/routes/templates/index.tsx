@@ -1,4 +1,4 @@
-import { labelify } from "../../utils/string.ts";
+import { getUrl, labelify } from "../../utils/string.ts";
 
 interface Props {
   collections: string[];
@@ -14,27 +14,27 @@ export default function Template({ collections, documents, files }: Props) {
       </header>
 
       <ul class="list">
-        {collections.map((id) => (
+        {collections.map((collection) => (
           <li>
-            <a href={`/collection/${id}`} class="list-item">
+            <a href={getUrl("collection", collection)} class="list-item">
               <u-icon name="folder-fill"></u-icon>
-              {labelify(id)}
+              {labelify(collection)}
             </a>
           </li>
         ))}
-        {documents.map((id) => (
+        {documents.map((document) => (
           <li>
-            <a href={`/document/${id}`} class="list-item">
+            <a href={getUrl("document", document)} class="list-item">
               <u-icon name="file"></u-icon>
-              {labelify(id)}
+              {labelify(document)}
             </a>
           </li>
         ))}
-        {files.map((id, index) => (
+        {files.map((file, index) => (
           <li class={index === 0 ? "is-separated" : ""}>
-            <a href={`/files/${id}`} class="list-item">
+            <a href={getUrl("files", file)} class="list-item">
               <u-icon name="image-square-fill"></u-icon>
-              {labelify(id)}
+              {labelify(file)}
             </a>
           </li>
         ))}

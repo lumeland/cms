@@ -1,7 +1,8 @@
+import { getUrl } from "../../../utils/string.ts";
 import type { Data, ResolvedField } from "../../../types.ts";
 
 interface Props {
-  document: string[];
+  document: string;
   fields: ResolvedField[];
   data: Data;
 }
@@ -17,7 +18,7 @@ export default function Template({ document, fields, data }: Props) {
         <h1 class="header-title">Editing {document}</h1>
       </header>
       <form
-        action={`/document/${document}`}
+        action={getUrl("document", document)}
         method="post"
         class="form"
         enctype="multipart/form-data"

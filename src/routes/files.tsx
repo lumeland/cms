@@ -1,6 +1,6 @@
 import FilesList from "./templates/files/list.tsx";
 import FilesView from "./templates/files/view.tsx";
-import { slugify } from "../utils/string.ts";
+import { getUrl, slugify } from "../utils/string.ts";
 
 import type { Context, Hono } from "hono/mod.ts";
 import type { CMSContent } from "../types.ts";
@@ -27,7 +27,7 @@ export default function (app: Hono) {
     const entry = collection.get(fileId);
     entry.write(file);
 
-    return c.redirect(`/files/${collectionId}/file/${fileId}`);
+    return c.redirect(getUrl("files", collectionId, "file", fileId));
   });
 
   app.get("/files/:files/raw/:file", async (c: Context) => {
@@ -79,7 +79,7 @@ export default function (app: Hono) {
         await entry.write(file);
       }
 
-      return c.redirect(`/files/${collectionId}/file/${fileId}`);
+      return c.redirect(getUrl("files", collectionId, "file", fileId));
     });
 
   app.post("/files/:files/delete/:file", async (c: Context) => {
@@ -89,6 +89,6 @@ export default function (app: Hono) {
     const collection = files[collectionId];
     await collection.delete(fileId);
 
-    return c.redirect(`/files/${collectionId}`);
+    return c.redirect(getUrl("files", collectionId));
   });
 }

@@ -8,17 +8,17 @@ import { extname } from "std/path/extname.ts";
 import type { Data, Entry, Storage } from "../types.ts";
 
 export interface Options {
-  src?: string;
+  root?: string;
   path?: string;
 }
 
 export const defaults: Required<Options> = {
-  src: Deno.cwd(),
+  root: Deno.cwd(),
   path: "**",
 };
 
 abstract class BaseStorage {
-  src: string;
+  root: string;
   path: string;
 
   constructor(userOptions?: Options) {
@@ -26,19 +26,19 @@ abstract class BaseStorage {
     const pos = options.path.indexOf("*");
 
     if (pos === -1) {
-      options.src = join(options.src, options.path);
+      options.root = join(options.root, options.path);
       options.path = "**";
     } else if (pos > 0) {
-      options.src = join(options.src, options.path.slice(0, pos));
+      options.root = join(options.root, options.path.slice(0, pos));
       options.path = options.path.slice(pos);
     }
 
-    this.src = normalizePath(options.src);
+    this.root = normalizePath(options.root);
     this.path = options.path;
   }
 
   async *[Symbol.asyncIterator]() {
-    const root = this.src;
+    const root = this.root;
     const iterable = expandGlob(this.path, {
       root,
       includeDirs: false,
@@ -51,38 +51,42 @@ abstract class BaseStorage {
   }
 
   async delete(path: string) {
-    await Deno.remove(join(this.src, path));
+    await Deno.remove(join(this.root, path));
   }
 
   async rename(path: string, newPath: string) {
-    await Deno.rename(join(this.src, path), join(this.src, newPath));
+    await Deno.rename(join(this.root, path), join(this.root, newPath));
   }
 }
 
 export class FsDataStorage extends BaseStorage implements Storage<Data> {
   directory(id: string): Storage<Data> {
     return new FsDataStorage({
-      src: this.src,
+      root: this.root,
       path: id,
     });
   }
 
   get(path: string): Entry<Data> {
-    return new FsDataEntry({ src: this.src, path });
+    return new FsDataEntry({ root: this.root, path });
   }
 }
 
 export class FsDataEntry implements Entry<Data> {
-  src: string;
+  root: string;
   path: string;
 
   constructor(options: Required<Options>) {
-    this.src = options.src;
+    this.root = options.root;
     this.path = options.path;
   }
 
+  get src(): string {
+    return join(this.root, this.path);
+  }
+
   async read(): Promise<Data> {
-    const content = await Deno.readTextFile(join(this.src, this.path));
+    const content = await Deno.readTextFile(this.src);
     const transformer = fromFilename(this.path);
 
     return transformer.toData(content);
@@ -92,41 +96,41 @@ export class FsDataEntry implements Entry<Data> {
     const transformer = fromFilename(this.path);
     const data = await transformer.fromData(content);
 
-    await Deno.writeTextFile(join(this.src, this.path), data);
+    await Deno.writeTextFile(this.src, data);
   }
 }
 
 export class FsFileStorage extends BaseStorage implements Storage<File> {
   directory(id: string): Storage<File> {
     return new FsFileStorage({
-      src: this.src,
+      root: this.root,
       path: id,
     });
   }
 
   get(path: string): Entry<File> {
-    return new FsFileEntry({ src: this.src, path });
+    return new FsFileEntry({ root: this.root, path });
   }
 }
 
 export class FsFileEntry implements Entry<File> {
-  src: string;
+  root: string;
   path: string;
 
   constructor(options: Required<Options>) {
-    this.src = options.src;
+    this.root = options.root;
     this.path = options.path;
   }
 
   async read(): Promise<File> {
-    const content = await Deno.readFile(join(this.src, this.path));
+    const content = await Deno.readFile(join(this.root, this.path));
     const type = contentType(extname(this.path));
 
-    return new File([new Blob([content])], this.src, { type });
+    return new File([new Blob([content])], this.root, { type });
   }
 
   async write(file: File) {
     const content = await file.arrayBuffer();
-    await Deno.writeFile(join(this.src, this.path), new Uint8Array(content));
+    await Deno.writeFile(join(this.root, this.path), new Uint8Array(content));
   }
 }

@@ -1,4 +1,4 @@
-import { labelify } from "../../../utils/string.ts";
+import { getUrl, labelify } from "../../../utils/string.ts";
 
 interface Props {
   collection: string;
@@ -20,7 +20,7 @@ export default function Template({ collection, documents }: Props) {
         {documents.map((document) => (
           <li>
             <a
-              href={`/collection/${collection}/edit/${document}`}
+              href={getUrl("collection", collection, "edit", document)}
               class="list-item"
             >
               <u-icon name="file"></u-icon>
@@ -31,7 +31,10 @@ export default function Template({ collection, documents }: Props) {
       </ul>
 
       <footer class="ly-rowStack footer">
-        <a href={`/collection/${collection}/create`} class="button is-primary">
+        <a
+          href={getUrl("collection", collection, "create")}
+          class="button is-primary"
+        >
           <u-icon name="plus-circle"></u-icon>
           Create new
         </a>
