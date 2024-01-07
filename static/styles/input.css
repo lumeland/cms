@@ -1,4 +1,5 @@
-.input {
+.input,
+.input-autogrow::after {
   display: block;
   width: 100%;
   padding: .5em;
@@ -31,4 +32,21 @@
 textarea.input {
   resize: vertical;
   height: auto;
+}
+
+.input-autogrow {
+  display: grid;
+
+  &::after {
+    content: attr(data-replicated-value) " ";
+    white-space: pre-wrap;
+    visibility: hidden;
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  > textarea {
+    resize: none;
+    overflow: hidden;
+    grid-area: 1 / 1 / 2 / 2;
+  }
 }

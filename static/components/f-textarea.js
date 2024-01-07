@@ -24,7 +24,19 @@ customElements.define(
         push(this, "div", { class: "field-description" }, schema.description);
       }
 
-      push(this, "textarea", { id, name, value, ...this.inputAttributes });
+      const autogrow = push(this, "div", { class: "input-autogrow" });
+      push(autogrow, "textarea", {
+        id,
+        name,
+        value,
+        ...this.inputAttributes,
+        oninput() {
+          this.parentNode.dataset.replicatedValue = this.value;
+        },
+        onfocus() {
+          this.parentNode.dataset.replicatedValue = this.value;
+        },
+      });
     }
   },
 );

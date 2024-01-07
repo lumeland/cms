@@ -38,7 +38,7 @@ export default function Template(
             <script
               dangerouslySetInnerHTML={{
                 __html: `
-          window.parent.changePreview("${previewUrl}");
+          window.parent.changePreview?.("${previewUrl}");
         `,
               }}
             >
