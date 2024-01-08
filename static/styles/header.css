@@ -2,6 +2,13 @@
   border-bottom: solid 1px var(--color-line);
   padding: var(--row-gap-small) 0;
 }
+.header-nav {
+  display: flex;
+  flex-wrap: 1rem;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: .5rem;
+}
 .header-title {
   margin: 0;
   font: var(--font-title);

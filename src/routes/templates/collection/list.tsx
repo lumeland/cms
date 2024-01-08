@@ -9,10 +9,12 @@ export default function Template({ collection, documents }: Props) {
   return (
     <>
       <header class="header">
-        <a href="/" class="button is-link">
-          <u-icon name="arrow-left"></u-icon>
-          Back
-        </a>
+        <nav class="header-nav">
+          <a href="/" class="button is-link">
+            <u-icon name="arrow-left"></u-icon>
+            Back
+          </a>
+        </nav>
         <h1 class="header-title">Content of {collection}</h1>
         <u-filter
           class="header-filter"

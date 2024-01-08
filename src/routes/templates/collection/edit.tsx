@@ -15,10 +15,12 @@ export default function Template(
   return (
     <>
       <header class="header">
-        <a href={getUrl("collection", collection)} class="button is-link">
-          <u-icon name="arrow-left"></u-icon>
-          Back
-        </a>
+        <nav class="header-nav">
+          <a href={getUrl("collection", collection)} class="button is-link">
+            <u-icon name="arrow-left"></u-icon>
+            Back
+          </a>
+        </nav>
         <h1 class="header-title">
           Editing file &nbsp;&nbsp;
           <input
@@ -33,17 +35,6 @@ export default function Template(
             required
           />
         </h1>
-        {previewUrl &&
-          (
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-          window.parent.changePreview?.("${previewUrl}");
-        `,
-              }}
-            >
-            </script>
-          )}
       </header>
       <form
         action={getUrl("collection", collection, "edit", document)}
@@ -67,6 +58,17 @@ export default function Template(
             <u-icon name="check" />
             Save changes
           </button>
+          {previewUrl &&
+            (
+              <a
+                class="button is-secondary"
+                target="_preview"
+                href={previewUrl}
+              >
+                <u-icon name="arrow-square-out" />
+                Preview
+              </a>
+            )}
           <button
             class="button is-secondary"
             type="submit"

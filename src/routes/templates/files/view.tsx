@@ -14,10 +14,12 @@ export default function Template({ type, file, collection, size }: Props) {
   return (
     <>
       <header class="header">
-        <a href={getUrl("files", collection)} class="button is-link">
-          <u-icon name="arrow-left"></u-icon>
-          Back
-        </a>
+        <nav class="header-nav">
+          <a href={getUrl("files", collection)} class="button is-link">
+            <u-icon name="arrow-left"></u-icon>
+            Back
+          </a>
+        </nav>
         <h1 class="header-title">
           Details of &nbsp;&nbsp;
           <input

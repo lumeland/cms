@@ -8,16 +8,20 @@ import type { CMSContent } from "../types.ts";
 export default function (app: Hono) {
   app
     .get("/document/:document", async (c: Context) => {
-      const { documents } = c.get("options") as CMSContent;
+      const { documents, previewUrl } = c.get("options") as CMSContent;
       const documentId = c.req.param("document");
       const document = documents[documentId];
       const data = await document.read();
+
+      const src = document.src;
+      const preview = src && await previewUrl(src);
 
       return c.render(
         <DocumentEdit
           document={documentId}
           fields={document.fields}
           data={data}
+          previewUrl={preview}
         />,
       );
     })

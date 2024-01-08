@@ -10,10 +10,12 @@ export default function Template({ collection, fields }: Props) {
   return (
     <>
       <header class="header">
-        <a href={getUrl("collection", collection)} class="button is-link">
-          <u-icon name="arrow-left"></u-icon>
-          Back
-        </a>
+        <nav class="header-nav">
+          <a href={getUrl("collection", collection)} class="button is-link">
+            <u-icon name="arrow-left"></u-icon>
+            Back
+          </a>
+        </nav>
         <h1 class="header-title">
           Creating new file &nbsp;&nbsp;
           <input

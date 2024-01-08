@@ -6,9 +6,9 @@
   },
   "lock": false,
   "tasks": {
-    "dev": "deno run --unstable --watch -A probas/ensino.ts",
+    "cms": "deno run --unstable --watch -A probas/ensino.ts",
     "site": "cd probas/ensino && deno task serve",
-    "split": "deno task dev & deno task site"
+    "dev": "deno task cms & deno task site"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
