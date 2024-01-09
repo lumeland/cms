@@ -92,11 +92,11 @@ export class FsDataEntry implements Entry<Data> {
     return transformer.toData(content);
   }
 
-  async write(content: Data) {
+  async write(data: Data) {
     const transformer = fromFilename(this.path);
-    const data = await transformer.fromData(content);
+    const content = await transformer.fromData(data);
 
-    await Deno.writeTextFile(this.src, data);
+    await Deno.writeTextFile(this.src, content);
   }
 }
 
