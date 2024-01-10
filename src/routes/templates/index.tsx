@@ -24,7 +24,11 @@ export default function Template({ collections, documents, files }: Props) {
         ))}
         {documents.map((document) => (
           <li>
-            <a href={getUrl("document", document)} class="list-item">
+            <a
+              href={getUrl("document", document)}
+              class="list-item"
+              title={document}
+            >
               <u-icon name="file"></u-icon>
               {labelify(document)}
             </a>

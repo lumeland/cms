@@ -1,0 +1,6 @@
+.code {
+    background: var(--color-white);
+    border: solid 1px var(--color-line);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}

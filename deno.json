@@ -16,7 +16,8 @@
   },
   "fmt": {
     "exclude": [
-      "probas"
+      "probas",
+      "static/libs"
     ]
   }
 }

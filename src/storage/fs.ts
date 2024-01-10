@@ -1,5 +1,7 @@
 import { normalizePath } from "../utils/path.ts";
 import { join } from "std/path/posix/join.ts";
+import { dirname } from "std/path/posix/dirname.ts";
+import { ensureDir } from "std/fs/ensure_dir.ts";
 import { expandGlob } from "std/fs/expand_glob.ts";
 import { fromFilename } from "./transformers/mod.ts";
 import { contentType } from "std/media_types/content_type.ts";
@@ -59,6 +61,20 @@ abstract class BaseStorage {
   }
 }
 
+abstract class BaseEntry {
+  root: string;
+  path: string;
+
+  constructor(options: Required<Options>) {
+    this.root = options.root;
+    this.path = options.path;
+  }
+
+  get src(): string {
+    return join(this.root, this.path);
+  }
+}
+
 export class FsDataStorage extends BaseStorage implements Storage<Data> {
   directory(id: string): Storage<Data> {
     return new FsDataStorage({
@@ -72,19 +88,7 @@ export class FsDataStorage extends BaseStorage implements Storage<Data> {
   }
 }
 
-export class FsDataEntry implements Entry<Data> {
-  root: string;
-  path: string;
-
-  constructor(options: Required<Options>) {
-    this.root = options.root;
-    this.path = options.path;
-  }
-
-  get src(): string {
-    return join(this.root, this.path);
-  }
-
+export class FsDataEntry extends BaseEntry implements Entry<Data> {
   async read(): Promise<Data> {
     const content = await Deno.readTextFile(this.src);
     const transformer = fromFilename(this.path);
@@ -96,6 +100,7 @@ export class FsDataEntry implements Entry<Data> {
     const transformer = fromFilename(this.path);
     const content = await transformer.fromData(data);
 
+    await ensureDir(dirname(this.src));
     await Deno.writeTextFile(this.src, content);
   }
 }
@@ -113,15 +118,7 @@ export class FsFileStorage extends BaseStorage implements Storage<File> {
   }
 }
 
-export class FsFileEntry implements Entry<File> {
-  root: string;
-  path: string;
-
-  constructor(options: Required<Options>) {
-    this.root = options.root;
-    this.path = options.path;
-  }
-
+export class FsFileEntry extends BaseEntry implements Entry<File> {
   async read(): Promise<File> {
     const content = await Deno.readFile(join(this.root, this.path));
     const type = contentType(extname(this.path));
@@ -131,6 +128,8 @@ export class FsFileEntry implements Entry<File> {
 
   async write(file: File) {
     const content = await file.arrayBuffer();
+
+    await ensureDir(dirname(this.path));
     await Deno.writeFile(join(this.root, this.path), new Uint8Array(content));
   }
 }

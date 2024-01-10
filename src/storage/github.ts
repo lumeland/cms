@@ -85,7 +85,7 @@ export class GitHubStorage implements Storage<Data> {
     });
   }
 
-  async rename(id: string, newId: string) {
+  async rename(id: string, newId: string): Promise<void> {
     throw new Error("Not implemented");
   }
 }

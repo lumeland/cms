@@ -8,6 +8,7 @@ const fields = new Map<string, FielType>();
 const inputs = [
   "text",
   "textarea",
+  "markdown",
   "date",
   "datetime",
   "time",

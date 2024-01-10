@@ -30,6 +30,7 @@ export default function Template({ collection, documents }: Props) {
             <a
               href={getUrl("collection", collection, "edit", document)}
               class="list-item"
+              title={document}
             >
               <u-icon name="file"></u-icon>
               {labelify(document)}
