@@ -42,6 +42,7 @@ export default function Template({ collection, files }: Props) {
         method="post"
         class="footer ly-rowStack"
         enctype="multipart/form-data"
+        action={getUrl("files", collection, "create")}
       >
         <input
           aria-label="Add file"

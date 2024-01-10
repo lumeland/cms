@@ -1,10 +1,20 @@
-import { EditorView, minimalSetup } from "codemirror";
+import { minimalSetup } from "codemirror";
+import { EditorState } from "@codemirror/state";
+import { EditorView } from "@codemirror/view";
 import { markdown } from "@codemirror/lang-markdown";
 
 export function init(parent, doc) {
-  return new EditorView({
+  const state = EditorState.create({
     doc,
-    extensions: [minimalSetup, markdown()],
+    extensions: [
+      minimalSetup,
+      markdown(),
+      EditorView.lineWrapping,
+    ],
+  });
+
+  return new EditorView({
+    state,
     parent,
   });
 }
