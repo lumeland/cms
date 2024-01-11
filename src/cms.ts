@@ -15,7 +15,7 @@ import { basename } from "std/path/basename.ts";
 import { dirname } from "std/path/dirname.ts";
 import { labelify } from "./utils/string.ts";
 
-import type { Context, Next } from "hono/mod.ts";
+import type { Context, MiddlewareHandler, Next } from "hono/mod.ts";
 import type {
   CMSContent,
   Data,
@@ -29,6 +29,8 @@ import type {
 export interface CmsOptions {
   cwd?: string;
   previewUrl?: (path: string) => Promise<string | undefined>;
+  server?: Deno.ServeOptions;
+  middlewares?: MiddlewareHandler[];
 }
 
 const defaults: Required<CmsOptions> = {
@@ -36,6 +38,8 @@ const defaults: Required<CmsOptions> = {
   previewUrl() {
     return Promise.resolve(undefined);
   },
+  server: {},
+  middlewares: [],
 };
 
 export default class Cms {
@@ -123,9 +127,13 @@ export default class Cms {
     }
 
     const app = new Hono();
+
+    app.use(...this.options.middlewares);
+
     const renderer = layout({
       jsImports: [...this.#jsImports],
     });
+
     app.use("*", jsxRenderer(renderer, { docType: true }));
     app.use("*", (c: Context, next: Next) => {
       c.set("options", { ...content });
@@ -148,11 +156,11 @@ export default class Cms {
     return app;
   }
 
-  serve(options?: Deno.ServeOptions) {
+  serve() {
     const app = this.init();
 
     return Deno.serve({
-      ...options,
+      ...this.options.server,
       handler: app.fetch,
     });
   }
