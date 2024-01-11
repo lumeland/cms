@@ -36,6 +36,15 @@ export interface Field {
   options?: Option[];
   storage?: string;
   publicPath?: string;
+  attributes?: {
+    required?: boolean;
+    min?: number;
+    max?: number;
+    step?: number;
+    maxlength?: number;
+    pattern?: string;
+    [key: string]: unknown;
+  };
   [key: string]: unknown;
 }
 

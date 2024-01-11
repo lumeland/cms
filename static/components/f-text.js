@@ -19,6 +19,7 @@ export class Input extends Field {
     }
 
     const input = push(this, "input", {
+      ...schema.attributes,
       id,
       name,
       value,

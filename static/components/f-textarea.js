@@ -4,14 +4,6 @@ import { push } from "./utils.js";
 customElements.define(
   "f-textarea",
   class extends Field {
-    get inputAttributes() {
-      return { class: "input" };
-    }
-
-    get input() {
-      return this.querySelector("textarea");
-    }
-
     init() {
       this.classList.add("field");
       const { schema, value, namePrefix } = this;
@@ -26,10 +18,11 @@ customElements.define(
 
       const autogrow = push(this, "div", { class: "input-autogrow" });
       push(autogrow, "textarea", {
+        ...schema.attributes,
         id,
         name,
         value,
-        ...this.inputAttributes,
+        class: "input",
         oninput() {
           this.parentNode.dataset.replicatedValue = this.value;
         },

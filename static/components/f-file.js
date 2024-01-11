@@ -4,14 +4,6 @@ import { push } from "./utils.js";
 customElements.define(
   "f-file",
   class extends Field {
-    get inputAttributes() {
-      return { class: "inputFile" };
-    }
-
-    get input() {
-      return this.querySelector("input");
-    }
-
     init() {
       this.classList.add("field");
       const { schema, value, namePrefix } = this;
@@ -55,10 +47,11 @@ customElements.define(
       updateLink();
 
       push(this, "input", {
+        ...schema.attributes,
         type: "file",
         id,
         name: `${name}.uploaded`,
-        ...this.inputAttributes,
+        class: "inputFile",
       });
     }
   },

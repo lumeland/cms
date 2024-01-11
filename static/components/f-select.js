@@ -4,14 +4,6 @@ import { Field } from "./field.js";
 customElements.define(
   "f-select",
   class extends Field {
-    get inputAttributes() {
-      return { class: "select is-narrow" };
-    }
-
-    get input() {
-      return this.querySelector("select");
-    }
-
     init() {
       this.classList.add("field");
       const { schema, value, namePrefix } = this;
@@ -25,9 +17,10 @@ customElements.define(
       }
 
       const select = push(this, "select", {
+        ...schema.attributes,
         id,
         name,
-        ...this.inputAttributes,
+        class: "select is-narrow",
       });
 
       pushOptions(select, schema.options);
