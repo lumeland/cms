@@ -147,12 +147,6 @@ export default class Cms {
 
     app.get("*", serveStatic({ root: import.meta.resolve("../static/") }));
 
-    // Disable cache for now
-    app.get("*", (c: Context, next: Next) => {
-      c.res.headers.set("Cache-Control", "no-cache");
-      return next();
-    });
-
     return app;
   }
 
