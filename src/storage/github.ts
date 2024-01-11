@@ -108,9 +108,9 @@ abstract class BaseEntry {
   }
 }
 
-export class GitHubDataStorage extends BaseStorage implements Storage<Data> {
+export class GhDataStorage extends BaseStorage implements Storage<Data> {
   directory(id: string) {
-    return new GitHubDataStorage({
+    return new GhDataStorage({
       client: this.client,
       owner: this.owner,
       repo: this.repo,
@@ -118,8 +118,8 @@ export class GitHubDataStorage extends BaseStorage implements Storage<Data> {
     });
   }
 
-  get(id: string): GitHubDataEntry {
-    return new GitHubDataEntry({
+  get(id: string): GhDataEntry {
+    return new GhDataEntry({
       client: this.client,
       owner: this.owner,
       repo: this.repo,
@@ -128,7 +128,7 @@ export class GitHubDataStorage extends BaseStorage implements Storage<Data> {
   }
 }
 
-export class GitHubDataEntry extends BaseEntry implements Entry<Data> {
+export class GhDataEntry extends BaseEntry implements Entry<Data> {
   async read(): Promise<Data> {
     const data = await readTextContent({
       client: this.client,
@@ -154,9 +154,9 @@ export class GitHubDataEntry extends BaseEntry implements Entry<Data> {
   }
 }
 
-export class GitHubFileStorage extends BaseStorage implements Storage<File> {
+export class GhFileStorage extends BaseStorage implements Storage<File> {
   directory(id: string) {
-    return new GitHubFileStorage({
+    return new GhFileStorage({
       client: this.client,
       owner: this.owner,
       repo: this.repo,
@@ -164,8 +164,8 @@ export class GitHubFileStorage extends BaseStorage implements Storage<File> {
     });
   }
 
-  get(id: string): GitHubFileEntry {
-    return new GitHubFileEntry({
+  get(id: string): GhFileEntry {
+    return new GhFileEntry({
       client: this.client,
       owner: this.owner,
       repo: this.repo,
@@ -174,7 +174,7 @@ export class GitHubFileStorage extends BaseStorage implements Storage<File> {
   }
 }
 
-export class GitHubFileEntry extends BaseEntry implements Entry<File> {
+export class GhFileEntry extends BaseEntry implements Entry<File> {
   async read(): Promise<File> {
     const data = await readBinaryContent({
       client: this.client,

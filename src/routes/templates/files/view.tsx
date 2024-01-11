@@ -75,7 +75,7 @@ export default function Template({ type, file, collection, size }: Props) {
           <Preview type={type} src={src} />
         </div>
         <figcaption class="preview-caption">
-          <a href={src} download class="button is-secondary">
+          <a href={src} download={file} class="button is-secondary">
             <u-icon name="download-simple" />
             Download file
           </a>
