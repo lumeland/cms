@@ -5,11 +5,15 @@
   border-radius: var(--border-radius);
   border: solid 1px var(--color-line-light);
   display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: center;
   gap: 1rem;
+  min-height: 200px;
 
   & img {
     display: block;
     max-width: 100%;
+    margin: auto;
   }
 }
 .preview-caption {

@@ -25,7 +25,7 @@ export default function (app: Hono) {
     const file = body.file as File;
     const fileId = slugify(file.name);
     const entry = collection.get(fileId);
-    entry.write(file);
+    await entry.write(file);
 
     return c.redirect(getUrl("files", collectionId, "file", fileId));
   });

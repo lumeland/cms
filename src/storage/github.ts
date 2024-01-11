@@ -3,8 +3,12 @@ import { fromFilename } from "./transformers/mod.ts";
 import { contentType } from "std/media_types/content_type.ts";
 import { extname } from "std/path/extname.ts";
 import { Octokit } from "npm:octokit";
-import { encodeBase64 } from "std/encoding/base64.ts";
+import { decodeBase64, encodeBase64 } from "std/encoding/base64.ts";
 
+import type {
+  OctokitResponse,
+  RequestParameters,
+} from "npm:octokit/octokit.d.ts";
 import type { Data, Entry, Storage } from "../types.ts";
 
 export interface Options {
@@ -28,21 +32,19 @@ abstract class BaseStorage {
   }
 
   async *[Symbol.asyncIterator]() {
-    const data = await getContent<{ type: string; name: string }[]>(
-      this.client,
-      {
-        owner: this.owner,
-        repo: this.repo,
-        path: this.path,
-      },
-    );
+    const info = await fetchInfo({
+      client: this.client,
+      owner: this.owner,
+      repo: this.repo,
+      path: this.path,
+    });
 
-    if (!Array.isArray(data)) {
+    if (!Array.isArray(info)) {
       return;
       // throw new Error(`Invalid directory: ${this.path}`);
     }
 
-    for (const entry of data) {
+    for (const entry of info) {
       if (entry.type === "file") {
         yield entry.name;
       }
@@ -50,13 +52,14 @@ abstract class BaseStorage {
   }
 
   async delete(id: string) {
-    const data = await getContent<{ sha: string }>(this.client, {
+    const info = await fetchInfo({
+      client: this.client,
       owner: this.owner,
       repo: this.repo,
       path: join(this.path, id),
     });
 
-    const sha = data?.sha;
+    const sha = info?.sha;
 
     if (!sha) {
       throw new Error(`File not found: ${this.path}`);
@@ -72,10 +75,8 @@ abstract class BaseStorage {
   }
 
   async rename(id: string, newId: string): Promise<void> {
-    const content = await getContent<string>(this.client, {
-      mediaType: {
-        format: "raw",
-      },
+    const content = await readTextContent({
+      client: this.client,
       owner: this.owner,
       repo: this.repo,
       path: join(this.path, id),
@@ -86,7 +87,7 @@ abstract class BaseStorage {
       repo: this.repo,
       path: join(this.path, newId),
       message: "Rename file",
-      content: btoa(content || ""),
+      content: encodeBase64(content || ""),
     });
 
     await this.delete(id);
@@ -104,40 +105,6 @@ abstract class BaseEntry {
     this.owner = options.owner;
     this.repo = options.repo;
     this.path = options.path || "";
-  }
-
-  async _read(): Promise<Uint8Array | undefined> {
-    const data = await getContent<string>(this.client, {
-      mediaType: {
-        format: "raw",
-      },
-      owner: this.owner,
-      repo: this.repo,
-      path: this.path,
-    });
-
-    if (data) {
-      return new TextEncoder().encode(data);
-    }
-  }
-
-  async _write(content: ArrayBuffer | Uint8Array | string) {
-    const exists = await getContent<{ sha: string }>(this.client, {
-      owner: this.owner,
-      repo: this.repo,
-      path: this.path,
-    });
-
-    const sha = exists?.sha;
-
-    await this.client.rest.repos.createOrUpdateFileContents({
-      owner: this.owner,
-      repo: this.repo,
-      path: this.path,
-      message: sha ? "Update file" : "Create file",
-      content: encodeBase64(content),
-      sha,
-    });
   }
 }
 
@@ -163,16 +130,27 @@ export class GitHubDataStorage extends BaseStorage implements Storage<Data> {
 
 export class GitHubDataEntry extends BaseEntry implements Entry<Data> {
   async read(): Promise<Data> {
-    const data = await this._read();
-    const transformer = fromFilename(this.path);
+    const data = await readTextContent({
+      client: this.client,
+      owner: this.owner,
+      repo: this.repo,
+      path: this.path,
+    });
 
-    return transformer.toData(new TextDecoder().decode(data));
+    const transformer = fromFilename(this.path);
+    return transformer.toData(data || "");
   }
 
   async write(data: Data) {
     const transformer = fromFilename(this.path);
     const content = await transformer.fromData(data);
-    await this._write(content);
+
+    await writeContent({
+      client: this.client,
+      owner: this.owner,
+      repo: this.repo,
+      path: this.path,
+    }, content);
   }
 }
 
@@ -198,35 +176,93 @@ export class GitHubFileStorage extends BaseStorage implements Storage<File> {
 
 export class GitHubFileEntry extends BaseEntry implements Entry<File> {
   async read(): Promise<File> {
-    const data = await this._read();
-    const type = contentType(extname(this.path));
+    const data = await readBinaryContent({
+      client: this.client,
+      owner: this.owner,
+      repo: this.repo,
+      path: this.path,
+    });
 
     if (!data) {
       throw new Error(`File not found: ${this.path}`);
     }
 
+    const type = contentType(extname(this.path));
+
     return new File([new Blob([data])], this.path, { type });
   }
 
   async write(file: File) {
-    await this._write(await file.arrayBuffer());
+    await writeContent({
+      client: this.client,
+      owner: this.owner,
+      repo: this.repo,
+      path: this.path,
+    }, await file.arrayBuffer());
   }
 }
 
-async function getContent<T>(
-  client: Octokit,
-  // deno-lint-ignore no-explicit-any
-  options: any,
-): Promise<T | undefined> {
+async function fetchInfo(
+  options: Required<Options>,
+  params?: RequestParameters,
+): Promise<OctokitResponse | undefined> {
+  const { client, owner, repo, path } = options;
   try {
-    const result = await client.rest.repos.getContent(options);
+    const result = await client.rest.repos.getContent({
+      owner,
+      repo,
+      path,
+      ...params,
+    });
 
     if (result.status !== 200) {
       return;
     }
 
-    return result.data as T;
+    return result.data;
   } catch {
     // Ignore
   }
+}
+
+async function readTextContent(
+  options: Required<Options>,
+): Promise<string | undefined> {
+  const result = await fetchInfo(options, {
+    mediaType: {
+      format: "raw",
+    },
+  });
+
+  return result as string;
+}
+
+async function readBinaryContent(
+  options: Required<Options>,
+): Promise<Uint8Array | undefined> {
+  const content = await fetchInfo(options, {
+    mediaType: {
+      format: "base64",
+    },
+  });
+
+  return content ? decodeBase64(content.content) : undefined;
+}
+
+async function writeContent(
+  options: Required<Options>,
+  content: ArrayBuffer | Uint8Array | string,
+) {
+  const exists = await fetchInfo(options);
+  const sha = exists?.sha;
+  const { client, owner, repo, path } = options;
+
+  await client.rest.repos.createOrUpdateFileContents({
+    owner,
+    repo,
+    path,
+    message: sha ? "Update file" : "Create file",
+    content: encodeBase64(content),
+    sha,
+  });
 }
