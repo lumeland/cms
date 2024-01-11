@@ -51,8 +51,6 @@ export default class Cms {
   constructor(options?: CmsOptions) {
     this.#jsImports.add("/components/u-draggable.js");
     this.#jsImports.add("/components/u-icon.js");
-    this.#jsImports.add("/components/u-filter.js");
-    this.#jsImports.add("/components/f-hidden.js");
     this.options = {
       ...defaults,
       ...options,
@@ -103,6 +101,10 @@ export default class Cms {
       documents: {},
       files: {},
     };
+
+    for (const type of this.fields.values()) {
+      this.#jsImports.add(type.jsImport);
+    }
 
     content.files = Object.fromEntries(this.fileStorage);
 
@@ -198,8 +200,6 @@ export default class Cms {
         cmsContent: content,
         ...field,
       } as ResolvedField;
-
-      this.#jsImports.add(type.jsImport);
 
       if (resolvedField.fields) {
         resolvedField.fields = this.#resolveFields(

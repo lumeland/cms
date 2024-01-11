@@ -55,7 +55,6 @@ export default function (app: Hono) {
 
       const document = collection.get(documentId);
       await document.write(changesToData(body));
-
       return c.redirect(getUrl("collection", collectionId, "edit", documentId));
     });
 

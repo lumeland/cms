@@ -28,7 +28,12 @@ export function changesToData(
     let item: any = data;
 
     while (true) {
-      const part = parts.shift()!;
+      let part = parts.shift()!;
+
+      // if it's a numeric string prepend 0 to avoid automatic sorting
+      if (part === "0" || part.match(/^[1-9]\d*$/)) {
+        part = `0${part}`;
+      }
 
       if (!parts.length) {
         item[part] = value;
