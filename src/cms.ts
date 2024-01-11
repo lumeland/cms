@@ -128,7 +128,7 @@ export default class Cms {
 
     const app = new Hono();
 
-    app.use(...this.options.middlewares);
+    app.use("*", ...this.options.middlewares);
 
     const renderer = layout({
       jsImports: [...this.#jsImports],
