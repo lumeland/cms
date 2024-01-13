@@ -75,7 +75,7 @@ abstract class BaseStorage {
   }
 
   async rename(id: string, newId: string): Promise<void> {
-    const content = await readTextContent({
+    const content = await readBinaryContent({
       client: this.client,
       owner: this.owner,
       repo: this.repo,

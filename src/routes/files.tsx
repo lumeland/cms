@@ -69,7 +69,7 @@ export default function (app: Hono) {
       const fileId = body._id as string;
 
       if (prevId !== fileId) {
-        collection.rename(prevId, fileId);
+        await collection.rename(prevId, fileId);
       }
 
       const file = body.file as File | undefined;
