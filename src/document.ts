@@ -1,12 +1,12 @@
 import type { Data, Entry, ResolvedField } from "./types.ts";
 
 export default class Document {
-  #storage: Entry<Data>;
+  #entry: Entry;
   #fields: ResolvedField[];
   #data?: Data;
 
-  constructor(store: Entry<Data>, fields: ResolvedField[], isNew = false) {
-    this.#storage = store;
+  constructor(entry: Entry, fields: ResolvedField[], isNew = false) {
+    this.#entry = entry;
     this.#fields = fields;
 
     if (isNew) {
@@ -19,12 +19,12 @@ export default class Document {
   }
 
   get src(): string | undefined {
-    return this.#storage.src;
+    return this.#entry.src;
   }
 
   async read() {
     if (this.#data === undefined) {
-      this.#data = await this.#storage.read();
+      this.#data = await this.#entry.readData();
     }
 
     return this.#data;
@@ -34,7 +34,7 @@ export default class Document {
     const currentData = await this.read();
     await mergeRecursive(currentData, data, this.fields);
     this.#data = currentData;
-    await this.#storage.write(currentData);
+    await this.#entry.writeData(currentData);
   }
 }
 

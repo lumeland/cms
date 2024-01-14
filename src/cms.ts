@@ -8,7 +8,7 @@ import indexRoute from "./routes/index.tsx";
 import filesRoutes from "./routes/files.tsx";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
-import { FsDataStorage, FsFileStorage } from "./storage/fs.ts";
+import { FsStorage } from "./storage/fs.ts";
 import { normalizePath } from "./utils/path.ts";
 import { join } from "std/path/join.ts";
 import { basename } from "std/path/basename.ts";
@@ -18,7 +18,6 @@ import { labelify } from "./utils/string.ts";
 import type { Context, MiddlewareHandler, Next } from "hono/mod.ts";
 import type {
   CMSContent,
-  Data,
   Entry,
   Field,
   FielType,
@@ -46,8 +45,8 @@ export default class Cms {
   #jsImports = new Set<string>();
 
   options: Required<CmsOptions>;
-  dataStorage = new Map<string, Storage<Data>>();
-  fileStorage = new Map<string, Storage<File>>();
+  storage = new Map<string, Storage>();
+  uploads = new Map<string, string>();
   fields = new Map<string, FielType>();
   collections = new Map<string, [string, (Field | string)[]]>();
   documents = new Map<string, [string, (Field | string)[]]>();
@@ -69,23 +68,15 @@ export default class Cms {
     return normalizePath(join(this.options.cwd, ...path));
   }
 
-  data(name: string, storage: Storage<Data> | string = "") {
+  store(name: string, storage: Storage | string = "") {
     if (typeof storage === "string") {
-      storage = new FsDataStorage({ root: this.root(), path: storage });
+      storage = new FsStorage({ root: this.root(), path: storage });
     }
-    this.dataStorage.set(name, storage);
+    this.storage.set(name, storage);
   }
 
-  files(name: string, storage: Storage<File> | string = "") {
-    if (typeof storage === "string") {
-      storage = new FsFileStorage({ root: this.root(), path: storage });
-    }
-    this.fileStorage.set(name, storage);
-  }
-
-  field(name: string, field: FielType) {
-    this.fields.set(name, field);
-    return this;
+  upload(name: string, storage: string) {
+    this.uploads.set(name, storage);
   }
 
   collection(name: string, store: string, fields: (Field | string)[]) {
@@ -98,30 +89,37 @@ export default class Cms {
     return this;
   }
 
+  field(name: string, field: FielType) {
+    this.fields.set(name, field);
+    return this;
+  }
+
   init(): Hono {
     const content: CMSContent = {
       previewUrl: this.options.previewUrl,
       collections: {},
       documents: {},
-      files: {},
+      uploads: {},
     };
 
     for (const type of this.fields.values()) {
       this.#jsImports.add(type.jsImport);
     }
 
-    content.files = Object.fromEntries(this.fileStorage);
+    for (const [name, storage] of this.uploads.entries()) {
+      content.uploads[name] = this.#getStorage(storage);
+    }
 
     for (const [name, [path, fields]] of this.collections) {
       content.collections[name] = new Collection(
-        this.#getDataStorage(path),
+        this.#getStorage(path),
         this.#resolveFields(fields, content),
       );
     }
 
     for (const [name, [path, fields]] of this.documents) {
       content.documents[name] = new Document(
-        this.#getDataEntry(path),
+        this.#getEntry(path),
         this.#resolveFields(fields, content),
       );
     }
@@ -159,18 +157,18 @@ export default class Cms {
     });
   }
 
-  #getDataStorage(path: string): Storage<Data> {
+  #getStorage(path: string): Storage {
     const [name, src] = path.split(":");
-    const storage = this.dataStorage.get(name);
+    const storage = this.storage.get(name);
     if (!storage) {
       throw new Error(`Unknown storage "${name}"`);
     }
 
     return src ? storage.directory(src) : storage;
   }
-  #getDataEntry(path: string): Entry<Data> {
+  #getEntry(path: string): Entry {
     const [name, src] = path.split(":");
-    const storage = this.#getDataStorage(name + ":" + dirname(src));
+    const storage = this.#getStorage(name + ":" + dirname(src));
 
     return storage.get(basename(src));
   }

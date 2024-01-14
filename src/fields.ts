@@ -75,7 +75,7 @@ fields.set("file", {
       return current;
     }
 
-    const storage = field.cmsContent.files[field.storage || "default"];
+    const storage = field.cmsContent.uploads[field.storage || "default"];
 
     if (!storage) {
       throw new Error(
@@ -84,7 +84,7 @@ fields.set("file", {
     }
 
     const entry = storage.get(uploaded.name);
-    await entry.write(uploaded);
+    await entry.writeFile(uploaded);
     return join("/", field.publicPath || "", uploaded.name);
   },
 });

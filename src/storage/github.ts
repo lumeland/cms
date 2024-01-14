@@ -18,7 +18,7 @@ export interface Options {
   path?: string;
 }
 
-abstract class BaseStorage {
+export class GitHubStorage implements Storage {
   client: Octokit;
   owner: string;
   repo: string;
@@ -49,6 +49,24 @@ abstract class BaseStorage {
         yield entry.name;
       }
     }
+  }
+
+  directory(id: string): Storage {
+    return new GitHubStorage({
+      client: this.client,
+      owner: this.owner,
+      repo: this.repo,
+      path: join(this.path, id),
+    });
+  }
+
+  get(id: string): Entry {
+    return new GitHubEntry({
+      client: this.client,
+      owner: this.owner,
+      repo: this.repo,
+      path: join(this.path, id),
+    });
   }
 
   async delete(id: string) {
@@ -94,7 +112,7 @@ abstract class BaseStorage {
   }
 }
 
-abstract class BaseEntry {
+export class GitHubEntry {
   client: Octokit;
   owner: string;
   repo: string;
@@ -106,30 +124,8 @@ abstract class BaseEntry {
     this.repo = options.repo;
     this.path = options.path || "";
   }
-}
 
-export class GhDataStorage extends BaseStorage implements Storage<Data> {
-  directory(id: string) {
-    return new GhDataStorage({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: join(this.path, id),
-    });
-  }
-
-  get(id: string): GhDataEntry {
-    return new GhDataEntry({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: join(this.path, id),
-    });
-  }
-}
-
-export class GhDataEntry extends BaseEntry implements Entry<Data> {
-  async read(): Promise<Data> {
+  async readData(): Promise<Data> {
     const data = await readTextContent({
       client: this.client,
       owner: this.owner,
@@ -141,7 +137,7 @@ export class GhDataEntry extends BaseEntry implements Entry<Data> {
     return transformer.toData(data || "");
   }
 
-  async write(data: Data) {
+  async writeData(data: Data) {
     const transformer = fromFilename(this.path);
     const content = await transformer.fromData(data);
 
@@ -152,30 +148,8 @@ export class GhDataEntry extends BaseEntry implements Entry<Data> {
       path: this.path,
     }, content);
   }
-}
 
-export class GhFileStorage extends BaseStorage implements Storage<File> {
-  directory(id: string) {
-    return new GhFileStorage({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: join(this.path, id),
-    });
-  }
-
-  get(id: string): GhFileEntry {
-    return new GhFileEntry({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: join(this.path, id),
-    });
-  }
-}
-
-export class GhFileEntry extends BaseEntry implements Entry<File> {
-  async read(): Promise<File> {
+  async readFile(): Promise<File> {
     const data = await readBinaryContent({
       client: this.client,
       owner: this.owner,
@@ -192,7 +166,7 @@ export class GhFileEntry extends BaseEntry implements Entry<File> {
     return new File([new Blob([data])], this.path, { type });
   }
 
-  async write(file: File) {
+  async writeFile(file: File) {
     await writeContent({
       client: this.client,
       owner: this.owner,

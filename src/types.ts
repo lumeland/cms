@@ -6,17 +6,21 @@ import type Document from "./document.ts";
 export type Data = Record<string, unknown>;
 
 /** A storage mechanism for data */
-export interface Storage<T> extends AsyncIterable<string> {
-  get(id: string): Entry<T>;
-  directory(id: string): Storage<T>;
+export interface Storage extends AsyncIterable<string> {
+  get(id: string): Entry;
+  directory(id: string): Storage;
   delete(id: string): Promise<void>;
   rename(id: string, newId: string): Promise<void>;
 }
 
-export interface Entry<T> {
+export interface Entry {
   src?: string;
-  read(): Promise<T>;
-  write(content: T): Promise<void>;
+
+  readData(): Promise<Data>;
+  writeData(content: Data): Promise<void>;
+
+  readFile(): Promise<File>;
+  writeFile(content: File): Promise<void>;
 }
 
 /** A transformer to convert from/to Data */
@@ -67,6 +71,6 @@ type Option = string | { value: string | number; label: string };
 export interface CMSContent {
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
-  files: Record<string, Storage<File>>;
+  uploads: Record<string, Storage>;
   previewUrl: (path: string) => Promise<string | undefined>;
 }

@@ -19,7 +19,7 @@ export const defaults: Required<Options> = {
   path: "**",
 };
 
-abstract class BaseStorage {
+export class FsStorage implements Storage {
   root: string;
   path: string;
 
@@ -52,6 +52,17 @@ abstract class BaseStorage {
     }
   }
 
+  directory(id: string): Storage {
+    return new FsStorage({
+      root: this.root,
+      path: id,
+    });
+  }
+
+  get(path: string): Entry {
+    return new FsEntry({ root: this.root, path });
+  }
+
   async delete(path: string) {
     await Deno.remove(join(this.root, path));
   }
@@ -61,7 +72,7 @@ abstract class BaseStorage {
   }
 }
 
-abstract class BaseEntry {
+export class FsEntry implements Entry {
   root: string;
   path: string;
 
@@ -73,63 +84,33 @@ abstract class BaseEntry {
   get src(): string {
     return join(this.root, this.path);
   }
-}
 
-export class FsDataStorage extends BaseStorage implements Storage<Data> {
-  directory(id: string): Storage<Data> {
-    return new FsDataStorage({
-      root: this.root,
-      path: id,
-    });
-  }
-
-  get(path: string): Entry<Data> {
-    return new FsDataEntry({ root: this.root, path });
-  }
-}
-
-export class FsDataEntry extends BaseEntry implements Entry<Data> {
-  async read(): Promise<Data> {
+  async readData(): Promise<Data> {
     const content = await Deno.readTextFile(this.src);
     const transformer = fromFilename(this.path);
 
     return transformer.toData(content);
   }
 
-  async write(data: Data) {
+  async writeData(data: Data) {
     const transformer = fromFilename(this.path);
     const content = await transformer.fromData(data);
 
     await ensureDir(dirname(this.src));
     await Deno.writeTextFile(this.src, content);
   }
-}
 
-export class FsFileStorage extends BaseStorage implements Storage<File> {
-  directory(id: string): Storage<File> {
-    return new FsFileStorage({
-      root: this.root,
-      path: id,
-    });
-  }
-
-  get(path: string): Entry<File> {
-    return new FsFileEntry({ root: this.root, path });
-  }
-}
-
-export class FsFileEntry extends BaseEntry implements Entry<File> {
-  async read(): Promise<File> {
-    const content = await Deno.readFile(join(this.root, this.path));
+  async readFile(): Promise<File> {
+    const content = await Deno.readFile(this.src);
     const type = contentType(extname(this.path));
 
     return new File([new Blob([content])], this.root, { type });
   }
 
-  async write(file: File) {
+  async writeFile(file: File) {
     const content = await file.arrayBuffer();
 
-    await ensureDir(dirname(this.path));
-    await Deno.writeFile(join(this.root, this.path), new Uint8Array(content));
+    await ensureDir(dirname(this.src));
+    await Deno.writeFile(this.src, new Uint8Array(content));
   }
 }

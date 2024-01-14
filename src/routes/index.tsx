@@ -6,7 +6,7 @@ import type { CMSContent } from "../types.ts";
 
 export default function (app: Hono) {
   app.get("/", (c: Context) => {
-    const { collections, documents, files } = c.get(
+    const { collections, documents, uploads } = c.get(
       "options",
     ) as CMSContent;
 
@@ -14,7 +14,7 @@ export default function (app: Hono) {
       <Index
         collections={Object.keys(collections)}
         documents={Object.keys(documents)}
-        files={Object.keys(files)}
+        uploads={Object.keys(uploads)}
       />,
     );
   });

@@ -7,9 +7,9 @@ import type { CMSContent } from "../types.ts";
 
 export default function (app: Hono) {
   app.get("/files/:files", async (c: Context) => {
-    const { files } = c.get("options") as CMSContent;
+    const { uploads } = c.get("options") as CMSContent;
     const collectionId = c.req.param("files");
-    const collection = files[collectionId];
+    const collection = uploads[collectionId];
     const media = await Array.fromAsync(collection) as string[];
 
     return c.render(
@@ -18,38 +18,38 @@ export default function (app: Hono) {
   });
 
   app.post("/files/:files/create", async (c: Context) => {
-    const { files } = c.get("options") as CMSContent;
+    const { uploads } = c.get("options") as CMSContent;
     const collectionId = c.req.param("files");
-    const collection = files[collectionId];
+    const collection = uploads[collectionId];
     const body = await c.req.parseBody();
     const file = body.file as File;
     const fileId = slugify(file.name);
     const entry = collection.get(fileId);
-    await entry.write(file);
+    await entry.writeFile(file);
 
     return c.redirect(getUrl("files", collectionId, "file", fileId));
   });
 
   app.get("/files/:files/raw/:file", async (c: Context) => {
-    const { files } = c.get("options") as CMSContent;
+    const { uploads } = c.get("options") as CMSContent;
     const collectionId = c.req.param("files");
     const fileId = c.req.param("file");
-    const collection = files[collectionId];
+    const collection = uploads[collectionId];
     const entry = collection.get(fileId);
 
-    const file = await entry.read();
+    const file = await entry.readFile();
     c.header("Content-Type", file.type);
     c.header("Content-Length", file.size.toString());
     return c.body(new Uint8Array(await file.arrayBuffer()));
   });
 
   app.get("/files/:files/file/:file", async (c: Context) => {
-    const { files } = c.get("options") as CMSContent;
+    const { uploads } = c.get("options") as CMSContent;
     const collectionId = c.req.param("files");
     const fileId = c.req.param("file");
-    const collection = files[collectionId];
+    const collection = uploads[collectionId];
     const entry = collection.get(fileId);
-    const file = await entry.read();
+    const file = await entry.readFile();
 
     return c.render(
       <FilesView
@@ -61,9 +61,9 @@ export default function (app: Hono) {
     );
   })
     .post(async (c: Context) => {
-      const { files } = c.get("options") as CMSContent;
+      const { uploads } = c.get("options") as CMSContent;
       const collectionId = c.req.param("files");
-      const collection = files[collectionId];
+      const collection = uploads[collectionId];
       const body = await c.req.parseBody();
       const prevId = c.req.param("file");
       const fileId = body._id as string;
@@ -76,17 +76,17 @@ export default function (app: Hono) {
 
       if (file) {
         const entry = collection.get(fileId);
-        await entry.write(file);
+        await entry.writeFile(file);
       }
 
       return c.redirect(getUrl("files", collectionId, "file", fileId));
     });
 
   app.post("/files/:files/delete/:file", async (c: Context) => {
-    const { files } = c.get("options") as CMSContent;
+    const { uploads } = c.get("options") as CMSContent;
     const collectionId = c.req.param("files");
     const fileId = c.req.param("file");
-    const collection = files[collectionId];
+    const collection = uploads[collectionId];
     await collection.delete(fileId);
 
     return c.redirect(getUrl("files", collectionId));

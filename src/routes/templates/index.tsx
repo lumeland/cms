@@ -3,10 +3,10 @@ import { getUrl, labelify } from "../../utils/string.ts";
 interface Props {
   collections: string[];
   documents: string[];
-  files: string[];
+  uploads: string[];
 }
 
-export default function Template({ collections, documents, files }: Props) {
+export default function Template({ collections, documents, uploads }: Props) {
   return (
     <>
       <header class="header">
@@ -34,11 +34,11 @@ export default function Template({ collections, documents, files }: Props) {
             </a>
           </li>
         ))}
-        {files.map((file, index) => (
+        {uploads.map((name, index) => (
           <li class={index === 0 ? "is-separated" : ""}>
-            <a href={getUrl("files", file)} class="list-item">
+            <a href={getUrl("files", name)} class="list-item">
               <u-icon name="image-square-fill"></u-icon>
-              {labelify(file)}
+              {labelify(name)}
             </a>
           </li>
         ))}

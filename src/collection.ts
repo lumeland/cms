@@ -1,12 +1,12 @@
 import Document from "./document.ts";
 
-import type { Data, ResolvedField, Storage } from "./types.ts";
+import type { ResolvedField, Storage } from "./types.ts";
 
 export default class Collection {
-  #storage: Storage<Data>;
+  #storage: Storage;
   #fields: ResolvedField[];
 
-  constructor(storage: Storage<Data>, fields: ResolvedField[]) {
+  constructor(storage: Storage, fields: ResolvedField[]) {
     this.#storage = storage;
     this.#fields = fields;
   }

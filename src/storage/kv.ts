@@ -5,7 +5,7 @@ export interface Options {
   kv: Deno.Kv;
 }
 
-export class KvStorage implements Storage<Data> {
+export class KvStorage implements Storage {
   prefix: string[];
   kv: Deno.Kv;
 
@@ -24,12 +24,12 @@ export class KvStorage implements Storage<Data> {
     }
   }
 
-  directory(id: string): Storage<Data> {
+  directory(id: string): Storage {
     const prefix = this.#getKey(id);
     return new KvStorage({ kv: this.kv, prefix });
   }
 
-  get(id: string): Entry<Data> {
+  get(id: string): Entry {
     const key = this.#getKey(id);
     return new KvEntry({ kv: this.kv, key });
   }
@@ -58,7 +58,7 @@ export interface DocumentOptions extends Options {
   key: string[];
 }
 
-export class KvEntry implements Entry<Data> {
+export class KvEntry implements Entry {
   key: string[];
   kv: Deno.Kv;
 
@@ -67,7 +67,7 @@ export class KvEntry implements Entry<Data> {
     this.kv = options.kv;
   }
 
-  async read(): Promise<Data> {
+  async readData(): Promise<Data> {
     const item = await this.kv.get<Data>(this.key);
 
     if (!item.value) {
@@ -77,7 +77,15 @@ export class KvEntry implements Entry<Data> {
     return item?.value;
   }
 
-  async write(data: Data) {
+  async writeData(data: Data) {
     await this.kv.set(this.key, data);
+  }
+
+  readFile(): Promise<File> {
+    throw new Error("Binary files not allowed in KV storage");
+  }
+
+  writeFile(): Promise<void> {
+    throw new Error("Binary files not allowed in KV storage");
   }
 }
