@@ -16,6 +16,7 @@ export interface Options {
   owner: string;
   repo: string;
   path?: string;
+  branch?: string;
 }
 
 export class GitHubStorage implements Storage {
@@ -23,12 +24,14 @@ export class GitHubStorage implements Storage {
   owner: string;
   repo: string;
   path: string;
+  branch?: string;
 
   constructor(options: Options) {
     this.client = options.client;
     this.owner = options.owner;
     this.repo = options.repo;
     this.path = options.path || "";
+    this.branch = options.branch;
   }
 
   async *[Symbol.asyncIterator]() {
@@ -37,6 +40,7 @@ export class GitHubStorage implements Storage {
       owner: this.owner,
       repo: this.repo,
       path: this.path,
+      branch: this.branch,
     });
 
     if (!Array.isArray(info)) {
@@ -57,6 +61,7 @@ export class GitHubStorage implements Storage {
       owner: this.owner,
       repo: this.repo,
       path: join(this.path, id),
+      branch: this.branch,
     });
   }
 
@@ -66,6 +71,7 @@ export class GitHubStorage implements Storage {
       owner: this.owner,
       repo: this.repo,
       path: join(this.path, id),
+      branch: this.branch,
     });
   }
 
@@ -75,6 +81,7 @@ export class GitHubStorage implements Storage {
       owner: this.owner,
       repo: this.repo,
       path: join(this.path, id),
+      branch: this.branch,
     });
 
     const sha = info?.sha;
@@ -88,6 +95,7 @@ export class GitHubStorage implements Storage {
       repo: this.repo,
       path: join(this.path, id),
       message: "Delete file",
+      branch: this.branch,
       sha,
     });
   }
@@ -98,6 +106,7 @@ export class GitHubStorage implements Storage {
       owner: this.owner,
       repo: this.repo,
       path: join(this.path, id),
+      branch: this.branch,
     });
 
     await this.client.rest.repos.createOrUpdateFileContents({
@@ -106,6 +115,7 @@ export class GitHubStorage implements Storage {
       path: join(this.path, newId),
       message: "Rename file",
       content: encodeBase64(content || ""),
+      branch: this.branch,
     });
 
     await this.delete(id);
@@ -117,12 +127,14 @@ export class GitHubEntry {
   owner: string;
   repo: string;
   path: string;
+  branch?: string;
 
   constructor(options: Options) {
     this.client = options.client;
     this.owner = options.owner;
     this.repo = options.repo;
     this.path = options.path || "";
+    this.branch = options.branch;
   }
 
   async readData(): Promise<Data> {
@@ -131,6 +143,7 @@ export class GitHubEntry {
       owner: this.owner,
       repo: this.repo,
       path: this.path,
+      branch: this.branch,
     });
 
     const transformer = fromFilename(this.path);
@@ -146,6 +159,7 @@ export class GitHubEntry {
       owner: this.owner,
       repo: this.repo,
       path: this.path,
+      branch: this.branch,
     }, content);
   }
 
@@ -155,6 +169,7 @@ export class GitHubEntry {
       owner: this.owner,
       repo: this.repo,
       path: this.path,
+      branch: this.branch,
     });
 
     if (!data) {
@@ -172,20 +187,22 @@ export class GitHubEntry {
       owner: this.owner,
       repo: this.repo,
       path: this.path,
+      branch: this.branch,
     }, await file.arrayBuffer());
   }
 }
 
 async function fetchInfo(
-  options: Required<Options>,
+  options: Options,
   params?: RequestParameters,
 ): Promise<OctokitResponse | undefined> {
-  const { client, owner, repo, path } = options;
+  const { client, owner, repo, path, branch } = options;
   try {
     const result = await client.rest.repos.getContent({
       owner,
       repo,
-      path,
+      path: path || "",
+      branch,
       ...params,
     });
 
@@ -200,7 +217,7 @@ async function fetchInfo(
 }
 
 async function readTextContent(
-  options: Required<Options>,
+  options: Options,
 ): Promise<string | undefined> {
   const result = await fetchInfo(options, {
     mediaType: {
@@ -212,7 +229,7 @@ async function readTextContent(
 }
 
 async function readBinaryContent(
-  options: Required<Options>,
+  options: Options,
 ): Promise<Uint8Array | undefined> {
   const content = await fetchInfo(options, {
     mediaType: {
@@ -224,17 +241,22 @@ async function readBinaryContent(
 }
 
 async function writeContent(
-  options: Required<Options>,
+  options: Options,
   content: ArrayBuffer | Uint8Array | string,
 ) {
   const exists = await fetchInfo(options);
   const sha = exists?.sha;
-  const { client, owner, repo, path } = options;
+  const { client, owner, repo, path, branch } = options;
+
+  if (!path) {
+    throw new Error("Invalid path");
+  }
 
   await client.rest.repos.createOrUpdateFileContents({
     owner,
     repo,
     path,
+    branch,
     message: sha ? "Update file" : "Create file",
     content: encodeBase64(content),
     sha,
