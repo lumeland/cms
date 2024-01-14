@@ -17,10 +17,6 @@
   margin: .5rem 0;
   font: var(--font-ui);
   color: var(--color-dim);
-
-  & a {
-    color: var(--color-primary);
-  }
 }
 .header-filter {
   display: block;

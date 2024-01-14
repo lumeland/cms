@@ -48,10 +48,6 @@
   & p {
     margin: 0;
   }
-
-  & a {
-    color: var(--color-primary);
-  }
 }
 .field-footer {
   margin-top: .5em;

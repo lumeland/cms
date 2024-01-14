@@ -8,7 +8,7 @@ html {
 html,
 body {
   font: var(--font-ui);
-  color: var(--color-base);
+  color: var(--color-text);
   background-color: var(--color-background);
   overflow-wrap: break-word;
 }
@@ -39,6 +39,14 @@ code {
 }
 strong, b {
   font-weight: 600;
+}
+
+a {
+  color: var(--color-link);
+
+  &:hover {
+    var(--color-link-hover);
+  }
 }
 
 hr {

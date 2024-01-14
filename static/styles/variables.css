@@ -1,8 +1,7 @@
 :root {
   /* Light colors */
   color-scheme: light;
-  --color-base: hsl(220, 20%, 10%);
-  --color-text: hsl(220, 20%, 20%);
+  --color-text: hsl(220, 20%, 15%);
   --color-dim: hsl(220, 20%, 40%);
   --color-link: var(--color-primary);
   --color-link-hover: var(--color-primary-highlight);
@@ -15,6 +14,22 @@
   /* Brand colors */
   --color-primary: hsl(0deg, 50%, 50%);
   --color-primary-highlight: hsl(0deg, 50%, 40%);
+
+  /* Code colors */
+  --color-code-5: #bf4040;
+  --color-code-b: #708;
+  --color-code-c: #2913c0;
+  --color-code-d: #164;
+  --color-code-e: #bf4040;
+  --color-code-f: #e40;
+  --color-code-g: #00f;
+  --color-code-h: #30a;
+  --color-code-i: #0e8759;
+  --color-code-j: #167;
+  --color-code-k: #256;
+  --color-code-l: #00c;
+  --color-code-m: #940;
+  --color-code-n: #f00;
 
   /* Fonts */
   --font-family-code: Consolas, Menlo, Monaco, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Courier New", Courier, monospace;

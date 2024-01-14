@@ -48,10 +48,10 @@
   }
   &.is-link {
     padding: 0;
-    color: var(--color-primary);
+    color: var(--color-link);
 
     &:hover {
-      color: var(--color-primary-highlight);
+      color: var(--color-link-hover);
       text-decoration: underline;
     }
   }
