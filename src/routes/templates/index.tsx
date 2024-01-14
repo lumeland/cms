@@ -36,7 +36,7 @@ export default function Template({ collections, documents, uploads }: Props) {
         ))}
         {uploads.map((name, index) => (
           <li class={index === 0 ? "is-separated" : ""}>
-            <a href={getUrl("files", name)} class="list-item">
+            <a href={getUrl("uploads", name)} class="list-item">
               <u-icon name="image-square-fill"></u-icon>
               {labelify(name)}
             </a>

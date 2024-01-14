@@ -9,13 +9,13 @@ interface Props {
 }
 
 export default function Template({ type, file, collection, size }: Props) {
-  const src = getUrl("files", collection, "raw", file);
+  const src = getUrl("uploads", collection, "raw", file);
 
   return (
     <>
       <header class="header">
         <nav class="header-nav">
-          <a href={getUrl("files", collection)} class="button is-link">
+          <a href={getUrl("uploads", collection)} class="button is-link">
             <u-icon name="arrow-left"></u-icon>
             Back
           </a>
@@ -61,7 +61,7 @@ export default function Template({ type, file, collection, size }: Props) {
           </button>
           <button
             class="button is-secondary"
-            formAction={getUrl("files", collection, "delete", file)}
+            formAction={getUrl("uploads", collection, "delete", file)}
             data-confirm="Are you sure?"
           >
             <u-icon name="trash" />

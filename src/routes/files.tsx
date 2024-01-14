@@ -1,25 +1,25 @@
-import FilesList from "./templates/files/list.tsx";
-import FilesView from "./templates/files/view.tsx";
+import UploadsList from "./templates/uploads/list.tsx";
+import UploadsView from "./templates/uploads/view.tsx";
 import { getUrl, slugify } from "../utils/string.ts";
 
 import type { Context, Hono } from "hono/mod.ts";
 import type { CMSContent } from "../types.ts";
 
 export default function (app: Hono) {
-  app.get("/files/:files", async (c: Context) => {
+  app.get("/uploads/:collection", async (c: Context) => {
     const { uploads } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("files");
+    const collectionId = c.req.param("collection");
     const collection = uploads[collectionId];
     const media = await Array.fromAsync(collection) as string[];
 
     return c.render(
-      <FilesList collection={collectionId} files={media} />,
+      <UploadsList collection={collectionId} files={media} />,
     );
   });
 
-  app.post("/files/:files/create", async (c: Context) => {
+  app.post("/uploads/:collection/create", async (c: Context) => {
     const { uploads } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("files");
+    const collectionId = c.req.param("collection");
     const collection = uploads[collectionId];
     const body = await c.req.parseBody();
     const file = body.file as File;
@@ -27,12 +27,12 @@ export default function (app: Hono) {
     const entry = collection.get(fileId);
     await entry.writeFile(file);
 
-    return c.redirect(getUrl("files", collectionId, "file", fileId));
+    return c.redirect(getUrl("uploads", collectionId, "file", fileId));
   });
 
-  app.get("/files/:files/raw/:file", async (c: Context) => {
+  app.get("/uploads/:collection/raw/:file", async (c: Context) => {
     const { uploads } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("files");
+    const collectionId = c.req.param("collection");
     const fileId = c.req.param("file");
     const collection = uploads[collectionId];
     const entry = collection.get(fileId);
@@ -43,16 +43,16 @@ export default function (app: Hono) {
     return c.body(new Uint8Array(await file.arrayBuffer()));
   });
 
-  app.get("/files/:files/file/:file", async (c: Context) => {
+  app.get("/uploads/:collection/file/:file", async (c: Context) => {
     const { uploads } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("files");
+    const collectionId = c.req.param("collection");
     const fileId = c.req.param("file");
     const collection = uploads[collectionId];
     const entry = collection.get(fileId);
     const file = await entry.readFile();
 
     return c.render(
-      <FilesView
+      <UploadsView
         type={file.type}
         size={file.size}
         collection={collectionId}
@@ -62,7 +62,7 @@ export default function (app: Hono) {
   })
     .post(async (c: Context) => {
       const { uploads } = c.get("options") as CMSContent;
-      const collectionId = c.req.param("files");
+      const collectionId = c.req.param("collection");
       const collection = uploads[collectionId];
       const body = await c.req.parseBody();
       const prevId = c.req.param("file");
@@ -79,16 +79,16 @@ export default function (app: Hono) {
         await entry.writeFile(file);
       }
 
-      return c.redirect(getUrl("files", collectionId, "file", fileId));
+      return c.redirect(getUrl("uploads", collectionId, "file", fileId));
     });
 
-  app.post("/files/:files/delete/:file", async (c: Context) => {
+  app.post("/uploads/:collection/delete/:file", async (c: Context) => {
     const { uploads } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("files");
+    const collectionId = c.req.param("collection");
     const fileId = c.req.param("file");
     const collection = uploads[collectionId];
     await collection.delete(fileId);
 
-    return c.redirect(getUrl("files", collectionId));
+    return c.redirect(getUrl("uploads", collectionId));
   });
 }

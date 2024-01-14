@@ -28,7 +28,7 @@ export default function Template({ collection, files }: Props) {
         {files.map((file) => (
           <li>
             <a
-              href={getUrl("files", collection, "file", file)}
+              href={getUrl("uploads", collection, "file", file)}
               class="list-item"
             >
               <u-icon name="image-square-fill"></u-icon>
@@ -42,7 +42,7 @@ export default function Template({ collection, files }: Props) {
         method="post"
         class="footer ly-rowStack"
         enctype="multipart/form-data"
-        action={getUrl("files", collection, "create")}
+        action={getUrl("uploads", collection, "create")}
       >
         <input
           aria-label="Add file"
