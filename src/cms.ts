@@ -54,6 +54,7 @@ export default class Cms {
   constructor(options?: CmsOptions) {
     this.#jsImports.add("/components/u-draggable.js");
     this.#jsImports.add("/components/u-icon.js");
+    this.#jsImports.add("/components/u-filter.js");
     this.options = {
       ...defaults,
       ...options,

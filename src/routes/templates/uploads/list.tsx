@@ -18,7 +18,7 @@ export default function Template({ collection, files }: Props) {
         <h1 class="header-title">Content of {collection}</h1>
         <u-filter
           class="header-filter"
-          data-placeholder={`Filter ${collection}`}
+          data-placeholder={`Search files in ${collection}`}
           data-selector="#list > li"
         >
         </u-filter>
