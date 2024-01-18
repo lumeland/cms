@@ -13,6 +13,13 @@ export interface Storage extends AsyncIterable<string> {
   rename(id: string, newId: string): Promise<void>;
 }
 
+export interface Versioning extends AsyncIterable<string> {
+  current(): Promise<string>;
+  create(id: string): Promise<void>;
+  change(id: string): Promise<void>;
+  publish(id: string): Promise<void>;
+}
+
 export interface Entry {
   src?: string;
 
