@@ -19,13 +19,6 @@ customElements.define(
         const name = `${namePrefix}.${index++}`;
         const el = push(div, "u-draggable");
 
-        push(el, "button", {
-          type: "button",
-          class: "buttonIcon",
-          onclick() {
-            this.closest("u-draggable").remove();
-          },
-        }, '<u-icon name="trash"></u-icon>');
         push(el, "input", {
           type: "text",
           class: "input is-narrow",
@@ -33,6 +26,14 @@ customElements.define(
           name,
           value,
         });
+
+        push(el, "button", {
+          type: "button",
+          class: "buttonIcon",
+          onclick() {
+            this.closest("u-draggable").remove();
+          },
+        }, '<u-icon name="trash"></u-icon>');
       }
 
       for (const v of value ?? []) {

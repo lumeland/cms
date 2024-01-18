@@ -75,7 +75,7 @@ fields.set("file", {
       return current;
     }
 
-    const storage = field.cmsContent.uploads[field.storage || "default"];
+    const storage = field.cmsContent.uploads[field.uploads || "default"];
 
     if (!storage) {
       throw new Error(

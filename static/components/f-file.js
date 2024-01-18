@@ -38,12 +38,13 @@ customElements.define(
           if (filename.startsWith("/")) {
             filename = filename.substring(1);
           }
-          link.href = `/files/${schema.storage}/file/${filename}`;
+          link.href = `/files/${schema.uploads}/file/${filename}`;
           link.hidden = false;
         } else {
           link.hidden = true;
         }
       }
+
       updateLink();
 
       push(this, "input", {

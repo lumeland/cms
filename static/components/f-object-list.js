@@ -22,6 +22,12 @@ customElements.define(
       function addOption(value) {
         const el = push(div, "u-draggable");
 
+        push(el, "f-object", {
+          schema: { ...schema, name: index++ },
+          namePrefix,
+          value,
+        });
+
         push(el, "button", {
           type: "button",
           class: "buttonIcon",
@@ -29,12 +35,6 @@ customElements.define(
             this.closest("u-draggable").remove();
           },
         }, '<u-icon name="trash"></u-icon>');
-
-        push(el, "f-object", {
-          schema: { ...schema, name: index++ },
-          namePrefix,
-          value,
-        });
       }
       for (const v of value ?? []) {
         addOption(v);

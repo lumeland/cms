@@ -38,7 +38,7 @@ export interface Field {
   label?: string;
   description?: string;
   options?: Option[];
-  storage?: string;
+  uploads?: string;
   publicPath?: string;
   attributes?: {
     required?: boolean;

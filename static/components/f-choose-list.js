@@ -32,14 +32,6 @@ customElements.define(
 
         const el = push(div, "u-draggable");
 
-        push(el, "button", {
-          type: "button",
-          class: "buttonIcon",
-          onclick() {
-            this.closest("u-draggable").remove();
-          },
-        }, '<u-icon name="trash"></u-icon>');
-
         push(el, field.tag, {
           schema: {
             ...field,
@@ -56,6 +48,14 @@ customElements.define(
           namePrefix,
           value,
         });
+
+        push(el, "button", {
+          type: "button",
+          class: "buttonIcon",
+          onclick() {
+            this.closest("u-draggable").remove();
+          },
+        }, '<u-icon name="trash"></u-icon>');
       }
 
       for (const v of value ?? []) {

@@ -6,7 +6,7 @@
   },
   "lock": false,
   "tasks": {
-    "dev": "deno run --unstable --watch -A probas/github.ts",
+    "dev": "deno run --unstable --watch -A probas/schema.ts",
     "site": "cd probas/ensino && deno task serve"
   },
   "compilerOptions": {
