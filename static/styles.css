@@ -18,6 +18,7 @@
 @import "./styles/button-icon.css";
 @import "./styles/u-icon.css";
 @import "./styles/u-draggable.css";
+@import "./styles/u-preview.css";
 
 .is-small {
   font: var(--font-small);

@@ -68,7 +68,9 @@ export class FsStorage implements Storage {
   }
 
   async rename(path: string, newPath: string) {
-    await Deno.rename(join(this.root, path), join(this.root, newPath));
+    const dest = join(this.root, newPath);
+    await ensureDir(dirname(dest));
+    await Deno.rename(join(this.root, path), dest);
   }
 }
 

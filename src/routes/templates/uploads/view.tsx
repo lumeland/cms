@@ -71,9 +71,7 @@ export default function Template({ type, file, collection, size }: Props) {
       </form>
 
       <figure class="preview">
-        <div class="preview-media">
-          <Preview type={type} src={src} />
-        </div>
+        <u-preview class="preview-media" src={src} />
         <figcaption class="preview-caption">
           <a href={src} download={file} class="button is-secondary">
             <u-icon name="download-simple" />
