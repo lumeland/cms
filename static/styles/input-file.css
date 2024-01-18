@@ -1,5 +1,6 @@
 .inputFile {
   max-width: max-content;
+  border-radius: var(--border-radius);
 }
 /* Like .button.is-secondary */
 .inputFile::file-selector-button {
