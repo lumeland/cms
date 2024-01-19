@@ -1,20 +1,25 @@
 import { getUrl, labelify } from "../../../utils/string.ts";
+import { EntryMetadata } from "../../../types.ts";
 
 interface Props {
   collection: string;
-  documents: string[];
+  documents: EntryMetadata[];
 }
 
 export default function Template({ collection, documents }: Props) {
   return (
     <>
+      <nav aria-label="You are here:">
+        <ul class="breadcrumb">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a>{collection}</a>
+          </li>
+        </ul>
+      </nav>
       <header class="header">
-        <nav class="header-nav">
-          <a href="/" class="button is-link">
-            <u-icon name="arrow-left"></u-icon>
-            Home
-          </a>
-        </nav>
         <h1 class="header-title">Content of {collection}</h1>
         <u-filter
           class="header-filter"
@@ -25,15 +30,15 @@ export default function Template({ collection, documents }: Props) {
       </header>
 
       <ul id="list" class="list">
-        {documents.map((document) => (
+        {documents.map(({ id }) => (
           <li>
             <a
-              href={getUrl("collection", collection, "edit", document)}
+              href={getUrl("collection", collection, "edit", id)}
               class="list-item"
-              title={document}
+              title={id}
             >
               <u-icon name="file"></u-icon>
-              {labelify(document)}
+              {labelify(id)}
             </a>
           </li>
         ))}

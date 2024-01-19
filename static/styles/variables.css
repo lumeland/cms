@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "Epilogue";
+  src: url("../fonts/epilogue.woff2") format("woff2");
+  font-weight: 600 700;
+  font-display: swap;
+}
+
 :root {
   /* Light colors */
   color-scheme: light;
@@ -34,13 +41,13 @@
   /* Fonts */
   --font-family-code: Consolas, Menlo, Monaco, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Courier New", Courier, monospace;
   --font-family-ui: -apple-system, system-ui, sans-serif;
-  --font-family-display: var(--font-family-ui);
+  --font-family-display: Epilogue, var(--font-family-ui);
 
   --font-code: .9em/1.5 var(--font-family-code);
   --font-display: 600 clamp(2rem, 10vw, 4rem)/1 var(--font-family-display);
-  --font-display-spacing: -0.02em;
-  --font-title: 600 clamp(1.5rem, 8vw, 2rem)/1.2 var(--font-family-ui);
-  --font-title-spacing: -0.015em;
+  --font-display-spacing: -0.025em;
+  --font-title: 600 clamp(1.5rem, 8vw, 2.5rem)/1.2 var(--font-family-display);
+  --font-title-spacing: -0.02em;
   --font-body: clamp(1rem, 5vw, 1.125rem)/1.6 var(--font-family-ui);
   --font-body-bold: 600 var(--font-body);
   --font-body-spacing: 0;

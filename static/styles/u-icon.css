@@ -6,3 +6,6 @@ u-icon {
     fill: currentColor;
   }
 }
+u-icon-file u-icon {
+  display: block;
+}

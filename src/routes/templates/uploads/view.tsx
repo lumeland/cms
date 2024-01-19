@@ -16,15 +16,22 @@ export default function Template(
 
   return (
     <>
+      <nav aria-label="You are here:">
+        <ul class="breadcrumb">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href={getUrl("uploads", collection)}>{collection}</a>
+          </li>
+          <li>
+            <a>{file}</a>
+          </li>
+        </ul>
+      </nav>
       <header class="header">
-        <nav class="header-nav">
-          <a href={getUrl("uploads", collection)} class="button is-link">
-            <u-icon name="arrow-left"></u-icon>
-            All uploads
-          </a>
-        </nav>
         <h1 class="header-title">
-          Details of &nbsp;&nbsp;
+          Details of
           <input
             class="input is-narrow is-inline"
             id="_id"

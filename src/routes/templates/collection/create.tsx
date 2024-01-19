@@ -9,15 +9,22 @@ interface Props {
 export default function Template({ collection, fields }: Props) {
   return (
     <>
+      <nav aria-label="You are here:">
+        <ul class="breadcrumb">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href={getUrl("collection", collection)}>{collection}</a>
+          </li>
+          <li>
+            <a>New file</a>
+          </li>
+        </ul>
+      </nav>
       <header class="header">
-        <nav class="header-nav">
-          <a href={getUrl("collection", collection)} class="button is-link">
-            <u-icon name="arrow-left"></u-icon>
-            Back
-          </a>
-        </nav>
         <h1 class="header-title">
-          Creating new file &nbsp;&nbsp;
+          Creating new file
           <input
             class="input is-narrow is-inline"
             id="_id"

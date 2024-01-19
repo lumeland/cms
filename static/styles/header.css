@@ -12,6 +12,9 @@
 .header-title {
   margin: 0;
   font: var(--font-title);
+  letter-spacing: var(--font-title-spacing);
+  display: flex;
+  gap: 1rem;
 }
 .header-description {
   margin: .5rem 0;

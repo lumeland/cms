@@ -27,16 +27,12 @@ import type {
 
 export interface CmsOptions {
   cwd?: string;
-  previewUrl?: (path: string) => Promise<string | undefined>;
   server?: Deno.ServeOptions;
   middlewares?: MiddlewareHandler[];
 }
 
 const defaults: Required<CmsOptions> = {
   cwd: Deno.cwd(),
-  previewUrl() {
-    return Promise.resolve(undefined);
-  },
   server: {},
   middlewares: [],
 };
@@ -45,7 +41,7 @@ export default class Cms {
   #jsImports = new Set<string>();
 
   options: Required<CmsOptions>;
-  storage = new Map<string, Storage>();
+  storages = new Map<string, Storage>();
   uploads = new Map<string, [string, string]>();
   fields = new Map<string, FielType>();
   collections = new Map<string, [string, (Field | string)[]]>();
@@ -66,11 +62,11 @@ export default class Cms {
     return normalizePath(join(this.options.cwd, ...path));
   }
 
-  store(name: string, storage: Storage | string = "") {
+  storage(name: string, storage: Storage | string = "") {
     if (typeof storage === "string") {
       storage = new FsStorage({ root: this.root(), path: storage });
     }
-    this.storage.set(name, storage);
+    this.storages.set(name, storage);
   }
 
   upload(name: string, storage: string, publicPath?: string) {
@@ -98,7 +94,6 @@ export default class Cms {
 
   init(): Hono {
     const content: CMSContent = {
-      previewUrl: this.options.previewUrl,
       collections: {},
       documents: {},
       uploads: {},
@@ -161,7 +156,7 @@ export default class Cms {
 
   #getStorage(path: string): Storage {
     const [name, src] = path.split(":");
-    const storage = this.storage.get(name);
+    const storage = this.storages.get(name);
     if (!storage) {
       throw new Error(`Unknown storage "${name}"`);
     }

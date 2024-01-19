@@ -11,7 +11,7 @@ export default function (app: Hono) {
     const { uploads } = c.get("options") as CMSContent;
     const collectionId = c.req.param("collection");
     const [collection, publicPath] = uploads[collectionId];
-    const media = await Array.fromAsync(collection) as string[];
+    const media = await Array.fromAsync(collection);
 
     return c.render(
       <UploadsList

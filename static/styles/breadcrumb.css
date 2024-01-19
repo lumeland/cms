@@ -1,0 +1,26 @@
+.breadcrumb {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  font: var(--font-small);
+
+  & > li:not(:last-child)::after {
+    content: "/";
+    display: inline-block;
+    padding: 0 .5em;
+  }
+  & a {
+    text-decoration: none;
+    color: var(--color-dim);
+  }
+  & a[href] {
+    color: var(--color-foreground);
+    font: var(--font-small-bold);
+
+    &[href]:hover {
+      text-decoration: underline;
+    }
+  }
+}

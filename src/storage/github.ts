@@ -50,7 +50,9 @@ export class GitHubStorage implements Storage {
 
     for (const entry of info) {
       if (entry.type === "file") {
-        yield entry.name;
+        yield {
+          id: entry.name,
+        };
       }
     }
   }
@@ -122,7 +124,7 @@ export class GitHubStorage implements Storage {
   }
 }
 
-export class GitHubEntry {
+export class GitHubEntry implements Entry {
   client: Octokit;
   owner: string;
   repo: string;

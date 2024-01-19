@@ -5,8 +5,12 @@ import type Document from "./document.ts";
 /** Generic data to store */
 export type Data = Record<string, unknown>;
 
+export interface EntryMetadata {
+  id: string;
+}
+
 /** A storage mechanism for data */
-export interface Storage extends AsyncIterable<string> {
+export interface Storage extends AsyncIterable<EntryMetadata> {
   get(id: string): Entry;
   directory(id: string): Storage;
   delete(id: string): Promise<void>;
@@ -21,8 +25,6 @@ export interface Versioning extends AsyncIterable<string> {
 }
 
 export interface Entry {
-  readonly src?: string;
-
   readData(): Promise<Data>;
   writeData(content: Data): Promise<void>;
 
@@ -80,5 +82,4 @@ export interface CMSContent {
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
   uploads: Record<string, [Storage, string]>;
-  previewUrl: (path: string) => Promise<string | undefined>;
 }

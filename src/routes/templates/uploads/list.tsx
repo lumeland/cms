@@ -1,10 +1,11 @@
 import { getUrl } from "../../../utils/string.ts";
 import { normalizePath } from "../../../utils/path.ts";
+import { EntryMetadata } from "../../../types.ts";
 
 interface Props {
   collection: string;
   publicPath: string;
-  files: string[];
+  files: EntryMetadata[];
 }
 
 export default function Template({ collection, publicPath, files }: Props) {
@@ -12,13 +13,18 @@ export default function Template({ collection, publicPath, files }: Props) {
 
   return (
     <>
+      <nav aria-label="You are here:">
+        <ul class="breadcrumb">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a>{collection}</a>
+          </li>
+        </ul>
+      </nav>
+
       <header class="header">
-        <nav class="header-nav">
-          <a href="/" class="button is-link">
-            <u-icon name="arrow-left"></u-icon>
-            Home
-          </a>
-        </nav>
         <h1 class="header-title">Content of {collection}</h1>
         <u-filter
           class="header-filter"
@@ -135,11 +141,12 @@ interface Tree {
   files?: Map<string, string>;
 }
 
-function createTree(files: string[]): Tree {
+function createTree(files: EntryMetadata[]): Tree {
   const tree: Tree = {};
 
   for (const file of files) {
-    placeFile(tree, file, file.split("/"));
+    const { id } = file;
+    placeFile(tree, id, id.split("/"));
   }
 
   return tree;

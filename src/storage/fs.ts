@@ -48,7 +48,9 @@ export class FsStorage implements Storage {
     });
 
     for await (const entry of iterable) {
-      yield entry.path.slice(root.length + 1);
+      yield {
+        id: entry.path.slice(root.length + 1),
+      };
     }
   }
 

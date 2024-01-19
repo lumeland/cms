@@ -6,23 +6,29 @@ interface Props {
   document: string;
   fields: ResolvedField[];
   data: Data;
-  previewUrl?: string;
 }
 
 export default function Template(
-  { collection, document, fields, data, previewUrl }: Props,
+  { collection, document, fields, data }: Props,
 ) {
   return (
     <>
+      <nav aria-label="You are here:">
+        <ul class="breadcrumb">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href={getUrl("collection", collection)}>{collection}</a>
+          </li>
+          <li>
+            <a>{document}</a>
+          </li>
+        </ul>
+      </nav>
       <header class="header">
-        <nav class="header-nav">
-          <a href={getUrl("collection", collection)} class="button is-link">
-            <u-icon name="arrow-left"></u-icon>
-            Back
-          </a>
-        </nav>
         <h1 class="header-title">
-          Editing file &nbsp;&nbsp;
+          Editing file
           <input
             class="input is-narrow is-inline"
             id="_id"
@@ -58,17 +64,6 @@ export default function Template(
             <u-icon name="check" />
             Save changes
           </button>
-          {previewUrl &&
-            (
-              <a
-                class="button is-secondary"
-                target="_preview"
-                href={previewUrl}
-              >
-                <u-icon name="arrow-square-out" />
-                Preview
-              </a>
-            )}
           <button
             class="button is-secondary"
             type="submit"

@@ -5,21 +5,24 @@ interface Props {
   document: string;
   fields: ResolvedField[];
   data: Data;
-  previewUrl?: string;
 }
 
 export default function Template(
-  { document, fields, data, previewUrl }: Props,
+  { document, fields, data }: Props,
 ) {
   return (
     <>
+      <nav aria-label="You are here:">
+        <ul class="breadcrumb">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a>{document}</a>
+          </li>
+        </ul>
+      </nav>
       <header class="header">
-        <nav class="header-nav">
-          <a href="/" class="button is-link">
-            <u-icon name="arrow-left"></u-icon>
-            Home
-          </a>
-        </nav>
         <h1 class="header-title">Editing {document}</h1>
       </header>
       <form
@@ -40,17 +43,6 @@ export default function Template(
         })}
         <footer class="footer ly-rowStack">
           <button class="button is-primary" type="submit">Save changes</button>
-          {previewUrl &&
-            (
-              <a
-                class="button is-secondary"
-                target="_preview"
-                href={previewUrl}
-              >
-                <u-icon name="arrow-square-out" />
-                Preview
-              </a>
-            )}
         </footer>
       </form>
     </>
