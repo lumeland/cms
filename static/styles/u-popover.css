@@ -6,6 +6,7 @@ u-popover {
   border-radius: var(--border-radius);
   padding: .5rem;
   width: min(60vw, 600px);
+  max-height: calc(100vh - 1rem);
   box-shadow: 0 0 1px #0003, 0 0 30px #0002;
   gap: .5rem;
 }
