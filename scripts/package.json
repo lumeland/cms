@@ -10,6 +10,7 @@
     "terser": "^5.26.0"
   },
   "scripts": {
-    "markdown": "rollup markdown.js -o ../static/libs/markdown.js -p @rollup/plugin-node-resolve && terser ../static/libs/markdown.js -o ../static/libs/markdown.js"
+    "markdown": "rollup markdown.js -o ../static/libs/markdown.js -p @rollup/plugin-node-resolve && terser ../static/libs/markdown.js -o ../static/libs/markdown.js",
+    "popover": "wget -O ../static/libs/popover.js https://unpkg.com/@oddbird/popover-polyfill/dist/popover.js"
   }
 }

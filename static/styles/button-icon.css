@@ -4,7 +4,6 @@
   align-items: center;
   justify-content: center;
   border: none;
-  color: inherit;
   background: none;
   cursor: pointer;
   width: 40px;
@@ -23,8 +22,13 @@
     height: 24px;
   }
 
+  & u-icon {
+    color: var(--color-dim);
+  }
+
+  &[aria-pressed="true"],
   &:hover {
-    background-color: #0001;
+    background-color: var(--color-line-light);
   }
 }
 

@@ -18,9 +18,9 @@ export default function ({ jsImports }: Options) {
             name="viewport"
             content="width=device-width, initial-scale=1.0"
           />
-          <title>Document</title>
+          <title>Lume CMS</title>
           <link rel="stylesheet" href="/styles.css" />
-          <script type="module" src="/scripts.js"></script>
+          <script type="module" src="/components/ui.js"></script>
           {jsImports.map((src) => <script type="module" src={src}></script>)}
         </head>
         <body>

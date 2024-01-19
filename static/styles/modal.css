@@ -1,0 +1,40 @@
+html:has(.modal[open]) {
+  overflow: hidden;
+}
+.modal {
+  border: none;
+  inset: 0 0 0 auto;
+  height: auto;
+  max-height: 100vh;
+  width: clamp(300px, 66vw, 600px);
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template: 1fr / 1fr;
+  animation: modalIn var(--animation-duration);
+  animation-fill-mode: both;
+  box-shadow: 0 0 1px #0003, 0 0 30px #0002;
+}
+
+.modal-close {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+}
+
+.modal-content {
+  border: none;
+  height: 100%;
+  width: 100%;
+}
+
+@keyframes modalIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -3,6 +3,7 @@
 html {
   scroll-padding-top: 120px;
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 html,
@@ -52,4 +53,7 @@ a {
 hr {
   color: var(--color-line);
   margin: var(--row-gap-medium) 0;
+}
+[hidden] {
+  display: none !important;
 }

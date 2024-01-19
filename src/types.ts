@@ -21,7 +21,7 @@ export interface Versioning extends AsyncIterable<string> {
 }
 
 export interface Entry {
-  src?: string;
+  readonly src?: string;
 
   readData(): Promise<Data>;
   writeData(content: Data): Promise<void>;
@@ -78,6 +78,6 @@ type Option = string | { value: string | number; label: string };
 export interface CMSContent {
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
-  uploads: Record<string, Storage>;
+  uploads: Record<string, [Storage, string]>;
   previewUrl: (path: string) => Promise<string | undefined>;
 }

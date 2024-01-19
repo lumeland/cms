@@ -1,5 +1,6 @@
 u-preview {
   display: block;
+  border: none;
 
   & img,
   & video {
@@ -16,5 +17,10 @@ u-preview {
     display: block;
     aspect-ratio: 3 / 2;
     width: 100%;
+    border: solid 1px #0002;
+  }
+
+  &[popover] {
+    max-width: 300px;
   }
 }

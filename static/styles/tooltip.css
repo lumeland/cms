@@ -1,0 +1,26 @@
+[role="tooltip"] {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  animation: tooltipShow var(--animation-duration);
+  animation-fill-mode: both;
+  background: var(--color-dim);
+  color: var(--color-background);
+  font: var(--font-small);
+  margin: 0;
+  padding: .25em .5em;
+  width: max-content;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 10px #0002;
+}
+
+@keyframes tooltipShow {
+  from {
+    transform: translate(-50%, -90%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, calc(-100% - 4px));
+    opacity: 1;
+  }
+}

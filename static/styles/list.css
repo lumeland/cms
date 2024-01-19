@@ -3,6 +3,16 @@
   margin: var(--row-gap-normal) 0;
   padding: 0;
 
+  li {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+
+    > :first-child {
+      flex-grow: 1;
+    }
+  }
+
   ul {
     list-style: none;
     margin: .5rem 0 .5rem 1rem;

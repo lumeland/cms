@@ -35,6 +35,13 @@ export function dom(tag, attrs, ...children) {
     }
 
     if (v !== undefined) {
+      if (v === false && k !== "draggable") {
+        continue;
+      }
+      if (v === true && k !== "draggable") {
+        el.setAttribute(k, "");
+        continue;
+      }
       el.setAttribute(k, v);
     }
   }
@@ -58,4 +65,48 @@ export function dom(tag, attrs, ...children) {
     }
   }
   return el;
+}
+
+export function url(...parts) {
+  return "/" + parts
+    .filter((part) => typeof part === "string")
+    .map((part) => encodeURIComponent(part))
+    .join("/");
+}
+
+export function fileType(path) {
+  const extension = path.split(".").pop().toLowerCase();
+
+  switch (extension) {
+    case "jpg":
+    case "jpeg":
+    case "png":
+    case "svg":
+    case "gif":
+    case "webp":
+    case "ico":
+      return "image";
+
+    case "mp4":
+    case "webm":
+    case "mov":
+    case "mkv":
+    case "ogv":
+    case "avi":
+      return "video";
+
+    case "mp3":
+    case "wav":
+    case "aif":
+    case "ogg":
+    case "aiff":
+      return "audio";
+
+    case "pdf":
+      return "pdf";
+  }
+}
+
+export function randomId() {
+  return `id_${Math.random().toString(36).slice(2)}`;
 }

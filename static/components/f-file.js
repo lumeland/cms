@@ -1,5 +1,5 @@
 import { Field } from "./field.js";
-import { push } from "./utils.js";
+import { push, url } from "./utils.js";
 
 customElements.define(
   "f-file",
@@ -24,28 +24,28 @@ customElements.define(
         class: "input is-narrow",
       });
 
-      const link = push(divValue, "a", {
+      push(divValue, "button", {
         class: "buttonIcon",
-        target: "_blank",
-        hidden: true,
-      }, '<u-icon name="arrow-square-out"></u-icon>');
+        type: "button",
+        onclick() {
+          if (curr.value) {
+            let filename = curr.value.startsWith(schema.publicPath || "")
+              ? curr.value.substring(schema.publicPath.length)
+              : curr.value;
+            if (filename.startsWith("/")) {
+              filename = filename.substring(1);
+            }
 
-      function updateLink() {
-        if (curr.value) {
-          let filename = value.startsWith(schema.publicPath || "")
-            ? curr.value.substring(schema.publicPath.length)
-            : curr.value;
-          if (filename.startsWith("/")) {
-            filename = filename.substring(1);
+            push(document.body, "u-modal", {
+              src: url("uploads", schema.uploads, "file", filename),
+            });
+          } else {
+            push(document.body, "u-modal", {
+              src: url("uploads", schema.uploads),
+            });
           }
-          link.href = `/files/${schema.uploads}/file/${filename}`;
-          link.hidden = false;
-        } else {
-          link.hidden = true;
-        }
-      }
-
-      updateLink();
+        },
+      }, '<u-icon name="magnifying-glass"></u-icon>');
 
       push(this, "input", {
         ...schema.attributes,

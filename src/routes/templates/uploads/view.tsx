@@ -3,12 +3,15 @@ import { format } from "std/fmt/bytes.ts";
 
 interface Props {
   file: string;
+  publicPath: string;
   type: string;
   size: number;
   collection: string;
 }
 
-export default function Template({ type, file, collection, size }: Props) {
+export default function Template(
+  { type, file, collection, size, publicPath }: Props,
+) {
   const src = getUrl("uploads", collection, "raw", file);
 
   return (
@@ -17,7 +20,7 @@ export default function Template({ type, file, collection, size }: Props) {
         <nav class="header-nav">
           <a href={getUrl("uploads", collection)} class="button is-link">
             <u-icon name="arrow-left"></u-icon>
-            Back
+            All uploads
           </a>
         </nav>
         <h1 class="header-title">
@@ -34,9 +37,16 @@ export default function Template({ type, file, collection, size }: Props) {
             required
           />
         </h1>
-        <p class="header-description">
-          {type} ({format(size)})
-        </p>
+        <dl class="header-description">
+          <dt>Public path:</dt>
+          <dd>
+            {publicPath} <u-copy text={publicPath}></u-copy>
+          </dd>
+          <dt>Type:</dt>
+          <dd>{type}</dd>
+          <dt>Size:</dt>
+          <dd>{format(size)}</dd>
+        </dl>
       </header>
 
       <form

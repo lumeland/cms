@@ -17,7 +17,7 @@ export default function Template(
         <nav class="header-nav">
           <a href="/" class="button is-link">
             <u-icon name="arrow-left"></u-icon>
-            Back
+            Home
           </a>
         </nav>
         <h1 class="header-title">Editing {document}</h1>

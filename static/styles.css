@@ -16,9 +16,13 @@
 @import "./styles/layouts.css";
 @import "./styles/list.css";
 @import "./styles/button-icon.css";
+@import "./styles/tooltip.css";
+@import "./styles/modal.css";
 @import "./styles/u-icon.css";
+@import "./styles/u-copy.css";
 @import "./styles/u-draggable.css";
 @import "./styles/u-preview.css";
+@import "./styles/u-popover.css";
 
 .is-small {
   font: var(--font-small);

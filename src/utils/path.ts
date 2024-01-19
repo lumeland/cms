@@ -6,7 +6,9 @@ import { SEP } from "std/path/separator.ts";
  * to Posix paths (with the separator "/")
  * and ensure it starts with "/".
  */
-export function normalizePath(path: string) {
+export function normalizePath(...paths: string[]) {
+  let path = join(...paths);
+
   if (SEP !== "/") {
     path = path.replaceAll(SEP, "/");
 

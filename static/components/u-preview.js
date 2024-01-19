@@ -1,3 +1,4 @@
+import { fileType } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -5,28 +6,17 @@ customElements.define(
   class Preview extends Component {
     init() {
       const src = this.getAttribute("src");
-      const extension = src.split(".").pop().toLowerCase();
 
-      switch (extension) {
-        case "jpg":
-        case "jpeg":
-        case "png":
-        case "svg":
-        case "gif":
-        case "webp":
-        case "ico":
+      switch (fileType(src)) {
+        case "image":
           this.innerHTML = `<img src="${src}" alt="Preview" />`;
           break;
 
-        case "mp4":
-        case "webm":
-        case "mov":
-        case "avi":
+        case "video":
           this.innerHTML = `<video src="${src}" controls></video>`;
           break;
 
-        case "mp3":
-        case "wav":
+        case "audio":
           this.innerHTML = `<audio src="${src}" controls></audio>`;
           break;
 

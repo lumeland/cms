@@ -1,4 +1,4 @@
-import { join } from "std/path/posix/join.ts";
+import { normalizePath } from "./utils/path.ts";
 
 import type { FielType, ResolvedField } from "./types.ts";
 
@@ -75,7 +75,8 @@ fields.set("file", {
       return current;
     }
 
-    const storage = field.cmsContent.uploads[field.uploads || "default"];
+    const [storage, publicPath] =
+      field.cmsContent.uploads[field.uploads || "default"];
 
     if (!storage) {
       throw new Error(
@@ -85,7 +86,7 @@ fields.set("file", {
 
     const entry = storage.get(uploaded.name);
     await entry.writeFile(uploaded);
-    return join("/", field.publicPath || "", uploaded.name);
+    return normalizePath(publicPath, uploaded.name);
   },
 });
 

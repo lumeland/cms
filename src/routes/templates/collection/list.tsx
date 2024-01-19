@@ -12,7 +12,7 @@ export default function Template({ collection, documents }: Props) {
         <nav class="header-nav">
           <a href="/" class="button is-link">
             <u-icon name="arrow-left"></u-icon>
-            Back
+            Home
           </a>
         </nav>
         <h1 class="header-title">Content of {collection}</h1>

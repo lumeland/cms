@@ -46,16 +46,12 @@ export default class Cms {
 
   options: Required<CmsOptions>;
   storage = new Map<string, Storage>();
-  uploads = new Map<string, string>();
+  uploads = new Map<string, [string, string]>();
   fields = new Map<string, FielType>();
   collections = new Map<string, [string, (Field | string)[]]>();
   documents = new Map<string, [string, (Field | string)[]]>();
 
   constructor(options?: CmsOptions) {
-    this.#jsImports.add("/components/u-draggable.js");
-    this.#jsImports.add("/components/u-icon.js");
-    this.#jsImports.add("/components/u-filter.js");
-    this.#jsImports.add("/components/u-preview.js");
     this.options = {
       ...defaults,
       ...options,
@@ -77,8 +73,12 @@ export default class Cms {
     this.storage.set(name, storage);
   }
 
-  upload(name: string, storage: string) {
-    this.uploads.set(name, storage);
+  upload(name: string, storage: string, publicPath?: string) {
+    if (!publicPath) {
+      publicPath = normalizePath(storage.split(":")[1] ?? "/");
+    }
+
+    this.uploads.set(name, [storage, publicPath]);
   }
 
   collection(name: string, store: string, fields: (Field | string)[]) {
@@ -108,8 +108,8 @@ export default class Cms {
       this.#jsImports.add(type.jsImport);
     }
 
-    for (const [name, storage] of this.uploads.entries()) {
-      content.uploads[name] = this.#getStorage(storage);
+    for (const [name, [storage, publicPath]] of this.uploads.entries()) {
+      content.uploads[name] = [this.#getStorage(storage), publicPath];
     }
 
     for (const [name, [path, fields]] of this.collections) {
@@ -202,6 +202,12 @@ export default class Cms {
         cmsContent: content,
         ...field,
       } as ResolvedField;
+
+      if (resolvedField.uploads && !resolvedField.publicPath) {
+        const name = resolvedField.uploads.split(":")[0];
+        const [, publicPath] = content.uploads[name];
+        resolvedField.publicPath = publicPath;
+      }
 
       if (resolvedField.fields) {
         resolvedField.fields = this.#resolveFields(

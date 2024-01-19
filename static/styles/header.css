@@ -18,6 +18,21 @@
   font: var(--font-ui);
   color: var(--color-dim);
 }
+dl.header-description {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-auto-rows: 40px;
+  align-items: center;
+  column-gap: 2em;
+
+  & dt {
+    font: var(--font-ui-bold);
+  }
+  & dd {
+    margin: 0;
+  }
+}
 .header-filter {
   display: block;
   margin-top: 1rem;

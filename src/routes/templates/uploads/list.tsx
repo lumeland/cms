@@ -1,11 +1,13 @@
 import { getUrl } from "../../../utils/string.ts";
+import { normalizePath } from "../../../utils/path.ts";
 
 interface Props {
   collection: string;
+  publicPath: string;
   files: string[];
 }
 
-export default function Template({ collection, files }: Props) {
+export default function Template({ collection, publicPath, files }: Props) {
   const tree = createTree(files);
 
   return (
@@ -14,7 +16,7 @@ export default function Template({ collection, files }: Props) {
         <nav class="header-nav">
           <a href="/" class="button is-link">
             <u-icon name="arrow-left"></u-icon>
-            Back
+            Home
           </a>
         </nav>
         <h1 class="header-title">Content of {collection}</h1>
@@ -27,7 +29,7 @@ export default function Template({ collection, files }: Props) {
       </header>
 
       <ul id="list" class="list">
-        <Folder collection={collection} tree={tree} />
+        <Folder collection={collection} tree={tree} publicPath={publicPath} />
       </ul>
 
       <form
@@ -53,7 +55,13 @@ export default function Template({ collection, files }: Props) {
   );
 }
 
-function Folder({ collection, tree }: { collection: string; tree: Tree }) {
+interface FolderProps {
+  collection: string;
+  publicPath: string;
+  tree: Tree;
+}
+
+function Folder({ collection, publicPath, tree }: FolderProps) {
   return (
     <>
       {Array.from(tree.folders?.entries() || []).map(([name, subTree]) => (
@@ -61,18 +69,32 @@ function Folder({ collection, tree }: { collection: string; tree: Tree }) {
           <details open class="accordion">
             <summary>{name}</summary>
             <ul>
-              <Folder collection={collection} tree={subTree} />
+              <Folder
+                collection={collection}
+                publicPath={publicPath}
+                tree={subTree}
+              />
             </ul>
           </details>
         </li>
       ))}
-      <Files collection={collection} files={tree.files} />
+      <Files
+        collection={collection}
+        publicPath={publicPath}
+        files={tree.files}
+      />
     </>
   );
 }
 
+interface FilesProps {
+  collection: string;
+  publicPath: string;
+  files?: Map<string, string>;
+}
+
 function Files(
-  { collection, files }: { collection: string; files?: Map<string, string> },
+  { collection, files, publicPath }: FilesProps,
 ) {
   if (!files) {
     return null;
@@ -80,15 +102,28 @@ function Files(
 
   return (
     <>
-      {Array.from(files.entries()).map(([name, path]) => (
+      {Array.from(files.entries()).map(([name, file]) => (
         <li>
           <a
-            href={getUrl("uploads", collection, "file", path)}
+            href={getUrl("uploads", collection, "file", file)}
             class="list-item"
           >
-            <u-icon name="image-square-fill"></u-icon>
+            <u-icon-file path={file}></u-icon-file>
             {name}
           </a>
+          <u-popover>
+            <button class="buttonIcon" type="button">
+              <u-icon name="eye" />
+            </button>
+            <template>
+              <u-preview
+                id={`preview_${file}`}
+                src={getUrl("uploads", collection, "raw", file)}
+              >
+              </u-preview>
+            </template>
+          </u-popover>
+          <u-copy text={normalizePath(publicPath, file)}></u-copy>
         </li>
       ))}
     </>
