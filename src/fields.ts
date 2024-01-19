@@ -61,6 +61,13 @@ fields.set("object-list", {
 fields.set("file", {
   tag: "f-file",
   jsImport: "/components/f-file.js",
+  init: (field: ResolvedField) => {
+    if (field.uploads && !field.publicPath) {
+      const name = field.uploads.split(":")[0];
+      const [, publicPath] = field.cmsContent.uploads[name];
+      field.publicPath = publicPath;
+    }
+  },
   async transformData(
     value: { current?: string; uploaded?: File } | undefined,
     field: ResolvedField,

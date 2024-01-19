@@ -203,10 +203,8 @@ export default class Cms {
         ...field,
       } as ResolvedField;
 
-      if (resolvedField.uploads && !resolvedField.publicPath) {
-        const name = resolvedField.uploads.split(":")[0];
-        const [, publicPath] = content.uploads[name];
-        resolvedField.publicPath = publicPath;
+      if (type.init) {
+        type.init(resolvedField);
       }
 
       if (resolvedField.fields) {

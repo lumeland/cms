@@ -71,6 +71,7 @@ export interface FielType {
   tag: string;
   jsImport: string;
   transformData?: (value: any, field: ResolvedField) => any | Promise<unknown>;
+  init?: (field: ResolvedField) => void;
 }
 
 type Option = string | { value: string | number; label: string };
