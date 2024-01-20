@@ -2,6 +2,7 @@ import UploadsList from "./templates/uploads/list.tsx";
 import UploadsView from "./templates/uploads/view.tsx";
 import { getUrl, slugify } from "../utils/string.ts";
 import { normalizePath } from "../utils/path.ts";
+import { dispatch } from "../utils/event.ts";
 
 import type { Context, Hono } from "hono/mod.ts";
 import type { CMSContent } from "../types.ts";
@@ -30,8 +31,9 @@ export default function (app: Hono) {
     const file = body.file as File;
     const fileId = slugify(file.name);
     const entry = collection.get(fileId);
-    await entry.writeFile(file);
 
+    await entry.writeFile(file);
+    dispatch("uploadedFile", { uploads: collectionId, file: fileId });
     return c.redirect(getUrl("uploads", collectionId, "file", fileId));
   });
 
@@ -76,6 +78,11 @@ export default function (app: Hono) {
 
       if (prevId !== fileId) {
         await collection.rename(prevId, fileId);
+        dispatch("renamedFile", {
+          uploads: collectionId,
+          previousFile: prevId,
+          file: fileId,
+        });
       }
 
       const file = body.file as File | undefined;
@@ -83,6 +90,7 @@ export default function (app: Hono) {
       if (file) {
         const entry = collection.get(fileId);
         await entry.writeFile(file);
+        dispatch("updatedFile", { uploads: collectionId, file: fileId });
       }
 
       return c.redirect(getUrl("uploads", collectionId, "file", fileId));
@@ -93,8 +101,9 @@ export default function (app: Hono) {
     const collectionId = c.req.param("collection");
     const fileId = c.req.param("file");
     const [collection] = uploads[collectionId];
-    await collection.delete(fileId);
 
+    await collection.delete(fileId);
+    dispatch("deletedFile", { uploads: collectionId, file: fileId });
     return c.redirect(getUrl("uploads", collectionId));
   });
 }

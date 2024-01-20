@@ -1,5 +1,6 @@
 import { getUrl } from "../utils/string.ts";
 import { changesToData } from "../utils/data.ts";
+import { dispatch } from "../utils/event.ts";
 import DocumentEdit from "./templates/document/edit.tsx";
 
 import type { Context, Hono } from "hono/mod.ts";
@@ -28,7 +29,7 @@ export default function (app: Hono) {
       const body = await c.req.parseBody();
 
       await document.write(changesToData(body));
-
+      dispatch("updatedDocument", { document: documentId });
       return c.redirect(getUrl("document", documentId));
     });
 }

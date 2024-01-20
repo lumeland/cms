@@ -27,6 +27,7 @@
   }
 
   &[aria-pressed="true"],
+  &[aria-expanded="true"],
   &:hover {
     background-color: var(--color-line-light);
   }

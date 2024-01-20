@@ -5,11 +5,14 @@
 
   li {
     display: flex;
-    gap: .5rem;
+    gap: .25rem;
     align-items: center;
 
     > :first-child {
       flex-grow: 1;
+    }
+    + li {
+      margin-top: .25rem;
     }
   }
 
