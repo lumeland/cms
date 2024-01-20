@@ -22,3 +22,21 @@ export function normalizePath(...paths: string[]) {
 
   return (path !== "/" && path.endsWith("/")) ? path.slice(0, -1) : path;
 }
+
+let basePath = "/";
+
+export function setBasePath(path: string) {
+  basePath = normalizePath(path);
+}
+
+export function src(...parts: string[]) {
+  return join(basePath, ...parts);
+}
+
+export function getPath(...parts: string[]) {
+  return src(
+    ...parts
+      .filter((part) => typeof part === "string")
+      .map((part) => encodeURIComponent(part)),
+  );
+}

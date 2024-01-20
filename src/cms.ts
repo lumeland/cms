@@ -9,7 +9,7 @@ import filesRoutes from "./routes/files.tsx";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
 import { FsStorage } from "./storage/fs.ts";
-import { normalizePath } from "./utils/path.ts";
+import { normalizePath, setBasePath } from "./utils/path.ts";
 import { join } from "std/path/join.ts";
 import { basename } from "std/path/basename.ts";
 import { dirname } from "std/path/dirname.ts";
@@ -27,13 +27,13 @@ import type {
 
 export interface CmsOptions {
   cwd?: string;
-  server?: Deno.ServeOptions;
+  location?: URL;
   middlewares?: MiddlewareHandler[];
 }
 
 const defaults: Required<CmsOptions> = {
   cwd: Deno.cwd(),
-  server: {},
+  location: new URL("http://localhost:8000/"),
   middlewares: [],
 };
 
@@ -94,10 +94,13 @@ export default class Cms {
 
   init(): Hono {
     const content: CMSContent = {
+      location: this.options.location,
       collections: {},
       documents: {},
       uploads: {},
     };
+
+    setBasePath(this.options.location.pathname);
 
     for (const type of this.fields.values()) {
       this.#jsImports.add(type.jsImport);
@@ -147,9 +150,10 @@ export default class Cms {
 
   serve() {
     const app = this.init();
+    const { port, protocol } = this.options.location;
 
     return Deno.serve({
-      ...this.options.server,
+      port: port ? parseInt(port) : protocol === "https:" ? 443 : 80,
       handler: app.fetch,
     });
   }

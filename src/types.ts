@@ -79,6 +79,7 @@ export interface FielType {
 type Option = string | { value: string | number; label: string };
 
 export interface CMSContent {
+  location: URL;
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
   uploads: Record<string, [Storage, string]>;

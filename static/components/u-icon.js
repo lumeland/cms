@@ -1,4 +1,4 @@
-import { fileType, push } from "./utils.js";
+import { fileType, push, url } from "./utils.js";
 import { Component } from "./component.js";
 
 const cache = new Map();
@@ -10,14 +10,16 @@ customElements.define(
       return ["name"];
     }
 
-    static async fetch(name) {
+    static fetch(name) {
       if (cache.has(name)) {
         return cache.get(name);
       }
-      const res = await fetch(`/icons/${name}.svg`);
-      const text = await res.text();
-      cache.set(name, text);
-      return text;
+
+      const code = fetch(url("icons", `${name}.svg`))
+        .then((res) => res.text());
+
+      cache.set(name, code);
+      return doce;
     }
 
     async init() {

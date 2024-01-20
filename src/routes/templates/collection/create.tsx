@@ -1,4 +1,5 @@
-import { getUrl } from "../../../utils/string.ts";
+import { getPath } from "../../../utils/path.ts";
+
 import type { ResolvedField } from "../../../types.ts";
 
 interface Props {
@@ -12,10 +13,10 @@ export default function Template({ collection, fields }: Props) {
       <nav aria-label="You are here:">
         <ul class="breadcrumb">
           <li>
-            <a href="/">Home</a>
+            <a href={getPath()}>Home</a>
           </li>
           <li>
-            <a href={getUrl("collection", collection)}>{collection}</a>
+            <a href={getPath("collection", collection)}>{collection}</a>
           </li>
           <li>
             <a>New file</a>
@@ -38,7 +39,7 @@ export default function Template({ collection, fields }: Props) {
         </h1>
       </header>
       <form
-        action={getUrl("collection", collection, "create")}
+        action={getPath("collection", collection, "create")}
         method="post"
         class="form"
         enctype="multipart/form-data"

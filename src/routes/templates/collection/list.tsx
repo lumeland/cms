@@ -1,4 +1,5 @@
-import { getUrl, labelify } from "../../../utils/string.ts";
+import { labelify } from "../../../utils/string.ts";
+import { getPath } from "../../../utils/path.ts";
 import { EntryMetadata } from "../../../types.ts";
 
 interface Props {
@@ -12,7 +13,7 @@ export default function Template({ collection, documents }: Props) {
       <nav aria-label="You are here:">
         <ul class="breadcrumb">
           <li>
-            <a href="/">Home</a>
+            <a href={getPath()}>Home</a>
           </li>
           <li>
             <a>{collection}</a>
@@ -33,7 +34,7 @@ export default function Template({ collection, documents }: Props) {
         {documents.map(({ id }) => (
           <li>
             <a
-              href={getUrl("collection", collection, "edit", id)}
+              href={getPath("collection", collection, "edit", id)}
               class="list-item"
               title={id}
             >
@@ -46,7 +47,7 @@ export default function Template({ collection, documents }: Props) {
 
       <footer class="ly-rowStack footer">
         <a
-          href={getUrl("collection", collection, "create")}
+          href={getPath("collection", collection, "create")}
           class="button is-primary"
         >
           <u-icon name="plus-circle"></u-icon>

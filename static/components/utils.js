@@ -67,9 +67,12 @@ export function dom(tag, attrs, ...children) {
   return el;
 }
 
+const basePath =
+  document.querySelector("meta[name='basepath']")?.getAttribute("content") ??
+    "";
 export function url(...parts) {
-  return "/" + parts
-    .filter((part) => typeof part === "string")
+  return "/" + [...basePath.split("/"), ...parts]
+    .filter((part) => part && typeof part === "string")
     .map((part) => encodeURIComponent(part))
     .join("/");
 }

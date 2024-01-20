@@ -2,7 +2,8 @@ import { changesToData } from "../utils/data.ts";
 import CollectionList from "./templates/collection/list.tsx";
 import CollectionEdit from "./templates/collection/edit.tsx";
 import CollectionCreate from "./templates/collection/create.tsx";
-import { getUrl, slugify } from "../utils/string.ts";
+import { slugify } from "../utils/string.ts";
+import { getPath } from "../utils/path.ts";
 import { dispatch } from "../utils/event.ts";
 
 import type { Context, Hono } from "hono/mod.ts";
@@ -56,7 +57,9 @@ export default function (app: Hono) {
         collection: collectionId,
         document: documentId,
       });
-      return c.redirect(getUrl("collection", collectionId, "edit", documentId));
+      return c.redirect(
+        getPath("collection", collectionId, "edit", documentId),
+      );
     });
 
   app.post("/collection/:collection/delete/:document", async (c: Context) => {
@@ -70,7 +73,7 @@ export default function (app: Hono) {
       collection: collectionId,
       document: documentId,
     });
-    return c.redirect(getUrl("collection", collectionId));
+    return c.redirect(getPath("collection", collectionId));
   });
 
   app
@@ -99,6 +102,8 @@ export default function (app: Hono) {
         collection: collectionId,
         document: documentId,
       });
-      return c.redirect(getUrl("collection", collectionId, "edit", documentId));
+      return c.redirect(
+        getPath("collection", collectionId, "edit", documentId),
+      );
     });
 }

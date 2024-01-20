@@ -26,10 +26,3 @@ export function slugify(text: string) {
     .toLowerCase()
     .replace(/\s+/g, "-");
 }
-
-export function getUrl(...parts: string[]) {
-  return "/" + parts
-    .filter((part) => typeof part === "string")
-    .map((part) => encodeURIComponent(part))
-    .join("/");
-}

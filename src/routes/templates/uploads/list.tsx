@@ -1,5 +1,4 @@
-import { getUrl } from "../../../utils/string.ts";
-import { normalizePath } from "../../../utils/path.ts";
+import { getPath, normalizePath } from "../../../utils/path.ts";
 import { EntryMetadata } from "../../../types.ts";
 
 interface Props {
@@ -16,7 +15,7 @@ export default function Template({ collection, publicPath, files }: Props) {
       <nav aria-label="You are here:">
         <ul class="breadcrumb">
           <li>
-            <a href="/">Home</a>
+            <a href={getPath()}>Home</a>
           </li>
           <li>
             <a>{collection}</a>
@@ -42,7 +41,7 @@ export default function Template({ collection, publicPath, files }: Props) {
         method="post"
         class="footer ly-rowStack"
         enctype="multipart/form-data"
-        action={getUrl("uploads", collection, "create")}
+        action={getPath("uploads", collection, "create")}
       >
         <input
           aria-label="Add file"
@@ -111,7 +110,7 @@ function Files(
       {Array.from(files.entries()).map(([name, file]) => (
         <li>
           <a
-            href={getUrl("uploads", collection, "file", file)}
+            href={getPath("uploads", collection, "file", file)}
             class="list-item"
           >
             <u-icon-file path={file}></u-icon-file>
@@ -124,7 +123,7 @@ function Files(
             <template>
               <u-preview
                 id={`preview_${file}`}
-                src={getUrl("uploads", collection, "raw", file)}
+                src={getPath("uploads", collection, "raw", file)}
               >
               </u-preview>
             </template>

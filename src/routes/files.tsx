@@ -1,7 +1,7 @@
 import UploadsList from "./templates/uploads/list.tsx";
 import UploadsView from "./templates/uploads/view.tsx";
-import { getUrl, slugify } from "../utils/string.ts";
-import { normalizePath } from "../utils/path.ts";
+import { slugify } from "../utils/string.ts";
+import { getPath, normalizePath } from "../utils/path.ts";
 import { dispatch } from "../utils/event.ts";
 
 import type { Context, Hono } from "hono/mod.ts";
@@ -34,7 +34,7 @@ export default function (app: Hono) {
 
     await entry.writeFile(file);
     dispatch("uploadedFile", { uploads: collectionId, file: fileId });
-    return c.redirect(getUrl("uploads", collectionId, "file", fileId));
+    return c.redirect(getPath("uploads", collectionId, "file", fileId));
   });
 
   app.get("/uploads/:collection/raw/:file", async (c: Context) => {
@@ -93,7 +93,7 @@ export default function (app: Hono) {
         dispatch("updatedFile", { uploads: collectionId, file: fileId });
       }
 
-      return c.redirect(getUrl("uploads", collectionId, "file", fileId));
+      return c.redirect(getPath("uploads", collectionId, "file", fileId));
     });
 
   app.post("/uploads/:collection/delete/:file", async (c: Context) => {
@@ -104,6 +104,6 @@ export default function (app: Hono) {
 
     await collection.delete(fileId);
     dispatch("deletedFile", { uploads: collectionId, file: fileId });
-    return c.redirect(getUrl("uploads", collectionId));
+    return c.redirect(getPath("uploads", collectionId));
   });
 }

@@ -1,4 +1,4 @@
-import { getUrl } from "../../../utils/string.ts";
+import { getPath } from "../../../utils/path.ts";
 import type { Data, ResolvedField } from "../../../types.ts";
 
 interface Props {
@@ -15,7 +15,7 @@ export default function Template(
       <nav aria-label="You are here:">
         <ul class="breadcrumb">
           <li>
-            <a href="/">Home</a>
+            <a href={getPath()}>Home</a>
           </li>
           <li>
             <a>{document}</a>
@@ -26,7 +26,7 @@ export default function Template(
         <h1 class="header-title">Editing {document}</h1>
       </header>
       <form
-        action={getUrl("document", document)}
+        action={getPath("document", document)}
         method="post"
         class="form"
         enctype="multipart/form-data"

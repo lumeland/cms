@@ -1,4 +1,5 @@
-import { getUrl, labelify } from "../../utils/string.ts";
+import { labelify } from "../../utils/string.ts";
+import { getPath } from "../../utils/path.ts";
 
 interface Props {
   collections: string[];
@@ -37,7 +38,7 @@ export default function Template({ collections, documents, uploads }: Props) {
       <ul class="list">
         {collections.map((collection) => (
           <li>
-            <a href={getUrl("collection", collection)} class="list-item">
+            <a href={getPath("collection", collection)} class="list-item">
               <u-icon name="folder-fill"></u-icon>
               {labelify(collection)}
             </a>
@@ -46,7 +47,7 @@ export default function Template({ collections, documents, uploads }: Props) {
         {documents.map((document) => (
           <li>
             <a
-              href={getUrl("document", document)}
+              href={getPath("document", document)}
               class="list-item"
               title={document}
             >
@@ -57,7 +58,7 @@ export default function Template({ collections, documents, uploads }: Props) {
         ))}
         {uploads.map((name, index) => (
           <li class={index === 0 ? "is-separated" : ""}>
-            <a href={getUrl("uploads", name)} class="list-item">
+            <a href={getPath("uploads", name)} class="list-item">
               <u-icon name="image-square-fill"></u-icon>
               {labelify(name)}
             </a>

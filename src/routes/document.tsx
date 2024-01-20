@@ -1,4 +1,4 @@
-import { getUrl } from "../utils/string.ts";
+import { getPath } from "../utils/path.ts";
 import { changesToData } from "../utils/data.ts";
 import { dispatch } from "../utils/event.ts";
 import DocumentEdit from "./templates/document/edit.tsx";
@@ -30,6 +30,6 @@ export default function (app: Hono) {
 
       await document.write(changesToData(body));
       dispatch("updatedDocument", { document: documentId });
-      return c.redirect(getUrl("document", documentId));
+      return c.redirect(getPath("document", documentId));
     });
 }
