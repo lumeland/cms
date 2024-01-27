@@ -37,11 +37,11 @@ customElements.define(
             }
 
             push(document.body, "u-modal", {
-              src: url("uploads", schema.uploads, "file", filename),
+              data: { src: url("uploads", schema.uploads, "file", filename) },
             });
           } else {
             push(document.body, "u-modal", {
-              src: url("uploads", schema.uploads),
+              data: { src: url("uploads", schema.uploads) },
             });
           }
         },

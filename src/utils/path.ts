@@ -26,7 +26,7 @@ export function normalizePath(...paths: string[]) {
 let basePath = "/";
 
 export function setBasePath(path: string) {
-  basePath = normalizePath(path);
+  basePath = path;
 }
 
 export function src(...parts: string[]) {

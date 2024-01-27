@@ -1,12 +1,13 @@
 {
   "imports": {
     "std/": "https://deno.land/std@0.208.0/",
+    "lume/": "../lume/",
     "hono/": "https://deno.land/x/hono@v3.11.11/",
     "hono/jsx/jsx-runtime": "https://deno.land/x/hono@v3.11.11/jsx/jsx-runtime.ts"
   },
   "lock": false,
   "tasks": {
-    "dev": "deno run --unstable --watch -A probas/schema.ts",
+    "dev": "deno run --unstable --watch -A probas/ensino.ts",
     "site": "cd probas/ensino && deno task serve"
   },
   "compilerOptions": {

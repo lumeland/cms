@@ -6,10 +6,11 @@ interface Props {
   document: string;
   fields: ResolvedField[];
   data: Data;
+  preview?: string;
 }
 
 export default function Template(
-  { collection, document, fields, data }: Props,
+  { collection, document, fields, data, preview }: Props,
 ) {
   return (
     <>
@@ -41,6 +42,9 @@ export default function Template(
             required
           />
         </h1>
+        {preview && (
+          <u-modal data-position="preview" data-src={preview}></u-modal>
+        )}
       </header>
       <form
         action={getPath("collection", collection, "edit", document)}

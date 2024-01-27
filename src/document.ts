@@ -18,6 +18,10 @@ export default class Document {
     return this.#fields;
   }
 
+  get src() {
+    return this.#entry.src;
+  }
+
   async read() {
     if (this.#data === undefined) {
       this.#data = await this.#entry.readData();

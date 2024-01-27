@@ -34,6 +34,13 @@ export function dom(tag, attrs, ...children) {
       continue;
     }
 
+    if (k === "data") {
+      for (const [name, value] of Object.entries(v)) {
+        el.dataset[name] = value;
+      }
+      continue;
+    }
+
     if (v !== undefined) {
       if (v === false && k !== "draggable") {
         continue;

@@ -15,7 +15,7 @@ import { basename } from "std/path/basename.ts";
 import { dirname } from "std/path/dirname.ts";
 import { labelify } from "./utils/string.ts";
 
-import type { Context, MiddlewareHandler, Next } from "hono/mod.ts";
+import type { Context, Next } from "hono/mod.ts";
 import type {
   CMSContent,
   Entry,
@@ -27,14 +27,18 @@ import type {
 
 export interface CmsOptions {
   cwd?: string;
-  location?: URL;
-  middlewares?: MiddlewareHandler[];
+  basePath?: string;
+  port?: number;
+  appWrapper?: (app: Hono) => Hono;
+  previewUrl?: (path: string) => string | undefined;
 }
 
 const defaults: Required<CmsOptions> = {
   cwd: Deno.cwd(),
-  location: new URL("http://localhost:8000/"),
-  middlewares: [],
+  basePath: "/",
+  port: 8000,
+  appWrapper: (app) => app,
+  previewUrl: () => undefined,
 };
 
 export default class Cms {
@@ -94,13 +98,13 @@ export default class Cms {
 
   init(): Hono {
     const content: CMSContent = {
-      location: this.options.location,
+      previewUrl: this.options.previewUrl,
       collections: {},
       documents: {},
       uploads: {},
     };
 
-    setBasePath(this.options.location.pathname);
+    setBasePath(this.options.basePath);
 
     for (const type of this.fields.values()) {
       this.#jsImports.add(type.jsImport);
@@ -126,8 +130,6 @@ export default class Cms {
 
     const app = new Hono();
 
-    app.use("*", ...this.options.middlewares);
-
     const renderer = layout({
       jsImports: [...this.#jsImports],
     });
@@ -143,17 +145,23 @@ export default class Cms {
     filesRoutes(app);
     indexRoute(app);
 
-    app.get("*", serveStatic({ root: import.meta.resolve("../static/") }));
+    app.get(
+      "*",
+      serveStatic({
+        root: import.meta.resolve("../static/"),
+        basePath: this.options.basePath,
+      }),
+    );
 
-    return app;
+    return this.options.appWrapper(app);
   }
 
   serve() {
     const app = this.init();
-    const { port, protocol } = this.options.location;
+    const { port } = this.options;
 
     return Deno.serve({
-      port: port ? parseInt(port) : protocol === "https:" ? 443 : 80,
+      port,
       handler: app.fetch,
     });
   }

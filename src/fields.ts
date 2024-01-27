@@ -62,7 +62,13 @@ fields.set("file", {
   tag: "f-file",
   jsImport: "/components/f-file.js",
   init: (field: ResolvedField) => {
-    if (field.uploads && !field.publicPath) {
+    const { cmsContent } = field;
+
+    if (!field.uploads) {
+      field.uploads = Object.keys(cmsContent.uploads)[0];
+    }
+
+    if (!field.publicPath) {
       const name = field.uploads.split(":")[0];
       const [, publicPath] = field.cmsContent.uploads[name];
       field.publicPath = publicPath;
