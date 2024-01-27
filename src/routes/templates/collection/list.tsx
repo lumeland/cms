@@ -45,7 +45,7 @@ export default function Template({ collection, documents }: Props) {
         ))}
       </ul>
 
-      <footer class="ly-rowStack footer">
+      <footer class="ly-rowStack footer is-responsive">
         <a
           href={getPath("collection", collection, "create")}
           class="button is-primary"

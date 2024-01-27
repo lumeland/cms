@@ -39,7 +39,7 @@ export default function Template({ collection, publicPath, files }: Props) {
 
       <form
         method="post"
-        class="footer ly-rowStack"
+        class="footer ly-rowStack is-responsive"
         enctype="multipart/form-data"
         action={getPath("uploads", collection, "create")}
       >
@@ -123,7 +123,7 @@ function Files(
             <template>
               <u-preview
                 id={`preview_${file}`}
-                src={getPath("uploads", collection, "raw", file)}
+                data-src={getPath("uploads", collection, "raw", file)}
               >
               </u-preview>
             </template>

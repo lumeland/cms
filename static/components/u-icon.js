@@ -19,7 +19,7 @@ customElements.define(
         .then((res) => res.text());
 
       cache.set(name, code);
-      return doce;
+      return code;
     }
 
     async init() {

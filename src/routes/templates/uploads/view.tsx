@@ -88,7 +88,7 @@ export default function Template(
       </form>
 
       <figure class="preview">
-        <u-preview class="preview-media" src={src} />
+        <u-preview class="preview-media" data-src={src} />
         <figcaption class="preview-caption">
           <a href={src} download={file} class="button is-secondary">
             <u-icon name="download-simple" />

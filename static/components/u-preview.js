@@ -4,8 +4,12 @@ import { Component } from "./component.js";
 customElements.define(
   "u-preview",
   class Preview extends Component {
+    static get observedAttributes() {
+      return ["data-src"];
+    }
+
     init() {
-      const src = this.getAttribute("src");
+      const { src } = this.dataset;
 
       switch (fileType(src)) {
         case "image":
@@ -27,6 +31,12 @@ customElements.define(
         default:
           this.innerHTML = `<p>Cannot preview</p>`;
           break;
+      }
+    }
+
+    attributeChangedCallback(name) {
+      if (name === "data-src") {
+        this.init();
       }
     }
   },

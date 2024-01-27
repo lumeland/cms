@@ -59,7 +59,7 @@ export default function Template(
             </field.tag>
           );
         })}
-        <footer class="footer ly-rowStack">
+        <footer class="footer ly-rowStack is-responsive">
           <button class="button is-primary" type="submit">
             <u-icon name="check" />
             Save changes
