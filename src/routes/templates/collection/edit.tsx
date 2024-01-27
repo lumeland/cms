@@ -31,7 +31,7 @@ export default function Template(
         <h1 class="header-title">
           Editing file
           <input
-            class="input is-narrow is-inline"
+            class="input is-inline"
             id="_id"
             type="text"
             name="_id"

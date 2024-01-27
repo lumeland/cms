@@ -2,7 +2,7 @@
 .input-autogrow::after {
   display: block;
   width: 100%;
-  padding: .5em;
+  padding: .5em .8em;
   min-height: 40px;
   border-radius: var(--border-radius);
   border: solid 1px var(--color-line);
@@ -20,8 +20,12 @@
     max-width: 150px;
   }
   &.is-inline {
+    border: none;
     display: inline-block;
     vertical-align: middle;
+    flex: 1 1 300px;
+    align-self: center;
+    color: var(--color-dim);
   }
 }
 [type="color"].input {

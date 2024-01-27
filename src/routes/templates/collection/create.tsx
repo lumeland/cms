@@ -27,7 +27,7 @@ export default function Template({ collection, fields }: Props) {
         <h1 class="header-title">
           Creating new file
           <input
-            class="input is-narrow is-inline"
+            class="input is-inline"
             id="_id"
             type="text"
             name="_id"
@@ -35,6 +35,7 @@ export default function Template({ collection, fields }: Props) {
             form="form-create"
             aria-label="File name"
             required
+            autofocus
           />
         </h1>
       </header>
