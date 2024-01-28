@@ -23,7 +23,7 @@ export default function Template({ collection, publicPath, files }: Props) {
         </ul>
       </nav>
 
-      <header class="header">
+      <header class="header is-sticky">
         <h1 class="header-title">Content of {collection}</h1>
         <u-filter
           class="header-filter"

@@ -12,16 +12,17 @@ html:has(.modal.is-preview[open]) {
   padding: 0;
   display: grid;
   grid-template: 1fr / 1fr;
-  animation: modalIn var(--animation-duration);
   animation-fill-mode: both;
   box-shadow: 0 0 1px #0003, 0 0 30px #0002;
 
   &.is-aside {
+    animation: modalIn var(--animation-duration);
     width: clamp(300px, 66vw, 600px);
     inset: 0 0 0 auto;
   }
 
   &.is-preview {
+    animation: previewIn var(--animation-duration);
     width: clamp(300px, 50vw, 1200px);
     inset: 0 auto 0 0;
     position: fixed;
@@ -43,6 +44,16 @@ html:has(.modal.is-preview[open]) {
 @keyframes modalIn {
   from {
     transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes previewIn {
+  from {
+    transform: translateX(-100%);
     opacity: 0;
   }
   to {

@@ -1,6 +1,6 @@
 {
   "imports": {
-    "std/": "https://deno.land/std@0.208.0/",
+    "std/": "https://deno.land/std@0.213.0/",
     "lume/": "../lume/",
     "hono/": "https://deno.land/x/hono@v3.11.11/",
     "hono/jsx/jsx-runtime": "https://deno.land/x/hono@v3.11.11/jsx/jsx-runtime.ts"

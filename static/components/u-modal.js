@@ -5,10 +5,10 @@ customElements.define(
   "u-modal",
   class Modal extends Component {
     init() {
-      const { src, position } = this.dataset;
+      const { src } = this.dataset;
 
       const dialog = push(this, "dialog", {
-        class: `modal is-${position || "aside"}`,
+        class: "modal is-aside",
         onclose: () => this.remove(),
         // Close the modal when clicking outside of it
         onclick(e) {
@@ -37,11 +37,7 @@ customElements.define(
         push(dialog, "iframe", { class: "modal-content", src });
       }
 
-      if (position === "preview") {
-        dialog.show();
-      } else {
-        dialog.showModal();
-      }
+      dialog.showModal();
     }
   },
 );

@@ -76,14 +76,15 @@ export default function Template(
             <u-icon name="check" />
             Update file
           </button>
-          <button
-            class="button is-secondary"
-            formAction={getPath("uploads", collection, "delete", file)}
-            data-confirm="Are you sure?"
-          >
-            <u-icon name="trash" />
-            Delete
-          </button>
+          <u-confirm data-message="Are you sure?">
+            <button
+              class="button is-secondary"
+              formAction={getPath("uploads", collection, "delete", file)}
+            >
+              <u-icon name="trash" />
+              Delete
+            </button>
+          </u-confirm>
         </footer>
       </form>
 
@@ -98,17 +99,4 @@ export default function Template(
       </figure>
     </>
   );
-}
-
-interface PreviewProps {
-  type: string;
-  src: string;
-}
-
-function Preview({ type, src }: PreviewProps) {
-  if (type.startsWith("image/")) {
-    return <img src={src} alt="Preview" />;
-  }
-
-  return <p>Cannot preview</p>;
 }

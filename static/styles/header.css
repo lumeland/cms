@@ -1,6 +1,13 @@
 .header {
   border-bottom: solid 1px var(--color-line);
   padding: var(--row-gap-small) 0;
+
+  &.is-sticky {
+    background: var(--color-background);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
 }
 .header-nav {
   display: flex;

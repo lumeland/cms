@@ -1,0 +1,12 @@
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1rem;
+  row-gap: .5rem;
+  padding: .3rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--color-background);
+}

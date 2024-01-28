@@ -1,4 +1,4 @@
-export function dispatch<T>(name: string, detail: T): T | false {
+export function dispatch<T>(name: string, detail?: T): T | false {
   const event = new CustomEvent(`cms:${name}`, {
     cancelable: true,
     detail,

@@ -1,4 +1,4 @@
-import { push } from "./utils.js";
+import { push, url } from "./utils.js";
 import { Field } from "./field.js";
 import { init } from "../libs/markdown.js";
 
@@ -23,6 +23,19 @@ customElements.define(
         value,
         hidden: true,
       });
+
+      const helpers = push(this, "div", { class: "ly-rowStack tools" });
+      for (const name of Object.keys(schema.cmsContent.uploads || {})) {
+        push(helpers, "button", {
+          class: "button is-secondary",
+          type: "button",
+          onclick() {
+            push(document.body, "u-modal", {
+              data: { src: url("uploads", name) },
+            });
+          },
+        }, `<u-icon name="image-square-fill"></u-icon> ${name}`);
+      }
 
       const code = push(this, "div", { class: "code" });
       const view = init(code, textarea.value);

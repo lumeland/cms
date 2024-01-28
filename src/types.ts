@@ -84,5 +84,4 @@ export interface CMSContent {
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
   uploads: Record<string, [Storage, string]>;
-  previewUrl: (path: string) => string | undefined;
 }

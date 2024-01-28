@@ -12,6 +12,14 @@
   width: max-content;
   border-radius: var(--border-radius);
   box-shadow: 0 4px 10px #0002;
+
+  &.is-toast {
+    animation: toastShow var(--animation-duration);
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    left: auto;
+  }
 }
 
 @keyframes tooltipShow {
@@ -21,6 +29,17 @@
   }
   to {
     transform: translate(-50%, calc(-100% - 4px));
+    opacity: 1;
+  }
+}
+
+@keyframes toastShow {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
     opacity: 1;
   }
 }

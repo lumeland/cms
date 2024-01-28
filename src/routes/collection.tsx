@@ -23,14 +23,12 @@ export default function (app: Hono) {
 
   app
     .get("/collection/:collection/edit/:document", async (c: Context) => {
-      const { collections, previewUrl } = c.get("options") as CMSContent;
+      const { collections } = c.get("options") as CMSContent;
       const collectionId = c.req.param("collection");
       const collection = collections[collectionId];
       const documentId = c.req.param("document");
       const document = collection.get(documentId);
       const data = await document.read();
-      const src = document.src;
-      const preview = src && previewUrl(src);
 
       return c.render(
         <CollectionEdit
@@ -38,7 +36,7 @@ export default function (app: Hono) {
           document={documentId}
           fields={document.fields}
           data={data}
-          preview={preview}
+          src={document.src}
         />,
       );
     })
@@ -102,8 +100,8 @@ export default function (app: Hono) {
 
       await document.write(changesToData(body));
       dispatch("createdDocument", {
-        collection: collectionId,
-        document: documentId,
+        collection,
+        document,
       });
       return c.redirect(
         getPath("collection", collectionId, "edit", documentId),

@@ -14,6 +14,7 @@ import { join } from "std/path/join.ts";
 import { basename } from "std/path/basename.ts";
 import { dirname } from "std/path/dirname.ts";
 import { labelify } from "./utils/string.ts";
+import { dispatch } from "./utils/event.ts";
 
 import type { Context, Next } from "hono/mod.ts";
 import type {
@@ -30,7 +31,6 @@ export interface CmsOptions {
   basePath?: string;
   port?: number;
   appWrapper?: (app: Hono) => Hono;
-  previewUrl?: (path: string) => string | undefined;
 }
 
 const defaults: Required<CmsOptions> = {
@@ -38,7 +38,6 @@ const defaults: Required<CmsOptions> = {
   basePath: "/",
   port: 8000,
   appWrapper: (app) => app,
-  previewUrl: () => undefined,
 };
 
 export default class Cms {
@@ -98,7 +97,6 @@ export default class Cms {
 
   init(): Hono {
     const content: CMSContent = {
-      previewUrl: this.options.previewUrl,
       collections: {},
       documents: {},
       uploads: {},
@@ -144,6 +142,53 @@ export default class Cms {
     collectionRoutes(app);
     filesRoutes(app);
     indexRoute(app);
+
+    const sockets = new Set<WebSocket>();
+
+    addEventListener("cms:previewUpdated", (e) => {
+      // @ts-ignore: Detail declared in the event.
+      const { src, url } = e.detail;
+
+      sockets.forEach((socket) =>
+        socket.send(JSON.stringify({
+          type: "updated",
+          src,
+          url,
+        }))
+      );
+    });
+
+    app.get("_socket", (c: Context) => {
+      // Is a websocket
+      if (c.req.header("upgrade") === "websocket") {
+        const { socket, response } = Deno.upgradeWebSocket(c.req.raw);
+
+        socket.onopen = () => sockets.add(socket);
+        socket.onclose = () => sockets.delete(socket);
+        socket.onerror = (e) => console.log("Socket errored", e);
+        socket.onmessage = async (e) => {
+          const { type, src } = JSON.parse(e.data);
+
+          if (type === "open") {
+            const result = dispatch<{ src: string; url?: unknown }>(
+              "previewUrl",
+              { src },
+            );
+
+            if (result) {
+              const url = await result.url;
+              if (url) {
+                socket.send(JSON.stringify({ type: "open", src, url }));
+              }
+            }
+          }
+        };
+
+        return response;
+      }
+
+      return c.notFound();
+    });
 
     app.get(
       "*",

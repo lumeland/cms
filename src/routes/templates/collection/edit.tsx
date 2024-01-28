@@ -6,14 +6,15 @@ interface Props {
   document: string;
   fields: ResolvedField[];
   data: Data;
-  preview?: string;
+  src?: string;
 }
 
 export default function Template(
-  { collection, document, fields, data, preview }: Props,
+  { collection, document, fields, data, src }: Props,
 ) {
   return (
     <>
+      <u-pagepreview data-src={src}></u-pagepreview>
       <nav aria-label="You are here:">
         <ul class="breadcrumb">
           <li>
@@ -27,58 +28,63 @@ export default function Template(
           </li>
         </ul>
       </nav>
-      <header class="header">
-        <h1 class="header-title">
-          Editing file
-          <input
-            class="input is-inline"
-            id="_id"
-            type="text"
-            name="_id"
-            value={document}
-            placeholder="Rename the file…"
-            form="form-edit"
-            aria-label="File name"
-            required
-          />
-        </h1>
-        {preview && (
-          <u-modal data-position="preview" data-src={preview}></u-modal>
-        )}
-      </header>
-      <form
-        action={getPath("collection", collection, "edit", document)}
-        method="post"
-        class="form"
-        enctype="multipart/form-data"
-        id="form-edit"
-      >
-        {fields.map((field) => {
-          return (
-            <field.tag
-              data-nameprefix="changes"
-              data-value={JSON.stringify(data[field.name] ?? null)}
-              data-field={JSON.stringify(field)}
-            >
-            </field.tag>
-          );
-        })}
-        <footer class="footer ly-rowStack is-responsive">
-          <button class="button is-primary" type="submit">
-            <u-icon name="check" />
-            Save changes
-          </button>
-          <button
-            class="button is-secondary"
-            type="submit"
-            formAction={getPath("collection", collection, "delete", document)}
-            data-confirm="Are you sure?"
-          >
-            <u-icon name="trash" />
-            Delete
-          </button>
-        </footer>
-      </form>
+      <u-form>
+        <header class="header">
+          <h1 class="header-title">
+            Editing file
+            <input
+              class="input is-inline"
+              id="_id"
+              type="text"
+              name="_id"
+              value={document}
+              placeholder="Rename the file…"
+              form="form-edit"
+              aria-label="File name"
+              required
+            />
+          </h1>
+        </header>
+        <form
+          action={getPath("collection", collection, "edit", document)}
+          method="post"
+          class="form"
+          enctype="multipart/form-data"
+          id="form-edit"
+        >
+          {fields.map((field) => {
+            return (
+              <field.tag
+                data-nameprefix="changes"
+                data-value={JSON.stringify(data[field.name] ?? null)}
+                data-field={JSON.stringify(field)}
+              >
+              </field.tag>
+            );
+          })}
+          <footer class="footer ly-rowStack is-responsive">
+            <button class="button is-primary" type="submit">
+              <u-icon name="check" />
+              Save changes
+            </button>
+            <u-confirm data-message="Are you sure?">
+              <button
+                class="button is-secondary"
+                type="submit"
+                formAction={getPath(
+                  "collection",
+                  collection,
+                  "delete",
+                  document,
+                )}
+              >
+                <u-icon name="trash" />
+                Delete
+              </button>
+            </u-confirm>
+          </footer>
+        </form>
+      </u-form>
     </>
   );
 }
