@@ -1,5 +1,6 @@
 import { PreviewWriter } from "./lume_writer.ts";
 import binaryLoader from "lume/core/loaders/binary.ts";
+import { getConfigFile } from "lume/core/utils/lume_config.ts";
 import { getExtension } from "lume/core/utils/path.ts";
 import { contentType } from "std/media_types/content_type.ts";
 import { Hono } from "hono/mod.ts";
@@ -11,13 +12,12 @@ import type { Context } from "hono/mod.ts";
 import type Cms from "../src/cms.ts";
 
 export interface Options {
-  configFile: string;
+  configFile?: string;
   basePath?: string;
   port?: number;
 }
 
-export const defaults: Required<Options> = {
-  configFile: "./_config.ts",
+export const defaults: Options = {
   basePath: "/admin",
   port: 8000,
 };
@@ -28,7 +28,13 @@ export default async function lume(userOptions: Options): Promise<Cms> {
     ...userOptions,
   };
   const { configFile, basePath } = options;
-  const mod = await import(configFile);
+  const config = await getConfigFile(configFile);
+
+  if (!config) {
+    throw new Error(`Config file not found: ${configFile}`);
+  }
+
+  const mod = await import(config);
   const site = mod.default as Site;
   const preview = new PreviewWriter();
 
