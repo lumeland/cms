@@ -1,7 +1,7 @@
 {
   "imports": {
     "std/": "https://deno.land/std@0.213.0/",
-    "lume/": "../lume/",
+    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@5d6356bd080f283730313eee92a119f6bc2b4b90/",
     "hono/": "https://deno.land/x/hono@v3.11.11/",
     "hono/jsx/jsx-runtime": "https://deno.land/x/hono@v3.11.11/jsx/jsx-runtime.ts"
   },

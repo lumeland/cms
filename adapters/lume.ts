@@ -3,6 +3,7 @@ import binaryLoader from "lume/core/loaders/binary.ts";
 import { getConfigFile } from "lume/core/utils/lume_config.ts";
 import { getExtension } from "lume/core/utils/path.ts";
 import { contentType } from "std/media_types/content_type.ts";
+import { toFileUrl } from "std/path/to_file_url.ts";
 import { Hono } from "hono/mod.ts";
 import cms from "../mod.ts";
 import { dispatch } from "../src/utils/event.ts";
@@ -26,16 +27,16 @@ export default async function lume(userOptions?: Options): Promise<Cms> {
   const options = {
     ...defaults,
     ...userOptions,
-    configFile: await getConfigFile(userOptions.configFile),
+    configFile: await getConfigFile(userOptions?.configFile),
   } as Required<Options>;
 
   const { configFile, basePath } = options;
 
   if (!configFile) {
-    throw new Error(`Config file not found: ${userOptions.configFile}`);
+    throw new Error(`Config file not found: ${userOptions?.configFile}`);
   }
 
-  const mod = await import(configFile);
+  const mod = await import(toFileUrl(configFile).href);
   const site = mod.default as Site;
   const preview = new PreviewWriter();
 
