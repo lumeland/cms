@@ -16,7 +16,8 @@ export interface Options {
   port?: number;
 }
 
-export const defaults: Required<Omit<Options, "configFile">> = {
+export const defaults: Required<Options> = {
+  configFile: "./_config.ts",
   basePath: "/admin",
   port: 8000,
 };
