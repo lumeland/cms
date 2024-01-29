@@ -26,15 +26,16 @@ export default async function lume(userOptions: Options): Promise<Cms> {
   const options = {
     ...defaults,
     ...userOptions,
-  };
-  const { configFile, basePath } = options;
-  const config = await getConfigFile(configFile);
+    configFile: await getConfigFile(userOptions.configFile),
+  } as Required<Options>;
 
-  if (!config) {
-    throw new Error(`Config file not found: ${configFile}`);
+  const { configFile, basePath } = options;
+
+  if (!configFile) {
+    throw new Error(`Config file not found: ${userOptions.configFile}`);
   }
 
-  const mod = await import(config);
+  const mod = await import(configFile);
   const site = mod.default as Site;
   const preview = new PreviewWriter();
 
