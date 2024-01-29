@@ -22,7 +22,7 @@ export const defaults: Options = {
   port: 8000,
 };
 
-export default async function lume(userOptions: Options): Promise<Cms> {
+export default async function lume(userOptions?: Options): Promise<Cms> {
   const options = {
     ...defaults,
     ...userOptions,
