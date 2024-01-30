@@ -22,7 +22,15 @@ customElements.define(
 
         e.preventDefault();
 
-        setTimeout(() => this.sendForm(form), 1);
+        const tooltip = push(this, "div", {
+          role: "tooltip",
+          class: "is-toast",
+        }, "Saving...");
+
+        setTimeout(async () => {
+          await this.sendForm(form);
+          tooltip.remove();
+        }, 1);
       });
     }
 
@@ -45,6 +53,7 @@ customElements.define(
       const text = await response.text();
       const html = new DOMParser().parseFromString(text, "text/html");
       const preview = document.querySelector("u-pagepreview");
+
       if (preview) {
         const oldPreview = preview.dataset.src;
         const newPreview = html.querySelector("u-pagepreview")?.dataset.src;
@@ -53,12 +62,6 @@ customElements.define(
           preview.setAttribute("data-src", newPreview);
         }
       }
-
-      const tooltip = push(this, "div", {
-        role: "tooltip",
-        class: "is-toast",
-      }, "Updated!");
-      setTimeout(() => tooltip.remove(), 2000);
     }
   },
 );
