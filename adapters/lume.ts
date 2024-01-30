@@ -81,7 +81,9 @@ export default async function lume(userOptions?: Options): Promise<Cms> {
     cwd,
     basePath,
     appWrapper(app) {
-      const previewer = new Hono();
+      const previewer = new Hono({
+        strict: false,
+      });
       previewer.route(basePath, app);
       previewer.get(
         "*",

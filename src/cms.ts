@@ -1,7 +1,6 @@
 import { Hono } from "hono/mod.ts";
-import { jsxRenderer } from "hono/middleware.ts";
 import serveStatic from "./middleware/serve_static.ts";
-import layout from "./routes/templates/layout.tsx";
+import layout from "./routes/templates/layout.ts";
 import documentRoutes from "./routes/document.tsx";
 import collectionRoutes from "./routes/collection.tsx";
 import versionsRoutes from "./routes/versions.tsx";
@@ -134,14 +133,17 @@ export default class Cms {
       );
     }
 
-    const app = new Hono();
-
-    const renderer = layout({
-      jsImports: [...this.#jsImports],
+    const app = new Hono({
+      strict: false,
     });
 
-    app.use("*", jsxRenderer(renderer, { docType: true }));
     app.use("*", (c: Context, next: Next) => {
+      c.setRenderer(async (content) => {
+        return c.html(layout({
+          jsImports: Array.from(this.#jsImports),
+          content: await content,
+        }));
+      });
       c.set("options", { ...content });
       return next();
     });

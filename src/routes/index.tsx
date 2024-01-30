@@ -1,4 +1,4 @@
-import Index from "./templates/index.tsx";
+import index from "./templates/index.ts";
 
 import type { Context, Hono } from "hono/mod.ts";
 import type { CMSContent } from "../types.ts";
@@ -10,12 +10,12 @@ export default function (app: Hono) {
     ) as CMSContent;
 
     return c.render(
-      <Index
-        collections={Object.keys(collections)}
-        documents={Object.keys(documents)}
-        uploads={Object.keys(uploads)}
-        versioning={versioning}
-      />,
+      index({
+        collections: Object.keys(collections),
+        documents: Object.keys(documents),
+        uploads: Object.keys(uploads),
+        versioning,
+      }),
     );
   });
 }

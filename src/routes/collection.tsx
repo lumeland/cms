@@ -1,7 +1,7 @@
 import { changesToData } from "../utils/data.ts";
-import CollectionList from "./templates/collection/list.tsx";
-import CollectionEdit from "./templates/collection/edit.tsx";
-import CollectionCreate from "./templates/collection/create.tsx";
+import collectionList from "./templates/collection/list.ts";
+import collectionEdit from "./templates/collection/edit.ts";
+import collectionCreate from "./templates/collection/create.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath } from "../utils/path.ts";
 import { dispatch } from "../utils/event.ts";
@@ -17,7 +17,7 @@ export default function (app: Hono) {
     const documents = await Array.fromAsync(collection);
 
     return c.render(
-      <CollectionList collection={collectionId} documents={documents} />,
+      collectionList({ collection: collectionId, documents }),
     );
   });
 
@@ -31,13 +31,13 @@ export default function (app: Hono) {
       const data = await document.read();
 
       return c.render(
-        <CollectionEdit
-          collection={collectionId}
-          document={documentId}
-          fields={document.fields}
-          data={data}
-          src={document.src}
-        />,
+        collectionEdit({
+          collection: collectionId,
+          document: documentId,
+          fields: document.fields,
+          data,
+          src: document.src,
+        }),
       );
     })
     .post(async (c: Context) => {
@@ -84,10 +84,10 @@ export default function (app: Hono) {
       const collection = collections[collectionId];
 
       return c.render(
-        <CollectionCreate
-          collection={collectionId}
-          fields={collection.fields}
-        />,
+        collectionCreate({
+          collection: collectionId,
+          fields: collection.fields,
+        }),
       );
     })
     .post(async (c: Context) => {

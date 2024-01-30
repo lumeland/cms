@@ -1,18 +1,13 @@
 {
   "imports": {
     "std/": "https://deno.land/std@0.213.0/",
-    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@5d6356bd080f283730313eee92a119f6bc2b4b90/",
-    "hono/": "https://deno.land/x/hono@v3.11.11/",
-    "hono/jsx/jsx-runtime": "https://deno.land/x/hono@v3.11.11/jsx/jsx-runtime.ts"
+    "lume/": "https://deno.land/x/lume@v2.0.3/",
+    "hono/": "https://deno.land/x/hono@v3.11.11/"
   },
   "lock": false,
   "tasks": {
     "dev": "deno run --unstable --watch -A probas/ensino.ts",
     "site": "cd probas/ensino && deno task serve"
-  },
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
   },
   "exclude": [
     "probas",

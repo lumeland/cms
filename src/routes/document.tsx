@@ -1,7 +1,7 @@
 import { getPath } from "../utils/path.ts";
 import { changesToData } from "../utils/data.ts";
 import { dispatch } from "../utils/event.ts";
-import DocumentEdit from "./templates/document/edit.tsx";
+import documentEdit from "./templates/document/edit.ts";
 
 import type { Context, Hono } from "hono/mod.ts";
 import type { CMSContent } from "../types.ts";
@@ -15,11 +15,11 @@ export default function (app: Hono) {
       const data = await document.read();
 
       return c.render(
-        <DocumentEdit
-          document={documentId}
-          fields={document.fields}
-          data={data}
-        />,
+        documentEdit({
+          document: documentId,
+          fields: document.fields,
+          data,
+        }),
       );
     })
     .post(async (c: Context) => {

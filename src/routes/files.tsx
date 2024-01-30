@@ -1,5 +1,5 @@
-import UploadsList from "./templates/uploads/list.tsx";
-import UploadsView from "./templates/uploads/view.tsx";
+import uploadsList from "./templates/uploads/list.ts";
+import uploadsView from "./templates/uploads/view.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath, normalizePath } from "../utils/path.ts";
 import { dispatch } from "../utils/event.ts";
@@ -12,14 +12,14 @@ export default function (app: Hono) {
     const { uploads } = c.get("options") as CMSContent;
     const collectionId = c.req.param("collection");
     const [collection, publicPath] = uploads[collectionId];
-    const media = await Array.fromAsync(collection);
+    const files = await Array.fromAsync(collection);
 
     return c.render(
-      <UploadsList
-        collection={collectionId}
-        files={media}
-        publicPath={publicPath}
-      />,
+      uploadsList({
+        collection: collectionId,
+        files,
+        publicPath,
+      }),
     );
   });
 
@@ -59,13 +59,13 @@ export default function (app: Hono) {
     const file = await entry.readFile();
 
     return c.render(
-      <UploadsView
-        type={file.type}
-        size={file.size}
-        collection={collectionId}
-        publicPath={normalizePath(publicPath, fileId)}
-        file={fileId}
-      />,
+      uploadsView({
+        type: file.type,
+        size: file.size,
+        collection: collectionId,
+        publicPath: normalizePath(publicPath, fileId),
+        file: fileId,
+      }),
     );
   })
     .post(async (c: Context) => {
