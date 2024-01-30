@@ -87,7 +87,7 @@ async function Versions({ versioning }: VersionsProps) {
 
       <ul>
         {(await Array.fromAsync(versioning)).map((version) => (
-          <li>
+          <li class="ly-rowStack">
             {version.name}
             {version.isCurrent
               ? " (current)"
@@ -97,11 +97,17 @@ async function Versions({ versioning }: VersionsProps) {
                   <button class="button is-secondary">Select</button>
                 </form>
               )}
-            {!version.isProduction && (
-              <form method="post" action={getPath("versions", "publish")}>
-                <input type="hidden" name="name" value={version.name} />
-                <button class="button is-secondary">Publish</button>
-              </form>
+            <form method="post" action={getPath("versions", "publish")}>
+              <input type="hidden" name="name" value={version.name} />
+              <button class="button is-secondary">Publish</button>
+            </form>
+            {!version.isProduction && !version.isCurrent && (
+              <u-confirm data-message="Are you sure?">
+                <form method="post" action={getPath("versions", "delete")}>
+                  <input type="hidden" name="name" value={version.name} />
+                  <button class="button is-secondary">Delete</button>
+                </form>
+              </u-confirm>
             )}
           </li>
         ))}

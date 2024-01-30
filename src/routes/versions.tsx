@@ -52,4 +52,20 @@ export default function (app: Hono) {
 
     return c.redirect(getPath());
   });
+
+  app.post("/versions/delete", async (c: Context) => {
+    const { versioning } = c.get(
+      "options",
+    ) as CMSContent;
+
+    if (!versioning) {
+      throw new Error("No versioning method available");
+    }
+
+    const body = await c.req.parseBody();
+    const name = body.name as string;
+    await versioning.delete(name);
+
+    return c.redirect(getPath());
+  });
 }

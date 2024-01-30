@@ -28,6 +28,7 @@ export interface Versioning extends AsyncIterable<Version> {
   create(id: string): Promise<void>;
   change(id: string): Promise<void>;
   publish(id: string): Promise<void>;
+  delete(id: string): Promise<void>;
 }
 
 export interface Entry {

@@ -76,7 +76,7 @@ export class Git implements Versioning {
 
     await this.#commit();
     await this.#runGitCommand("checkout", this.#nameToBranch(name));
-    await this.#runGitCommand("pull", this.remote, name);
+    await this.#pull();
   }
 
   /* Publishes a version */
@@ -91,6 +91,16 @@ export class Git implements Versioning {
     await this.#runGitCommand("merge", branch);
     await this.#runGitCommand("branch", "-d", branch);
     await this.#runGitCommand("push", this.remote, this.prodBranch);
+  }
+
+  /* Deletes a version */
+  async delete(name: string): Promise<void> {
+    if (!(await this.#exists(name))) {
+      return;
+    }
+
+    const branch = this.#nameToBranch(name);
+    await this.#runGitCommand("branch", "-D", branch);
   }
 
   async #exists(name: string): Promise<boolean> {
@@ -113,7 +123,24 @@ export class Git implements Versioning {
     return branch;
   }
 
+  async #pull(): Promise<void> {
+    const current = await this.#runGitCommand("branch", "--show-current");
+
+    // Check if the current branch exists in the remote and pull it
+    const branches = await this.#runGitCommand(
+      "ls-remote",
+      "--heads",
+      this.remote,
+      current,
+    );
+
+    if (branches) {
+      await this.#runGitCommand("pull", this.remote, current);
+    }
+  }
+
   async #commit(message = "Changes from CMS"): Promise<void> {
+    await this.#pull();
     await this.#runGitCommand("add", ".");
 
     const changes = await this.#runGitCommand("status", "--porcelain");
