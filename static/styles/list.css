@@ -51,7 +51,29 @@
     color: var(--color-dim);
   }
 
-  &:hover {
+  &[href]:hover {
     background-color: var(--color-line-light);
+  }
+}
+form.list-item {
+  padding: 0;
+
+  & button {
+    border: none;
+    background: none;
+    display: inherit;
+    align-items: inherit;
+    column-gap: inherit;
+    text-decoration: inherit;
+    font: inherit;
+    padding: .25rem .5rem;
+    color: inherit;
+    cursor: pointer;
+    width: 100%;
+    border-radius: inherit;
+
+    &:hover {
+      background-color: var(--color-line-light);
+    }
   }
 }

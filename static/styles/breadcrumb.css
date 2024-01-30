@@ -42,7 +42,6 @@
     background: gold;
     padding: .3rem .5em;
     border-radius: var(--border-radius);
-    display: inline-block;
   }
 
   &.is-production > a {

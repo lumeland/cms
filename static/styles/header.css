@@ -48,3 +48,13 @@ dl.header-description {
   display: block;
   margin-top: 1rem;
 }
+
+.subheader {
+  border-bottom: solid 1px var(--color-line);
+  padding: var(--row-gap-small) 0;
+
+  & h2 {
+    margin: 0;
+    font: var(--font-body-bold);
+  }
+}

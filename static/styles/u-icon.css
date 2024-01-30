@@ -9,3 +9,13 @@ u-icon {
 u-icon-file u-icon {
   display: block;
 }
+
+u-icon.is-version {
+  color: var(--color-black);
+  border-radius: 50%;
+  background-color: gold;
+}
+
+u-icon.is-production {
+  background-color: lightgreen;
+}

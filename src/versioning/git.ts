@@ -67,6 +67,8 @@ export class Git implements Versioning {
 
   /* Creates a new version */
   async create(name: string): Promise<void> {
+    name = name.replace(/\W/g, "-");
+
     if (await this.#exists(name)) {
       throw new Error(`Version ${name} already exists`);
     }
@@ -107,6 +109,16 @@ export class Git implements Versioning {
   async delete(name: string): Promise<void> {
     if (!(await this.#exists(name))) {
       return;
+    }
+
+    if (name === this.prodBranch) {
+      throw new Error(`Cannot delete production branch`);
+    }
+
+    const current = await this.current();
+
+    if (current.name === name) {
+      await this.change(this.prodBranch);
     }
 
     const branch = this.#nameToBranch(name);

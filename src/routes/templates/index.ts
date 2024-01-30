@@ -49,8 +49,8 @@ ${breadcrumb(await versioning?.current())}
   }
       
   ${
-    uploads.map((name, index) => `
-  <li class="${index === 0 ? "is-separated" : ""}">
+    uploads.map((name) => `
+  <li>
     <a href="${getPath("uploads", name)}" class="list-item">
       <u-icon name="image-square-fill"></u-icon>
       ${labelify(name)}
@@ -66,36 +66,51 @@ ${versioning && await versions(versioning)}
 
 async function versions(versioning: Versioning) {
   return `
-<h2>Version manager</h2>
+<header class="subheader">
+  <h2>Version manager</h2>
+</header>
 
-<ul>
+<ul class="list">
   ${
     (await Array.fromAsync(versioning)).map((version) => `
-  <li class="ly-rowStack">
-    ${version.name}
+  <li>
     ${
       version.isCurrent
-        ? " (current)"
-        : `<form method="post" action="${getPath("versions", "change")}">
-          <input type="hidden" name="name" value="${version.name}">
-          <button class="button is-secondary">Select</button>
-        </form>`
+        ? `<span class="list-item">
+            <u-icon class="is-version ${
+          version.isProduction ? "is-production" : ""
+        }" name="check-circle"></u-icon> ${version.name}
+          </span>`
+        : `<form class="list-item" method="post" action="${
+          getPath("versions", "change")
+        }">
+            <input type="hidden" name="name" value="${version.name}">
+            <button>
+              <u-icon name="circle"></u-icon>
+              ${version.name}
+            </button>
+          </form>`
+    }
+
+    ${
+      !version.isProduction &&
+        `<u-confirm data-message="Are you sure?">
+      <form method="post" action="${getPath("versions", "delete")}">
+        <input type="hidden" name="name" value="${version.name}">
+        <button class="buttonIcon" aria-label="Delete">
+          <u-icon name="trash"></u-icon>
+        </button>
+      </form>
+    </u-confirm>` || ""
     }
 
     <form method="post" action="${getPath("versions", "publish")}">
       <input type="hidden" name="name" value="${version.name}">
-      <button class="button is-secondary">Publish</button>
+      <button class="button is-secondary">
+      <u-icon name="rocket-launch"></u-icon>
+        Publish
+      </button>
     </form>
-
-    ${
-      !version.isProduction && !version.isCurrent &&
-        `<u-confirm data-message="Are you sure?">
-      <form method="post" action="${getPath("versions", "delete")}">
-        <input type="hidden" name="name" value="${version.name}">
-        <button class="button is-secondary">Delete</button>
-      </form>
-    </u-confirm>` || ""
-    }
   </li>`).join("")
   }
 </ul>
