@@ -89,7 +89,9 @@ export class Git implements Versioning {
 
     await this.change(this.prodBranch);
     await this.#runGitCommand("merge", branch);
-    await this.#runGitCommand("branch", "-d", branch);
+    if (branch !== this.prodBranch) {
+      await this.#runGitCommand("branch", "-d", branch);
+    }
     await this.#runGitCommand("push", this.remote, this.prodBranch);
   }
 
