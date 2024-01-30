@@ -47,7 +47,7 @@ export class Git implements Versioning {
       const name = this.#branchToName(branch);
       yield {
         name,
-        isCurrent: name === current,
+        isCurrent: name === current.name,
         isProduction: name === this.prodBranch,
       };
     }
@@ -56,7 +56,13 @@ export class Git implements Versioning {
   /* Returns the current version */
   async current() {
     const branch = await this.#runGitCommand("branch", "--show-current");
-    return this.#branchToName(branch.trim());
+    const name = this.#branchToName(branch.trim());
+
+    return {
+      name,
+      isCurrent: true,
+      isProduction: name === this.prodBranch,
+    };
   }
 
   /* Creates a new version */
@@ -88,10 +94,12 @@ export class Git implements Versioning {
     const branch = this.#nameToBranch(name);
 
     await this.change(this.prodBranch);
-    await this.#runGitCommand("merge", branch);
+
     if (branch !== this.prodBranch) {
+      await this.#runGitCommand("merge", branch);
       await this.#runGitCommand("branch", "-d", branch);
     }
+
     await this.#runGitCommand("push", this.remote, this.prodBranch);
   }
 

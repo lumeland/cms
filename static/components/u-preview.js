@@ -35,9 +35,15 @@ customElements.define(
     }
 
     attributeChangedCallback(name) {
-      if (name === "data-src") {
-        this.init();
+      if (name !== "data-src") {
+        return;
       }
+
+      if (!oldValue || oldValue === newValue) {
+        return;
+      }
+
+      this.init();
     }
   },
 );

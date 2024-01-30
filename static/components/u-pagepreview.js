@@ -60,7 +60,7 @@ customElements.define(
         return;
       }
 
-      if (oldValue === newValue) {
+      if (!oldValue || oldValue === newValue) {
         return;
       }
 

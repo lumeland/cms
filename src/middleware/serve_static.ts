@@ -37,17 +37,35 @@ export default function serveStatic(options: ServeStaticOptions) {
     }
 
     try {
-      const response = await fetch(url);
+      const body = await read(url);
 
-      if (response.ok) {
+      if (body) {
         c.header("Content-Type", contentType(extname(pathname)));
-        return c.body(response.body);
+        return c.body(body);
       }
     } catch (e) {
-      console.warn(`Static file: ${pathname} is not found`);
+      console.warn(`Static file: ${url.href} is not found`);
       console.warn({ url: url.href, e });
     }
 
     await next();
   };
+}
+
+async function read(url: URL) {
+  const cache = await caches.open("lume_cms_statics");
+  const cached = await cache.match(url);
+
+  if (cached) {
+    return new Uint8Array(await cached.arrayBuffer());
+  }
+
+  const response = await fetch(url);
+
+  if (response.ok) {
+    if (url.protocol === "https:") {
+      await cache.put(url, response.clone());
+    }
+    return new Uint8Array(await response.arrayBuffer());
+  }
 }

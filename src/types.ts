@@ -24,7 +24,7 @@ export interface Version {
 }
 
 export interface Versioning extends AsyncIterable<Version> {
-  current(): Promise<string>;
+  current(): Promise<Version>;
   create(id: string): Promise<void>;
   change(id: string): Promise<void>;
   publish(id: string): Promise<void>;

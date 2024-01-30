@@ -1,26 +1,22 @@
 import { getPath, normalizePath } from "../../../utils/path.ts";
-import { EntryMetadata } from "../../../types.ts";
+import breadcrumb from "../breadcrumb.ts";
+
+import type { EntryMetadata, Version } from "../../../types.ts";
 
 interface Props {
   collection: string;
   publicPath: string;
   files: EntryMetadata[];
+  version?: Version;
 }
 
-export default function template({ collection, publicPath, files }: Props) {
+export default function template(
+  { collection, publicPath, files, version }: Props,
+) {
   const tree = createTree(files);
 
   return `
-<nav aria-label="You are here:">
-  <ul class="breadcrumb">
-    <li>
-      <a href="${getPath()}">Home</a>
-    </li>
-    <li>
-      <a>${collection}</a>
-    </li>
-  </ul>
-</nav>
+${breadcrumb(version, collection)}
 
 <header class="header is-sticky">
   <h1 class="header-title">Content of ${collection}</h1>

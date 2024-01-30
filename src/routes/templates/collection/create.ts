@@ -1,28 +1,24 @@
 import { escape } from "std/html/entities.ts";
 import { getPath } from "../../../utils/path.ts";
+import breadcrumb from "../breadcrumb.ts";
 
-import type { ResolvedField } from "../../../types.ts";
+import type { ResolvedField, Version } from "../../../types.ts";
 
 interface Props {
   collection: string;
   fields: ResolvedField[];
+  version?: Version;
 }
 
-export default function template({ collection, fields }: Props) {
+export default function template({ collection, fields, version }: Props) {
   return `
-<nav aria-label="You are here:">
-  <ul class="breadcrumb">
-    <li>
-      <a href="${getPath()}">Home</a>
-    </li>
-    <li>
-      <a href="${getPath("collection", collection)}">${collection}</a>
-    </li>
-    <li>
-      <a>New file</a>
-    </li>
-  </ul>
-</nav>
+${
+    breadcrumb(version, [
+      collection,
+      getPath("collection", collection),
+    ], "New file")
+  }
+
 <header class="header">
   <h1 class="header-title">
     Creating new file

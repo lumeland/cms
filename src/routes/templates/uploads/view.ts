@@ -1,5 +1,8 @@
 import { getPath } from "../../../utils/path.ts";
 import { format } from "std/fmt/bytes.ts";
+import breadcrumb from "../breadcrumb.ts";
+
+import type { Version } from "../../../types.ts";
 
 interface Props {
   file: string;
@@ -7,27 +10,22 @@ interface Props {
   type: string;
   size: number;
   collection: string;
+  version?: Version;
 }
 
 export default function template(
-  { type, file, collection, size, publicPath }: Props,
+  { type, file, collection, size, publicPath, version }: Props,
 ) {
   const src = getPath("uploads", collection, "raw", file);
 
   return `
-<nav aria-label="You are here:">
-  <ul class="breadcrumb">
-    <li>
-      <a href="${getPath()}">Home</a>
-    </li>
-    <li>
-      <a href="${getPath("uploads", collection)}">${collection}</a>
-    </li>
-    <li>
-      <a>${file}</a>
-    </li>
-  </ul>
-</nav>
+${
+    breadcrumb(version, [
+      collection,
+      getPath("uploads", collection),
+    ], "File details")
+  }
+
 <header class="header">
   <h1 class="header-title">
     Details of

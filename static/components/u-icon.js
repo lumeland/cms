@@ -27,9 +27,15 @@ customElements.define(
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-      if (name === "name" && oldValue !== newValue) {
-        this.init();
+      if (name !== "name") {
+        return;
       }
+
+      if (!oldValue || oldValue === newValue) {
+        return;
+      }
+
+      this.init();
     }
   },
 );

@@ -9,7 +9,7 @@ import type { CMSContent } from "../types.ts";
 export default function (app: Hono) {
   app
     .get("/document/:document", async (c: Context) => {
-      const { documents } = c.get("options") as CMSContent;
+      const { documents, versioning } = c.get("options") as CMSContent;
       const documentId = c.req.param("document");
       const document = documents[documentId];
       const data = await document.read();
@@ -19,6 +19,7 @@ export default function (app: Hono) {
           document: documentId,
           fields: document.fields,
           data,
+          version: await versioning?.current(),
         }),
       );
     })

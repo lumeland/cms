@@ -1,24 +1,19 @@
 import { labelify } from "../../../utils/string.ts";
 import { getPath } from "../../../utils/path.ts";
-import { EntryMetadata } from "../../../types.ts";
+import breadcrumb from "../breadcrumb.ts";
+
+import type { EntryMetadata, Version } from "../../../types.ts";
 
 interface Props {
   collection: string;
   documents: EntryMetadata[];
+  version?: Version;
 }
 
-export default function template({ collection, documents }: Props) {
+export default function template({ collection, documents, version }: Props) {
   return `
-<nav aria-label="You are here:">
-  <ul class="breadcrumb">
-    <li>
-      <a href="${getPath()}">Home</a>
-    </li>
-    <li>
-      <a>${collection}</a>
-    </li>
-  </ul>
-</nav>
+${breadcrumb(version, collection)}
+
 <header class="header is-sticky">
   <h1 class="header-title">Content of ${collection}</h1>
   <u-filter

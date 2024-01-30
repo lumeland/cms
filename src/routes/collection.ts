@@ -11,19 +11,23 @@ import type { CMSContent } from "../types.ts";
 
 export default function (app: Hono) {
   app.get("/collection/:collection", async (c: Context) => {
-    const { collections } = c.get("options") as CMSContent;
+    const { collections, versioning } = c.get("options") as CMSContent;
     const collectionId = c.req.param("collection");
     const collection = collections[collectionId];
     const documents = await Array.fromAsync(collection);
 
     return c.render(
-      collectionList({ collection: collectionId, documents }),
+      collectionList({
+        collection: collectionId,
+        documents,
+        version: await versioning?.current(),
+      }),
     );
   });
 
   app
     .get("/collection/:collection/edit/:document", async (c: Context) => {
-      const { collections } = c.get("options") as CMSContent;
+      const { collections, versioning } = c.get("options") as CMSContent;
       const collectionId = c.req.param("collection");
       const collection = collections[collectionId];
       const documentId = c.req.param("document");
@@ -37,6 +41,7 @@ export default function (app: Hono) {
           fields: document.fields,
           data,
           src: document.src,
+          version: await versioning?.current(),
         }),
       );
     })
@@ -79,7 +84,7 @@ export default function (app: Hono) {
 
   app
     .get("/collection/:collection/create", (c: Context) => {
-      const { collections } = c.get("options") as CMSContent;
+      const { collections, versioning } = c.get("options") as CMSContent;
       const collectionId = c.req.param("collection");
       const collection = collections[collectionId];
 
@@ -87,6 +92,7 @@ export default function (app: Hono) {
         collectionCreate({
           collection: collectionId,
           fields: collection.fields,
+          version: versioning?.current(),
         }),
       );
     })

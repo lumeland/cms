@@ -1,6 +1,8 @@
 import { escape } from "std/html/entities.ts";
 import { getPath } from "../../../utils/path.ts";
-import type { Data, ResolvedField } from "../../../types.ts";
+import breadcrumb from "../breadcrumb.ts";
+
+import type { Data, ResolvedField, Version } from "../../../types.ts";
 
 interface Props {
   collection: string;
@@ -8,26 +10,21 @@ interface Props {
   fields: ResolvedField[];
   data: Data;
   src?: string;
+  version?: Version;
 }
 
 export default function template(
-  { collection, document, fields, data, src }: Props,
+  { collection, document, fields, data, src, version }: Props,
 ) {
   return `
 <u-pagepreview data-src="${src}"></u-pagepreview>
-<nav aria-label="You are here:">
-  <ul class="breadcrumb">
-    <li>
-      <a href="${getPath()}">Home</a>
-    </li>
-    <li>
-      <a href="${getPath("collection", collection)}">${collection}</a>
-    </li>
-    <li>
-      <a>${document}</a>
-    </li>
-  </ul>
-</nav>
+${
+    breadcrumb(version, [
+      collection,
+      getPath("collection", collection),
+    ], "Editing file")
+  }
+
 <u-form>
   <header class="header">
     <h1 class="header-title">

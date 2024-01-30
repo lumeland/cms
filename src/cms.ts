@@ -1,11 +1,11 @@
 import { Hono } from "hono/mod.ts";
 import serveStatic from "./middleware/serve_static.ts";
 import layout from "./routes/templates/layout.ts";
-import documentRoutes from "./routes/document.tsx";
-import collectionRoutes from "./routes/collection.tsx";
+import documentRoutes from "./routes/document.ts";
+import collectionRoutes from "./routes/collection.ts";
 import versionsRoutes from "./routes/versions.tsx";
-import indexRoute from "./routes/index.tsx";
-import filesRoutes from "./routes/files.tsx";
+import indexRoute from "./routes/index.ts";
+import filesRoutes from "./routes/files.ts";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
 import { FsStorage } from "./storage/fs.ts";

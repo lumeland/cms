@@ -1,28 +1,22 @@
 import { escape } from "std/html/entities.ts";
 import { getPath } from "../../../utils/path.ts";
+import breadcrumb from "../breadcrumb.ts";
 
-import type { Data, ResolvedField } from "../../../types.ts";
+import type { Data, ResolvedField, Version } from "../../../types.ts";
 
 interface Props {
   document: string;
   fields: ResolvedField[];
   data: Data;
+  version?: Version;
 }
 
 export default function template(
-  { document, fields, data }: Props,
+  { document, fields, data, version }: Props,
 ) {
   return `
-<nav aria-label="You are here:">
-  <ul class="breadcrumb">
-    <li>
-      <a href="${getPath()}">Home</a>
-    </li>
-    <li>
-      <a>${document}</a>
-    </li>
-  </ul>
-</nav>
+${breadcrumb(version, document)}
+
 <header class="header">
   <h1 class="header-title">Editing ${document}</h1>
 </header>

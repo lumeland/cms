@@ -9,7 +9,7 @@ import type { CMSContent } from "../types.ts";
 
 export default function (app: Hono) {
   app.get("/uploads/:collection", async (c: Context) => {
-    const { uploads } = c.get("options") as CMSContent;
+    const { uploads, versioning } = c.get("options") as CMSContent;
     const collectionId = c.req.param("collection");
     const [collection, publicPath] = uploads[collectionId];
     const files = await Array.fromAsync(collection);
@@ -19,6 +19,7 @@ export default function (app: Hono) {
         collection: collectionId,
         files,
         publicPath,
+        version: await versioning?.current(),
       }),
     );
   });
@@ -51,7 +52,7 @@ export default function (app: Hono) {
   });
 
   app.get("/uploads/:collection/file/:file", async (c: Context) => {
-    const { uploads } = c.get("options") as CMSContent;
+    const { uploads, versioning } = c.get("options") as CMSContent;
     const collectionId = c.req.param("collection");
     const fileId = c.req.param("file");
     const [collection, publicPath] = uploads[collectionId];
@@ -65,6 +66,7 @@ export default function (app: Hono) {
         collection: collectionId,
         publicPath: normalizePath(publicPath, fileId),
         file: fileId,
+        version: await versioning?.current(),
       }),
     );
   })
