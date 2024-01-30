@@ -1,13 +1,18 @@
 import { labelify } from "../../utils/string.ts";
 import { getPath } from "../../utils/path.ts";
 
+import type { Versioning } from "../../types.ts";
+
 interface Props {
   collections: string[];
   documents: string[];
   uploads: string[];
+  versioning?: Versioning;
 }
 
-export default function Template({ collections, documents, uploads }: Props) {
+export default function Template(
+  { collections, documents, uploads, versioning }: Props,
+) {
   return (
     <>
       <header class="header">
@@ -65,6 +70,57 @@ export default function Template({ collections, documents, uploads }: Props) {
           </li>
         ))}
       </ul>
+
+      {versioning && <Versions versioning={versioning} />}
+    </>
+  );
+}
+
+interface VersionsProps {
+  versioning: Versioning;
+}
+
+async function Versions({ versioning }: VersionsProps) {
+  return (
+    <>
+      <h2>Version manager</h2>
+
+      <ul>
+        {(await Array.fromAsync(versioning)).map((version) => (
+          <li>
+            {version.name}
+            {version.isCurrent
+              ? " (current)"
+              : (
+                <form method="post" action={getPath("versions", "change")}>
+                  <input type="hidden" name="name" value={version.name} />
+                  <button class="button is-secondary">Select</button>
+                </form>
+              )}
+            {!version.isProduction && (
+              <form method="post" action={getPath("versions", "publish")}>
+                <input type="hidden" name="name" value={version.name} />
+                <button class="button is-secondary">Publish</button>
+              </form>
+            )}
+          </li>
+        ))}
+      </ul>
+      <form
+        method="post"
+        action={getPath("versions", "create")}
+        class="ly-rowStack"
+      >
+        <label for="version-name">Name of the version</label>
+        <input
+          id="version-name"
+          class="input is-narrow"
+          type="text"
+          required
+          name="name"
+        />
+        <button class="button is-primary">New version</button>
+      </form>
     </>
   );
 }

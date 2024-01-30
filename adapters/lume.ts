@@ -5,6 +5,7 @@ import { contentType } from "std/media_types/content_type.ts";
 import { Hono } from "hono/mod.ts";
 import cms from "../mod.ts";
 import { dispatch } from "../src/utils/event.ts";
+import { Git } from "../src/versioning/git.ts";
 
 import type Site from "lume/core/site.ts";
 import type { Context } from "hono/mod.ts";
@@ -14,6 +15,7 @@ export interface Options {
   site: Site;
   basePath?: string;
   port?: number;
+  versioning?: "git";
 }
 
 export const defaults: Omit<Options, "site"> = {
@@ -77,7 +79,7 @@ export default async function lume(userOptions?: Options): Promise<Cms> {
     }
   }
 
-  return cms({
+  const app = cms({
     cwd,
     basePath,
     appWrapper(app) {
@@ -87,6 +89,19 @@ export default async function lume(userOptions?: Options): Promise<Cms> {
       return previewer;
     },
   });
+
+  app.storage("fs");
+
+  if (options.versioning === "git") {
+    app.versioning(
+      new Git({
+        root: cwd,
+        prodBranch: "master",
+      }),
+    );
+  }
+
+  return app;
 }
 
 function serveSite(files: PreviewWriter["files"], basePath: string) {

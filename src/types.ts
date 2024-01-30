@@ -17,7 +17,13 @@ export interface Storage extends AsyncIterable<EntryMetadata> {
   rename(id: string, newId: string): Promise<void>;
 }
 
-export interface Versioning extends AsyncIterable<string> {
+export interface Version {
+  name: string;
+  isCurrent: boolean;
+  isProduction: boolean;
+}
+
+export interface Versioning extends AsyncIterable<Version> {
   current(): Promise<string>;
   create(id: string): Promise<void>;
   change(id: string): Promise<void>;
@@ -84,4 +90,5 @@ export interface CMSContent {
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
   uploads: Record<string, [Storage, string]>;
+  versioning?: Versioning;
 }

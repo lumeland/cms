@@ -4,6 +4,7 @@ import serveStatic from "./middleware/serve_static.ts";
 import layout from "./routes/templates/layout.tsx";
 import documentRoutes from "./routes/document.tsx";
 import collectionRoutes from "./routes/collection.tsx";
+import versionsRoutes from "./routes/versions.tsx";
 import indexRoute from "./routes/index.tsx";
 import filesRoutes from "./routes/files.tsx";
 import Collection from "./collection.ts";
@@ -24,6 +25,7 @@ import type {
   FielType,
   ResolvedField,
   Storage,
+  Versioning,
 } from "./types.ts";
 
 export interface CmsOptions {
@@ -49,6 +51,7 @@ export default class Cms {
   fields = new Map<string, FielType>();
   collections = new Map<string, [string, (Field | string)[]]>();
   documents = new Map<string, [string, (Field | string)[]]>();
+  versionManager: Versioning | undefined;
 
   constructor(options?: CmsOptions) {
     this.options = {
@@ -70,6 +73,10 @@ export default class Cms {
       storage = new FsStorage({ root: this.root(), path: storage });
     }
     this.storages.set(name, storage);
+  }
+
+  versioning(versioning: Versioning) {
+    this.versionManager = versioning;
   }
 
   upload(name: string, storage: string, publicPath?: string) {
@@ -97,6 +104,7 @@ export default class Cms {
 
   init(): Hono {
     const content: CMSContent = {
+      versioning: this.versionManager,
       collections: {},
       documents: {},
       uploads: {},
@@ -142,6 +150,7 @@ export default class Cms {
     collectionRoutes(app);
     filesRoutes(app);
     indexRoute(app);
+    versionsRoutes(app);
 
     const sockets = new Set<WebSocket>();
 
