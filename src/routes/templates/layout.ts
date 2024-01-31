@@ -1,4 +1,4 @@
-import { asset } from "../../utils/path.ts";
+import { asset, getPath } from "../../utils/path.ts";
 
 interface Props {
   jsImports: string[];
@@ -8,10 +8,9 @@ interface Props {
 export default function template({ jsImports, content }: Props) {
   return `
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-baseassets="${asset()}" data-baseurls="${getPath()}">
 <head>
   <meta charset="UTF-8">
-  <meta name="basepath" content="${asset()}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lume CMS</title>
   <link rel="stylesheet" href="${asset("/styles.css")}">

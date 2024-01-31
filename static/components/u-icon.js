@@ -1,4 +1,4 @@
-import { fileType, push, url } from "./utils.js";
+import { asset, fileType, push } from "./utils.js";
 import { Component } from "./component.js";
 
 const cache = new Map();
@@ -15,7 +15,7 @@ customElements.define(
         return cache.get(name);
       }
 
-      const code = fetch(url("icons", `${name}.svg`))
+      const code = fetch(asset("icons", `${name}.svg`))
         .then((res) => res.text());
 
       cache.set(name, code);

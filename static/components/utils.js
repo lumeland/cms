@@ -74,23 +74,24 @@ export function dom(tag, attrs, ...children) {
   return el;
 }
 
-let basePath =
-  document.querySelector("meta[name='basepath']")?.getAttribute("content") ??
-    "";
-
-if (!basePath.endsWith("/")) {
-  basePath += "/";
-}
-
-if (!basePath.startsWith("/") && !basePath.startsWith("http")) {
-  basePath = "/" + basePath;
-}
+const { baseassets, baseurls } = document.documentElement.dataset;
 
 export function url(...parts) {
-  return basePath + parts
-    .filter((part) => part && typeof part === "string")
-    .map((part) => encodeURIComponent(part))
-    .join("/");
+  return [
+    baseurls,
+    ...parts
+      .filter((part) => part && typeof part === "string")
+      .map((part) => encodeURIComponent(part)),
+  ].join("/");
+}
+
+export function asset(...parts) {
+  return [
+    baseassets,
+    ...parts
+      .filter((part) => part && typeof part === "string")
+      .map((part) => encodeURIComponent(part)),
+  ].join("/");
 }
 
 export function fileType(path) {

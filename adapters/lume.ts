@@ -77,7 +77,6 @@ export default async function lume(userOptions?: Options): Promise<Cms> {
   });
 
   function getPreviewUrl(src: string): string | undefined {
-    console.log("getPreviewUrl", src);
     for (const page of site.pages) {
       if (page.src.entry?.src === src) {
         return page.outputPath;

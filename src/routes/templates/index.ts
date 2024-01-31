@@ -128,9 +128,10 @@ async function versions(versioning: Versioning) {
       <label for="version-name">Name of the new version</label>
       <input
         id="version-name"
-        class="input is-narrow"
+        class="input"
         type="text"
         required
+        autofocus
         name="name"
       >
 
