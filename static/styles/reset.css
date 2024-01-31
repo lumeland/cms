@@ -1,7 +1,7 @@
 @import "../libs/modern-normalize.css";
 
 html {
-  scroll-padding-top: 120px;
+  scroll-padding-top: 2rem;
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
 }

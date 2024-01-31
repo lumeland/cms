@@ -66,8 +66,8 @@ ${versioning && await versions(versioning)}
 
 async function versions(versioning: Versioning) {
   return `
-<header class="subheader">
-  <h2>Version manager</h2>
+<header class="subheader" id="versions">
+  <h2>Available versions</h2>
 </header>
 
 <ul class="list">
@@ -115,20 +115,30 @@ async function versions(versioning: Versioning) {
   }
 </ul>
 
-<form
-  method="post"
-  action="${getPath("versions", "create")}"
-  class="ly-rowStack"
->
-  <label for="version-name">Name of the version</label>
-  <input
-    id="version-name"
-    class="input is-narrow"
-    type="text"
-    required
-    name="name"
+  <u-modal-trigger data-target="modal-new-version">
+    <button class="button is-secondary">New version</button>
+  </u-modal-trigger>
+
+  <dialog class="modal is-center" id="modal-new-version">
+  <form
+    method="post"
+    action="${getPath("versions", "create")}"
   >
-  <button class="button is-primary">New version</button>
-</form>
+    <div class="field">
+      <label for="version-name">Name of the new version</label>
+      <input
+        id="version-name"
+        class="input is-narrow"
+        type="text"
+        required
+        name="name"
+      >
+
+      <footer class="field-footer">
+        <button class="button is-primary">Create version</button>
+      </footer>
+    </div>
+  </form>
+</dialog>
 `;
 }

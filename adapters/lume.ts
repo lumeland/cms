@@ -63,6 +63,14 @@ export default async function lume(userOptions?: Options): Promise<Cms> {
     e.detail.url = getPreviewUrl(e.detail.src);
   });
 
+  addEventListener("cms:changedVersion", () => {
+    site.build();
+  });
+
+  addEventListener("cms:publishedVersion", () => {
+    site.build();
+  });
+
   function getPreviewUrl(src: string): string | undefined {
     for (const page of site.pages) {
       if (page.src.entry?.src === src) {

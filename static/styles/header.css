@@ -51,7 +51,7 @@ dl.header-description {
 
 .subheader {
   border-bottom: solid 1px var(--color-line);
-  padding: var(--row-gap-small) 0;
+  padding: .5rem 0;
 
   & h2 {
     margin: 0;

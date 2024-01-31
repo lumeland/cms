@@ -12,7 +12,7 @@ export default function breadcrumb(version?: Version, ...links: Link[]) {
     version
       ? `<li class="breadcrumb-version ${
         version.isProduction ? "is-production" : ""
-      }"><a href="${getPath()}">${version.name}</a></li>`
+      }"><a href="${getPath()}#versions">${version.name}</a></li>`
       : ""
   }
     <li><a href="${getPath()}"><u-icon name="house-fill"></u-icon> Home</a></li>
