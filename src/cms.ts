@@ -9,11 +9,10 @@ import filesRoutes from "./routes/files.ts";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
 import { FsStorage } from "./storage/fs.ts";
+import { Git } from "./versioning/git.ts";
 import { normalizePath, setBasePath } from "./utils/path.ts";
 import { join } from "std/path/join.ts";
-import { fromFileUrl } from "std/path/from_file_url.ts";
-import { basename } from "std/path/basename.ts";
-import { dirname } from "std/path/dirname.ts";
+import { basename, dirname, fromFileUrl, relative } from "std/path/mod.ts";
 import { labelify } from "./utils/string.ts";
 import { dispatch } from "./utils/event.ts";
 
@@ -31,14 +30,22 @@ import type {
 export interface CmsOptions {
   cwd?: string;
   basePath?: string;
-  port?: number;
+  server?: ServerOptions;
   appWrapper?: (app: Hono) => Hono;
+}
+
+export interface ServerOptions {
+  port?: number;
+  cert?: string;
+  key?: string;
 }
 
 const defaults: Required<CmsOptions> = {
   cwd: Deno.cwd(),
   basePath: "/",
-  port: 8000,
+  server: {
+    port: 8000,
+  },
   appWrapper: (app) => app,
 };
 
@@ -57,6 +64,10 @@ export default class Cms {
     this.options = {
       ...defaults,
       ...options,
+      server: {
+        ...defaults.server,
+        ...options?.server,
+      },
     };
   }
 
@@ -77,6 +88,15 @@ export default class Cms {
 
   versioning(versioning: Versioning) {
     this.versionManager = versioning;
+  }
+
+  git(prodBranch = "main") {
+    this.versioning(
+      new Git({
+        root: this.root(),
+        prodBranch,
+      }),
+    );
   }
 
   upload(name: string, storage: string, publicPath?: string) {
@@ -205,14 +225,15 @@ export default class Cms {
     let root = import.meta.resolve("../static/");
 
     if (root.startsWith("file:")) {
-      root = fromFileUrl(root);
-      const cwd = Deno.cwd();
-
-      if (root.startsWith(cwd)) {
-        root = root.slice(cwd.length);
-      }
-
-      app.get("*", serveStatic({ root }));
+      root = relative(Deno.cwd(), fromFileUrl(root));
+      app.get(
+        "*",
+        serveStatic({
+          root,
+          rewriteRequestPath: (path: string) =>
+            normalizePath(path.substring(this.options.basePath.length)),
+        }),
+      );
     }
 
     return this.options.appWrapper(app);
@@ -220,10 +241,9 @@ export default class Cms {
 
   serve() {
     const app = this.init();
-    const { port } = this.options;
 
     return Deno.serve({
-      port,
+      ...this.options.server,
       handler: app.fetch,
     });
   }

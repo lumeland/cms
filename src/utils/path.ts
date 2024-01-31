@@ -43,13 +43,13 @@ export function getPath(...parts: string[]) {
 
 const staticUrl = new URL(import.meta.resolve("../../static/"));
 
-export function getStaticPath(...parts: string[]) {
+export function asset(url: string) {
   if (staticUrl.protocol === "file:") {
-    return src(...parts);
+    return src(url);
   }
 
   return new URL(
-    join(staticUrl.pathname, ...parts),
+    join(staticUrl.pathname, url),
     staticUrl,
   ).toString();
 }

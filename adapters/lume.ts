@@ -2,32 +2,37 @@ import { Hono } from "hono/mod.ts";
 import { serveStatic } from "hono/middleware.ts";
 import cms from "../mod.ts";
 import { dispatch } from "../src/utils/event.ts";
-import { Git } from "../src/versioning/git.ts";
 
 import type Site from "lume/core/site.ts";
 import type Cms from "../src/cms.ts";
+import type { ServerOptions } from "../src/cms.ts";
 
 export interface Options {
   site: Site;
   basePath?: string;
-  port?: number;
-  versioning?: "git";
+  server?: ServerOptions;
 }
 
 export const defaults: Omit<Options, "site"> = {
   basePath: "/admin",
-  port: 8000,
+  server: {
+    port: 8000,
+  },
 };
 
 export default async function lume(userOptions?: Options): Promise<Cms> {
   const options = {
     ...defaults,
     ...userOptions,
+    server: {
+      ...defaults.server,
+      ...userOptions?.server,
+    },
   } as Required<Options>;
 
   const { site, basePath } = options;
 
-  site.options.location = new URL(`http://localhost:${options.port}/`);
+  site.options.location = new URL(`http://localhost:${options.server.port}/`);
   await site.build();
 
   const cwd = site.src();
@@ -88,7 +93,7 @@ export default async function lume(userOptions?: Options): Promise<Cms> {
   const app = cms({
     cwd,
     basePath,
-    port: options.port,
+    server: options.server,
     appWrapper(app) {
       const previewer = new Hono({
         strict: false,
@@ -105,15 +110,6 @@ export default async function lume(userOptions?: Options): Promise<Cms> {
   });
 
   app.storage("fs");
-
-  if (options.versioning === "git") {
-    app.versioning(
-      new Git({
-        root: cwd,
-        prodBranch: "master",
-      }),
-    );
-  }
 
   return app;
 }
