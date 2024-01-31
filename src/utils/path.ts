@@ -1,5 +1,5 @@
 import { join } from "std/path/posix/join.ts";
-import { SEP } from "std/path/separator.ts";
+import { SEPARATOR } from "std/path/constants.ts";
 
 /**
  * Convert the Windows paths (that use the separator "\")
@@ -9,8 +9,8 @@ import { SEP } from "std/path/separator.ts";
 export function normalizePath(...paths: string[]) {
   let path = join(...paths);
 
-  if (SEP !== "/") {
-    path = path.replaceAll(SEP, "/");
+  if (SEPARATOR !== "/") {
+    path = path.replaceAll(SEPARATOR, "/");
 
     // Is absolute Windows path (C:/...)
     if (path.includes(":/")) {
@@ -39,4 +39,17 @@ export function getPath(...parts: string[]) {
       .filter((part) => typeof part === "string")
       .map((part) => encodeURIComponent(part)),
   );
+}
+
+const staticUrl = new URL(import.meta.resolve("../../static/"));
+
+export function getStaticPath(...parts: string[]) {
+  if (staticUrl.protocol === "file:") {
+    return src(...parts);
+  }
+
+  return new URL(
+    join(staticUrl.pathname, ...parts),
+    staticUrl,
+  ).toString();
 }

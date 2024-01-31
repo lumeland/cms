@@ -31,7 +31,10 @@ customElements.define(
           type: "button",
           onclick() {
             push(document.body, "u-modal", {
-              data: { src: url("uploads", name) },
+              data: {
+                src: url("uploads", name),
+                name: `${name}.markdown`,
+              },
             });
           },
         }, `<u-icon name="image-square-fill"></u-icon> ${name}`);

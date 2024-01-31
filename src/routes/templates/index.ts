@@ -60,7 +60,7 @@ ${breadcrumb(await versioning?.current())}
 
 </ul>
 
-${versioning && await versions(versioning)}
+${versioning && await versions(versioning) || ""}
 `;
 }
 

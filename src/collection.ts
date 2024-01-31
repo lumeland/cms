@@ -1,6 +1,6 @@
 import Document from "./document.ts";
 
-import type { ResolvedField, Storage } from "./types.ts";
+import type { EntryMetadata, ResolvedField, Storage } from "./types.ts";
 
 export default class Collection {
   #storage: Storage;
@@ -15,7 +15,7 @@ export default class Collection {
     return this.#fields;
   }
 
-  async *[Symbol.asyncIterator]() {
+  async *[Symbol.asyncIterator](): AsyncGenerator<EntryMetadata> {
     for await (const id of this.#storage) {
       yield id;
     }

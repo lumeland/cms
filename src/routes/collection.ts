@@ -83,7 +83,7 @@ export default function (app: Hono) {
   });
 
   app
-    .get("/collection/:collection/create", (c: Context) => {
+    .get("/collection/:collection/create", async (c: Context) => {
       const { collections, versioning } = c.get("options") as CMSContent;
       const collectionId = c.req.param("collection");
       const collection = collections[collectionId];
@@ -92,7 +92,7 @@ export default function (app: Hono) {
         collectionCreate({
           collection: collectionId,
           fields: collection.fields,
-          version: versioning?.current(),
+          version: await versioning?.current(),
         }),
       );
     })

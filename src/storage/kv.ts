@@ -20,7 +20,9 @@ export class KvStorage implements Storage {
 
   async *[Symbol.asyncIterator]() {
     for await (const entry of this.kv.list({ prefix: this.prefix })) {
-      yield entry.key.slice(this.prefix.length).join("/");
+      yield {
+        id: entry.key.slice(this.prefix.length).join("/"),
+      };
     }
   }
 

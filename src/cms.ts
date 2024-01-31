@@ -1,5 +1,5 @@
 import { Hono } from "hono/mod.ts";
-import serveStatic from "./middleware/serve_static.ts";
+import { serveStatic } from "hono/middleware.ts";
 import layout from "./routes/templates/layout.ts";
 import documentRoutes from "./routes/document.ts";
 import collectionRoutes from "./routes/collection.ts";
@@ -11,6 +11,7 @@ import Document from "./document.ts";
 import { FsStorage } from "./storage/fs.ts";
 import { normalizePath, setBasePath } from "./utils/path.ts";
 import { join } from "std/path/join.ts";
+import { fromFileUrl } from "std/path/from_file_url.ts";
 import { basename } from "std/path/basename.ts";
 import { dirname } from "std/path/dirname.ts";
 import { labelify } from "./utils/string.ts";
@@ -201,13 +202,18 @@ export default class Cms {
       return c.notFound();
     });
 
-    app.get(
-      "*",
-      serveStatic({
-        root: import.meta.resolve("../static/"),
-        basePath: this.options.basePath,
-      }),
-    );
+    let root = import.meta.resolve("../static/");
+
+    if (root.startsWith("file:")) {
+      root = fromFileUrl(root);
+      const cwd = Deno.cwd();
+
+      if (root.startsWith(cwd)) {
+        root = root.slice(cwd.length);
+      }
+
+      app.get("*", serveStatic({ root }));
+    }
 
     return this.options.appWrapper(app);
   }

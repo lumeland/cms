@@ -34,7 +34,7 @@ customElements.define(
       }
     }
 
-    attributeChangedCallback(name) {
+    attributeChangedCallback(name, oldValue, newValue) {
       if (name !== "data-src") {
         return;
       }
