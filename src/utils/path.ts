@@ -29,12 +29,9 @@ export function setBasePath(path: string) {
   basePath = path;
 }
 
-export function src(...parts: string[]) {
-  return join(basePath, ...parts);
-}
-
 export function getPath(...parts: string[]) {
-  return src(
+  return join(
+    basePath,
     ...parts
       .filter((part) => typeof part === "string")
       .map((part) => encodeURIComponent(part)),
@@ -43,9 +40,9 @@ export function getPath(...parts: string[]) {
 
 const staticUrl = new URL(import.meta.resolve("../../static/"));
 
-export function asset(url: string) {
+export function asset(url = "") {
   if (staticUrl.protocol === "file:") {
-    return src(url);
+    return join(basePath, url);
   }
 
   return new URL(
