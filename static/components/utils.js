@@ -74,11 +74,20 @@ export function dom(tag, attrs, ...children) {
   return el;
 }
 
-const basePath =
+let basePath =
   document.querySelector("meta[name='basepath']")?.getAttribute("content") ??
     "";
+
+if (!basePath.endsWith("/")) {
+  basePath += "/";
+}
+
+if (!basePath.startsWith("/") && !basePath.startsWith("http")) {
+  basePath = "/" + basePath;
+}
+
 export function url(...parts) {
-  return "/" + [...basePath.split("/"), ...parts]
+  return basePath + parts
     .filter((part) => part && typeof part === "string")
     .map((part) => encodeURIComponent(part))
     .join("/");
