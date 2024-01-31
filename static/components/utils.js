@@ -78,7 +78,7 @@ const { baseassets, baseurls } = document.documentElement.dataset;
 
 export function url(...parts) {
   return [
-    baseurls,
+    baseurls === "/" ? "" : baseurls,
     ...parts
       .filter((part) => part && typeof part === "string")
       .map((part) => encodeURIComponent(part)),
@@ -87,7 +87,7 @@ export function url(...parts) {
 
 export function asset(...parts) {
   return [
-    baseassets,
+    baseassets === "/" ? "" : baseassets,
     ...parts
       .filter((part) => part && typeof part === "string")
       .map((part) => encodeURIComponent(part)),

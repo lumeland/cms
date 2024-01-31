@@ -1,16 +1,18 @@
 import { Hono } from "hono/mod.ts";
 import { serveStatic } from "hono/middleware.ts";
 import cms from "../mod.ts";
+import authRoutes from "../src/routes/auth.ts";
 import { dispatch } from "../src/utils/event.ts";
 
 import type Site from "lume/core/site.ts";
 import type Cms from "../src/cms.ts";
-import type { ServerOptions } from "../src/cms.ts";
+import type { AuthOptions, ServerOptions } from "../src/cms.ts";
 
 export interface Options {
   site: Site;
   basePath?: string;
   server?: ServerOptions;
+  auth?: AuthOptions;
 }
 
 export const defaults: Omit<Options, "site"> = {
@@ -98,6 +100,11 @@ export default async function lume(userOptions?: Options): Promise<Cms> {
       const previewer = new Hono({
         strict: false,
       });
+
+      if (options.auth) {
+        authRoutes(previewer, options.auth);
+      }
+
       previewer.route(basePath, app);
       previewer.get(
         "*",

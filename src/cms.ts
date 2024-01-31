@@ -6,6 +6,7 @@ import collectionRoutes from "./routes/collection.ts";
 import versionsRoutes from "./routes/versions.tsx";
 import indexRoute from "./routes/index.ts";
 import filesRoutes from "./routes/files.ts";
+import authRoutes from "./routes/auth.ts";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
 import { FsStorage } from "./storage/fs.ts";
@@ -28,10 +29,11 @@ import type {
 } from "./types.ts";
 
 export interface CmsOptions {
-  cwd?: string;
-  basePath?: string;
-  server?: ServerOptions;
-  appWrapper?: (app: Hono) => Hono;
+  cwd: string;
+  basePath: string;
+  server: ServerOptions;
+  auth?: AuthOptions;
+  appWrapper: (app: Hono) => Hono;
 }
 
 export interface ServerOptions {
@@ -40,7 +42,12 @@ export interface ServerOptions {
   key?: string;
 }
 
-const defaults: Required<CmsOptions> = {
+export interface AuthOptions {
+  method: "basic";
+  users: Record<string, string>;
+}
+
+const defaults: CmsOptions = {
   cwd: Deno.cwd(),
   basePath: "/",
   server: {
@@ -52,7 +59,7 @@ const defaults: Required<CmsOptions> = {
 export default class Cms {
   #jsImports = new Set<string>();
 
-  options: Required<CmsOptions>;
+  options: CmsOptions;
   storages = new Map<string, Storage>();
   uploads = new Map<string, [string, string]>();
   fields = new Map<string, FielType>();
@@ -60,7 +67,7 @@ export default class Cms {
   documents = new Map<string, [string, (Field | string)[]]>();
   versionManager: Versioning | undefined;
 
-  constructor(options?: CmsOptions) {
+  constructor(options?: Partial<CmsOptions>) {
     this.options = {
       ...defaults,
       ...options,
@@ -157,6 +164,10 @@ export default class Cms {
     const app = new Hono({
       strict: false,
     });
+
+    if (this.options.auth) {
+      authRoutes(app, this.options.auth);
+    }
 
     app.use("*", (c: Context, next: Next) => {
       c.setRenderer(async (content) => {
