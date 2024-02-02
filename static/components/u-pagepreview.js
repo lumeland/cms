@@ -24,8 +24,23 @@ customElements.define(
             class: "modal is-preview",
           });
           iframe = push(dialog, "iframe", { class: "modal-content", src });
+          let icon;
+          const button = push(dialog, "button", {
+            class: "modal-toggle buttonIcon is-primary",
+            onclick: () => {
+              dialog.classList.toggle("is-hidden");
+              icon.setAttribute(
+                "name",
+                dialog.classList.contains("is-hidden")
+                  ? "caret-double-right"
+                  : "caret-double-left",
+              );
+            },
+          });
+          icon = push(button, "u-icon", { name: "caret-double-left" });
           dialog.show();
         }
+
         if (src) {
           iframe.src = src;
         } else {

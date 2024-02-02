@@ -1,8 +1,12 @@
 html:has(.modal.is-aside[open]) {
   overflow: hidden;
 }
-html:has(.modal.is-preview[open]) {
-  padding-left: clamp(300px, 50vw, 1200px);
+html:has(.modal.is-preview:not(.is-hidden)[open]) {
+  padding-left: calc(100% - 450px);
+
+  @media (min-width: 850px) {
+    padding-left: clamp(300px, 50vw, 1200px);
+  }
 }
 .modal[open] {
   border: none;
@@ -30,12 +34,22 @@ html:has(.modal.is-preview[open]) {
 
   &.is-preview {
     animation: previewIn var(--animation-duration);
-    width: clamp(300px, 50vw, 1200px);
+    width: min(450px, 100%);
     inset: 0 auto 0 0;
     position: fixed;
     max-height: 100vh;
     height: auto;
     margin: 0;
+    z-index: 2;
+    transition: transform var(--animation-duration);
+
+    &.is-hidden {
+      transform: translateX(-100%);
+    }
+
+    @media (min-width: 850px) {
+      width: clamp(300px, 50vw, 1200px);
+    }
   }
 }
 
@@ -43,6 +57,21 @@ html:has(.modal.is-preview[open]) {
   position: absolute;
   top: .5rem;
   right: .5rem;
+}
+.modal-toggle {
+  position: absolute;
+  background: var(--color-white);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  box-shadow: 0 0 1px #0003, 0 0 30px #0002;
+  top: 1.6rem;
+  right: -40px;
+}
+@media (max-width: 500px) {
+  .modal.is-preview:not(.is-hidden)[open] .modal-toggle {
+    right: 0;
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+  }
 }
 
 .modal-content {
