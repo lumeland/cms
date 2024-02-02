@@ -24,6 +24,7 @@ customElements.define(
             class: "modal is-preview",
           });
           iframe = push(dialog, "iframe", { class: "modal-content", src });
+          // deno-lint-ignore prefer-const
           let icon;
           const button = push(dialog, "button", {
             class: "modal-toggle buttonIcon is-primary",
