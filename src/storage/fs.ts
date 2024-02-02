@@ -7,7 +7,7 @@ import { fromFilename } from "./transformers/mod.ts";
 import { contentType } from "std/media_types/content_type.ts";
 import { extname } from "std/path/extname.ts";
 
-import type { Data, Entry, Storage } from "../types.ts";
+import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
 
 export interface Options {
   root?: string;
@@ -49,72 +49,78 @@ export class FsStorage implements Storage {
 
     for await (const entry of iterable) {
       yield {
-        id: entry.path.slice(root.length + 1),
+        name: entry.path.slice(root.length + 1),
+        src: entry.path,
       };
     }
   }
 
-  directory(id: string): Storage {
+  directory(path: string): Storage {
     return new FsStorage({
       root: this.root,
-      path: id,
+      path,
     });
   }
 
-  get(path: string): Entry {
-    return new FsEntry({ root: this.root, path });
+  get(name: string): Entry {
+    return new FsEntry({
+      src: join(this.root, name),
+      name,
+    });
   }
 
-  async delete(path: string) {
-    await Deno.remove(join(this.root, path));
+  async delete(name: string) {
+    await Deno.remove(join(this.root, name));
   }
 
-  async rename(path: string, newPath: string) {
-    const dest = join(this.root, newPath);
+  async rename(name: string, newName: string) {
+    const dest = join(this.root, newName);
     await ensureDir(dirname(dest));
-    await Deno.rename(join(this.root, path), dest);
+    await Deno.rename(join(this.root, name), dest);
   }
 }
 
 export class FsEntry implements Entry {
-  root: string;
-  path: string;
+  metadata: EntryMetadata;
 
-  constructor(options: Required<Options>) {
-    this.root = options.root;
-    this.path = options.path;
+  constructor(metadata: EntryMetadata) {
+    this.metadata = metadata;
   }
 
   get src(): string {
-    return join(this.root, this.path);
+    return this.metadata.src;
   }
 
   async readData(): Promise<Data> {
-    const content = await Deno.readTextFile(this.src);
-    const transformer = fromFilename(this.path);
+    const { src } = this.metadata;
+    const content = await Deno.readTextFile(src);
+    const transformer = fromFilename(src);
 
     return transformer.toData(content);
   }
 
   async writeData(data: Data) {
-    const transformer = fromFilename(this.path);
+    const { src } = this.metadata;
+    const transformer = fromFilename(src);
     const content = await transformer.fromData(data);
 
-    await ensureDir(dirname(this.src));
-    await Deno.writeTextFile(this.src, content);
+    await ensureDir(dirname(src));
+    await Deno.writeTextFile(src, content);
   }
 
   async readFile(): Promise<File> {
-    const content = await Deno.readFile(this.src);
-    const type = contentType(extname(this.path));
+    const { src, name } = this.metadata;
+    const content = await Deno.readFile(src);
+    const type = contentType(extname(src));
 
-    return new File([new Blob([content])], this.root, { type });
+    return new File([new Blob([content])], name, { type });
   }
 
   async writeFile(file: File) {
+    const { src } = this.metadata;
     const content = await file.arrayBuffer();
 
-    await ensureDir(dirname(this.src));
-    await Deno.writeFile(this.src, new Uint8Array(content));
+    await ensureDir(dirname(src));
+    await Deno.writeFile(src, new Uint8Array(content));
   }
 }

@@ -6,15 +6,27 @@ import type Document from "./document.ts";
 export type Data = Record<string, unknown>;
 
 export interface EntryMetadata {
-  id: string;
+  name: string;
+  src: string;
 }
 
 /** A storage mechanism for data */
 export interface Storage extends AsyncIterable<EntryMetadata> {
-  get(id: string): Entry;
-  directory(id: string): Storage;
-  delete(id: string): Promise<void>;
-  rename(id: string, newId: string): Promise<void>;
+  get(name: string): Entry;
+  directory(name: string): Storage;
+  delete(name: string): Promise<void>;
+  rename(name: string, newName: string): Promise<void>;
+}
+
+export interface Entry {
+  src?: string;
+  metadata: EntryMetadata;
+
+  readData(): Promise<Data>;
+  writeData(content: Data): Promise<void>;
+
+  readFile(): Promise<File>;
+  writeFile(content: File): Promise<void>;
 }
 
 export interface Version {
@@ -29,16 +41,6 @@ export interface Versioning extends AsyncIterable<Version> {
   change(id: string): Promise<void>;
   publish(id: string): Promise<void>;
   delete(id: string): Promise<void>;
-}
-
-export interface Entry {
-  src?: string;
-
-  readData(): Promise<Data>;
-  writeData(content: Data): Promise<void>;
-
-  readFile(): Promise<File>;
-  writeFile(content: File): Promise<void>;
 }
 
 /** A transformer to convert from/to Data */

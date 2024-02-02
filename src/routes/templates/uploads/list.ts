@@ -125,8 +125,8 @@ function createTree(files: EntryMetadata[]): Tree {
   const tree: Tree = {};
 
   for (const file of files) {
-    const { id } = file;
-    placeFile(tree, id, id.split("/"));
+    const { name } = file;
+    placeFile(tree, name, name.split("/"));
   }
 
   return tree;

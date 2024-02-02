@@ -149,6 +149,7 @@ export default class Cms {
 
     for (const [name, [path, fields]] of this.collections) {
       content.collections[name] = new Collection(
+        name,
         this.#getStorage(path),
         this.#resolveFields(fields, content),
       );

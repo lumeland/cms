@@ -2,26 +2,27 @@ import { escape } from "std/html/entities.ts";
 import { getPath } from "../../../utils/path.ts";
 import breadcrumb from "../breadcrumb.ts";
 
-import type { Data, ResolvedField, Version } from "../../../types.ts";
+import type Collection from "../../../collection.ts";
+import type Document from "../../../document.ts";
+import type { Version } from "../../../types.ts";
 
 interface Props {
-  collection: string;
-  document: string;
-  fields: ResolvedField[];
-  data: Data;
-  src?: string;
+  collection: Collection;
+  document: Document;
   version?: Version;
 }
 
-export default function template(
-  { collection, document, fields, data, src, version }: Props,
+export default async function template(
+  { collection, document, version }: Props,
 ) {
+  const data = await document.read();
+
   return `
-<u-pagepreview data-src="${src}"></u-pagepreview>
+<u-pagepreview data-src="${document.src}"></u-pagepreview>
 ${
     breadcrumb(version, [
-      collection,
-      getPath("collection", collection),
+      collection.name,
+      getPath("collection", collection.name),
     ], "Editing file")
   }
 
@@ -34,7 +35,7 @@ ${
         id="_id"
         type="text"
         name="_id"
-        value="${document}"
+        value="${document.name}"
         placeholder="Rename the file…"
         form="form-edit"
         aria-label="File name"
@@ -43,14 +44,14 @@ ${
     </h1>
   </header>
   <form
-    action="${getPath("collection", collection, "edit", document)}"
+    action="${getPath("collection", collection.name, "edit", document.name)}"
     method="post"
     class="form"
     enctype="multipart/form-data"
     id="form-edit"
   >
     ${
-    fields.map((field) => `
+    document.fields.map((field) => `
         <${field.tag}
           data-nameprefix="changes"
           data-value="${escape(JSON.stringify(data[field.name] ?? null))}"
@@ -71,9 +72,9 @@ ${
           formAction="${
     getPath(
       "collection",
-      collection,
+      collection.name,
       "delete",
-      document,
+      document.name,
     )
   }"
         >

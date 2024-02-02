@@ -18,8 +18,12 @@ export default class Document {
     return this.#fields;
   }
 
+  get name() {
+    return this.#entry.metadata.name;
+  }
+
   get src() {
-    return this.#entry.src;
+    return this.#entry.metadata.src;
   }
 
   async read() {

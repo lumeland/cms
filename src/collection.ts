@@ -3,10 +3,12 @@ import Document from "./document.ts";
 import type { EntryMetadata, ResolvedField, Storage } from "./types.ts";
 
 export default class Collection {
+  name: string;
   #storage: Storage;
   #fields: ResolvedField[];
 
-  constructor(storage: Storage, fields: ResolvedField[]) {
+  constructor(name: string, storage: Storage, fields: ResolvedField[]) {
+    this.name = name;
     this.#storage = storage;
     this.#fields = fields;
   }
@@ -16,8 +18,8 @@ export default class Collection {
   }
 
   async *[Symbol.asyncIterator](): AsyncGenerator<EntryMetadata> {
-    for await (const id of this.#storage) {
-      yield id;
+    for await (const metadata of this.#storage) {
+      yield metadata;
     }
   }
 

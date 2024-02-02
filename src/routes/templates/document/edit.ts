@@ -2,32 +2,32 @@ import { escape } from "std/html/entities.ts";
 import { getPath } from "../../../utils/path.ts";
 import breadcrumb from "../breadcrumb.ts";
 
-import type { Data, ResolvedField, Version } from "../../../types.ts";
+import type Document from "../../../document.ts";
+import type { Version } from "../../../types.ts";
 
 interface Props {
-  document: string;
-  fields: ResolvedField[];
-  data: Data;
+  document: Document;
   version?: Version;
 }
 
-export default function template(
-  { document, fields, data, version }: Props,
+export default async function template(
+  { document, version }: Props,
 ) {
+  const data = await document.read();
   return `
-${breadcrumb(version, document)}
+${breadcrumb(version, document.name)}
 
 <header class="header">
-  <h1 class="header-title">Editing ${document}</h1>
+  <h1 class="header-title">Editing ${document.name}</h1>
 </header>
 <form
-  action="${getPath("document", document)}"
+  action="${getPath("document", document.name)}"
   method="post"
   class="form"
   enctype="multipart/form-data"
 >
   ${
-    fields.map((field) => `
+    document.fields.map((field) => `
       <${field.tag}
         data-nameprefix="changes"
         data-value="${escape(JSON.stringify(data[field.name] ?? null))}"

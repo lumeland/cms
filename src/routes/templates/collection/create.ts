@@ -2,20 +2,20 @@ import { escape } from "std/html/entities.ts";
 import { getPath } from "../../../utils/path.ts";
 import breadcrumb from "../breadcrumb.ts";
 
-import type { ResolvedField, Version } from "../../../types.ts";
+import type Collection from "../../../collection.ts";
+import type { Version } from "../../../types.ts";
 
 interface Props {
-  collection: string;
-  fields: ResolvedField[];
+  collection: Collection;
   version?: Version;
 }
 
-export default function template({ collection, fields, version }: Props) {
+export default function template({ collection, version }: Props) {
   return `
 ${
     breadcrumb(version, [
-      collection,
-      getPath("collection", collection),
+      collection.name,
+      getPath("collection", collection.name),
     ], "New file")
   }
 
@@ -36,14 +36,14 @@ ${
   </h1>
 </header>
 <form
-  action="${getPath("collection", collection, "create")}"
+  action="${getPath("collection", collection.name, "create")}"
   method="post"
   class="form"
   enctype="multipart/form-data"
   id="form-create"
 >
   ${
-    fields.map((field) => `
+    collection.fields.map((field) => `
       <${field.tag}
         data-nameprefix="changes"
         data-field="${escape(JSON.stringify(field))}"

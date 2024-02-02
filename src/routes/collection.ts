@@ -11,15 +11,11 @@ import type { CMSContent } from "../types.ts";
 
 export default function (app: Hono) {
   app.get("/collection/:collection", async (c: Context) => {
-    const { collections, versioning } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("collection");
-    const collection = collections[collectionId];
-    const documents = await Array.fromAsync(collection);
+    const { collection, versioning } = get(c);
 
     return c.render(
-      collectionList({
-        collection: collectionId,
-        documents,
+      await collectionList({
+        collection,
         version: await versioning?.current(),
       }),
     );
@@ -27,90 +23,104 @@ export default function (app: Hono) {
 
   app
     .get("/collection/:collection/edit/:document", async (c: Context) => {
-      const { collections, versioning } = c.get("options") as CMSContent;
-      const collectionId = c.req.param("collection");
-      const collection = collections[collectionId];
-      const documentId = c.req.param("document");
-      const document = collection.get(documentId);
-      const data = await document.read();
+      const { collection, versioning, document } = get(c);
+
+      if (!document) {
+        throw new Error("Document not found");
+      }
 
       return c.render(
-        collectionEdit({
-          collection: collectionId,
-          document: documentId,
-          fields: document.fields,
-          data,
-          src: document.src,
+        await collectionEdit({
+          collection,
+          document,
           version: await versioning?.current(),
         }),
       );
     })
     .post(async (c: Context) => {
-      const { collections } = c.get("options") as CMSContent;
-      const collectionId = c.req.param("collection");
-      const collection = collections[collectionId];
-      const body = await c.req.parseBody();
-      const prevId = c.req.param("document");
-      const documentId = slugify(body._id as string);
+      const { collection, document: oldDocument } = get(c);
 
-      if (prevId !== documentId) {
-        await collection.rename(prevId, documentId);
+      if (!oldDocument) {
+        throw new Error("Document not found");
       }
 
-      const document = collection.get(documentId);
+      const body = await c.req.parseBody();
+      const newName = slugify(body._id as string);
+      let document = oldDocument;
+
+      if (oldDocument.name !== newName) {
+        await collection.rename(oldDocument.name, newName);
+        document = collection.get(newName);
+      }
+
       await document.write(changesToData(body));
+
       dispatch("updatedDocument", {
         collection,
         document,
       });
+
       return c.redirect(
-        getPath("collection", collectionId, "edit", documentId),
+        getPath("collection", collection.name, "edit", document.name),
       );
     });
 
   app.post("/collection/:collection/delete/:document", async (c: Context) => {
-    const { collections } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("collection");
-    const collection = collections[collectionId];
-    const documentId = c.req.param("document");
+    const { collection, document } = get(c);
 
-    await collection.delete(documentId);
+    if (!document) {
+      throw new Error("Document not found");
+    }
+
+    await collection.delete(document.name);
+
     dispatch("deletedDocument", {
-      collection: collectionId,
-      document: documentId,
+      collection,
+      document,
     });
-    return c.redirect(getPath("collection", collectionId));
+
+    return c.redirect(getPath("collection", collection.name));
   });
 
   app
     .get("/collection/:collection/create", async (c: Context) => {
-      const { collections, versioning } = c.get("options") as CMSContent;
-      const collectionId = c.req.param("collection");
-      const collection = collections[collectionId];
+      const { collection, versioning } = get(c);
 
       return c.render(
         collectionCreate({
-          collection: collectionId,
-          fields: collection.fields,
+          collection,
           version: await versioning?.current(),
         }),
       );
     })
     .post(async (c: Context) => {
-      const { collections } = c.get("options") as CMSContent;
-      const collectionId = c.req.param("collection");
-      const collection = collections[collectionId];
+      const { collection } = get(c);
       const body = await c.req.parseBody();
-      const documentId = slugify(body._id as string);
-      const document = collection.create(documentId);
+      const document = collection.create(slugify(body._id as string));
 
       await document.write(changesToData(body));
+
       dispatch("createdDocument", {
         collection,
         document,
       });
+
       return c.redirect(
-        getPath("collection", collectionId, "edit", documentId),
+        getPath("collection", collection.name, "edit", document.name),
       );
     });
+}
+
+function get(c: Context) {
+  const { collections, versioning } = c.get("options") as CMSContent;
+  const collectionName = c.req.param("collection");
+  const collection = collections[collectionName];
+  const documentName = c.req.param("document");
+  const document = documentName ? collection?.get(documentName) : undefined;
+
+  return {
+    collection,
+    document,
+    versioning,
+  };
 }
