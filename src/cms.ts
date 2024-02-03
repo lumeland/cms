@@ -12,7 +12,6 @@ import Document from "./document.ts";
 import { FsStorage } from "./storage/fs.ts";
 import { Git } from "./versioning/git.ts";
 import { normalizePath, setBasePath } from "./utils/path.ts";
-import { join } from "std/path/join.ts";
 import { basename, dirname, fromFileUrl, relative } from "std/path/mod.ts";
 import { labelify } from "./utils/string.ts";
 import { dispatch } from "./utils/event.ts";
@@ -29,7 +28,7 @@ import type {
 } from "./types.ts";
 
 export interface CmsOptions {
-  cwd: string;
+  root: string;
   basePath: string;
   server: ServerOptions;
   auth?: AuthOptions;
@@ -48,7 +47,7 @@ export interface AuthOptions {
 }
 
 const defaults: CmsOptions = {
-  cwd: Deno.cwd(),
+  root: Deno.cwd(),
   basePath: "/",
   server: {
     port: 8000,
@@ -60,12 +59,12 @@ export default class Cms {
   #jsImports = new Set<string>();
 
   options: CmsOptions;
-  storages = new Map<string, Storage>();
+  storages = new Map<string, Storage | string>();
   uploads = new Map<string, [string, string]>();
   fields = new Map<string, FielType>();
   collections = new Map<string, [string, (Field | string)[]]>();
   documents = new Map<string, [string, (Field | string)[]]>();
-  versionManager: Versioning | undefined;
+  versionManager: Versioning | string | undefined;
 
   constructor(options?: Partial<CmsOptions>) {
     this.options = {
@@ -76,66 +75,62 @@ export default class Cms {
         ...options?.server,
       },
     };
+
+    this.options.root = normalizePath(this.options.root);
   }
 
-  /**
-   * Returns the full path to the root directory.
-   * Use the arguments to return a subpath
-   */
-  root(...path: string[]): string {
-    return normalizePath(join(this.options.cwd, ...path));
-  }
-
-  storage(name: string, storage: Storage | string = "") {
-    if (typeof storage === "string") {
-      storage = new FsStorage({ root: this.root(), path: storage });
-    }
+  storage(name: string, storage: Storage | string = ""): this {
     this.storages.set(name, storage);
+    return this;
   }
 
-  versioning(versioning: Versioning) {
+  versioning(versioning: Versioning | string): this {
     this.versionManager = versioning;
+    return this;
   }
 
-  git(prodBranch = "main") {
-    this.versioning(
-      new Git({
-        root: this.root(),
-        prodBranch,
-      }),
-    );
-  }
-
-  upload(name: string, storage: string, publicPath?: string) {
+  upload(name: string, storage: string, publicPath?: string): this {
     if (!publicPath) {
       publicPath = normalizePath(storage.split(":")[1] ?? "/");
     }
 
     this.uploads.set(name, [storage, publicPath]);
+    return this;
   }
 
-  collection(name: string, store: string, fields: (Field | string)[]) {
+  collection(name: string, store: string, fields: (Field | string)[]): this {
     this.collections.set(name, [store, fields]);
     return this;
   }
 
-  document(name: string, store: string, fields: (Field | string)[]) {
+  document(name: string, store: string, fields: (Field | string)[]): this {
     this.documents.set(name, [store, fields]);
     return this;
   }
 
-  field(name: string, field: FielType) {
+  field(name: string, field: FielType): this {
     this.fields.set(name, field);
+    return this;
+  }
+
+  use(plugin: (cms: Cms) => void): this {
+    plugin(this);
     return this;
   }
 
   init(): Hono {
     const content: CMSContent = {
-      versioning: this.versionManager,
       collections: {},
       documents: {},
       uploads: {},
     };
+
+    if (typeof this.versionManager === "string") {
+      content.versioning = new Git({
+        root: this.options.root,
+        prodBranch: this.versionManager,
+      });
+    }
 
     setBasePath(this.options.basePath);
 
@@ -263,8 +258,15 @@ export default class Cms {
   #getStorage(path: string): Storage {
     const [name, src] = path.split(":");
     const storage = this.storages.get(name);
-    if (!storage) {
+
+    if (storage === undefined) {
       throw new Error(`Unknown storage "${name}"`);
+    }
+
+    if (typeof storage === "string") {
+      const fs = new FsStorage({ root: this.options.root, path: storage });
+      this.storages.set(name, fs);
+      return src ? fs.directory(src) : fs;
     }
 
     return src ? storage.directory(src) : storage;

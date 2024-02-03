@@ -1,9 +1,17 @@
 .code {
-    background: var(--color-white);
-    border: solid 1px var(--color-line);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    color: var(--color-text);
+    > .cm-editor {
+        background: var(--color-white);
+        border: solid 1px var(--color-line);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        color: var(--color-text);
+
+        &.cm-focused {
+            outline:0;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px color-mix(in hsl, var(--color-primary), transparent 75%);
+        }
+    }
 
     .cm-content {
         padding: .5rem;

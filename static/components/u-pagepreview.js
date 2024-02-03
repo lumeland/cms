@@ -21,7 +21,8 @@ customElements.define(
       function update(src) {
         if (!iframe) {
           const dialog = push(document.body, "dialog", {
-            class: "modal is-preview",
+            class: "modal is-preview " +
+              (matchMedia("(max-width:500px)").matches ? "is-hidden" : ""),
           });
           iframe = push(dialog, "iframe", { class: "modal-content", src });
           // deno-lint-ignore prefer-const
@@ -38,7 +39,11 @@ customElements.define(
               );
             },
           });
-          icon = push(button, "u-icon", { name: "caret-double-left" });
+          icon = push(button, "u-icon", {
+            name: dialog.classList.contains("is-hidden")
+              ? "caret-double-right"
+              : "caret-double-left",
+          });
           dialog.show();
         }
 

@@ -13,6 +13,10 @@ export default function (app: Hono) {
   app.get("/collection/:collection", async (c: Context) => {
     const { collection, versioning } = get(c);
 
+    if (!collection) {
+      return c.notFound();
+    }
+
     return c.render(
       await collectionList({
         collection,
@@ -26,16 +30,20 @@ export default function (app: Hono) {
       const { collection, versioning, document } = get(c);
 
       if (!document) {
-        throw new Error("Document not found");
+        return c.notFound();
       }
 
-      return c.render(
-        await collectionEdit({
-          collection,
-          document,
-          version: await versioning?.current(),
-        }),
-      );
+      try {
+        return c.render(
+          await collectionEdit({
+            collection,
+            document,
+            version: await versioning?.current(),
+          }),
+        );
+      } catch {
+        return c.notFound();
+      }
     })
     .post(async (c: Context) => {
       const { collection, document: oldDocument } = get(c);

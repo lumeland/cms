@@ -11,6 +11,10 @@ export default function (app: Hono) {
     .get("/document/:document", async (c: Context) => {
       const { document, versioning } = get(c);
 
+      if (!document) {
+        return c.notFound();
+      }
+
       return c.render(
         documentEdit({
           document,

@@ -61,11 +61,12 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
 .modal-toggle {
   position: absolute;
   background: var(--color-white);
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+  border-radius: 0 var(--border-radius) 0 0;
   box-shadow: 0 0 1px #0003, 0 0 30px #0002;
-  top: 1.6rem;
-  right: -40px;
+  bottom: 0;
+  right: -48px;
+  width: 48px;
+  height: 48px;
 }
 @media (max-width: 500px) {
   .modal.is-preview:not(.is-hidden)[open] .modal-toggle {

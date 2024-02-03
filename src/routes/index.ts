@@ -1,4 +1,5 @@
 import index from "./templates/index.ts";
+import notFound from "./templates/notfound.ts";
 import { dispatch } from "../utils/event.ts";
 import { getPath } from "../utils/path.ts";
 
@@ -57,5 +58,9 @@ export default function (app: Hono) {
     return c.json({
       error: "No edit URL found",
     });
+  });
+
+  app.notFound((c: Context) => {
+    return c.render(notFound());
   });
 }

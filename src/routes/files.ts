@@ -11,6 +11,11 @@ export default function (app: Hono) {
   app.get("/uploads/:collection", async (c: Context) => {
     const { uploads, versioning } = c.get("options") as CMSContent;
     const collectionId = c.req.param("collection");
+
+    if (!uploads[collectionId]) {
+      return c.notFound();
+    }
+
     const [collection, publicPath] = uploads[collectionId];
     const files = await Array.fromAsync(collection);
 
@@ -42,6 +47,11 @@ export default function (app: Hono) {
     const { uploads } = c.get("options") as CMSContent;
     const collectionId = c.req.param("collection");
     const fileId = c.req.param("file");
+
+    if (!uploads[collectionId]) {
+      return c.notFound();
+    }
+
     const [collection] = uploads[collectionId];
     const entry = collection.get(fileId);
 
@@ -56,19 +66,28 @@ export default function (app: Hono) {
     const collectionId = c.req.param("collection");
     const fileId = c.req.param("file");
     const [collection, publicPath] = uploads[collectionId];
-    const entry = collection.get(fileId);
-    const file = await entry.readFile();
 
-    return c.render(
-      uploadsView({
-        type: file.type,
-        size: file.size,
-        collection: collectionId,
-        publicPath: normalizePath(publicPath, fileId),
-        file: fileId,
-        version: await versioning?.current(),
-      }),
-    );
+    if (!uploads[collectionId]) {
+      return c.notFound();
+    }
+
+    try {
+      const entry = collection.get(fileId);
+      const file = await entry.readFile();
+
+      return c.render(
+        uploadsView({
+          type: file.type,
+          size: file.size,
+          collection: collectionId,
+          publicPath: normalizePath(publicPath, fileId),
+          file: fileId,
+          version: await versioning?.current(),
+        }),
+      );
+    } catch {
+      return c.notFound();
+    }
   })
     .post(async (c: Context) => {
       const { uploads } = c.get("options") as CMSContent;

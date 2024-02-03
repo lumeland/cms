@@ -26,7 +26,7 @@ customElements.define(
             bottom: 0;
             right: 0;
             text-decoration: none;
-            padding: 1rem 2rem;
+            padding: 1rem 56px 1rem 2rem;
             background: white;
             color: hsl(220, 20%, 15%);
             z-index: 999;
