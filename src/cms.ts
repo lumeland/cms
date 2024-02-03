@@ -30,15 +30,7 @@ import type {
 export interface CmsOptions {
   root: string;
   basePath: string;
-  server: ServerOptions;
   auth?: AuthOptions;
-  appWrapper: (app: Hono) => Hono;
-}
-
-export interface ServerOptions {
-  port?: number;
-  cert?: string;
-  key?: string;
 }
 
 export interface AuthOptions {
@@ -49,10 +41,6 @@ export interface AuthOptions {
 const defaults: CmsOptions = {
   root: Deno.cwd(),
   basePath: "/",
-  server: {
-    port: 8000,
-  },
-  appWrapper: (app) => app,
 };
 
 export default class Cms {
@@ -70,10 +58,6 @@ export default class Cms {
     this.options = {
       ...defaults,
       ...options,
-      server: {
-        ...defaults.server,
-        ...options?.server,
-      },
     };
 
     this.options.root = normalizePath(this.options.root);
@@ -243,16 +227,7 @@ export default class Cms {
       );
     }
 
-    return this.options.appWrapper(app);
-  }
-
-  serve() {
-    const app = this.init();
-
-    return Deno.serve({
-      ...this.options.server,
-      handler: app.fetch,
-    });
+    return app;
   }
 
   #getStorage(path: string): Storage {
