@@ -26,6 +26,7 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   const { site, cms, basePath } = options;
 
   await site.build();
+  cms.options.site!.url = site.url("/", true);
   cms.storage("src");
   cms.options.basePath = basePath;
   const cwd = cms.options.root = site.src();

@@ -1,3 +1,4 @@
+import { labelify } from "../../utils/string.ts";
 import { getPath } from "../../utils/path.ts";
 
 import type { Version } from "../../types.ts";
@@ -19,8 +20,8 @@ export default function breadcrumb(version?: Version, ...links: Link[]) {
     ${
     links.map((link) =>
       typeof link === "string"
-        ? `<li><a>${link}</a></li>`
-        : `<li><a href="${link[1]}">${link[0]}</a></li>`
+        ? `<li><a>${labelify(link)}</a></li>`
+        : `<li><a href="${link[1]}">${labelify(link[0])}</a></li>`
     ).join("")
   }
   </ul>
