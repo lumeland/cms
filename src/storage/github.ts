@@ -9,7 +9,7 @@ import type {
   OctokitResponse,
   RequestParameters,
 } from "npm:octokit/octokit.d.ts";
-import type { Data, Entry, Storage } from "../types.ts";
+import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
 
 export interface Options {
   client: Octokit;
@@ -19,7 +19,7 @@ export interface Options {
   branch?: string;
 }
 
-export class GitHubStorage implements Storage {
+export default class GitHub implements Storage {
   client: Octokit;
   owner: string;
   repo: string;
@@ -51,14 +51,15 @@ export class GitHubStorage implements Storage {
     for (const entry of info) {
       if (entry.type === "file") {
         yield {
-          id: entry.name,
+          name: entry.name,
+          src: entry.download_url,
         };
       }
     }
   }
 
   directory(id: string): Storage {
-    return new GitHubStorage({
+    return new GitHub({
       client: this.client,
       owner: this.owner,
       repo: this.repo,
@@ -125,6 +126,7 @@ export class GitHubStorage implements Storage {
 }
 
 export class GitHubEntry implements Entry {
+  metadata: EntryMetadata;
   client: Octokit;
   owner: string;
   repo: string;
@@ -137,6 +139,11 @@ export class GitHubEntry implements Entry {
     this.repo = options.repo;
     this.path = options.path || "";
     this.branch = options.branch;
+    this.metadata = {
+      name: this.path,
+      src:
+        `https://raw.githubusercontent.com/${options.owner}/${options.repo}/${options.branch}/${options.path}`,
+    };
   }
 
   async readData(): Promise<Data> {

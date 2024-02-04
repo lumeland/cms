@@ -1,11 +1,11 @@
-import type { Data, Entry, Storage } from "../types.ts";
+import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
 
 export interface Options {
   prefix?: string[];
   kv: Deno.Kv;
 }
 
-export class KvStorage implements Storage {
+export default class Kv implements Storage {
   prefix: string[];
   kv: Deno.Kv;
 
@@ -14,59 +14,66 @@ export class KvStorage implements Storage {
     this.kv = options.kv;
   }
 
-  #getKey(id: string) {
-    return [...this.prefix, ...id.split("/")];
-  }
-
   async *[Symbol.asyncIterator]() {
     for await (const entry of this.kv.list({ prefix: this.prefix })) {
       yield {
-        id: entry.key.slice(this.prefix.length).join("/"),
+        name: entry.key.slice(this.prefix.length).join("/"),
+        src: entry.key.join("/"),
       };
     }
   }
 
-  directory(id: string): Storage {
-    const prefix = this.#getKey(id);
-    return new KvStorage({ kv: this.kv, prefix });
+  directory(name: string): Storage {
+    return new Kv({
+      kv: this.kv,
+      prefix: key(this.prefix, name),
+    });
   }
 
-  get(id: string): Entry {
-    const key = this.#getKey(id);
-    return new KvEntry({ kv: this.kv, key });
+  get(name: string): Entry {
+    return new KvEntry({
+      kv: this.kv,
+      prefix: this.prefix,
+      name,
+    });
   }
 
-  async delete(id: string) {
-    const key = this.#getKey(id);
-    await this.kv.delete(key);
+  async delete(name: string) {
+    await this.kv.delete(key(this.prefix, name));
   }
 
-  async rename(id: string, newId: string) {
-    const key = this.#getKey(id);
-    const newKey = this.#getKey(newId);
-    const data = await this.kv.get(key);
+  async rename(name: string, newName: string) {
+    const oldKey = key(this.prefix, name);
+    const newKey = key(this.prefix, newName);
+    const data = await this.kv.get(oldKey);
 
     if (!data) {
-      throw new Error(`Item not found: ${id}`);
+      throw new Error(`Item not found: ${name}`);
     }
 
     await this.kv.set(newKey, data.value);
-    await this.kv.delete(key);
+    await this.kv.delete(oldKey);
   }
 }
 
 export interface DocumentOptions extends Options {
   kv: Deno.Kv;
-  key: string[];
+  prefix: string[];
+  name: string;
 }
 
 export class KvEntry implements Entry {
-  key: string[];
+  metadata: EntryMetadata;
   kv: Deno.Kv;
+  key: string[];
 
   constructor(options: DocumentOptions) {
-    this.key = options.key;
     this.kv = options.kv;
+    this.key = [...options.prefix, ...options.name.split("/")];
+    this.metadata = {
+      name: options.name,
+      src: this.key.join("/"),
+    };
   }
 
   async readData(): Promise<Data> {
@@ -90,4 +97,8 @@ export class KvEntry implements Entry {
   writeFile(): Promise<void> {
     throw new Error("Binary files not allowed in KV storage");
   }
+}
+
+function key(prefix: string[], name: string) {
+  return [...prefix, ...name.split("/")];
 }

@@ -19,7 +19,7 @@ export const defaults: Required<Options> = {
   path: "**",
 };
 
-export class FsStorage implements Storage {
+export default class Fs implements Storage {
   root: string;
   path: string;
 
@@ -56,7 +56,7 @@ export class FsStorage implements Storage {
   }
 
   directory(path: string): Storage {
-    return new FsStorage({
+    return new Fs({
       root: this.root,
       path,
     });

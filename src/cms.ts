@@ -9,7 +9,7 @@ import filesRoutes from "./routes/files.ts";
 import authRoutes from "./routes/auth.ts";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
-import { FsStorage } from "./storage/fs.ts";
+import FsStorage from "./storage/fs.ts";
 import { Git } from "./versioning/git.ts";
 import { normalizePath, setBasePath } from "./utils/path.ts";
 import { basename, dirname, fromFileUrl, relative } from "std/path/mod.ts";

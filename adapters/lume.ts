@@ -101,7 +101,7 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
 
   previewer.route(basePath, app);
 
-  // Add the edit bar
+  // Add the edit button
   previewer.get("*", async (c, next) => {
     await next();
 
