@@ -2,25 +2,36 @@ import { labelify } from "../../utils/string.ts";
 import { getPath } from "../../utils/path.ts";
 import breadcrumb from "./breadcrumb.ts";
 
-import type { Versioning } from "../../types.ts";
+import type { SiteInfo, Versioning } from "../../types.ts";
 
 interface Props {
   collections: string[];
   documents: string[];
   uploads: string[];
   versioning?: Versioning;
+  site: SiteInfo;
 }
 
 export default async function template(
-  { collections, documents, uploads, versioning }: Props,
+  { collections, documents, uploads, versioning, site }: Props,
 ) {
+  const url = site.url
+    ? `<p><a href="${site.url}" target="_blank">
+      ${site.url} <u-icon name="arrow-square-out"></u-icon>
+    </a></p>`
+    : "";
+
   return `
 ${breadcrumb(await versioning?.current())}
 
 <header class="header">
   <h1 class="header-title">
-    Lume CMS
+  ${site.name}
   </h1>
+  <div class="header-description">
+    ${site.description ?? ""}
+    ${url}
+  </div>
 </header>
 
 <ul class="list">

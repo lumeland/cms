@@ -10,6 +10,12 @@ export interface EntryMetadata {
   src: string;
 }
 
+export interface SiteInfo {
+  name: string;
+  description?: string;
+  url?: string;
+}
+
 /** A storage mechanism for data */
 export interface Storage extends AsyncIterable<EntryMetadata> {
   get(name: string): Entry;
@@ -90,6 +96,7 @@ export interface FielType {
 type Option = string | { value: string | number; label: string };
 
 export interface CMSContent {
+  site: SiteInfo;
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
   uploads: Record<string, [Storage, string]>;

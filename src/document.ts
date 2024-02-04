@@ -4,8 +4,15 @@ export default class Document {
   #entry: Entry;
   #fields: ResolvedField[];
   #data?: Data;
+  #name?: string;
 
-  constructor(entry: Entry, fields: ResolvedField[], isNew = false) {
+  constructor(
+    entry: Entry,
+    fields: ResolvedField[],
+    isNew = false,
+    name?: string,
+  ) {
+    this.#name = name;
     this.#entry = entry;
     this.#fields = fields;
 
@@ -19,7 +26,7 @@ export default class Document {
   }
 
   get name() {
-    return this.#entry.metadata.name;
+    return this.#name ?? this.#entry.metadata.name;
   }
 
   get src() {

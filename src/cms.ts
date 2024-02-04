@@ -23,11 +23,13 @@ import type {
   Field,
   FielType,
   ResolvedField,
+  SiteInfo,
   Storage,
   Versioning,
 } from "./types.ts";
 
 export interface CmsOptions {
+  site?: SiteInfo;
   root: string;
   basePath: string;
   auth?: AuthOptions;
@@ -39,6 +41,9 @@ export interface AuthOptions {
 }
 
 const defaults: CmsOptions = {
+  site: {
+    name: "Lume CMS",
+  },
   root: Deno.cwd(),
   basePath: "/",
 };
@@ -104,6 +109,7 @@ export default class Cms {
 
   init(): Hono {
     const content: CMSContent = {
+      site: this.options.site!,
       collections: {},
       documents: {},
       uploads: {},
@@ -138,6 +144,8 @@ export default class Cms {
       content.documents[name] = new Document(
         this.#getEntry(path),
         this.#resolveFields(fields, content),
+        false,
+        name,
       );
     }
 

@@ -2,12 +2,11 @@
   "imports": {
     "std/": "https://deno.land/std@0.213.0/",
     "lume/": "https://deno.land/x/lume@v2.0.3/",
-    "hono/": "https://deno.land/x/hono@v3.11.11/"
+    "hono/": "https://deno.land/x/hono@v3.12.10/"
   },
   "lock": false,
   "tasks": {
-    "dev": "deno run --unstable --check --watch -A probas/schema.ts",
-    "site": "cd probas/ensino && deno task serve"
+    "dev": "deno run --unstable --check --watch -A probas/serve.ts"
   },
   "exclude": [
     "probas",

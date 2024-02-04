@@ -28,6 +28,31 @@
   margin: .5rem 0;
   font: var(--font-ui);
   color: var(--color-dim);
+
+  &:empty {
+    display: none;
+  }
+
+  & p {
+    margin: 0;
+  }
+  & p:not(:first-child) {
+    margin-top: .5rem;
+  }
+
+  a {
+    color: var(--color-dim);
+
+    & svg {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+    }
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }
 dl.header-description {
   margin-top: 2rem;

@@ -1,3 +1,5 @@
+import { slugify } from "../utils/string.ts";
+
 import type { Versioning } from "../types.ts";
 
 export interface Options {
@@ -67,7 +69,7 @@ export class Git implements Versioning {
 
   /* Creates a new version */
   async create(name: string): Promise<void> {
-    name = name.replace(/\W/g, "-");
+    name = slugify(name);
 
     if (await this.#exists(name)) {
       throw new Error(`Version ${name} already exists`);
