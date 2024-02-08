@@ -5,6 +5,7 @@
   },
   "exclude": [
     "probas",
-    "static/libs"
+    "static/libs",
+    "CHANGELOG.md"
   ]
 }
