@@ -1,7 +1,7 @@
 import { getPath } from "../utils/path.ts";
 import { dispatch } from "../utils/event.ts";
 
-import type { Context, Hono } from "hono/mod.ts";
+import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../types.ts";
 
 export default function (app: Hono) {

@@ -1,5 +1,5 @@
 import { getPath } from "../../../utils/path.ts";
-import { format } from "std/fmt/bytes.ts";
+import { formatBytes } from "../../../../deps/std.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type { Version } from "../../../types.ts";
@@ -49,7 +49,7 @@ ${
     <dt>Type:</dt>
     <dd>${type}</dd>
     <dt>Size:</dt>
-    <dd>${format(size)}</dd>
+    <dd>${formatBytes(size)}</dd>
   </dl>
 </header>
 

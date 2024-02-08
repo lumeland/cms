@@ -1,4 +1,4 @@
-import { extname } from "std/path/extname.ts";
+import { extname } from "../../deps/std.ts";
 
 /** Convert slugs to labels */
 export function labelify(slug: string) {

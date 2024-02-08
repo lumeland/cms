@@ -1,4 +1,4 @@
-import { escape } from "std/html/entities.ts";
+import { escape } from "../../../../deps/std.ts";
 import { getPath } from "../../../utils/path.ts";
 import breadcrumb from "../breadcrumb.ts";
 
@@ -14,32 +14,36 @@ export default async function template(
   { document, version }: Props,
 ) {
   const data = await document.read();
+
   return `
+<u-pagepreview data-src="${document.src}"></u-pagepreview>
 ${breadcrumb(version, document.name)}
 
-<header class="header">
-  <h1 class="header-title">Editing ${document.name}</h1>
-</header>
-<form
-  action="${getPath("document", document.name)}"
-  method="post"
-  class="form"
-  enctype="multipart/form-data"
->
-  ${
+<u-form>
+  <header class="header">
+    <h1 class="header-title">Editing ${document.name}</h1>
+  </header>
+  <form
+    action="${getPath("document", document.name)}"
+    method="post"
+    class="form"
+    enctype="multipart/form-data"
+  >
+    ${
     document.fields.map((field) => `
-      <${field.tag}
-        data-nameprefix="changes"
-        data-value="${escape(JSON.stringify(data[field.name] ?? null))}"
-        data-field="${escape(JSON.stringify(field))}"
-      >
-      </${field.tag}>
-    `).join("")
+        <${field.tag}
+          data-nameprefix="changes"
+          data-value="${escape(JSON.stringify(data[field.name] ?? null))}"
+          data-field="${escape(JSON.stringify(field))}"
+        >
+        </${field.tag}>
+      `).join("")
   }
 
-  <footer class="footer ly-rowStack is-responsive">
-    <button class="button is-primary" type="submit">Save changes</button>
-  </footer>
-</form>
+    <footer class="footer ly-rowStack is-responsive">
+      <button class="button is-primary" type="submit">Save changes</button>
+    </footer>
+  </form>
+</u-form>
 `;
 }

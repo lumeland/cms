@@ -1,4 +1,4 @@
-import { escape } from "std/html/entities.ts";
+import { escape } from "../../../../deps/std.ts";
 import { getPath } from "../../../utils/path.ts";
 import breadcrumb from "../breadcrumb.ts";
 

@@ -3,7 +3,7 @@ import { changesToData } from "../utils/data.ts";
 import { dispatch } from "../utils/event.ts";
 import documentEdit from "./templates/document/edit.ts";
 
-import type { Context, Hono } from "hono/mod.ts";
+import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../types.ts";
 
 export default function (app: Hono) {

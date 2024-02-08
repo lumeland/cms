@@ -1,9 +1,12 @@
-import { join } from "std/path/posix/join.ts";
+import {
+  contentType,
+  decodeBase64,
+  encodeBase64,
+  extname,
+  posix,
+} from "../../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
-import { contentType } from "std/media_types/content_type.ts";
-import { extname } from "std/path/extname.ts";
 import { Octokit } from "npm:octokit";
-import { decodeBase64, encodeBase64 } from "std/encoding/base64.ts";
 
 import type {
   OctokitResponse,
@@ -63,7 +66,7 @@ export default class GitHub implements Storage {
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: join(this.path, id),
+      path: posix.join(this.path, id),
       branch: this.branch,
     });
   }
@@ -73,7 +76,7 @@ export default class GitHub implements Storage {
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: join(this.path, id),
+      path: posix.join(this.path, id),
       branch: this.branch,
     });
   }
@@ -83,7 +86,7 @@ export default class GitHub implements Storage {
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: join(this.path, id),
+      path: posix.join(this.path, id),
       branch: this.branch,
     });
 
@@ -96,7 +99,7 @@ export default class GitHub implements Storage {
     await this.client.rest.repos.deleteFile({
       owner: this.owner,
       repo: this.repo,
-      path: join(this.path, id),
+      path: posix.join(this.path, id),
       message: "Delete file",
       branch: this.branch,
       sha,
@@ -108,14 +111,14 @@ export default class GitHub implements Storage {
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: join(this.path, id),
+      path: posix.join(this.path, id),
       branch: this.branch,
     });
 
     await this.client.rest.repos.createOrUpdateFileContents({
       owner: this.owner,
       repo: this.repo,
-      path: join(this.path, newId),
+      path: posix.join(this.path, newId),
       message: "Rename file",
       content: encodeBase64(content || ""),
       branch: this.branch,

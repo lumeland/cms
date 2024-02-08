@@ -1,14 +1,13 @@
-import { Hono } from "hono/mod.ts";
-import { serveStatic } from "hono/middleware.ts";
+import { Hono, serveStatic } from "../deps/hono.ts";
 import authRoutes from "../src/routes/auth.ts";
 import { dispatch } from "../src/utils/event.ts";
 import { asset, getPath } from "../src/utils/path.ts";
 
-import type Site from "lume/core/site.ts";
 import type Cms from "../src/cms.ts";
 
 export interface Options {
-  site: Site;
+  // deno-lint-ignore no-explicit-any
+  site: any;
   cms: Cms;
   basePath?: string;
 }
@@ -131,7 +130,8 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
 
   previewer.notFound(() => {
     const notFoundUrl = site.options.server?.page404;
-    const page = site.pages.find((p) =>
+    // deno-lint-ignore no-explicit-any
+    const page = site.pages.find((p: any) =>
       p.data.url === notFoundUrl || p.outputPath === notFoundUrl
     );
 

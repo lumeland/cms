@@ -1,7 +1,7 @@
 import { Json } from "./json.ts";
 import { FrontMatter } from "./front_matter.ts";
 import { Yaml } from "./yaml.ts";
-import { extname } from "std/path/mod.ts";
+import { extname } from "../../../deps/std.ts";
 
 import type { Transformer } from "../../types.ts";
 

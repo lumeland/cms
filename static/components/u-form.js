@@ -29,7 +29,8 @@ customElements.define(
 
         setTimeout(async () => {
           await this.sendForm(form);
-          tooltip.remove();
+          tooltip.innerText = "Saved";
+          setTimeout(() => tooltip.remove(), 2000);
         }, 1);
       });
     }

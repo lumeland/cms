@@ -1,6 +1,6 @@
-import { basicAuth } from "hono/middleware.ts";
+import { basicAuth } from "../../deps/hono.ts";
 
-import type { Hono } from "hono/mod.ts";
+import type { Hono } from "../../deps/hono.ts";
 import type { AuthOptions } from "../cms.ts";
 
 export default function (app: Hono, auth: AuthOptions) {

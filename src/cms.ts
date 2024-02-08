@@ -1,5 +1,4 @@
-import { Hono } from "hono/mod.ts";
-import { serveStatic } from "hono/middleware.ts";
+import { Hono, serveStatic } from "../deps/hono.ts";
 import layout from "./routes/templates/layout.ts";
 import documentRoutes from "./routes/document.ts";
 import collectionRoutes from "./routes/collection.ts";
@@ -12,11 +11,11 @@ import Document from "./document.ts";
 import FsStorage from "./storage/fs.ts";
 import { Git } from "./versioning/git.ts";
 import { normalizePath, setBasePath } from "./utils/path.ts";
-import { basename, dirname, fromFileUrl, relative } from "std/path/mod.ts";
+import { basename, dirname, fromFileUrl, relative } from "../deps/std.ts";
 import { labelify } from "./utils/string.ts";
 import { dispatch } from "./utils/event.ts";
 
-import type { Context, Next } from "hono/mod.ts";
+import type { Context, Next } from "../deps/hono.ts";
 import type {
   CMSContent,
   Entry,

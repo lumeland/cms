@@ -1,5 +1,4 @@
-import { join } from "std/path/posix/join.ts";
-import { SEPARATOR } from "std/path/constants.ts";
+import { posix, SEPARATOR } from "../../deps/std.ts";
 
 /**
  * Convert the Windows paths (that use the separator "\")
@@ -7,7 +6,7 @@ import { SEPARATOR } from "std/path/constants.ts";
  * and ensure it starts with "/".
  */
 export function normalizePath(...paths: string[]) {
-  let path = join(...paths);
+  let path = posix.join(...paths);
 
   if (SEPARATOR !== "/") {
     path = path.replaceAll(SEPARATOR, "/");
@@ -18,7 +17,7 @@ export function normalizePath(...paths: string[]) {
     }
   }
 
-  path = join("/", path);
+  path = posix.join("/", path);
 
   return (path !== "/" && path.endsWith("/")) ? path.slice(0, -1) : path;
 }
@@ -30,7 +29,7 @@ export function setBasePath(path: string) {
 }
 
 export function getPath(...parts: string[]) {
-  return join(
+  return posix.join(
     basePath,
     ...parts
       .filter((part) => typeof part === "string")
@@ -42,11 +41,11 @@ const staticUrl = new URL(import.meta.resolve("../../static/"));
 
 export function asset(url = "") {
   if (staticUrl.protocol === "file:") {
-    return join(basePath, url);
+    return posix.join(basePath, url);
   }
 
   return new URL(
-    join(staticUrl.pathname, url),
+    posix.join(staticUrl.pathname, url),
     staticUrl,
   ).toString();
 }

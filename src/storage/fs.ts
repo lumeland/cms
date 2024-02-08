@@ -1,11 +1,6 @@
 import { normalizePath } from "../utils/path.ts";
-import { join } from "std/path/posix/join.ts";
-import { dirname } from "std/path/posix/dirname.ts";
-import { ensureDir } from "std/fs/ensure_dir.ts";
-import { expandGlob } from "std/fs/expand_glob.ts";
+import { contentType, ensureDir, expandGlob, posix } from "../../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
-import { contentType } from "std/media_types/content_type.ts";
-import { extname } from "std/path/extname.ts";
 
 import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
 
@@ -28,10 +23,10 @@ export default class Fs implements Storage {
     const pos = options.path.indexOf("*");
 
     if (pos === -1) {
-      options.root = join(options.root, options.path);
+      options.root = posix.join(options.root, options.path);
       options.path = "**";
     } else if (pos > 0) {
-      options.root = join(options.root, options.path.slice(0, pos));
+      options.root = posix.join(options.root, options.path.slice(0, pos));
       options.path = options.path.slice(pos);
     }
 
@@ -64,19 +59,19 @@ export default class Fs implements Storage {
 
   get(name: string): Entry {
     return new FsEntry({
-      src: join(this.root, name),
+      src: posix.join(this.root, name),
       name,
     });
   }
 
   async delete(name: string) {
-    await Deno.remove(join(this.root, name));
+    await Deno.remove(posix.join(this.root, name));
   }
 
   async rename(name: string, newName: string) {
-    const dest = join(this.root, newName);
-    await ensureDir(dirname(dest));
-    await Deno.rename(join(this.root, name), dest);
+    const dest = posix.join(this.root, newName);
+    await ensureDir(posix.dirname(dest));
+    await Deno.rename(posix.join(this.root, name), dest);
   }
 }
 
@@ -104,14 +99,14 @@ export class FsEntry implements Entry {
     const transformer = fromFilename(src);
     const content = await transformer.fromData(data);
 
-    await ensureDir(dirname(src));
+    await ensureDir(posix.dirname(src));
     await Deno.writeTextFile(src, content);
   }
 
   async readFile(): Promise<File> {
     const { src, name } = this.metadata;
     const content = await Deno.readFile(src);
-    const type = contentType(extname(src));
+    const type = contentType(posix.extname(src));
 
     return new File([new Blob([content])], name, { type });
   }
@@ -120,7 +115,7 @@ export class FsEntry implements Entry {
     const { src } = this.metadata;
     const content = await file.arrayBuffer();
 
-    await ensureDir(dirname(src));
+    await ensureDir(posix.dirname(src));
     await Deno.writeFile(src, new Uint8Array(content));
   }
 }
