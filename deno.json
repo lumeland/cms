@@ -1,7 +1,8 @@
 {
   "lock": false,
   "tasks": {
-    "dev": "deno run --unstable-kv --check --watch -A probas/serve.ts"
+    "dev": "deno run --unstable-kv --check --watch -A probas/serve.ts",
+    "demo": "deno run --unstable-kv -A probas/schema2.ts"
   },
   "exclude": [
     "probas",

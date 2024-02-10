@@ -1,9 +1,9 @@
 import { Hono, serveStatic } from "../deps/hono.ts";
-import authRoutes from "../src/routes/auth.ts";
-import { dispatch } from "../src/utils/event.ts";
-import { asset, getPath } from "../src/utils/path.ts";
+import authRoutes from "../core/routes/auth.ts";
+import { dispatch } from "../core/utils/event.ts";
+import { asset, getPath } from "../core/utils/path.ts";
 
-import type Cms from "../src/cms.ts";
+import type Cms from "../core/cms.ts";
 
 export interface Options {
   // deno-lint-ignore no-explicit-any

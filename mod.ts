@@ -1,6 +1,6 @@
-import Cms, { CmsOptions } from "./src/cms.ts";
+import Cms, { CmsOptions } from "./core/cms.ts";
 
-import defaultFields from "./src/fields.ts";
+import defaultFields from "./core/fields.ts";
 
 export default function (options?: Partial<CmsOptions>): Cms {
   const cms = new Cms(options);
