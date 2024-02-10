@@ -13,7 +13,7 @@ export function normalizePath(...paths: string[]) {
 
     // Is absolute Windows path (C:/...)
     if (path.includes(":/")) {
-      return path;
+      return (path !== "/" && path.endsWith("/")) ? path.slice(0, -1) : path;
     }
   }
 
