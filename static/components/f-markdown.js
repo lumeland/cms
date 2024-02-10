@@ -1,4 +1,4 @@
-import { push, url } from "./utils.js";
+import { labelify, push, url } from "./utils.js";
 import { Field } from "./field.js";
 import { init } from "../libs/markdown.js";
 
@@ -37,7 +37,7 @@ customElements.define(
               },
             });
           },
-        }, `<u-icon name="image-square-fill"></u-icon> ${name}`);
+        }, `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`);
       }
 
       const code = push(this, "div", { class: "code" });

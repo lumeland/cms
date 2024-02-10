@@ -130,3 +130,17 @@ export function fileType(path) {
 export function randomId() {
   return `id_${Math.random().toString(36).slice(2)}`;
 }
+
+/** Convert slugs to labels */
+export function labelify(slug) {
+  // Capitalize first letter
+  slug = slug[0].toUpperCase() + slug.slice(1);
+
+  // Replace dashes with spaces
+  slug = slug.replace(/[-_]/g, " ");
+
+  // Replace camelCase with spaces
+  slug = slug.replace(/([a-z])([A-Z])/g, "$1 $2");
+
+  return slug;
+}
