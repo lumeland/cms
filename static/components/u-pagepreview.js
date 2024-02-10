@@ -47,11 +47,7 @@ customElements.define(
           dialog.show();
         }
 
-        if (src) {
-          iframe.src = src;
-        } else {
-          iframe.contentDocument.location.reload();
-        }
+        iframe.contentDocument.location.reload();
       }
 
       const protocol = document.location.protocol === "https:"

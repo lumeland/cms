@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Favicon error.
+- Scroll position after live-reload.
 - `f-date` field.
 
 ## [0.1.0] - 2024-02-08
