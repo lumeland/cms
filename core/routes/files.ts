@@ -39,7 +39,7 @@ export default function (app: Hono) {
     const entry = collection.get(fileId);
 
     await entry.writeFile(file);
-    dispatch("uploadedFile", { uploads: collectionId, file: fileId });
+    dispatch("uploadedFile", { uploads: collection, entry });
     return c.redirect(getPath("uploads", collectionId, "file", fileId));
   });
 
@@ -99,11 +99,6 @@ export default function (app: Hono) {
 
       if (prevId !== fileId) {
         await collection.rename(prevId, fileId);
-        dispatch("renamedFile", {
-          uploads: collectionId,
-          previousFile: prevId,
-          file: fileId,
-        });
       }
 
       const file = body.file as File | undefined;
@@ -111,7 +106,7 @@ export default function (app: Hono) {
       if (file) {
         const entry = collection.get(fileId);
         await entry.writeFile(file);
-        dispatch("updatedFile", { uploads: collectionId, file: fileId });
+        dispatch("updatedFile", { uploads: collection, entry });
       }
 
       return c.redirect(getPath("uploads", collectionId, "file", fileId));
@@ -124,7 +119,7 @@ export default function (app: Hono) {
     const [collection] = uploads[collectionId];
 
     await collection.delete(fileId);
-    dispatch("deletedFile", { uploads: collectionId, file: fileId });
+    dispatch("deletedFile", { uploads: collection, file: fileId });
     return c.redirect(getPath("uploads", collectionId));
   });
 }

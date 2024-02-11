@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.3] - 2024-02-11
+### Added
+- Ctr/Cmd + B and Ctr/Cmd + I to markdown editor to apply bold and italic to the selection.
+
+### Fixed
+- Update live-reload after uploading a file.
+
 ## [0.2.2] - 2024-02-10
 ### Fixed
 - More Windows path fixes.
@@ -27,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.1.0] - 2024-02-08
 First version
 
+[0.2.3]: https://github.com/lumeland/cms/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/lumeland/cms/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/lumeland/cms/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/lumeland/cms/compare/v0.1.0...v0.2.0

@@ -30,29 +30,40 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   cms.options.basePath = basePath;
   const cwd = cms.options.root = site.src();
 
-  addEventListener("cms:updatedDocument", async (e) => {
-    // @ts-ignore: Detail declared in the event.
-    const { document } = e.detail;
-    const { src } = document;
+  [
+    "cms:updatedDocument",
+    "cms:createdDocument",
+    "cms:deletedDocument",
+  ].forEach((eventName) => {
+    addEventListener(eventName, async (e) => {
+      // @ts-ignore: Detail declared in the event.
+      const { document } = e.detail;
+      const { src } = document;
 
-    await site.update(new Set([removePrefix(cwd, src)]));
+      await site.update(new Set([removePrefix(cwd, src)]));
 
-    dispatch("previewUpdated", {
-      src,
-      url: getPreviewUrl(src),
+      dispatch("previewUpdated", {
+        src,
+        url: getPreviewUrl(src),
+      });
     });
   });
 
-  addEventListener("cms:createdDocument", async (e) => {
-    // @ts-ignore: Detail declared in the event.
-    const { document } = e.detail;
-    const { src } = document;
+  [
+    "cms:uploadedFile",
+    "cms:updatedFile",
+  ].forEach((eventName) => {
+    addEventListener(eventName, async (e) => {
+      // @ts-ignore: Detail declared in the event.
+      const { entry } = e.detail;
+      const { src } = entry;
 
-    await site.update(new Set([removePrefix(cwd, src)]));
+      await site.update(new Set([removePrefix(cwd, src)]));
 
-    dispatch("previewUpdated", {
-      src,
-      url: getPreviewUrl(src),
+      dispatch("previewUpdated", {
+        src,
+        url: getPreviewUrl(src),
+      });
     });
   });
 
