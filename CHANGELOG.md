@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 - Use the Lume native watcher in the Lume adapter.
 
+### Removed
+- Documents and Files events.
+
 ## [0.2.3] - 2024-02-11
 ### Added
 - Ctr/Cmd + B and Ctr/Cmd + I to markdown editor to apply bold and italic to the selection.

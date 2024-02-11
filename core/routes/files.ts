@@ -2,7 +2,6 @@ import uploadsList from "../templates/uploads/list.ts";
 import uploadsView from "../templates/uploads/view.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath, normalizePath } from "../utils/path.ts";
-import { dispatch } from "../utils/event.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
@@ -39,7 +38,6 @@ export default function (app: Hono) {
     const entry = collection.get(fileId);
 
     await entry.writeFile(file);
-    dispatch("uploadedFile", { uploads: collection, entry });
     return c.redirect(getPath("uploads", collectionId, "file", fileId));
   });
 
@@ -106,7 +104,6 @@ export default function (app: Hono) {
       if (file) {
         const entry = collection.get(fileId);
         await entry.writeFile(file);
-        dispatch("updatedFile", { uploads: collection, entry });
       }
 
       return c.redirect(getPath("uploads", collectionId, "file", fileId));
@@ -119,7 +116,6 @@ export default function (app: Hono) {
     const [collection] = uploads[collectionId];
 
     await collection.delete(fileId);
-    dispatch("deletedFile", { uploads: collection, file: fileId });
     return c.redirect(getPath("uploads", collectionId));
   });
 }

@@ -4,7 +4,6 @@ import collectionEdit from "../templates/collection/edit.ts";
 import collectionCreate from "../templates/collection/create.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath } from "../utils/path.ts";
-import { dispatch } from "../utils/event.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
@@ -63,11 +62,6 @@ export default function (app: Hono) {
 
       await document.write(changesToData(body));
 
-      dispatch("updatedDocument", {
-        collection,
-        document,
-      });
-
       return c.redirect(
         getPath("collection", collection.name, "edit", document.name),
       );
@@ -81,11 +75,6 @@ export default function (app: Hono) {
     }
 
     await collection.delete(document.name);
-
-    dispatch("deletedDocument", {
-      collection,
-      document,
-    });
 
     return c.redirect(getPath("collection", collection.name));
   });
@@ -107,11 +96,6 @@ export default function (app: Hono) {
       const document = collection.create(slugify(body._id as string));
 
       await document.write(changesToData(body));
-
-      dispatch("createdDocument", {
-        collection,
-        document,
-      });
 
       return c.redirect(
         getPath("collection", collection.name, "edit", document.name),
