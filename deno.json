@@ -4,6 +4,9 @@
     "dev": "deno run --unstable-kv --check --watch -A probas/serve.ts",
     "demo": "deno run --unstable-kv --watch -A probas/schema2.ts"
   },
+  "imports": {
+    "lume/": "https://deno.land/x/lume@v2.0.3/"
+  },
   "exclude": [
     "probas",
     "static/libs",

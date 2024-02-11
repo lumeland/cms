@@ -2,12 +2,13 @@ import { Hono, serveStatic } from "../deps/hono.ts";
 import authRoutes from "../core/routes/auth.ts";
 import { dispatch } from "../core/utils/event.ts";
 import { asset, getPath } from "../core/utils/path.ts";
+import FSWatcher from "lume/core/watcher.ts";
 
 import type Cms from "../core/cms.ts";
+import type Site from "lume/core/site.ts";
 
 export interface Options {
-  // deno-lint-ignore no-explicit-any
-  site: any;
+  site: Site;
   cms: Cms;
   basePath?: string;
 }
@@ -25,47 +26,26 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   const { site, cms, basePath } = options;
 
   await site.build();
+
+  // Start the watcher
+  const watcher = new FSWatcher({
+    root: site.src(),
+    ignore: site.options.watcher.ignore,
+    debounce: site.options.watcher.debounce,
+  });
+
+  watcher.addEventListener("change", async (event) => {
+    const files = event.files!;
+    await site.update(files);
+    dispatch("previewUpdated");
+  });
+
+  watcher.start();
+
   cms.options.site!.url = site.url("/", true);
   cms.storage("src");
   cms.options.basePath = basePath;
   const cwd = cms.options.root = site.src();
-
-  [
-    "cms:updatedDocument",
-    "cms:createdDocument",
-    "cms:deletedDocument",
-  ].forEach((eventName) => {
-    addEventListener(eventName, async (e) => {
-      // @ts-ignore: Detail declared in the event.
-      const { document } = e.detail;
-      const { src } = document;
-
-      await site.update(new Set([removePrefix(cwd, src)]));
-
-      dispatch("previewUpdated", {
-        src,
-        url: getPreviewUrl(src),
-      });
-    });
-  });
-
-  [
-    "cms:uploadedFile",
-    "cms:updatedFile",
-  ].forEach((eventName) => {
-    addEventListener(eventName, async (e) => {
-      // @ts-ignore: Detail declared in the event.
-      const { entry } = e.detail;
-      const { src } = entry;
-
-      await site.update(new Set([removePrefix(cwd, src)]));
-
-      dispatch("previewUpdated", {
-        src,
-        url: getPreviewUrl(src),
-      });
-    });
-  });
 
   addEventListener("cms:previewUrl", (e) => {
     // @ts-ignore: Detail declared in the event.

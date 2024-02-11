@@ -175,17 +175,10 @@ export default class Cms {
 
     const sockets = new Set<WebSocket>();
 
-    addEventListener("cms:previewUpdated", (e) => {
-      // @ts-ignore: Detail declared in the event.
-      const { src, url } = e.detail;
-
-      sockets.forEach((socket) =>
-        socket.send(JSON.stringify({
-          type: "updated",
-          src,
-          url,
-        }))
-      );
+    addEventListener("cms:previewUpdated", () => {
+      sockets.forEach((socket) => {
+        socket.send(JSON.stringify({ type: "preview" }));
+      });
     });
 
     app.get("_socket", (c: Context) => {
@@ -199,7 +192,7 @@ export default class Cms {
         socket.onmessage = async (e) => {
           const { type, src } = JSON.parse(e.data);
 
-          if (type === "open") {
+          if (type === "url") {
             const result = dispatch<{ src: string; url?: unknown }>(
               "previewUrl",
               { src },
@@ -208,7 +201,7 @@ export default class Cms {
             if (result) {
               const url = await result.url;
               if (url) {
-                socket.send(JSON.stringify({ type: "open", src, url }));
+                socket.send(JSON.stringify({ type: "reload", src, url }));
               }
             }
           }

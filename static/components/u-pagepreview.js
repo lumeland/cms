@@ -16,15 +16,23 @@ customElements.define(
         return;
       }
 
-      let iframe;
+      const protocol = document.location.protocol === "https:"
+        ? "wss://"
+        : "ws://";
+      const ws = new WebSocket(
+        protocol + document.location.host + url("_socket"),
+      );
 
-      function update(src) {
+      let iframe;
+      let lastUrl;
+
+      function reload(url) {
         if (!iframe) {
           const dialog = push(document.body, "dialog", {
             class: "modal is-preview " +
               (matchMedia("(max-width:500px)").matches ? "is-hidden" : ""),
           });
-          iframe = push(dialog, "iframe", { class: "modal-content", src });
+          iframe = push(dialog, "iframe", { class: "modal-content", src: url });
           // deno-lint-ignore prefer-const
           let icon;
           const button = push(dialog, "button", {
@@ -47,27 +55,29 @@ customElements.define(
           dialog.show();
         }
 
-        iframe.contentDocument.location.reload();
+        if (lastUrl === url) {
+          iframe?.contentDocument.location.reload();
+        } else if (lastUrl) {
+          iframe.src = url;
+        }
+
+        lastUrl = url;
       }
 
-      const protocol = document.location.protocol === "https:"
-        ? "wss://"
-        : "ws://";
-      const ws = new WebSocket(
-        protocol + document.location.host + url("_socket"),
-      );
-
       ws.onopen = () => {
-        ws.send(JSON.stringify({ type: "open", src }));
+        ws.send(JSON.stringify({ type: "url", src }));
       };
 
       ws.onmessage = (e) => {
         const data = JSON.parse(e.data);
 
-        if (data.type === "open" && data.src === src) {
-          update(data.url);
-        } else if (data.type === "updated") {
-          update(data.url);
+        if (data.type === "reload") {
+          reload(data.url);
+          return;
+        }
+
+        if (data.type === "preview") {
+          ws.send(JSON.stringify({ type: "url", src }));
         }
       };
     }
