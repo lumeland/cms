@@ -79,7 +79,8 @@ export default class Cms {
 
   upload(name: string, storage: string, publicPath?: string): this {
     if (!publicPath) {
-      publicPath = normalizePath(storage.split(":")[1] ?? "/");
+      const path = storage.split(":")[1] ?? "/";
+      publicPath = normalizePath(path.split("*")[0]);
     }
 
     this.uploads.set(name, [storage, publicPath]);

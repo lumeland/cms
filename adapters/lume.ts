@@ -45,7 +45,7 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   cms.options.site!.url = site.url("/", true);
   cms.storage("src");
   cms.options.basePath = basePath;
-  const cwd = cms.options.root = site.src();
+  cms.options.root = site.src();
 
   addEventListener("cms:previewUrl", (e) => {
     // @ts-ignore: Detail declared in the event.
@@ -115,7 +115,7 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   previewer.get(
     "*",
     serveStatic({
-      root: removePrefix(cwd, site.dest()),
+      root: removePrefix(site.root(), site.dest()),
     }),
   );
 
