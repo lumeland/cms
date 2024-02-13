@@ -24,7 +24,7 @@ customElements.define(
         hidden: true,
       });
 
-      const helpers = push(this, "div", { class: "ly-rowStack tools" });
+      const helpers = push(this, "div", { class: "tools" });
       for (const name of Object.keys(schema.cmsContent.uploads || {})) {
         push(helpers, "button", {
           class: "button is-secondary",
@@ -41,10 +41,65 @@ customElements.define(
       }
 
       const code = push(this, "div", { class: "code" });
-      const view = init(code, textarea.value);
+      const md = init(code, textarea.value);
+      let tools;
 
+      tools = push(helpers, "div", { class: "tools-group" });
+      [
+        [md.makeBold, "text-b"],
+        [md.makeItalic, "text-italic"],
+        [md.makeStrikethrough, "text-strikethrough"],
+      ].forEach(([fn, icon]) => {
+        push(tools, "button", {
+          class: "buttonIcon",
+          type: "button",
+          onclick() {
+            fn(md.editor);
+          },
+        }, `<u-icon name="${icon}"></u-icon>`);
+      });
+
+      tools = push(helpers, "div", { class: "tools-group" });
+      [
+        [md.makeH1, "text-h-one"],
+        [md.makeH2, "text-h-two"],
+        [md.makeH3, "text-h-three"],
+        [md.makeH4, "text-h-four"],
+        [md.makeH5, "text-h-five"],
+        [md.makeH6, "text-h-six"],
+      ].forEach(([fn, icon]) => {
+        push(tools, "button", {
+          class: "buttonIcon",
+          type: "button",
+          onclick() {
+            fn(md.editor);
+          },
+        }, `<u-icon name="${icon}"></u-icon>`);
+      });
+
+      tools = push(helpers, "div", { class: "tools-group" });
+      push(tools, "button", {
+        class: "buttonIcon",
+        type: "button",
+        onclick() {
+          const url = prompt("URL to link to:");
+
+          if (url) {
+            md.insertLink(md.editor, url);
+          }
+        },
+      }, `<u-icon name="link-simple"></u-icon>`);
+
+      const helpUrl = "https://www.markdownguide.org/basic-syntax/";
+      push(tools, "a", {
+        class: "buttonIcon",
+        href: helpUrl,
+        target: "_blank",
+      }, `<u-icon name="question"></u-icon>`);
+
+      this.editor = md.editor;
       textarea.form.addEventListener("submit", () => {
-        textarea.value = view.state.doc.toString();
+        textarea.value = editor.state.doc.toString();
       });
     }
   },

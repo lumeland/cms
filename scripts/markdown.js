@@ -1,4 +1,4 @@
-import { EditorSelection, EditorState, Transaction } from "@codemirror/state";
+import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { markdown } from "@codemirror/lang-markdown";
 import {
@@ -22,14 +22,31 @@ import {
   completionKeymap,
 } from "@codemirror/autocomplete";
 
+import * as ui from "./markdown_ui";
+
+const makeBold = ui.toggleTag("**", "**");
+const makeItalic = ui.toggleTag("*", "*");
+const makeStrikethrough = ui.toggleTag("~~", "~~");
+const makeH1 = ui.toggleHeader(1);
+const makeH2 = ui.toggleHeader(2);
+const makeH3 = ui.toggleHeader(3);
+const makeH4 = ui.toggleHeader(4);
+const makeH5 = ui.toggleHeader(5);
+const makeH6 = ui.toggleHeader(6);
+const insertLink = ui.insertLink();
+
 const markdownBinding = [
   {
     key: "Mod-b",
-    run: toggleTag("**", "**"),
+    run: makeBold,
   },
   {
     key: "Mod-i",
-    run: toggleTag("*", "*"),
+    run: makeItalic,
+  },
+  {
+    key: "Mod-l",
+    run: insertLink,
   },
 ];
 
@@ -59,69 +76,20 @@ export function init(parent, doc) {
     ],
   });
 
-  return new EditorView({
-    state,
-    parent,
-  });
-}
-
-function toggleTag(start, end) {
-  const startLength = start.length;
-  const endLength = end.length;
-
-  return function ({ state, dispatch }) {
-    const changes = state.changeByRange((range) => {
-      const existsBefore =
-        state.sliceDoc(range.from - startLength, range.from) === start;
-      const existsAfter =
-        state.sliceDoc(range.to, range.to + endLength) === end;
-      const changes = [];
-
-      changes.push(
-        existsBefore
-          ? {
-            from: range.from - startLength,
-            to: range.from,
-            insert: "",
-          }
-          : {
-            from: range.from,
-            insert: start,
-          },
-      );
-
-      changes.push(
-        existsAfter
-          ? {
-            from: range.to,
-            to: range.to + endLength,
-            insert: "",
-          }
-          : {
-            from: range.to,
-            insert: end,
-          },
-      );
-
-      const extendBefore = existsBefore ? -startLength : startLength;
-      const extendAfter = existsAfter ? -endLength : endLength;
-
-      return {
-        changes,
-        range: EditorSelection.range(
-          range.from + extendBefore,
-          range.to + extendAfter,
-        ),
-      };
-    });
-
-    dispatch(
-      state.update(changes, {
-        scrollIntoView: true,
-        annotations: Transaction.userEvent.of("input"),
-      }),
-    );
-
-    return true;
+  return {
+    makeBold,
+    makeItalic,
+    makeStrikethrough,
+    makeH1,
+    makeH2,
+    makeH3,
+    makeH4,
+    makeH5,
+    makeH6,
+    insertLink,
+    editor: new EditorView({
+      state,
+      parent,
+    }),
   };
 }
