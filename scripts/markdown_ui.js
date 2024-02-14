@@ -118,6 +118,15 @@ export function insertLink() {
         },
       );
 
+      if (range.from === range.to) {
+        changes.push(
+          {
+            from: range.to,
+            insert: "link text",
+          },
+        );
+      }
+
       changes.push(
         {
           from: range.to,
@@ -128,8 +137,8 @@ export function insertLink() {
       return {
         changes,
         range: EditorSelection.range(
-          range.to + 2,
-          range.to + (url ? url.length + 3 : 3),
+          range.from + 1,
+          range.to + 1,
         ),
       };
     });
