@@ -14,13 +14,13 @@ import {
   syntaxHighlighting,
 } from "@codemirror/language";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import { highlightSelectionMatches } from "@codemirror/search";
 import {
   autocompletion,
   closeBrackets,
   closeBracketsKeymap,
   completionKeymap,
 } from "@codemirror/autocomplete";
+import { languages } from "@codemirror/language-data";
 
 import * as ui from "./markdown_ui";
 
@@ -63,7 +63,6 @@ export function init(parent, doc) {
       closeBrackets(),
       autocompletion(),
       rectangularSelection(),
-      highlightSelectionMatches(),
       keymap.of([
         ...markdownBinding,
         ...closeBracketsKeymap,
@@ -71,7 +70,9 @@ export function init(parent, doc) {
         ...historyKeymap,
         ...completionKeymap,
       ]),
-      markdown(),
+      markdown({
+        codeLanguages: languages,
+      }),
       EditorView.lineWrapping,
     ],
   });

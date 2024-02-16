@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.8] - Unreleased
+### Added
+- Markdown: syntax highlight fenced code.
+
 ## [0.2.7] - 2024-02-14
 ### Changed
 - Markdown: removed h5 and h6 buttons
@@ -64,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.1.0] - 2024-02-08
 First version
 
+[0.2.8]: https://github.com/lumeland/cms/compare/v0.2.7...HEAD
 [0.2.7]: https://github.com/lumeland/cms/compare/v0.2.6...v0.2.7
 [0.2.6]: https://github.com/lumeland/cms/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/lumeland/cms/compare/v0.2.4...v0.2.5
