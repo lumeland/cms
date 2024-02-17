@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Markdown: syntax highlight fenced code.
 
+### Fixed
+- Updated dependencies.
+
 ## [0.2.7] - 2024-02-14
 ### Changed
 - Markdown: removed h5 and h6 buttons
