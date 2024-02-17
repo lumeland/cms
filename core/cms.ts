@@ -261,11 +261,15 @@ export default class Cms {
     return fields.map((field): ResolvedField => {
       if (typeof field === "string") {
         const parts = field.split(":").map((part) => part.trim());
-
         field = {
           name: parts[0],
           type: parts[1] ?? "text",
         };
+
+        if (field.type.endsWith("!")) {
+          field.type = field.type.slice(0, -1);
+          field.attributes = { required: true };
+        }
       }
 
       const type = this.fields.get(field.type);

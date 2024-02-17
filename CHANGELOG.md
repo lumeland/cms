@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.2.8] - Unreleased
 ### Added
 - Markdown: syntax highlight fenced code.
+- A field definition string ending with "!" makes the field required.
+  For example: `title: string!`.
 
 ### Fixed
 - Updated dependencies.
