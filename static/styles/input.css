@@ -23,7 +23,7 @@
     border: none;
     display: inline-block;
     vertical-align: middle;
-    flex: 1 1 300px;
+    flex: 1 1 200px;
     align-self: center;
     color: var(--color-dim);
   }

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Updated dependencies.
+- UI improvements and fixes.
 
 ## [0.2.7] - 2024-02-14
 ### Changed

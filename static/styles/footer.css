@@ -1,10 +1,16 @@
 .footer {
   position: sticky;
   bottom: 0;
-  padding: var(--row-gap-small) 10px;
-  margin: 0 -10px;
+  padding: var(--row-gap-small) 0;
+  margin: 0;
   background-color: var(--color-background);
   border-top: solid 1px var(--color-line);
   justify-items: start;
   z-index: 2;
+  box-shadow: 10px 0 var(--color-background), -10px 0 var(--color-background);
+}
+
+html:has(.footer) {
+  overflow-y: auto;
+  scroll-padding-bottom: 100px;
 }

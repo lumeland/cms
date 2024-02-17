@@ -1,3 +1,4 @@
+import { labelify } from "../../utils/string.ts";
 import { getPath, normalizePath } from "../../utils/path.ts";
 import breadcrumb from "../breadcrumb.ts";
 import createTree from "../tree.ts";
@@ -16,23 +17,26 @@ export default function template(
   { collection, publicPath, files, version }: Props,
 ) {
   const tree = createTree(files);
+  const content = folder({ collection, tree, publicPath }).trim();
 
   return `
 ${breadcrumb(version, collection)}
 
 <header class="header is-sticky">
-  <h1 class="header-title">Content of ${collection}</h1>
+  <h1 class="header-title">Content of ${labelify(collection)}</h1>
   <u-filter
     class="header-filter"
-    data-placeholder="Search files in ${collection}"
+    data-placeholder="Search files in ${labelify(collection)}"
     data-selector="#list li"
   >
   </u-filter>
 </header>
 
-<ul id="list" class="list">
-  ${folder({ collection, tree, publicPath })}
-</ul>
+${
+    content
+      ? `<ul id="list" class="list">${content}</ul>`
+      : '<p class="emptyState">No results</p>'
+  }
 
 <form
   method="post"

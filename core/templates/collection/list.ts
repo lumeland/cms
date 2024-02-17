@@ -15,6 +15,7 @@ interface Props {
 export default async function template({ collection, version }: Props) {
   const documents = await Array.fromAsync(collection);
   const tree = createTree(documents);
+  const content = folder({ collection, tree }).trim();
 
   return `
 ${breadcrumb(version, collection.name)}
@@ -29,9 +30,11 @@ ${breadcrumb(version, collection.name)}
   </u-filter>
 </header>
 
-<ul id="list" class="list">
-  ${folder({ collection, tree })}
-</ul>
+${
+    content
+      ? `<ul id="list" class="list">${content}</ul>`
+      : '<p class="emptyState">No results</p>'
+  }
 
 <footer class="ly-rowStack footer is-responsive">
   <a
