@@ -14,13 +14,18 @@ export default function template({ jsImports, content }: Props) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lume CMS</title>
   <link rel="stylesheet" href="${asset("/styles.css")}">
-  <script type="module" src="${asset("/components/ui.js")}"></script>
   <link rel="icon" href="${asset("/favicon.ico")}" type="image/x-icon">
-  ${
-    jsImports.map((file) =>
-      `<script type="module" src="${asset(file)}"></script>`
-    ).join("\n")
-  }
+  <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "${asset("/")}"
+      }
+    }
+  </script>
+<script type="module">
+import "lume_cms/components/ui.js";
+${jsImports.map((file) => `import "${file}";`).join("\n")}
+</script>
 </head>
 <body>
   <div class="app">

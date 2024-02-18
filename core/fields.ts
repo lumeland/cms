@@ -23,44 +23,44 @@ const inputs = [
 for (const input of inputs) {
   fields.set(input, {
     tag: `f-${input}`,
-    jsImport: `/components/f-${input}.js`,
+    jsImport: `lume_cms/components/f-${input}.js`,
   });
 }
 
 // Add fields with custom logic
 fields.set("checkbox", {
   tag: "f-checkbox",
-  jsImport: "/components/f-checkbox.js",
+  jsImport: "lume_cms/components/f-checkbox.js",
   transformData: (value: unknown) => value === "true",
 });
 
 fields.set("number", {
   tag: "f-number",
-  jsImport: "/components/f-number.js",
+  jsImport: "lume_cms/components/f-number.js",
   transformData: (value: unknown) => value === "" ? null : Number(value),
 });
 
 fields.set("choose-list", {
   tag: "f-choose-list",
-  jsImport: "/components/f-choose-list.js",
+  jsImport: "lume_cms/components/f-choose-list.js",
   transformData: (value: unknown) => Object.values(value || {}),
 });
 
 fields.set("list", {
   tag: "f-list",
-  jsImport: "/components/f-list.js",
+  jsImport: "lume_cms/components/f-list.js",
   transformData: (value: unknown) => Object.values(value || {}),
 });
 
 fields.set("object-list", {
   tag: "f-object-list",
-  jsImport: "/components/f-object-list.js",
+  jsImport: "lume_cms/components/f-object-list.js",
   transformData: (value: unknown) => Object.values(value || {}),
 });
 
 fields.set("file", {
   tag: "f-file",
-  jsImport: "/components/f-file.js",
+  jsImport: "lume_cms/components/f-file.js",
   init: (field: ResolvedField) => {
     const { cmsContent } = field;
 

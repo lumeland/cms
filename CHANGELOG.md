@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Markdown: syntax highlight fenced code.
 - A field definition string ending with "!" makes the field required.
   For example: `title: string!`.
+- Register `lume_cms` import map.
 
 ### Fixed
 - Updated dependencies.
