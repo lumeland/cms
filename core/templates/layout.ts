@@ -1,4 +1,5 @@
 import { asset, getPath } from "../utils/path.ts";
+import { getCurrentVersion } from "../utils/env.ts";
 
 interface Props {
   jsImports: string[];
@@ -31,6 +32,9 @@ ${jsImports.map((file) => `import "${file}";`).join("\n")}
   <div class="app">
     ${content}
   </div>
+  <footer class="app-footer">
+    Powered by <a href="https://lume.land/cms/">LumeCMS ${getCurrentVersion()}</a>
+  </footer>
 </body>
 </html>
     `;

@@ -1,6 +1,7 @@
 .app {
   margin: 2rem auto;
   max-width: min(100% - 10vw, 900px);
+  min-height: calc(100vh - 6rem);
 
   &.is-preview {
     margin: 0;
@@ -14,6 +15,21 @@
       width: 100%;
       height: 100%;
       border: none;
+    }
+  }
+}
+.app-footer {
+  height: 2rem;
+  text-align: center;
+  font: var(--font-small);
+  color: var(--color-dim);
+
+  & a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 }
