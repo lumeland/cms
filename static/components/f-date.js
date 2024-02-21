@@ -16,7 +16,7 @@ customElements.define(
       }
 
       // Get the value in the format "YYYY-MM-DD"
-      return value.toISOString().split("T")[0];
+      return value?.toISOString().split("T")[0];
     }
   },
 );
