@@ -2,13 +2,12 @@ import { Hono, serveStatic } from "../deps/hono.ts";
 import authRoutes from "../core/routes/auth.ts";
 import { dispatch } from "../core/utils/event.ts";
 import { asset, getPath } from "../core/utils/path.ts";
-import FSWatcher from "lume/core/watcher.ts";
 
 import type Cms from "../core/cms.ts";
-import type Site from "lume/core/site.ts";
 
 export interface Options {
-  site: Site;
+  // deno-lint-ignore no-explicit-any
+  site: any;
   cms: Cms;
   basePath?: string;
 }
@@ -28,13 +27,10 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   await site.build();
 
   // Start the watcher
-  const watcher = new FSWatcher({
-    root: site.src(),
-    ignore: site.options.watcher.ignore,
-    debounce: site.options.watcher.debounce,
-  });
+  const watcher = site.getWatcher();
 
-  watcher.addEventListener("change", async (event) => {
+  // deno-lint-ignore no-explicit-any
+  watcher.addEventListener("change", async (event: any) => {
     const files = event.files!;
     await site.update(files);
     dispatch("previewUpdated");

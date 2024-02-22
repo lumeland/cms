@@ -2,10 +2,8 @@
   "lock": false,
   "tasks": {
     "dev": "deno run --unstable-kv --check --watch -A probas/serve.ts",
-    "demo": "deno run --unstable-kv --watch -A probas/schema2.ts"
-  },
-  "imports": {
-    "lume/": "https://deno.land/x/lume@v2.0.3/"
+    "demo": "deno run --unstable-kv --watch -A probas/schema2.ts",
+    "update-deps": "deno run -A --quiet 'https://deno.land/x/udd@0.8.2/main.ts' deps/*.ts"
   },
   "exclude": [
     "probas",
