@@ -1,5 +1,4 @@
 import { getPath } from "../utils/path.ts";
-import { dispatch } from "../utils/event.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
@@ -19,8 +18,6 @@ export default function (app: Hono) {
     await versioning.create(name);
     await versioning.change(name);
 
-    dispatch("createdVersion", { version: versioning.current() });
-
     return c.redirect(getPath());
   });
 
@@ -36,8 +33,6 @@ export default function (app: Hono) {
     const body = await c.req.parseBody();
     const name = body.name as string;
     await versioning.change(name);
-
-    dispatch("changedVersion", { version: name });
 
     return c.redirect(getPath());
   });
@@ -55,8 +50,6 @@ export default function (app: Hono) {
     const name = body.name as string;
     await versioning.publish(name);
 
-    dispatch("publishedVersion", { version: name });
-
     return c.redirect(getPath());
   });
 
@@ -72,8 +65,6 @@ export default function (app: Hono) {
     const body = await c.req.parseBody();
     const name = body.name as string;
     await versioning.delete(name);
-
-    dispatch("deletedVersion", { version: name });
 
     return c.redirect(getPath());
   });

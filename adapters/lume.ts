@@ -53,14 +53,6 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
     e.detail.src = getSourceFile(e.detail.url);
   });
 
-  addEventListener("cms:changedVersion", () => {
-    site.build();
-  });
-
-  addEventListener("cms:publishedVersion", () => {
-    site.build();
-  });
-
   function getPreviewUrl(src: string): string | undefined {
     for (const page of site.pages) {
       if (page.src.entry?.src === src) {
