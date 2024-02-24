@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 - Preview link target.
 - Improvements in the versioning system.
+- Update deps: `hono`.
 
 ## [0.2.9] - 2024-02-22
 ### Added
