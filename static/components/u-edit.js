@@ -41,7 +41,7 @@ customElements.define(
             background: hsl(220, 20%, 94%);
           }
           </style>
-          <a href="${data.edit}" target="top">Edit this page</a>
+          <a href="${data.edit}" target="_top">Edit this page</a>
           `;
         }
       }

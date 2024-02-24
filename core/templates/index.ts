@@ -118,8 +118,11 @@ async function versions(versioning: Versioning) {
     <form method="post" action="${getPath("versions", "publish")}">
       <input type="hidden" name="name" value="${version.name}">
       <button class="button is-secondary">
-      <u-icon name="rocket-launch"></u-icon>
-        Publish
+        ${
+      version.isProduction
+        ? `<u-icon name="arrows-clockwise"></u-icon> Sync`
+        : `<u-icon name="rocket-launch"></u-icon> Publish`
+    }
       </button>
     </form>
   </li>`).join("")
