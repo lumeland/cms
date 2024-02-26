@@ -75,6 +75,7 @@ export interface Field {
     pattern?: string;
     [key: string]: unknown;
   };
+  toJSON?: (this: ResolvedField) => Record<string, unknown>;
   [key: string]: unknown;
 }
 
