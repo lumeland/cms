@@ -4,11 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.2.11] - Unreleased
+## [0.2.11] - 2024-02-27
 ### Added
 - Types for `Field.toJSON`.
 - New option `data` to pass arbitrary data to the CMS.
 - New `log` option to store error logs in a file.
+
+### Fixed
+- Updated `Hono` to the latest version.
 
 ## [0.2.10] - 2024-02-24
 ### Fixed
@@ -95,7 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.1.0] - 2024-02-08
 First version
 
-[0.2.11]: https://github.com/lumeland/cms/compare/v0.2.10...HEAD
+[0.2.11]: https://github.com/lumeland/cms/compare/v0.2.10...v0.2.11
 [0.2.10]: https://github.com/lumeland/cms/compare/v0.2.9...v0.2.10
 [0.2.9]: https://github.com/lumeland/cms/compare/v0.2.8...v0.2.9
 [0.2.8]: https://github.com/lumeland/cms/compare/v0.2.7...v0.2.8
