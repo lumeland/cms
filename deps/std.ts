@@ -21,3 +21,4 @@ export {
   encodeBase64,
 } from "https://deno.land/std@0.217.0/encoding/base64.ts";
 export { contentType } from "https://deno.land/std@0.217.0/media_types/content_type.ts";
+export * as logger from "https://deno.land/std@0.217.0/log/mod.ts";

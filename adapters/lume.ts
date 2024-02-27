@@ -42,6 +42,9 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   cms.storage("src");
   cms.options.basePath = basePath;
   cms.options.root = site.src();
+  const data = options.site.data ?? {};
+  data.site = site;
+  cms.options.data = data;
 
   addEventListener("cms:previewUrl", (e) => {
     // @ts-ignore: Detail declared in the event.

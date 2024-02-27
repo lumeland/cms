@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.2.11] - Unreleased
 ### Added
 - Types for `Field.toJSON`.
+- New option `data` to pass arbitrary data to the CMS.
+- New `log` option to store error logs in a file.
 
 ## [0.2.10] - 2024-02-24
 ### Fixed

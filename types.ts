@@ -102,4 +102,5 @@ export interface CMSContent {
   documents: Record<string, Document>;
   uploads: Record<string, [Storage, string]>;
   versioning?: Versioning;
+  data?: Record<string, unknown>;
 }

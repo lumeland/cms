@@ -11,7 +11,13 @@ import Document from "./document.ts";
 import FsStorage from "../storage/fs.ts";
 import { Git } from "../versioning/git.ts";
 import { normalizePath, setBasePath } from "./utils/path.ts";
-import { basename, dirname, fromFileUrl, relative } from "../deps/std.ts";
+import {
+  basename,
+  dirname,
+  fromFileUrl,
+  logger,
+  relative,
+} from "../deps/std.ts";
 import { labelify } from "./utils/string.ts";
 import { dispatch } from "./utils/event.ts";
 
@@ -32,11 +38,17 @@ export interface CmsOptions {
   root: string;
   basePath: string;
   auth?: AuthOptions;
+  data?: Record<string, unknown>;
+  log?: LogOptions;
 }
 
 export interface AuthOptions {
   method: "basic";
   users: Record<string, string>;
+}
+
+export interface LogOptions {
+  filename: string;
 }
 
 const defaults: CmsOptions = {
@@ -110,6 +122,7 @@ export default class Cms {
   init(): Hono {
     const content: CMSContent = {
       site: this.options.site!,
+      data: this.options.data,
       collections: {},
       documents: {},
       uploads: {},
@@ -151,6 +164,51 @@ export default class Cms {
 
     const app = new Hono({
       strict: false,
+    });
+
+    if (this.options.log?.filename) {
+      logger.setup({
+        handlers: {
+          file: new logger.FileHandler("ERROR", {
+            filename: this.options.log.filename,
+          }),
+        },
+        loggers: {
+          lumecms: {
+            level: "ERROR",
+            handlers: ["file"],
+          },
+        },
+      });
+    } else {
+      logger.setup({
+        handlers: {
+          console: new logger.ConsoleHandler("ERROR"),
+        },
+        loggers: {
+          lumecms: {
+            level: "ERROR",
+            handlers: ["console"],
+          },
+        },
+      });
+    }
+
+    app.onError((err, c) => {
+      const log = logger.getLogger("lumecms");
+      const { req } = c;
+      const time = new Date().toISOString();
+      const message = `${time} [${req.method}] ${req.url} - ${err.message}`;
+      err.message = message;
+
+      log.error(err);
+      log.handlers.forEach((handler) => {
+        if (handler instanceof logger.FileHandler) {
+          handler.flush();
+        }
+      });
+
+      return c.text("There was an error. See logs for more info.", 500);
     });
 
     if (this.options.auth) {
