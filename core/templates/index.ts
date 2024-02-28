@@ -3,11 +3,14 @@ import { getPath } from "../utils/path.ts";
 import breadcrumb from "./breadcrumb.ts";
 
 import type { SiteInfo, Versioning } from "../../types.ts";
+import type Document from "../document.ts";
+import type Collection from "../collection.ts";
+import type Upload from "../upload.ts";
 
 interface Props {
-  collections: string[];
-  documents: string[];
-  uploads: string[];
+  collections: Record<string, Collection>;
+  documents: Record<string, Document>;
+  uploads: Record<string, Upload>;
   versioning?: Versioning;
   site: SiteInfo;
 }
@@ -36,35 +39,44 @@ ${breadcrumb(await versioning?.current())}
 
 <ul class="list">
   ${
-    collections.map((collection) => `
+    Object.entries(collections).map(([name, collection]) => `
   <li>
-    <a href="${getPath("collection", collection)}" class="list-item">
+    <a href="${getPath("collection", name)}" class="list-item">
       <u-icon name="folder-fill"></u-icon>
-      ${labelify(collection)}
+      <div class="list-item-header">
+        <strong>${labelify(name)}</strong>
+        ${collection.description ? `<p>${collection.description}</p>` : ""}
+      </div>
     </a>
   </li>`).join("")
   }
 
   ${
-    documents.map((document) => `
+    Object.entries(documents).map(([name, document]) => `
   <li>
     <a
-      href="${getPath("document", document)}"
+      href="${getPath("document", name)}"
       class="list-item"
-      title="${document}"
+      title="${name}"
     >
       <u-icon name="file"></u-icon>
-      ${labelify(document)}
+      <div class="list-item-header">
+        <strong>${labelify(name)}</strong>
+        ${document.description ? `<p>${document.description}</p>` : ""}
+      </div>
     </a>
   </li>`).join("")
   }
       
   ${
-    uploads.map((name) => `
+    Object.entries(uploads).map(([name, upload]) => `
   <li>
     <a href="${getPath("uploads", name)}" class="list-item">
       <u-icon name="image-square-fill"></u-icon>
-      ${labelify(name)}
+      <div class="list-item-header">
+        <strong>${labelify(name)}</strong>
+        ${upload.description ? `<p>${upload.description}</p>` : ""}
+      </div>
     </a>
   </li>`).join("")
   }

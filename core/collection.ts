@@ -2,15 +2,24 @@ import Document from "./document.ts";
 
 import type { EntryMetadata, ResolvedField, Storage } from "../types.ts";
 
+export interface CollectionOptions {
+  name: string;
+  description?: string;
+  storage: Storage;
+  fields: ResolvedField[];
+}
+
 export default class Collection {
   name: string;
+  description?: string;
   #storage: Storage;
   #fields: ResolvedField[];
 
-  constructor(name: string, storage: Storage, fields: ResolvedField[]) {
-    this.name = name;
-    this.#storage = storage;
-    this.#fields = fields;
+  constructor(options: CollectionOptions) {
+    this.name = options.name;
+    this.description = options.description;
+    this.#storage = options.storage;
+    this.#fields = options.fields;
   }
 
   get fields() {
@@ -24,11 +33,15 @@ export default class Collection {
   }
 
   create(id: string): Document {
-    return new Document(this.#storage.get(id), this.#fields, true);
+    return new Document({
+      entry: this.#storage.get(id),
+      fields: this.#fields,
+      isNew: true,
+    });
   }
 
   get(id: string): Document {
-    return new Document(this.#storage.get(id), this.#fields);
+    return new Document({ entry: this.#storage.get(id), fields: this.#fields });
   }
 
   async delete(id: string): Promise<void> {

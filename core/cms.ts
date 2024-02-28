@@ -8,6 +8,7 @@ import filesRoutes from "./routes/files.ts";
 import authRoutes from "./routes/auth.ts";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
+import Upload from "./upload.ts";
 import FsStorage from "../storage/fs.ts";
 import { Git } from "../versioning/git.ts";
 import { normalizePath, setBasePath } from "./utils/path.ts";
@@ -141,25 +142,38 @@ export default class Cms {
       this.#jsImports.add(type.jsImport);
     }
 
-    for (const [name, [storage, publicPath]] of this.uploads.entries()) {
-      content.uploads[name] = [this.#getStorage(storage), publicPath];
+    for (const [key, [storage, publicPath]] of this.uploads.entries()) {
+      const [name, description] = key.split(":").map((part) => part.trim());
+
+      content.uploads[name] = new Upload({
+        name,
+        description,
+        storage: this.#getStorage(storage),
+        publicPath,
+      });
     }
 
-    for (const [name, [path, fields]] of this.collections) {
-      content.collections[name] = new Collection(
+    for (const [key, [path, fields]] of this.collections) {
+      const [name, description] = key.split(":").map((part) => part.trim());
+
+      content.collections[name] = new Collection({
+        storage: this.#getStorage(path),
+        fields: this.#resolveFields(fields, content),
         name,
-        this.#getStorage(path),
-        this.#resolveFields(fields, content),
-      );
+        description,
+      });
     }
 
-    for (const [name, [path, fields]] of this.documents) {
-      content.documents[name] = new Document(
-        this.#getEntry(path),
-        this.#resolveFields(fields, content),
-        false,
+    for (const [key, [path, fields]] of this.documents) {
+      const [name, description] = key.split(":").map((part) => part.trim());
+
+      content.documents[name] = new Document({
+        entry: this.#getEntry(path),
+        fields: this.#resolveFields(fields, content),
+        isNew: false,
         name,
-      );
+        description,
+      });
     }
 
     const app = new Hono({

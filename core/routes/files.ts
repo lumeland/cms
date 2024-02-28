@@ -7,51 +7,48 @@ import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
 
 export default function (app: Hono) {
-  app.get("/uploads/:collection", async (c: Context) => {
+  app.get("/uploads/:upload", async (c: Context) => {
     const { uploads, versioning } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("collection");
+    const uploadId = c.req.param("upload");
 
-    if (!uploads[collectionId]) {
+    if (!uploads[uploadId]) {
       return c.notFound();
     }
 
-    const [collection, publicPath] = uploads[collectionId];
-    const files = await Array.fromAsync(collection);
+    const upload = uploads[uploadId];
 
     return c.render(
       uploadsList({
-        collection: collectionId,
-        files,
-        publicPath,
+        upload,
         version: await versioning?.current(),
       }),
     );
   });
 
-  app.post("/uploads/:collection/create", async (c: Context) => {
+  app.post("/uploads/:upload/create", async (c: Context) => {
     const { uploads } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("collection");
-    const [collection] = uploads[collectionId];
+    const uploadId = c.req.param("upload");
+    const { storage } = uploads[uploadId];
     const body = await c.req.parseBody();
     const file = body.file as File;
     const fileId = slugify(file.name);
-    const entry = collection.get(fileId);
+    const entry = storage.get(fileId);
 
     await entry.writeFile(file);
-    return c.redirect(getPath("uploads", collectionId, "file", fileId));
+    return c.redirect(getPath("uploads", uploadId, "file", fileId));
   });
 
-  app.get("/uploads/:collection/raw/:file", async (c: Context) => {
+  app.get("/uploads/:upload/raw/:file", async (c: Context) => {
     const { uploads } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("collection");
+    const uploadId = c.req.param("upload");
     const fileId = c.req.param("file");
 
-    if (!uploads[collectionId]) {
+    if (!uploads[uploadId]) {
       return c.notFound();
     }
 
-    const [collection] = uploads[collectionId];
-    const entry = collection.get(fileId);
+    const { storage } = uploads[uploadId];
+    const entry = storage.get(fileId);
 
     const file = await entry.readFile();
     c.header("Content-Type", file.type);
@@ -59,25 +56,25 @@ export default function (app: Hono) {
     return c.body(new Uint8Array(await file.arrayBuffer()));
   });
 
-  app.get("/uploads/:collection/file/:file", async (c: Context) => {
+  app.get("/uploads/:upload/file/:file", async (c: Context) => {
     const { uploads, versioning } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("collection");
+    const uploadId = c.req.param("upload");
     const fileId = c.req.param("file");
-    const [collection, publicPath] = uploads[collectionId];
+    const { storage, publicPath } = uploads[uploadId];
 
-    if (!uploads[collectionId]) {
+    if (!uploads[uploadId]) {
       return c.notFound();
     }
 
     try {
-      const entry = collection.get(fileId);
+      const entry = storage.get(fileId);
       const file = await entry.readFile();
 
       return c.render(
         uploadsView({
           type: file.type,
           size: file.size,
-          collection: collectionId,
+          collection: uploadId,
           publicPath: normalizePath(publicPath, fileId),
           file: fileId,
           version: await versioning?.current(),
@@ -89,33 +86,33 @@ export default function (app: Hono) {
   })
     .post(async (c: Context) => {
       const { uploads } = c.get("options") as CMSContent;
-      const collectionId = c.req.param("collection");
-      const [collection] = uploads[collectionId];
+      const uploadId = c.req.param("upload");
+      const { storage } = uploads[uploadId];
       const body = await c.req.parseBody();
       const prevId = c.req.param("file");
       const fileId = body._id as string;
 
       if (prevId !== fileId) {
-        await collection.rename(prevId, fileId);
+        await storage.rename(prevId, fileId);
       }
 
       const file = body.file as File | undefined;
 
       if (file) {
-        const entry = collection.get(fileId);
+        const entry = storage.get(fileId);
         await entry.writeFile(file);
       }
 
-      return c.redirect(getPath("uploads", collectionId, "file", fileId));
+      return c.redirect(getPath("uploads", uploadId, "file", fileId));
     });
 
-  app.post("/uploads/:collection/delete/:file", async (c: Context) => {
+  app.post("/uploads/:upload/delete/:file", async (c: Context) => {
     const { uploads } = c.get("options") as CMSContent;
-    const collectionId = c.req.param("collection");
+    const uploadId = c.req.param("upload");
     const fileId = c.req.param("file");
-    const [collection] = uploads[collectionId];
+    const { storage } = uploads[uploadId];
 
-    await collection.delete(fileId);
-    return c.redirect(getPath("uploads", collectionId));
+    await storage.delete(fileId);
+    return c.redirect(getPath("uploads", uploadId));
   });
 }

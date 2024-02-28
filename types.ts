@@ -1,6 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
+import type Upload from "./core/upload.ts";
 
 /** Generic data to store */
 export type Data = Record<string, unknown>;
@@ -100,7 +101,7 @@ export interface CMSContent {
   site: SiteInfo;
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
-  uploads: Record<string, [Storage, string]>;
+  uploads: Record<string, Upload>;
   versioning?: Versioning;
   data: Record<string, any>;
 }

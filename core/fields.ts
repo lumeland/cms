@@ -70,7 +70,7 @@ fields.set("file", {
 
     if (!field.publicPath) {
       const name = field.uploads.split(":")[0];
-      const [, publicPath] = field.cmsContent.uploads[name];
+      const { publicPath } = field.cmsContent.uploads[name];
       field.publicPath = publicPath;
     }
   },
@@ -88,7 +88,7 @@ fields.set("file", {
       return current;
     }
 
-    const [storage, publicPath] =
+    const { storage, publicPath } =
       field.cmsContent.uploads[field.uploads || "default"];
 
     if (!storage) {

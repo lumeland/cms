@@ -1,22 +1,27 @@
 import type { Data, Entry, ResolvedField } from "../types.ts";
 
+export interface DocumentOptions {
+  name?: string;
+  description?: string;
+  entry: Entry;
+  fields: ResolvedField[];
+  isNew?: boolean;
+}
+
 export default class Document {
+  #name?: string;
+  description?: string;
   #entry: Entry;
   #fields: ResolvedField[];
   #data?: Data;
-  #name?: string;
 
-  constructor(
-    entry: Entry,
-    fields: ResolvedField[],
-    isNew = false,
-    name?: string,
-  ) {
-    this.#name = name;
-    this.#entry = entry;
-    this.#fields = fields;
+  constructor(options: DocumentOptions) {
+    this.#name = options.name;
+    this.description = options.description;
+    this.#entry = options.entry;
+    this.#fields = options.fields;
 
-    if (isNew) {
+    if (options.isNew) {
       this.#data = {};
     }
   }

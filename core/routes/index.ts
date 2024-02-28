@@ -15,9 +15,9 @@ export default function (app: Hono) {
     return c.render(
       index({
         site,
-        collections: Object.keys(collections),
-        documents: Object.keys(documents),
-        uploads: Object.keys(uploads),
+        collections: collections,
+        documents: documents,
+        uploads: uploads,
         versioning,
       }),
     );

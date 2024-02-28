@@ -4,29 +4,35 @@ import breadcrumb from "../breadcrumb.ts";
 import createTree from "../tree.ts";
 
 import type { Tree } from "../tree.ts";
-import type { EntryMetadata, Version } from "../../../types.ts";
+import type Upload from "../../upload.ts";
+import type { Version } from "../../../types.ts";
 
 interface Props {
-  collection: string;
-  publicPath: string;
-  files: EntryMetadata[];
+  upload: Upload;
   version?: Version;
 }
 
-export default function template(
-  { collection, publicPath, files, version }: Props,
+export default async function template(
+  { upload, version }: Props,
 ) {
+  const { publicPath, storage, name } = upload;
+  const files = await Array.fromAsync(storage);
   const tree = createTree(files);
-  const content = folder({ collection, tree, publicPath }).trim();
+  const content = folder({ collection: name, tree, publicPath }).trim();
 
   return `
-${breadcrumb(version, collection)}
+${breadcrumb(version, name)}
 
 <header class="header is-sticky">
-  <h1 class="header-title">Content of ${labelify(collection)}</h1>
+  <h1 class="header-title">${labelify(name)}</h1>
+  ${
+    upload.description
+      ? `<p class="header-description">${upload.description}</p>`
+      : ""
+  }
   <u-filter
     class="header-filter"
-    data-placeholder="Search files in ${labelify(collection)}"
+    data-placeholder="Search files in ${labelify(name)}"
     data-selector="#list li"
   >
   </u-filter>
@@ -42,7 +48,7 @@ ${
   method="post"
   class="footer ly-rowStack is-responsive"
   enctype="multipart/form-data"
-  action="${getPath("uploads", collection, "create")}"
+  action="${getPath("uploads", name, "create")}"
 >
   <input
     aria-label="Add file"

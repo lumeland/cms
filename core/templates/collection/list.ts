@@ -21,7 +21,12 @@ export default async function template({ collection, version }: Props) {
 ${breadcrumb(version, collection.name)}
 
 <header class="header is-sticky">
-  <h1 class="header-title">Content of ${collection.name}</h1>
+  <h1 class="header-title">${labelify(collection.name)}</h1>
+  ${
+    collection.description
+      ? `<p class="header-description">${collection.description}</p>`
+      : ""
+  }
   <u-filter
     class="header-filter"
     data-placeholder="Filter ${collection.name}"

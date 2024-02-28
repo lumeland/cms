@@ -77,3 +77,13 @@ form.list-item {
     }
   }
 }
+
+.list-item-header {
+  font-weight: normal;
+  padding: .5em 0;
+
+  & p {
+    margin: 0;
+    color: var(--color-dim);
+  }
+}
