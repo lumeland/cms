@@ -75,7 +75,7 @@ export interface Field {
     pattern?: string;
     [key: string]: unknown;
   };
-  toJSON?: (this: ResolvedField) => Record<string, unknown>;
+  init?: (field: ResolvedField) => void | Promise<void>;
   [key: string]: unknown;
 }
 
@@ -102,5 +102,5 @@ export interface CMSContent {
   documents: Record<string, Document>;
   uploads: Record<string, [Storage, string]>;
   versioning?: Versioning;
-  data?: Record<string, unknown>;
+  data: Record<string, any>;
 }

@@ -1,5 +1,6 @@
 import { escape } from "../../../deps/std.ts";
 import { getPath } from "../../utils/path.ts";
+import { prepareField } from "../../utils/data.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type Collection from "../../collection.ts";
@@ -10,7 +11,15 @@ interface Props {
   version?: Version;
 }
 
-export default function template({ collection, version }: Props) {
+export default async function template({ collection, version }: Props) {
+  const fields = await Promise.all(collection.fields.map(async (field) => `
+    <${field.tag}
+      data-nameprefix="changes"
+      data-field="${escape(JSON.stringify(await prepareField(field)))}"
+    >
+    </${field.tag}>
+  `));
+
   return `
 ${
     breadcrumb(version, [
@@ -42,15 +51,7 @@ ${
   enctype="multipart/form-data"
   id="form-create"
 >
-  ${
-    collection.fields.map((field) => `
-      <${field.tag}
-        data-nameprefix="changes"
-        data-field="${escape(JSON.stringify(field))}"
-      >
-      </${field.tag}>
-    `).join("")
-  }
+  ${fields.join("")}
   <footer class="footer ly-rowStack">
     <button class="button is-primary" type="submit">Create</button>
   </footer>

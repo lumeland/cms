@@ -122,7 +122,7 @@ export default class Cms {
   init(): Hono {
     const content: CMSContent = {
       site: this.options.site!,
-      data: this.options.data,
+      data: this.options.data ?? {},
       collections: {},
       documents: {},
       uploads: {},
@@ -194,14 +194,14 @@ export default class Cms {
       });
     }
 
-    app.onError((err, c) => {
+    app.onError((error: Error, c: Context) => {
       const log = logger.getLogger("lumecms");
       const { req } = c;
       const time = new Date().toISOString();
-      const message = `${time} [${req.method}] ${req.url} - ${err.message}`;
-      err.message = message;
+      const message = `${time} [${req.method}] ${req.url} - ${error.message}`;
+      error.message = message;
 
-      log.error(err);
+      log.error(error);
       log.handlers.forEach((handler) => {
         if (handler instanceof logger.FileHandler) {
           handler.flush();

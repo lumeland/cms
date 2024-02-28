@@ -1,5 +1,6 @@
 import { escape } from "../../../deps/std.ts";
 import { getPath } from "../../utils/path.ts";
+import { prepareField } from "../../utils/data.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type Collection from "../../collection.ts";
@@ -16,6 +17,14 @@ export default async function template(
   { collection, document, version }: Props,
 ) {
   const data = await document.read();
+  const fields = await Promise.all(document.fields.map(async (field) => `
+  <${field.tag}
+    data-nameprefix="changes"
+    data-value="${escape(JSON.stringify(data[field.name] ?? null))}"
+    data-field="${escape(JSON.stringify(await prepareField(field)))}"
+  >
+  </${field.tag}>
+`));
 
   return `
 <u-pagepreview data-src="${document.src}"></u-pagepreview>
@@ -50,16 +59,8 @@ ${
     enctype="multipart/form-data"
     id="form-edit"
   >
-    ${
-    document.fields.map((field) => `
-        <${field.tag}
-          data-nameprefix="changes"
-          data-value="${escape(JSON.stringify(data[field.name] ?? null))}"
-          data-field="${escape(JSON.stringify(field))}"
-        >
-        </${field.tag}>
-      `).join("")
-  }
+    ${fields.join("")}
+
     <footer class="footer ly-rowStack is-responsive">
       <button class="button is-primary" type="submit">
         <u-icon name="check"></u-icon>

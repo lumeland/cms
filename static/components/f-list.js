@@ -1,5 +1,5 @@
-import { push } from "./utils.js";
 import { Field } from "./field.js";
+import { push, pushOptions } from "./utils.js";
 
 customElements.define(
   "f-list",
@@ -12,6 +12,14 @@ customElements.define(
 
       push(this, "label", { for: `field_${namePrefix}.0` }, schema.label);
 
+      let datalist;
+
+      if (schema.options) {
+        const dataListId = `${namePrefix}_datalist`;
+        datalist = push(this, "datalist", { id: dataListId });
+        pushOptions(datalist, schema.options);
+      }
+
       const div = push(this, "div", { class: "fieldset" });
       let index = 0;
 
@@ -19,13 +27,18 @@ customElements.define(
         const name = `${namePrefix}.${index++}`;
         const el = push(div, "u-draggable");
 
-        push(el, "input", {
+        const input = push(el, "input", {
           type: "text",
           class: "input is-narrow",
           id: `field_${name}`,
           name,
           value,
         });
+
+        if (datalist) {
+          input.setAttribute("list", datalist.id);
+          input.setAttribute("autocomplete", "off");
+        }
 
         push(el, "button", {
           type: "button",

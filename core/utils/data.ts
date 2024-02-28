@@ -1,4 +1,4 @@
-import type { Data } from "../../types.ts";
+import type { Data, ResolvedField } from "../../types.ts";
 
 /**
  * Converts a list of changes to an object:
@@ -51,4 +51,20 @@ export function changesToData(
   }
 
   return data.changes as Data;
+}
+
+export async function prepareField(
+  field: ResolvedField,
+): Promise<ResolvedField> {
+  const json = { ...field };
+
+  if (field.fields) {
+    json.fields = await Promise.all(field.fields.map(prepareField));
+  }
+
+  if (field.init) {
+    await field.init(json);
+  }
+
+  return json;
 }
