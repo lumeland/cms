@@ -8,6 +8,10 @@
   justify-items: start;
   z-index: 2;
   box-shadow: 10px 0 var(--color-background), -10px 0 var(--color-background);
+
+  > :first-child.button.is-primary {
+    margin-right: auto;
+  }
 }
 
 html:has(.footer) {

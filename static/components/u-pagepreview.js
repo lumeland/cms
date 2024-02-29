@@ -1,4 +1,4 @@
-import { push, url } from "./utils.js";
+import { options, push, url } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -23,36 +23,11 @@ customElements.define(
         protocol + document.location.host + url("_socket"),
       );
 
-      let iframe;
-      let lastUrl;
+      let iframe, lastUrl;
 
-      function reload(url) {
+      const reload = (url) => {
         if (!iframe) {
-          const dialog = push(document.body, "dialog", {
-            class: "modal is-preview " +
-              (matchMedia("(max-width:500px)").matches ? "is-hidden" : ""),
-          });
-          iframe = push(dialog, "iframe", { class: "modal-content", src: url });
-          // deno-lint-ignore prefer-const
-          let icon;
-          const button = push(dialog, "button", {
-            class: "modal-toggle buttonIcon is-primary",
-            onclick: () => {
-              dialog.classList.toggle("is-hidden");
-              icon.setAttribute(
-                "name",
-                dialog.classList.contains("is-hidden")
-                  ? "caret-double-right"
-                  : "caret-double-left",
-              );
-            },
-          });
-          icon = push(button, "u-icon", {
-            name: dialog.classList.contains("is-hidden")
-              ? "caret-double-right"
-              : "caret-double-left",
-          });
-          dialog.show();
+          iframe = this.initUI(url);
         }
 
         if (lastUrl === url) {
@@ -62,7 +37,7 @@ customElements.define(
         }
 
         lastUrl = url;
-      }
+      };
 
       ws.onopen = () => {
         ws.send(JSON.stringify({ type: "url", src }));
@@ -92,6 +67,63 @@ customElements.define(
       }
 
       this.init();
+    }
+
+    initUI(url) {
+      const dialog = push(document.body, "dialog", {
+        class: "modal is-preview",
+      });
+      const iframe = push(dialog, "iframe", {
+        class: "modal-content",
+        src: url,
+      });
+
+      let icon;
+      const button = push(this, "button", {
+        class: "buttonIcon is-secondary",
+        type: "button",
+        "aria-pressed": "true",
+        onclick: () => {
+          if (dialog.open) {
+            dialog.close();
+            options.set("preview", false);
+            icon.setAttribute("name", "eye-slash");
+            button.setAttribute("aria-pressed", "false");
+          } else {
+            dialog.show();
+            options.set("preview", true);
+            icon.setAttribute("name", "eye");
+            button.setAttribute("aria-pressed", "true");
+          }
+        },
+      });
+
+      if (options.get("preview") !== false) {
+        icon = push(button, "u-icon", { name: "eye" });
+        button.dispatchEvent(new Event("click"));
+      } else {
+        icon = push(button, "u-icon", { name: "eye-slash" });
+        button.setAttribute("aria-pressed", "false");
+      }
+
+      push(this, "a", {
+        class: "button is-link",
+        href: url,
+        target: "_blank",
+        rel: "noopener",
+      }, "<u-icon name=arrow-square-out></u-icon> Open");
+
+      matchMedia("(max-width:1100px)").addEventListener("change", (ev) => {
+        if (ev.matches && options.get("preview")) {
+          dialog.close();
+          button.hidden = true;
+        } else {
+          dialog.show();
+          button.hidden = false;
+        }
+      });
+
+      return iframe;
     }
   },
 );

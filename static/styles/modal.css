@@ -43,10 +43,6 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
     z-index: 2;
     transition: transform var(--animation-duration);
 
-    &.is-hidden {
-      transform: translateX(-100%);
-    }
-
     @media (min-width: 850px) {
       width: clamp(300px, 50vw, 1200px);
     }
@@ -57,22 +53,6 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
   position: absolute;
   top: .5rem;
   right: .5rem;
-}
-.modal-toggle {
-  position: absolute;
-  background: var(--color-white);
-  border-radius: 0 var(--border-radius) 0 0;
-  box-shadow: 0 0 1px #0003, 0 0 30px #0002;
-  bottom: 0;
-  right: -48px;
-  width: 48px;
-  height: 48px;
-}
-@media (max-width: 500px) {
-  .modal.is-preview:not(.is-hidden)[open] .modal-toggle {
-    right: 0;
-    border-radius: var(--border-radius) 0 0 var(--border-radius);
-  }
 }
 
 .modal-content {

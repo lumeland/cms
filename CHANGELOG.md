@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - `options` option to `list` field.
 - New `init` option to all fields.
 - Allow to include descriptions for collections, documents and uploads.
+- New CMS bar for previews.
+- Preview improvements.
 
 ### Fixed
 - Updated `Hono` to the latest version.

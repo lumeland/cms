@@ -26,6 +26,7 @@
   row-gap: .5rem;
 }
 .header-description {
+  display: block;
   margin: .5rem 0;
   font: var(--font-ui);
   color: var(--color-dim);

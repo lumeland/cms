@@ -27,7 +27,6 @@ export default async function template(
 `));
 
   return `
-<u-pagepreview data-src="${document.src}"></u-pagepreview>
 ${
     breadcrumb(version, [
       collection.name,
@@ -83,6 +82,7 @@ ${
           Delete
         </button>
       </u-confirm>
+      <u-pagepreview class="ly-rowStack" data-src="${document.src}"></u-pagepreview>
     </footer>
   </form>
 </u-form>

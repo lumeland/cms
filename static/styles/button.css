@@ -16,6 +16,10 @@
   transition-properties: color, background;
   transition-duration: var(--animation-duration);
 
+  &[hidden] {
+    display: none;
+  }
+
   &:disabled,
   &[aria-disabled="true"] {
     cursor: default;
@@ -44,6 +48,10 @@
 
     &:hover {
       background: var(--color-line);
+    }
+
+    &[aria-pressed="false"] {
+      color: var(--color-dim);
     }
   }
   &.is-link {
