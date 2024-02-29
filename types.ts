@@ -19,6 +19,7 @@ export interface SiteInfo {
 
 /** A storage mechanism for data */
 export interface Storage extends AsyncIterable<EntryMetadata> {
+  name(name: string): string;
   get(name: string): Entry;
   directory(name: string): Storage;
   delete(name: string): Promise<void>;

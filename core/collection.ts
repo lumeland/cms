@@ -33,8 +33,9 @@ export default class Collection {
   }
 
   create(id: string): Document {
+    const name = this.#storage.name(id);
     return new Document({
-      entry: this.#storage.get(id),
+      entry: this.#storage.get(name),
       fields: this.#fields,
       isNew: true,
     });
@@ -49,6 +50,7 @@ export default class Collection {
   }
 
   async rename(id: string, newId: string): Promise<void> {
-    await this.#storage.rename(id, newId);
+    const newName = this.#storage.name(newId);
+    await this.#storage.rename(id, newName);
   }
 }

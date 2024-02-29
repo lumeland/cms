@@ -6,6 +6,7 @@ import {
   posix,
 } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
+import { slugify } from "../core/utils/string.ts";
 import { Octokit } from "npm:octokit";
 
 import type {
@@ -59,6 +60,10 @@ export default class GitHub implements Storage {
         };
       }
     }
+  }
+
+  name(name: string): string {
+    return slugify(name);
   }
 
   directory(id: string): Storage {

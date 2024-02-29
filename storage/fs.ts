@@ -1,4 +1,5 @@
 import { normalizePath } from "../core/utils/path.ts";
+import { slugify } from "../core/utils/string.ts";
 import { contentType, ensureDir, expandGlob, posix } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
 
@@ -17,6 +18,7 @@ export const defaults: Required<Options> = {
 export default class Fs implements Storage {
   root: string;
   path: string;
+  extension?: string;
 
   constructor(userOptions?: Options) {
     const options = { ...defaults, ...userOptions };
@@ -28,6 +30,7 @@ export default class Fs implements Storage {
     } else if (pos > 0) {
       options.root = posix.join(options.root, options.path.slice(0, pos));
       options.path = options.path.slice(pos);
+      this.extension = posix.extname(options.path);
     }
 
     this.root = normalizePath(options.root);
@@ -49,6 +52,14 @@ export default class Fs implements Storage {
         src: path,
       };
     }
+  }
+
+  name(name: string): string {
+    const newName = slugify(name);
+
+    return (this.extension && !newName.endsWith(this.extension))
+      ? newName + this.extension
+      : newName;
   }
 
   directory(path: string): Storage {

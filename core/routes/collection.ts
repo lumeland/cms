@@ -2,7 +2,6 @@ import { changesToData } from "../utils/data.ts";
 import collectionList from "../templates/collection/list.ts";
 import collectionEdit from "../templates/collection/edit.ts";
 import collectionCreate from "../templates/collection/create.ts";
-import { slugify } from "../utils/string.ts";
 import { getPath } from "../utils/path.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
@@ -52,7 +51,7 @@ export default function (app: Hono) {
       }
 
       const body = await c.req.parseBody();
-      const newName = slugify(body._id as string);
+      const newName = body._id as string;
       let document = oldDocument;
 
       if (oldDocument.name !== newName) {
@@ -93,7 +92,7 @@ export default function (app: Hono) {
     .post(async (c: Context) => {
       const { collection } = get(c);
       const body = await c.req.parseBody();
-      const document = collection.create(slugify(body._id as string));
+      const document = collection.create(body._id as string);
 
       await document.write(changesToData(body));
 

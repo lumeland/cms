@@ -1,3 +1,5 @@
+import { slugify } from "../core/utils/string.ts";
+
 import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
 
 export interface Options {
@@ -21,6 +23,10 @@ export default class Kv implements Storage {
         src: entry.key.join("/"),
       };
     }
+  }
+
+  name(name: string): string {
+    return slugify(name);
   }
 
   directory(name: string): Storage {

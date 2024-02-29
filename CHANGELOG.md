@@ -12,9 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New CMS bar for previews.
 - Preview improvements.
 - New option `extraHead` to include extra styles or scripts.
+- New files get the extension automatically
 
 ### Fixed
 - Updated `Hono` to the latest version.
+- Lume adapter: don't override the site url.
 
 ## [0.2.11] - 2024-02-27
 ### Added

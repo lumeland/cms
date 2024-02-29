@@ -38,7 +38,9 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
 
   watcher.start();
 
-  cms.options.site!.url = site.url("/", true);
+  if (!cms.options.site?.url) {
+    cms.options.site!.url = site.url("/", true);
+  }
   cms.storage("src");
   cms.options.basePath = basePath;
   cms.options.root = site.src();
