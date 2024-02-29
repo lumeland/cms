@@ -3,10 +3,11 @@ import { getCurrentVersion } from "../utils/env.ts";
 
 interface Props {
   jsImports: string[];
+  extraHead?: string;
   content?: string;
 }
 
-export default function template({ jsImports, content }: Props) {
+export default function template({ jsImports, content, extraHead }: Props) {
   return `
 <!DOCTYPE html>
 <html lang="en" data-baseassets="${asset()}" data-baseurls="${getPath()}">
@@ -27,6 +28,7 @@ export default function template({ jsImports, content }: Props) {
 import "lume_cms/components/ui.js";
 ${jsImports.map((file) => `import "${file}";`).join("\n")}
 </script>
+${extraHead ?? ""}
 </head>
 <body>
   <div class="app">

@@ -41,6 +41,7 @@ export interface CmsOptions {
   auth?: AuthOptions;
   data?: Record<string, unknown>;
   log?: LogOptions;
+  extraHead?: string;
 }
 
 export interface AuthOptions {
@@ -233,6 +234,7 @@ export default class Cms {
       c.setRenderer(async (content) => {
         return c.html(layout({
           jsImports: Array.from(this.#jsImports),
+          extraHead: this.options.extraHead,
           content: await content,
         }));
       });

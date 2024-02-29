@@ -24,7 +24,7 @@ export default function (app: Hono) {
   });
 
   app.get("/status", async (c: Context) => {
-    const { versioning } = c.get("options") as CMSContent;
+    const { versioning, site } = c.get("options") as CMSContent;
     const url = c.req.query("url") ?? "/";
     const result = dispatch<{ src?: string; url?: string }>(
       "editSource",

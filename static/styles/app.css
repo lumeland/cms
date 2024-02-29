@@ -1,7 +1,8 @@
 .app {
-  margin: 2rem auto;
+  margin: auto;
+  padding: 2rem 0;
   max-width: min(100% - 10vw, 900px);
-  min-height: calc(100vh - 6rem);
+  min-height: calc(100vh - 3rem);
 
   &.is-preview {
     margin: 0;
@@ -19,7 +20,7 @@
   }
 }
 .app-footer {
-  height: 2rem;
+  height: 3rem;
   text-align: center;
   font: var(--font-small);
   color: var(--color-dim);

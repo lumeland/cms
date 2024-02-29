@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Allow to include descriptions for collections, documents and uploads.
 - New CMS bar for previews.
 - Preview improvements.
+- New option `extraHead` to include extra styles or scripts.
 
 ### Fixed
 - Updated `Hono` to the latest version.
