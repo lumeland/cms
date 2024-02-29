@@ -49,6 +49,12 @@ export function dom(tag, attrs, ...children) {
         el.setAttribute(k, "");
         continue;
       }
+
+      if (Array.isArray(v)) {
+        el.setAttribute(k, v.filter((v) => v).join(" "));
+        continue;
+      }
+
       el.setAttribute(k, v);
     }
   }

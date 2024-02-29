@@ -23,7 +23,8 @@ export default function (app: Hono) {
     );
   });
 
-  app.get("/edit", async (c: Context) => {
+  app.get("/status", async (c: Context) => {
+    const { versioning } = c.get("options") as CMSContent;
     const url = c.req.query("url") ?? "/";
     const result = dispatch<{ src?: string; url?: string }>(
       "editSource",
@@ -37,11 +38,16 @@ export default function (app: Hono) {
     }
 
     const { documents, collections } = c.get("options") as CMSContent;
+    const response = {
+      homeURL: getPath(),
+      version: await versioning?.current(),
+    };
 
     for (const document of Object.values(documents)) {
       if (document.src === result.src) {
         return c.json({
-          edit: getPath("document", document.name),
+          ...response,
+          editURL: getPath("document", document.name),
         });
       }
     }
@@ -50,15 +56,14 @@ export default function (app: Hono) {
       for await (const entry of collection) {
         if (entry.src === result.src) {
           return c.json({
-            edit: getPath("collection", collection.name, "edit", entry.name),
+            ...response,
+            editURL: getPath("collection", collection.name, "edit", entry.name),
           });
         }
       }
     }
 
-    return c.json({
-      error: "No edit URL found",
-    });
+    return c.json(response);
   });
 
   app.notFound((c: Context) => {

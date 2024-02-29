@@ -95,8 +95,8 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
       const body = await res.text();
       const code = `
           ${body}
-          <script type="module" src="${asset("components/u-edit.js")}"></script>
-          <u-edit data-api="${getPath("edit")}"></u-edit>
+          <script type="module" src="${asset("components/u-bar.js")}"></script>
+          <u-bar data-api="${getPath("status")}"></u-bar>
         `;
       c.res = new Response(code, res);
       c.res.headers.delete("Content-Length");
