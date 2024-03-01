@@ -37,7 +37,7 @@ customElements.define(
           padding-left: 1rem;
           background: white;
           box-shadow: 0 0 10px #3333;
-          font-size: 1rem;
+          font-size: 14px;
           font-family: -apple-system, system-ui, sans-serif;
           line-height: 1;
           border-top-right-radius: 6px;

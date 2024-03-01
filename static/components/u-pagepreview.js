@@ -78,6 +78,8 @@ customElements.define(
         src: url,
       });
 
+      const mq = matchMedia("(max-width:1100px)");
+
       let icon;
       const button = push(this, "button", {
         class: "buttonIcon is-secondary",
@@ -89,7 +91,7 @@ customElements.define(
             options.set("preview", false);
             icon.setAttribute("name", "eye-slash");
             button.setAttribute("aria-pressed", "false");
-          } else {
+          } else if (!mq.matches) {
             dialog.show();
             options.set("preview", true);
             icon.setAttribute("name", "eye");
@@ -113,8 +115,8 @@ customElements.define(
         rel: "noopener",
       }, "<u-icon name=arrow-square-out></u-icon> Open");
 
-      matchMedia("(max-width:1100px)").addEventListener("change", (ev) => {
-        if (ev.matches && options.get("preview")) {
+      mq.addEventListener("change", (ev) => {
+        if (ev.matches) {
           dialog.close();
           button.hidden = true;
         } else {
