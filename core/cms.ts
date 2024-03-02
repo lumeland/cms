@@ -1,4 +1,4 @@
-import { Hono, serveStatic } from "../deps/hono.ts";
+import { Hono, HTTPException, serveStatic } from "../deps/hono.ts";
 import layout from "./templates/layout.ts";
 import documentRoutes from "./routes/document.ts";
 import collectionRoutes from "./routes/collection.ts";
@@ -210,6 +210,10 @@ export default class Cms {
     }
 
     app.onError((error: Error, c: Context) => {
+      if (error instanceof HTTPException && error.res) {
+        return error.res;
+      }
+
       const log = logger.getLogger("lumecms");
       const { req } = c;
       const time = new Date().toISOString();
