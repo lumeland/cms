@@ -219,7 +219,7 @@ async function fetchInfo(
       owner,
       repo,
       path: path || "",
-      branch,
+      ref: branch,
       ...params,
     });
 
