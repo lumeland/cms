@@ -21,6 +21,7 @@ export interface Options {
   repo: string;
   path?: string;
   branch?: string;
+  commitMessage?: (options: Options, info?: OctokitResponse) => string;
 }
 
 export default class GitHub implements Storage {
@@ -29,6 +30,7 @@ export default class GitHub implements Storage {
   repo: string;
   path: string;
   branch?: string;
+  commitMessage: (options: Options, info?: OctokitResponse) => string;
 
   constructor(options: Options) {
     this.client = options.client;
@@ -36,6 +38,9 @@ export default class GitHub implements Storage {
     this.repo = options.repo;
     this.path = options.path || "";
     this.branch = options.branch;
+    this.commitMessage = options.commitMessage || (({ path }, info) => {
+      return info ? `Update file ${path}` : `Create file ${path}`;
+    });
   }
 
   async *[Symbol.asyncIterator]() {
@@ -73,6 +78,7 @@ export default class GitHub implements Storage {
       repo: this.repo,
       path: posix.join(this.path, id),
       branch: this.branch,
+      commitMessage: this.commitMessage,
     });
   }
 
@@ -83,6 +89,7 @@ export default class GitHub implements Storage {
       repo: this.repo,
       path: posix.join(this.path, id),
       branch: this.branch,
+      commitMessage: this.commitMessage,
     });
   }
 
@@ -140,6 +147,7 @@ export class GitHubEntry implements Entry {
   repo: string;
   path: string;
   branch?: string;
+  commitMessage: (options: Options, info?: OctokitResponse) => string;
 
   constructor(options: Options) {
     this.client = options.client;
@@ -147,6 +155,7 @@ export class GitHubEntry implements Entry {
     this.repo = options.repo;
     this.path = options.path || "";
     this.branch = options.branch;
+    this.commitMessage = options.commitMessage!;
     this.metadata = {
       name: this.path,
       src:
@@ -262,7 +271,6 @@ async function writeContent(
   content: ArrayBuffer | Uint8Array | string,
 ) {
   const exists = await fetchInfo(options);
-  const sha = exists?.sha;
   const { client, owner, repo, path, branch } = options;
 
   if (!path) {
@@ -274,8 +282,8 @@ async function writeContent(
     repo,
     path,
     branch,
-    message: sha ? "Update file" : "Create file",
+    message: options.commitMessage!(options, exists),
     content: encodeBase64(content),
-    sha,
+    sha: exists?.sha,
   });
 }

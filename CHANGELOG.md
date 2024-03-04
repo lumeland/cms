@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+### Added
+- Improved default commit message of GitHub storage and added an option to to customize it [#5].
+
 ## [0.3.3] - 2024-03-02
 ### Fixed
 - Basic auth error.
@@ -127,7 +131,9 @@ First version
 
 [#1]: https://github.com/lumeland/cms/issues/1
 [#2]: https://github.com/lumeland/cms/issues/2
+[#5]: https://github.com/lumeland/cms/issues/5
 
+[Unreleased]: https://github.com/lumeland/cms/compare/v0.3.3...HEAD
 [0.3.3]: https://github.com/lumeland/cms/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/lumeland/cms/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/lumeland/cms/compare/v0.3.0...v0.3.1
