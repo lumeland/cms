@@ -17,6 +17,7 @@ export default function (app: Hono) {
 
     return c.render(
       await collectionList({
+        context: c,
         collection,
         version: await versioning?.current(),
       }),
@@ -34,6 +35,7 @@ export default function (app: Hono) {
       try {
         return c.render(
           await collectionEdit({
+            context: c,
             collection,
             document,
             version: await versioning?.current(),
@@ -62,7 +64,7 @@ export default function (app: Hono) {
       await document.write(changesToData(body));
 
       return c.redirect(
-        getPath("collection", collection.name, "edit", document.name),
+        getPath(c, "collection", collection.name, "edit", document.name),
       );
     });
 
@@ -75,7 +77,7 @@ export default function (app: Hono) {
 
     await collection.delete(document.name);
 
-    return c.redirect(getPath("collection", collection.name));
+    return c.redirect(getPath(c, "collection", collection.name));
   });
 
   app
@@ -84,6 +86,7 @@ export default function (app: Hono) {
 
       return c.render(
         collectionCreate({
+          context: c,
           collection,
           version: await versioning?.current(),
         }),
@@ -97,7 +100,7 @@ export default function (app: Hono) {
       await document.write(changesToData(body));
 
       return c.redirect(
-        getPath("collection", collection.name, "edit", document.name),
+        getPath(c, "collection", collection.name, "edit", document.name),
       );
     });
 }

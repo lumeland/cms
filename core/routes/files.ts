@@ -19,6 +19,7 @@ export default function (app: Hono) {
 
     return c.render(
       uploadsList({
+        context: c,
         upload,
         version: await versioning?.current(),
       }),
@@ -35,7 +36,7 @@ export default function (app: Hono) {
     const entry = storage.get(fileId);
 
     await entry.writeFile(file);
-    return c.redirect(getPath("uploads", uploadId, "file", fileId));
+    return c.redirect(getPath(c, "uploads", uploadId, "file", fileId));
   });
 
   app.get("/uploads/:upload/raw/:file", async (c: Context) => {
@@ -72,6 +73,7 @@ export default function (app: Hono) {
 
       return c.render(
         uploadsView({
+          context: c,
           type: file.type,
           size: file.size,
           collection: uploadId,
@@ -103,7 +105,7 @@ export default function (app: Hono) {
         await entry.writeFile(file);
       }
 
-      return c.redirect(getPath("uploads", uploadId, "file", fileId));
+      return c.redirect(getPath(c, "uploads", uploadId, "file", fileId));
     });
 
   app.post("/uploads/:upload/delete/:file", async (c: Context) => {
@@ -113,6 +115,6 @@ export default function (app: Hono) {
     const { storage } = uploads[uploadId];
 
     await storage.delete(fileId);
-    return c.redirect(getPath("uploads", uploadId));
+    return c.redirect(getPath(c, "uploads", uploadId));
   });
 }

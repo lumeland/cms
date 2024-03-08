@@ -6,15 +6,17 @@ import breadcrumb from "../breadcrumb.ts";
 import type Collection from "../../collection.ts";
 import type Document from "../../document.ts";
 import type { Version } from "../../../types.ts";
+import { Context } from "../../../deps/hono.ts";
 
 interface Props {
+  context: Context;
   collection: Collection;
   document: Document;
   version?: Version;
 }
 
 export default async function template(
-  { collection, document, version }: Props,
+  { context, collection, document, version }: Props,
 ) {
   const data = await document.read();
   const fields = await Promise.all(document.fields.map(async (field) => `
@@ -28,9 +30,9 @@ export default async function template(
 
   return `
 ${
-    breadcrumb(version, [
+    breadcrumb(context, version, [
       collection.name,
-      getPath("collection", collection.name),
+      getPath(context, "collection", collection.name),
     ], "Editing file")
   }
 
@@ -52,7 +54,9 @@ ${
     </h1>
   </header>
   <form
-    action="${getPath("collection", collection.name, "edit", document.name)}"
+    action="${
+    getPath(context, "collection", collection.name, "edit", document.name)
+  }"
     method="post"
     class="form"
     enctype="multipart/form-data"
@@ -71,6 +75,7 @@ ${
           type="submit"
           formAction="${
     getPath(
+      context,
       "collection",
       collection.name,
       "delete",

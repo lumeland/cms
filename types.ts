@@ -99,6 +99,7 @@ export interface FielType {
 type Option = string | { value: string | number; label: string };
 
 export interface CMSContent {
+  basePath: string;
   site: SiteInfo;
   collections: Record<string, Collection>;
   documents: Record<string, Document>;

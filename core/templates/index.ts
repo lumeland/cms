@@ -6,8 +6,10 @@ import type { SiteInfo, Versioning } from "../../types.ts";
 import type Document from "../document.ts";
 import type Collection from "../collection.ts";
 import type Upload from "../upload.ts";
+import { Context } from "../../deps/hono.ts";
 
 interface Props {
+  context: Context;
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
   uploads: Record<string, Upload>;
@@ -16,7 +18,7 @@ interface Props {
 }
 
 export default async function template(
-  { collections, documents, uploads, versioning, site }: Props,
+  { context, collections, documents, uploads, versioning, site }: Props,
 ) {
   const url = site.url
     ? `<p><a href="${site.url}" target="_blank">
@@ -25,7 +27,7 @@ export default async function template(
     : "";
 
   return `
-${breadcrumb(await versioning?.current())}
+${breadcrumb(context, await versioning?.current())}
 
 <header class="header">
   <h1 class="header-title">
@@ -41,7 +43,7 @@ ${breadcrumb(await versioning?.current())}
   ${
     Object.entries(collections).map(([name, collection]) => `
   <li>
-    <a href="${getPath("collection", name)}" class="list-item">
+    <a href="${getPath(context, "collection", name)}" class="list-item">
       <u-icon name="folder-fill"></u-icon>
       <div class="list-item-header">
         <strong>${labelify(name)}</strong>
@@ -55,7 +57,7 @@ ${breadcrumb(await versioning?.current())}
     Object.entries(documents).map(([name, document]) => `
   <li>
     <a
-      href="${getPath("document", name)}"
+      href="${getPath(context, "document", name)}"
       class="list-item"
       title="${name}"
     >
@@ -67,11 +69,11 @@ ${breadcrumb(await versioning?.current())}
     </a>
   </li>`).join("")
   }
-      
+
   ${
     Object.entries(uploads).map(([name, upload]) => `
   <li>
-    <a href="${getPath("uploads", name)}" class="list-item">
+    <a href="${getPath(context, "uploads", name)}" class="list-item">
       <u-icon name="image-square-fill"></u-icon>
       <div class="list-item-header">
         <strong>${labelify(name)}</strong>
@@ -83,11 +85,11 @@ ${breadcrumb(await versioning?.current())}
 
 </ul>
 
-${versioning && await versions(versioning) || ""}
+${versioning && await versions(context, versioning) || ""}
 `;
 }
 
-async function versions(versioning: Versioning) {
+async function versions(context: Context, versioning: Versioning) {
   return `
 <header class="subheader" id="versions">
   <h2>Available versions</h2>
@@ -105,7 +107,7 @@ async function versions(versioning: Versioning) {
         }" name="check-circle"></u-icon> ${version.name}
           </span>`
         : `<form class="list-item" method="post" action="${
-          getPath("versions", "change")
+          getPath(context, "versions", "change")
         }">
             <input type="hidden" name="name" value="${version.name}">
             <button>
@@ -118,7 +120,7 @@ async function versions(versioning: Versioning) {
     ${
       !version.isProduction &&
         `<u-confirm data-message="Are you sure?">
-      <form method="post" action="${getPath("versions", "delete")}">
+      <form method="post" action="${getPath(context, "versions", "delete")}">
         <input type="hidden" name="name" value="${version.name}">
         <button class="buttonIcon" aria-label="Delete">
           <u-icon name="trash"></u-icon>
@@ -127,7 +129,7 @@ async function versions(versioning: Versioning) {
     </u-confirm>` || ""
     }
 
-    <form method="post" action="${getPath("versions", "publish")}">
+    <form method="post" action="${getPath(context, "versions", "publish")}">
       <input type="hidden" name="name" value="${version.name}">
       <button class="button is-secondary">
         ${
@@ -148,7 +150,7 @@ async function versions(versioning: Versioning) {
   <dialog class="modal is-center" id="modal-new-version">
   <form
     method="post"
-    action="${getPath("versions", "create")}"
+    action="${getPath(context, "versions", "create")}"
   >
     <div class="field">
       <label for="version-name">Name of the new version</label>

@@ -11,7 +11,7 @@ import Document from "./document.ts";
 import Upload from "./upload.ts";
 import FsStorage from "../storage/fs.ts";
 import { Git } from "../versioning/git.ts";
-import { normalizePath, setBasePath } from "./utils/path.ts";
+import { normalizePath } from "./utils/path.ts";
 import {
   basename,
   dirname,
@@ -123,6 +123,7 @@ export default class Cms {
 
   init(): Hono {
     const content: CMSContent = {
+      basePath: this.options.basePath,
       site: this.options.site!,
       data: this.options.data ?? {},
       collections: {},
@@ -136,8 +137,6 @@ export default class Cms {
         prodBranch: this.versionManager,
       });
     }
-
-    setBasePath(this.options.basePath);
 
     for (const type of this.fields.values()) {
       this.#jsImports.add(type.jsImport);
@@ -237,6 +236,7 @@ export default class Cms {
     app.use("*", (c: Context, next: Next) => {
       c.setRenderer(async (content) => {
         return c.html(layout({
+          context: c,
           jsImports: Array.from(this.#jsImports),
           extraHead: this.options.extraHead,
           content: await content,

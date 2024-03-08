@@ -3,8 +3,10 @@ import { formatBytes } from "../../../deps/std.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type { Version } from "../../../types.ts";
+import { Context } from "../../../deps/hono.ts";
 
 interface Props {
+  context: Context;
   file: string;
   publicPath: string;
   type: string;
@@ -14,15 +16,15 @@ interface Props {
 }
 
 export default function template(
-  { type, file, collection, size, publicPath, version }: Props,
+  { context, type, file, collection, size, publicPath, version }: Props,
 ) {
-  const src = getPath("uploads", collection, "raw", file);
+  const src = getPath(context, "uploads", collection, "raw", file);
 
   return `
 ${
-    breadcrumb(version, [
+    breadcrumb(context, version, [
       collection,
-      getPath("uploads", collection),
+      getPath(context, "uploads", collection),
     ], "File details")
   }
 
@@ -76,7 +78,7 @@ ${
     <u-confirm data-message="Are you sure?">
       <button
         class="button is-secondary"
-        formAction="${getPath("uploads", collection, "delete", file)}"
+        formAction="${getPath(context, "uploads", collection, "delete", file)}"
       >
         <u-icon name="trash"></u-icon>
         Delete

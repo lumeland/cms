@@ -14,6 +14,7 @@ export default function (app: Hono) {
 
     return c.render(
       index({
+        context: c,
         site,
         collections: collections,
         documents: documents,
@@ -39,7 +40,7 @@ export default function (app: Hono) {
 
     const { documents, collections } = c.get("options") as CMSContent;
     const response = {
-      homeURL: getPath(),
+      homeURL: getPath(c),
       version: await versioning?.current(),
     };
 
@@ -47,7 +48,7 @@ export default function (app: Hono) {
       if (document.src === result.src) {
         return c.json({
           ...response,
-          editURL: getPath("document", document.name),
+          editURL: getPath(c, "document", document.name),
         });
       }
     }
@@ -57,7 +58,13 @@ export default function (app: Hono) {
         if (entry.src === result.src) {
           return c.json({
             ...response,
-            editURL: getPath("collection", collection.name, "edit", entry.name),
+            editURL: getPath(
+              c,
+              "collection",
+              collection.name,
+              "edit",
+              entry.name,
+            ),
           });
         }
       }
@@ -67,6 +74,6 @@ export default function (app: Hono) {
   });
 
   app.notFound((c: Context) => {
-    return c.render(notFound());
+    return c.render(notFound({ context: c }));
   });
 }
