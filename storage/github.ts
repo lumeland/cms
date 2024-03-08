@@ -186,6 +186,7 @@ export class GitHubEntry implements Entry {
       repo: this.repo,
       path: this.path,
       branch: this.branch,
+      commitMessage: this.commitMessage,
     }, content);
   }
 
@@ -214,6 +215,7 @@ export class GitHubEntry implements Entry {
       repo: this.repo,
       path: this.path,
       branch: this.branch,
+      commitMessage: this.commitMessage,
     }, await file.arrayBuffer());
   }
 }
