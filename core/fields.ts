@@ -9,6 +9,7 @@ const inputs = [
   "text",
   "textarea",
   "markdown",
+  "code",
   "date",
   "datetime",
   "time",
