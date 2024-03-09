@@ -113,7 +113,7 @@ customElements.define(
         href: url,
         target: "_blank",
         rel: "noopener",
-      }, "<u-icon name=arrow-square-out></u-icon> Open");
+      }, "Open ↗");
 
       mq.addEventListener("change", (ev) => {
         if (ev.matches) {

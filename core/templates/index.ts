@@ -21,7 +21,7 @@ export default async function template(
 ) {
   const url = site.url
     ? `<p><a href="${site.url}" target="_blank">
-      ${site.url} <u-icon name="arrow-square-out"></u-icon>
+      ${site.url} ↗
     </a></p>`
     : "";
 
