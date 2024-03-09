@@ -236,7 +236,7 @@ export default class Cms {
     app.use("*", (c: Context, next: Next) => {
       c.setRenderer(async (content) => {
         return c.html(layout({
-          context: c,
+          options: c.var.options,
           jsImports: Array.from(this.#jsImports),
           extraHead: this.options.extraHead,
           content: await content,
