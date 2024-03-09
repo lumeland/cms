@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - `code` field type.
 - Allow to create multiple instances of the CMS [#7], [#8]
 
+### Fixed
+- Updated `std` to the latest version.
+
 ## [0.3.4] - 2024-03-06
 ### Added
 - Improved default commit message of GitHub storage and added an option to to customize it [#5].
