@@ -15,6 +15,7 @@ interface Props {
 export default async function template(
   { options, collection, version }: Props,
 ) {
+  const { basePath } = options;
   const fields = await Promise.all(collection.fields.map(async (field) => `
     <${field.tag}
       data-nameprefix="changes"
@@ -27,7 +28,7 @@ export default async function template(
 ${
     breadcrumb(options, version, [
       collection.name,
-      getPath(options, "collection", collection.name),
+      getPath(basePath, "collection", collection.name),
     ], "New file")
   }
 
@@ -48,7 +49,7 @@ ${
   </h1>
 </header>
 <form
-  action="${getPath(options, "collection", collection.name, "create")}"
+  action="${getPath(basePath, "collection", collection.name, "create")}"
   method="post"
   class="form"
   enctype="multipart/form-data"

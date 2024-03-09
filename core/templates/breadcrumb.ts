@@ -17,11 +17,13 @@ export default function breadcrumb(
     version
       ? `<li class="breadcrumb-version ${
         version.isProduction ? "is-production" : ""
-      }"><a href="${getPath(options)}#versions">${version.name}</a></li>`
+      }"><a href="${
+        getPath(options.basePath)
+      }#versions">${version.name}</a></li>`
       : ""
   }
     <li><a href="${
-    getPath(options)
+    getPath(options.basePath)
   }"><u-icon name="house-fill"></u-icon> Home</a></li>
     ${
     links.map((link) =>

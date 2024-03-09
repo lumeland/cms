@@ -27,11 +27,13 @@ export default async function template(
   </${field.tag}>
 `));
 
+  const { basePath } = options;
+
   return `
 ${
     breadcrumb(options, version, [
       collection.name,
-      getPath(options, "collection", collection.name),
+      getPath(basePath, "collection", collection.name),
     ], "Editing file")
   }
 
@@ -54,7 +56,7 @@ ${
   </header>
   <form
     action="${
-    getPath(options, "collection", collection.name, "edit", document.name)
+    getPath(basePath, "collection", collection.name, "edit", document.name)
   }"
     method="post"
     class="form"
@@ -74,7 +76,7 @@ ${
           type="submit"
           formAction="${
     getPath(
-      options,
+      options.basePath,
       "collection",
       collection.name,
       "delete",

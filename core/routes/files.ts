@@ -34,7 +34,9 @@ export default function (app: Hono) {
     const entry = storage.get(fileId);
 
     await entry.writeFile(file);
-    return c.redirect(getPath(options, "uploads", uploadId, "file", fileId));
+    return c.redirect(
+      getPath(options.basePath, "uploads", uploadId, "file", fileId),
+    );
   });
 
   app.get("/uploads/:upload/raw/:file", async (c: Context) => {
@@ -98,7 +100,9 @@ export default function (app: Hono) {
         await entry.writeFile(file);
       }
 
-      return c.redirect(getPath(options, "uploads", uploadId, "file", fileId));
+      return c.redirect(
+        getPath(options.basePath, "uploads", uploadId, "file", fileId),
+      );
     });
 
   app.post("/uploads/:upload/delete/:file", async (c: Context) => {
@@ -106,7 +110,7 @@ export default function (app: Hono) {
     const { storage } = uploads[uploadId];
 
     await storage.delete(fileId);
-    return c.redirect(getPath(options, "uploads", uploadId));
+    return c.redirect(getPath(options.basePath, "uploads", uploadId));
   });
 }
 

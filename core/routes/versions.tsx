@@ -16,7 +16,7 @@ export default function (app: Hono) {
     await versioning.create(name);
     await versioning.change(name);
 
-    return c.redirect(getPath(options));
+    return c.redirect(getPath(options.basePath));
   });
 
   app.post("/versions/change", async (c: Context) => {
@@ -30,7 +30,7 @@ export default function (app: Hono) {
     const name = body.name as string;
     await versioning.change(name);
 
-    return c.redirect(getPath(options));
+    return c.redirect(getPath(options.basePath));
   });
 
   app.post("/versions/publish", async (c: Context) => {
@@ -44,7 +44,7 @@ export default function (app: Hono) {
     const name = body.name as string;
     await versioning.publish(name);
 
-    return c.redirect(getPath(options));
+    return c.redirect(getPath(options.basePath));
   });
 
   app.post("/versions/delete", async (c: Context) => {
@@ -58,7 +58,7 @@ export default function (app: Hono) {
     const name = body.name as string;
     await versioning.delete(name);
 
-    return c.redirect(getPath(options));
+    return c.redirect(getPath(options.basePath));
   });
 }
 

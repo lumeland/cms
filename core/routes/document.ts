@@ -27,7 +27,7 @@ export default function (app: Hono) {
       const body = await c.req.parseBody();
 
       await document.write(changesToData(body));
-      return c.redirect(getPath(options, "document", document.name));
+      return c.redirect(getPath(options.basePath, "document", document.name));
     });
 }
 

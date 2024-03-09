@@ -17,13 +17,14 @@ interface Props {
 export default function template(
   { options, type, file, collection, size, publicPath, version }: Props,
 ) {
-  const src = getPath(options, "uploads", collection, "raw", file);
+  const { basePath } = options;
+  const src = getPath(basePath, "uploads", collection, "raw", file);
 
   return `
 ${
     breadcrumb(options, version, [
       collection,
-      getPath(options, "uploads", collection),
+      getPath(basePath, "uploads", collection),
     ], "File details")
   }
 
@@ -77,7 +78,7 @@ ${
     <u-confirm data-message="Are you sure?">
       <button
         class="button is-secondary"
-        formAction="${getPath(options, "uploads", collection, "delete", file)}"
+        formAction="${getPath(basePath, "uploads", collection, "delete", file)}"
       >
         <u-icon name="trash"></u-icon>
         Delete

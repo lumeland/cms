@@ -12,21 +12,24 @@ interface Props {
 export default function template(
   { options, jsImports, content, extraHead }: Props,
 ) {
+  const { basePath } = options;
   return `
 <!DOCTYPE html>
-<html lang="en" data-baseassets="${asset(options)}" data-baseurls="${
-    getPath(options)
+<html lang="en" data-baseassets="${asset(basePath)}" data-baseurls="${
+    getPath(basePath)
   }">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lume CMS</title>
-  <link rel="stylesheet" href="${asset(options, "/styles.css")}">
-  <link rel="icon" href="${asset(options, "/favicon.ico")}" type="image/x-icon">
+  <link rel="stylesheet" href="${asset(basePath, "/styles.css")}">
+  <link rel="icon" href="${
+    asset(basePath, "/favicon.ico")
+  }" type="image/x-icon">
   <script type="importmap">
     {
       "imports": {
-        "lume_cms/": "${asset(options, "/")}"
+        "lume_cms/": "${asset(basePath, "/")}"
       }
     }
   </script>

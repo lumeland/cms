@@ -33,7 +33,7 @@ ${breadcrumb(options, version, document.name)}
     <h1 class="header-title">Editing ${document.name}</h1>
   </header>
   <form
-    action="${getPath(options, "document", document.name)}"
+    action="${getPath(options.basePath, "document", document.name)}"
     method="post"
     class="form"
     enctype="multipart/form-data"

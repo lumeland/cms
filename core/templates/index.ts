@@ -19,6 +19,7 @@ interface Props {
 export default async function template(
   { options, collections, documents, uploads, versioning, site }: Props,
 ) {
+  const { basePath } = options;
   const url = site.url
     ? `<p><a href="${site.url}" target="_blank">
       ${site.url} ↗
@@ -42,7 +43,7 @@ ${breadcrumb(options, await versioning?.current())}
   ${
     Object.entries(collections).map(([name, collection]) => `
   <li>
-    <a href="${getPath(options, "collection", name)}" class="list-item">
+    <a href="${getPath(basePath, "collection", name)}" class="list-item">
       <u-icon name="folder-fill"></u-icon>
       <div class="list-item-header">
         <strong>${labelify(name)}</strong>
@@ -56,7 +57,7 @@ ${breadcrumb(options, await versioning?.current())}
     Object.entries(documents).map(([name, document]) => `
   <li>
     <a
-      href="${getPath(options, "document", name)}"
+      href="${getPath(basePath, "document", name)}"
       class="list-item"
       title="${name}"
     >
@@ -72,7 +73,7 @@ ${breadcrumb(options, await versioning?.current())}
   ${
     Object.entries(uploads).map(([name, upload]) => `
   <li>
-    <a href="${getPath(options, "uploads", name)}" class="list-item">
+    <a href="${getPath(basePath, "uploads", name)}" class="list-item">
       <u-icon name="image-square-fill"></u-icon>
       <div class="list-item-header">
         <strong>${labelify(name)}</strong>
@@ -106,7 +107,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
         }" name="check-circle"></u-icon> ${version.name}
           </span>`
         : `<form class="list-item" method="post" action="${
-          getPath(options, "versions", "change")
+          getPath(options.basePath, "versions", "change")
         }">
             <input type="hidden" name="name" value="${version.name}">
             <button>
@@ -119,7 +120,9 @@ async function versions(options: CMSContent, versioning: Versioning) {
     ${
       !version.isProduction &&
         `<u-confirm data-message="Are you sure?">
-      <form method="post" action="${getPath(options, "versions", "delete")}">
+      <form method="post" action="${
+          getPath(options.basePath, "versions", "delete")
+        }">
         <input type="hidden" name="name" value="${version.name}">
         <button class="buttonIcon" aria-label="Delete">
           <u-icon name="trash"></u-icon>
@@ -128,7 +131,9 @@ async function versions(options: CMSContent, versioning: Versioning) {
     </u-confirm>` || ""
     }
 
-    <form method="post" action="${getPath(options, "versions", "publish")}">
+    <form method="post" action="${
+      getPath(options.basePath, "versions", "publish")
+    }">
       <input type="hidden" name="name" value="${version.name}">
       <button class="button is-secondary">
         ${
@@ -149,7 +154,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
   <dialog class="modal is-center" id="modal-new-version">
   <form
     method="post"
-    action="${getPath(options, "versions", "create")}"
+    action="${getPath(options.basePath, "versions", "create")}"
   >
     <div class="field">
       <label for="version-name">Name of the new version</label>

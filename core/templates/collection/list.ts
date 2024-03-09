@@ -46,7 +46,7 @@ ${
 
 <footer class="ly-rowStack footer is-responsive">
   <a
-    href="${getPath(options, "collection", collection.name, "create")}"
+    href="${getPath(options.basePath, "collection", collection.name, "create")}"
     class="button is-primary"
   >
     <u-icon name="plus-circle"></u-icon>
@@ -96,7 +96,9 @@ function files(
   return Array.from(files.entries()).map(([name, file]) => `
   <li>
     <a
-      href="${getPath(options, "collection", collection.name, "edit", file)}"
+      href="${
+    getPath(options.basePath, "collection", collection.name, "edit", file)
+  }"
       class="list-item"
       title="${name}"
     >

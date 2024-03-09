@@ -18,7 +18,7 @@ export default function template({ options }: Props) {
     The page you are looking for does not exist.
   </p>
 
-  <a class="button is-primary" href="${getPath(options)}">
+  <a class="button is-primary" href="${getPath(options.basePath)}">
     Back to the home
   </a>
 </div>

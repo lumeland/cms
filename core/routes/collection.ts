@@ -65,7 +65,7 @@ export default function (app: Hono) {
 
       return c.redirect(
         getPath(
-          options,
+          options.basePath,
           "collection",
           collection.name,
           "edit",
@@ -83,7 +83,7 @@ export default function (app: Hono) {
 
     await collection.delete(document.name);
 
-    return c.redirect(getPath(options, "collection", collection.name));
+    return c.redirect(getPath(options.basePath, "collection", collection.name));
   });
 
   app
@@ -106,7 +106,13 @@ export default function (app: Hono) {
       await document.write(changesToData(body));
 
       return c.redirect(
-        getPath(options, "collection", collection.name, "edit", document.name),
+        getPath(
+          options.basePath,
+          "collection",
+          collection.name,
+          "edit",
+          document.name,
+        ),
       );
     });
 }

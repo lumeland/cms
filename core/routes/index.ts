@@ -38,7 +38,7 @@ export default function (app: Hono) {
     }
 
     const response = {
-      homeURL: getPath(options),
+      homeURL: getPath(options.basePath),
       version: await versioning?.current(),
     };
 
@@ -46,7 +46,7 @@ export default function (app: Hono) {
       if (document.src === result.src) {
         return c.json({
           ...response,
-          editURL: getPath(options, "document", document.name),
+          editURL: getPath(options.basePath, "document", document.name),
         });
       }
     }
@@ -57,7 +57,7 @@ export default function (app: Hono) {
           return c.json({
             ...response,
             editURL: getPath(
-              options,
+              options.basePath,
               "collection",
               collection.name,
               "edit",

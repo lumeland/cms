@@ -50,7 +50,7 @@ ${
   method="post"
   class="footer ly-rowStack is-responsive"
   enctype="multipart/form-data"
-  action="${getPath(options, "uploads", name, "create")}"
+  action="${getPath(options.basePath, "uploads", name, "create")}"
 >
   <input
     aria-label="Add file"
@@ -107,10 +107,12 @@ function files(
     return "";
   }
 
+  const { basePath } = options;
+
   return Array.from(files.entries()).map(([name, file]) => `
   <li>
     <a
-      href="${getPath(options, "uploads", collection, "file", file)}"
+      href="${getPath(basePath, "uploads", collection, "file", file)}"
       class="list-item"
     >
       <u-icon-file path="${file}"></u-icon-file>
@@ -123,7 +125,7 @@ function files(
       <template>
         <u-preview
           id="preview_${file}"
-          data-src="${getPath(options, "uploads", collection, "raw", file)}"
+          data-src="${getPath(basePath, "uploads", collection, "raw", file)}"
         >
         </u-preview>
       </template>
