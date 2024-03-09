@@ -8,8 +8,7 @@ import type { CMSContent } from "../../types.ts";
 
 export default function (app: Hono) {
   app.get("/uploads/:upload", async (c: Context) => {
-    const { uploads, versioning } = c.get("options") as CMSContent;
-    const uploadId = c.req.param("upload");
+    const { options, uploads, uploadId, versioning } = get(c);
 
     if (!uploads[uploadId]) {
       return c.notFound();
@@ -19,6 +18,7 @@ export default function (app: Hono) {
 
     return c.render(
       uploadsList({
+        options,
         upload,
         version: await versioning?.current(),
       }),
@@ -26,8 +26,7 @@ export default function (app: Hono) {
   });
 
   app.post("/uploads/:upload/create", async (c: Context) => {
-    const { uploads } = c.get("options") as CMSContent;
-    const uploadId = c.req.param("upload");
+    const { options, uploads, uploadId } = get(c);
     const { storage } = uploads[uploadId];
     const body = await c.req.parseBody();
     const file = body.file as File;
@@ -35,13 +34,11 @@ export default function (app: Hono) {
     const entry = storage.get(fileId);
 
     await entry.writeFile(file);
-    return c.redirect(getPath("uploads", uploadId, "file", fileId));
+    return c.redirect(getPath(options, "uploads", uploadId, "file", fileId));
   });
 
   app.get("/uploads/:upload/raw/:file", async (c: Context) => {
-    const { uploads } = c.get("options") as CMSContent;
-    const uploadId = c.req.param("upload");
-    const fileId = c.req.param("file");
+    const { uploads, uploadId, fileId } = get(c);
 
     if (!uploads[uploadId]) {
       return c.notFound();
@@ -57,9 +54,7 @@ export default function (app: Hono) {
   });
 
   app.get("/uploads/:upload/file/:file", async (c: Context) => {
-    const { uploads, versioning } = c.get("options") as CMSContent;
-    const uploadId = c.req.param("upload");
-    const fileId = c.req.param("file");
+    const { options, uploadId, fileId, uploads, versioning } = get(c);
     const { storage, publicPath } = uploads[uploadId];
 
     if (!uploads[uploadId]) {
@@ -72,6 +67,7 @@ export default function (app: Hono) {
 
       return c.render(
         uploadsView({
+          options,
           type: file.type,
           size: file.size,
           collection: uploadId,
@@ -85,8 +81,7 @@ export default function (app: Hono) {
     }
   })
     .post(async (c: Context) => {
-      const { uploads } = c.get("options") as CMSContent;
-      const uploadId = c.req.param("upload");
+      const { options, uploadId, uploads } = get(c);
       const { storage } = uploads[uploadId];
       const body = await c.req.parseBody();
       const prevId = c.req.param("file");
@@ -103,16 +98,29 @@ export default function (app: Hono) {
         await entry.writeFile(file);
       }
 
-      return c.redirect(getPath("uploads", uploadId, "file", fileId));
+      return c.redirect(getPath(options, "uploads", uploadId, "file", fileId));
     });
 
   app.post("/uploads/:upload/delete/:file", async (c: Context) => {
-    const { uploads } = c.get("options") as CMSContent;
-    const uploadId = c.req.param("upload");
-    const fileId = c.req.param("file");
+    const { options, fileId, uploadId, uploads } = get(c);
     const { storage } = uploads[uploadId];
 
     await storage.delete(fileId);
-    return c.redirect(getPath("uploads", uploadId));
+    return c.redirect(getPath(options, "uploads", uploadId));
   });
+}
+
+function get(c: Context) {
+  const options = c.get("options") as CMSContent;
+  const { uploads, versioning } = options;
+  const uploadId = c.req.param("upload");
+  const fileId = c.req.param("file");
+
+  return {
+    fileId,
+    options,
+    uploadId,
+    uploads,
+    versioning,
+  };
 }

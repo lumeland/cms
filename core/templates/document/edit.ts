@@ -4,15 +4,16 @@ import { prepareField } from "../../utils/data.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type Document from "../../document.ts";
-import type { Version } from "../../../types.ts";
+import type { CMSContent, Version } from "../../../types.ts";
 
 interface Props {
+  options: CMSContent;
   document: Document;
   version?: Version;
 }
 
 export default async function template(
-  { document, version }: Props,
+  { options, document, version }: Props,
 ) {
   const data = await document.read();
   const fields = await Promise.all(document.fields.map(async (field) => `
@@ -25,14 +26,14 @@ export default async function template(
   `));
 
   return `
-${breadcrumb(version, document.name)}
+${breadcrumb(options, version, document.name)}
 
 <u-form>
   <header class="header">
     <h1 class="header-title">Editing ${document.name}</h1>
   </header>
   <form
-    action="${getPath("document", document.name)}"
+    action="${getPath(options, "document", document.name)}"
     method="post"
     class="form"
     enctype="multipart/form-data"

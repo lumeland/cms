@@ -1,6 +1,11 @@
 import { getPath } from "../utils/path.ts";
+import type { CMSContent } from "../../types.ts";
 
-export default function template() {
+interface Props {
+  options: CMSContent;
+}
+
+export default function template({ options }: Props) {
   return `
 <header class="header">
   <h1 class="header-title">
@@ -13,7 +18,7 @@ export default function template() {
     The page you are looking for does not exist.
   </p>
 
-  <a class="button is-primary" href="${getPath()}">
+  <a class="button is-primary" href="${getPath(options)}">
     Back to the home
   </a>
 </div>

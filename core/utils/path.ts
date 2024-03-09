@@ -1,4 +1,5 @@
 import { posix, SEPARATOR } from "../../deps/std.ts";
+import { CMSContent } from "../../types.ts";
 
 /**
  * Convert the Windows paths (that use the separator "\")
@@ -22,15 +23,9 @@ export function normalizePath(...paths: string[]) {
   return (path !== "/" && path.endsWith("/")) ? path.slice(0, -1) : path;
 }
 
-let basePath = "/";
-
-export function setBasePath(path: string) {
-  basePath = path;
-}
-
-export function getPath(...parts: string[]) {
+export function getPath(options: CMSContent, ...parts: string[]) {
   return posix.join(
-    basePath,
+    options.basePath,
     ...parts
       .filter((part) => typeof part === "string")
       .map((part) => encodeURIComponent(part)),
@@ -39,9 +34,9 @@ export function getPath(...parts: string[]) {
 
 const staticUrl = new URL(import.meta.resolve("../../static/"));
 
-export function asset(url = "") {
+export function asset(options: CMSContent, url = "") {
   if (staticUrl.protocol === "file:") {
-    return posix.join(basePath, url);
+    return posix.join(options.basePath, url);
   }
 
   return new URL(

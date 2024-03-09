@@ -1,4 +1,4 @@
-import { Hono, serveStatic } from "../deps/hono.ts";
+import { Context, Hono, Next, serveStatic } from "../deps/hono.ts";
 import authRoutes from "../core/routes/auth.ts";
 import { dispatch } from "../core/utils/event.ts";
 import { asset, getPath } from "../core/utils/path.ts";
@@ -86,7 +86,7 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   previewer.route(basePath, app);
 
   // Add the edit button
-  previewer.get("*", async (c, next) => {
+  previewer.get("*", async (c: Context, next: Next) => {
     await next();
 
     const { res } = c;
@@ -97,8 +97,10 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
       const body = await res.text();
       const code = `
           ${body}
-          <script type="module" src="${asset("components/u-bar.js")}"></script>
-          <u-bar data-api="${getPath("status")}"></u-bar>
+          <script type="module" src="${
+        asset(c.var.options, "components/u-bar.js")
+      }"></script>
+          <u-bar data-api="${getPath(c.var.options, "status")}"></u-bar>
         `;
       c.res = new Response(code, res);
       c.res.headers.delete("Content-Length");

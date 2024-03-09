@@ -9,7 +9,7 @@ import type { CMSContent } from "../../types.ts";
 
 export default function (app: Hono) {
   app.get("/collection/:collection", async (c: Context) => {
-    const { collection, versioning } = get(c);
+    const { options, collection, versioning } = get(c);
 
     if (!collection) {
       return c.notFound();
@@ -17,6 +17,7 @@ export default function (app: Hono) {
 
     return c.render(
       await collectionList({
+        options,
         collection,
         version: await versioning?.current(),
       }),
@@ -25,7 +26,7 @@ export default function (app: Hono) {
 
   app
     .get("/collection/:collection/edit/:document", async (c: Context) => {
-      const { collection, versioning, document } = get(c);
+      const { options, collection, versioning, document } = get(c);
 
       if (!document) {
         return c.notFound();
@@ -34,6 +35,7 @@ export default function (app: Hono) {
       try {
         return c.render(
           await collectionEdit({
+            options,
             collection,
             document,
             version: await versioning?.current(),
@@ -44,7 +46,7 @@ export default function (app: Hono) {
       }
     })
     .post(async (c: Context) => {
-      const { collection, document: oldDocument } = get(c);
+      const { options, collection, document: oldDocument } = get(c);
 
       if (!oldDocument) {
         throw new Error("Document not found");
@@ -62,12 +64,18 @@ export default function (app: Hono) {
       await document.write(changesToData(body));
 
       return c.redirect(
-        getPath("collection", collection.name, "edit", document.name),
+        getPath(
+          options,
+          "collection",
+          collection.name,
+          "edit",
+          document.name,
+        ),
       );
     });
 
   app.post("/collection/:collection/delete/:document", async (c: Context) => {
-    const { collection, document } = get(c);
+    const { options, collection, document } = get(c);
 
     if (!document) {
       throw new Error("Document not found");
@@ -75,35 +83,37 @@ export default function (app: Hono) {
 
     await collection.delete(document.name);
 
-    return c.redirect(getPath("collection", collection.name));
+    return c.redirect(getPath(options, "collection", collection.name));
   });
 
   app
     .get("/collection/:collection/create", async (c: Context) => {
-      const { collection, versioning } = get(c);
+      const { options, collection, versioning } = get(c);
 
       return c.render(
         collectionCreate({
+          options,
           collection,
           version: await versioning?.current(),
         }),
       );
     })
     .post(async (c: Context) => {
-      const { collection } = get(c);
+      const { options, collection } = get(c);
       const body = await c.req.parseBody();
       const document = collection.create(body._id as string);
 
       await document.write(changesToData(body));
 
       return c.redirect(
-        getPath("collection", collection.name, "edit", document.name),
+        getPath(options, "collection", collection.name, "edit", document.name),
       );
     });
 }
 
 function get(c: Context) {
-  const { collections, versioning } = c.get("options") as CMSContent;
+  const options = c.get("options") as CMSContent;
+  const { collections, versioning } = options;
   const collectionName = c.req.param("collection");
   const collection = collections[collectionName];
   const documentName = c.req.param("document");
@@ -112,6 +122,7 @@ function get(c: Context) {
   return {
     collection,
     document,
+    options,
     versioning,
   };
 }
