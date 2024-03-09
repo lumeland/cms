@@ -8,13 +8,13 @@ import type { CMSContent } from "../../types.ts";
 
 export default function (app: Hono) {
   app.get("/", (c: Context) => {
-    const { collections, documents, uploads, versioning, site } = c.get(
-      "options",
-    ) as CMSContent;
+    const { options, collections, documents, uploads, versioning, site } = get(
+      c,
+    );
 
     return c.render(
       index({
-        context: c,
+        options,
         site,
         collections: collections,
         documents: documents,
@@ -25,8 +25,7 @@ export default function (app: Hono) {
   });
 
   app.get("/status", async (c: Context) => {
-    const { versioning } = c.get("options") as CMSContent;
-    const url = c.req.query("url") ?? "/";
+    const { options, documents, collections, url, versioning } = get(c);
     const result = dispatch<{ src?: string; url?: string }>(
       "editSource",
       { url },
@@ -38,9 +37,8 @@ export default function (app: Hono) {
       });
     }
 
-    const { documents, collections } = c.get("options") as CMSContent;
     const response = {
-      homeURL: getPath(c),
+      homeURL: getPath(options),
       version: await versioning?.current(),
     };
 
@@ -48,7 +46,7 @@ export default function (app: Hono) {
       if (document.src === result.src) {
         return c.json({
           ...response,
-          editURL: getPath(c, "document", document.name),
+          editURL: getPath(options, "document", document.name),
         });
       }
     }
@@ -59,7 +57,7 @@ export default function (app: Hono) {
           return c.json({
             ...response,
             editURL: getPath(
-              c,
+              options,
               "collection",
               collection.name,
               "edit",
@@ -74,6 +72,23 @@ export default function (app: Hono) {
   });
 
   app.notFound((c: Context) => {
-    return c.render(notFound({ context: c }));
+    const { options } = get(c);
+    return c.render(notFound({ options }));
   });
+}
+
+function get(c: Context) {
+  const options = c.get("options") as CMSContent;
+  const { collections, documents, uploads, versioning, site } = options;
+  const url = c.req.query("url") ?? "/";
+
+  return {
+    collections,
+    documents,
+    uploads,
+    site,
+    options,
+    versioning,
+    url,
+  };
 }

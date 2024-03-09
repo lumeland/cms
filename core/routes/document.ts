@@ -8,7 +8,7 @@ import type { CMSContent } from "../../types.ts";
 export default function (app: Hono) {
   app
     .get("/document/:document", async (c: Context) => {
-      const { document, versioning } = get(c);
+      const { options, document, versioning } = get(c);
 
       if (!document) {
         return c.notFound();
@@ -16,28 +16,30 @@ export default function (app: Hono) {
 
       return c.render(
         documentEdit({
-          context: c,
+          options,
           document,
           version: await versioning?.current(),
         }),
       );
     })
     .post(async (c: Context) => {
-      const { document } = get(c);
+      const { options, document } = get(c);
       const body = await c.req.parseBody();
 
       await document.write(changesToData(body));
-      return c.redirect(getPath(c, "document", document.name));
+      return c.redirect(getPath(options, "document", document.name));
     });
 }
 
 function get(c: Context) {
-  const { documents, versioning } = c.get("options") as CMSContent;
+  const options = c.get("options") as CMSContent;
+  const { documents, versioning } = options;
   const documentName = c.req.param("document");
   const document = documents[documentName];
 
   return {
     document,
+    options,
     versioning,
   };
 }

@@ -1,11 +1,11 @@
 import { getPath } from "../utils/path.ts";
-import { Context } from "../../deps/hono.ts";
+import type { CMSContent } from "../../types.ts";
 
 interface Props {
-  context: Context;
+  options: CMSContent;
 }
 
-export default function template({ context }: Props) {
+export default function template({ options }: Props) {
   return `
 <header class="header">
   <h1 class="header-title">
@@ -18,7 +18,7 @@ export default function template({ context }: Props) {
     The page you are looking for does not exist.
   </p>
 
-  <a class="button is-primary" href="${getPath(context)}">
+  <a class="button is-primary" href="${getPath(options)}">
     Back to the home
   </a>
 </div>

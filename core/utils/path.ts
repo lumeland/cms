@@ -1,5 +1,5 @@
-import { Context } from "../../deps/hono.ts";
 import { posix, SEPARATOR } from "../../deps/std.ts";
+import { CMSContent } from "../../types.ts";
 
 /**
  * Convert the Windows paths (that use the separator "\")
@@ -23,9 +23,9 @@ export function normalizePath(...paths: string[]) {
   return (path !== "/" && path.endsWith("/")) ? path.slice(0, -1) : path;
 }
 
-export function getPath(ctx: Context, ...parts: string[]) {
+export function getPath(options: CMSContent, ...parts: string[]) {
   return posix.join(
-    ctx.var.options.basePath,
+    options.basePath,
     ...parts
       .filter((part) => typeof part === "string")
       .map((part) => encodeURIComponent(part)),
@@ -34,9 +34,9 @@ export function getPath(ctx: Context, ...parts: string[]) {
 
 const staticUrl = new URL(import.meta.resolve("../../static/"));
 
-export function asset(ctx: Context, url = "") {
+export function asset(options: CMSContent, url = "") {
   if (staticUrl.protocol === "file:") {
-    return posix.join(ctx.var.options.basePath, url);
+    return posix.join(options.basePath, url);
   }
 
   return new URL(

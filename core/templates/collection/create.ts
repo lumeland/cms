@@ -4,17 +4,16 @@ import { prepareField } from "../../utils/data.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type Collection from "../../collection.ts";
-import type { Version } from "../../../types.ts";
-import { Context } from "../../../deps/hono.ts";
+import type { CMSContent, Version } from "../../../types.ts";
 
 interface Props {
-  context: Context;
+  options: CMSContent;
   collection: Collection;
   version?: Version;
 }
 
 export default async function template(
-  { context, collection, version }: Props,
+  { options, collection, version }: Props,
 ) {
   const fields = await Promise.all(collection.fields.map(async (field) => `
     <${field.tag}
@@ -26,9 +25,9 @@ export default async function template(
 
   return `
 ${
-    breadcrumb(context, version, [
+    breadcrumb(options, version, [
       collection.name,
-      getPath(context, "collection", collection.name),
+      getPath(options, "collection", collection.name),
     ], "New file")
   }
 
@@ -49,7 +48,7 @@ ${
   </h1>
 </header>
 <form
-  action="${getPath(context, "collection", collection.name, "create")}"
+  action="${getPath(options, "collection", collection.name, "create")}"
   method="post"
   class="form"
   enctype="multipart/form-data"

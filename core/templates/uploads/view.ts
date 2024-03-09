@@ -2,11 +2,10 @@ import { getPath } from "../../utils/path.ts";
 import { formatBytes } from "../../../deps/std.ts";
 import breadcrumb from "../breadcrumb.ts";
 
-import type { Version } from "../../../types.ts";
-import { Context } from "../../../deps/hono.ts";
+import type { CMSContent, Version } from "../../../types.ts";
 
 interface Props {
-  context: Context;
+  options: CMSContent;
   file: string;
   publicPath: string;
   type: string;
@@ -16,15 +15,15 @@ interface Props {
 }
 
 export default function template(
-  { context, type, file, collection, size, publicPath, version }: Props,
+  { options, type, file, collection, size, publicPath, version }: Props,
 ) {
-  const src = getPath(context, "uploads", collection, "raw", file);
+  const src = getPath(options, "uploads", collection, "raw", file);
 
   return `
 ${
-    breadcrumb(context, version, [
+    breadcrumb(options, version, [
       collection,
-      getPath(context, "uploads", collection),
+      getPath(options, "uploads", collection),
     ], "File details")
   }
 
@@ -78,7 +77,7 @@ ${
     <u-confirm data-message="Are you sure?">
       <button
         class="button is-secondary"
-        formAction="${getPath(context, "uploads", collection, "delete", file)}"
+        formAction="${getPath(options, "uploads", collection, "delete", file)}"
       >
         <u-icon name="trash"></u-icon>
         Delete

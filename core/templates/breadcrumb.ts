@@ -1,13 +1,12 @@
 import { labelify } from "../utils/string.ts";
 import { getPath } from "../utils/path.ts";
 
-import type { Version } from "../../types.ts";
-import { Context } from "../../deps/hono.ts";
+import type { CMSContent, Version } from "../../types.ts";
 
 type Link = [string, string] | string;
 
 export default function breadcrumb(
-  context: Context,
+  options: CMSContent,
   version?: Version,
   ...links: Link[]
 ) {
@@ -18,11 +17,11 @@ export default function breadcrumb(
     version
       ? `<li class="breadcrumb-version ${
         version.isProduction ? "is-production" : ""
-      }"><a href="${getPath(context)}#versions">${version.name}</a></li>`
+      }"><a href="${getPath(options)}#versions">${version.name}</a></li>`
       : ""
   }
     <li><a href="${
-    getPath(context)
+    getPath(options)
   }"><u-icon name="house-fill"></u-icon> Home</a></li>
     ${
     links.map((link) =>

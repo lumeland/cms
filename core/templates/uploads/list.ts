@@ -5,26 +5,25 @@ import createTree from "../tree.ts";
 
 import type { Tree } from "../tree.ts";
 import type Upload from "../../upload.ts";
-import type { Version } from "../../../types.ts";
-import { Context } from "../../../deps/hono.ts";
+import type { CMSContent, Version } from "../../../types.ts";
 
 interface Props {
-  context: Context;
+  options: CMSContent;
   upload: Upload;
   version?: Version;
 }
 
 export default async function template(
-  { context, upload, version }: Props,
+  { options, upload, version }: Props,
 ) {
   const { publicPath, storage, name } = upload;
   const files = await Array.fromAsync(storage);
   const tree = createTree(files);
-  const content = folder({ context, collection: name, tree, publicPath })
+  const content = folder({ options, collection: name, tree, publicPath })
     .trim();
 
   return `
-${breadcrumb(context, version, name)}
+${breadcrumb(options, version, name)}
 
 <header class="header is-sticky">
   <h1 class="header-title">${labelify(name)}</h1>
@@ -51,7 +50,7 @@ ${
   method="post"
   class="footer ly-rowStack is-responsive"
   enctype="multipart/form-data"
-  action="${getPath(context, "uploads", name, "create")}"
+  action="${getPath(options, "uploads", name, "create")}"
 >
   <input
     aria-label="Add file"
@@ -70,39 +69,39 @@ ${
 }
 
 interface FolderProps {
-  context: Context;
+  options: CMSContent;
   collection: string;
   publicPath: string;
   tree: Tree;
 }
 
-function folder({ context, collection, publicPath, tree }: FolderProps) {
+function folder({ options, collection, publicPath, tree }: FolderProps) {
   const folders: string[] = Array.from(tree.folders?.entries() || [])
     .map(([name, subTree]) => `
     <li>
       <details open class="accordion">
         <summary>${name}</summary>
         <ul>
-          ${folder({ context, collection, publicPath, tree: subTree })}
+          ${folder({ options, collection, publicPath, tree: subTree })}
         </ul>
       </details>
     </li>`);
 
   return `
   ${folders.join("")}
-  ${files({ context, collection, publicPath, files: tree.files })}
+  ${files({ options, collection, publicPath, files: tree.files })}
   `;
 }
 
 interface FilesProps {
-  context: Context;
+  options: CMSContent;
   collection: string;
   publicPath: string;
   files?: Map<string, string>;
 }
 
 function files(
-  { context, collection, files, publicPath }: FilesProps,
+  { options, collection, files, publicPath }: FilesProps,
 ) {
   if (!files) {
     return "";
@@ -111,7 +110,7 @@ function files(
   return Array.from(files.entries()).map(([name, file]) => `
   <li>
     <a
-      href="${getPath(context, "uploads", collection, "file", file)}"
+      href="${getPath(options, "uploads", collection, "file", file)}"
       class="list-item"
     >
       <u-icon-file path="${file}"></u-icon-file>
@@ -124,7 +123,7 @@ function files(
       <template>
         <u-preview
           id="preview_${file}"
-          data-src="${getPath(context, "uploads", collection, "raw", file)}"
+          data-src="${getPath(options, "uploads", collection, "raw", file)}"
         >
         </u-preview>
       </template>
