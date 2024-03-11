@@ -1,6 +1,6 @@
 import { normalizePath } from "./utils/path.ts";
 
-import type { FielType, ResolvedField } from "../types.ts";
+import type { Data, FielType, ResolvedField } from "../types.ts";
 
 const fields = new Map<string, FielType>();
 
@@ -18,13 +18,17 @@ const inputs = [
   "email",
   "url",
   "select",
-  "object",
 ];
 
 for (const input of inputs) {
   fields.set(input, {
     tag: `f-${input}`,
     jsImport: `lume_cms/components/f-${input}.js`,
+    applyChanges(data, changes, field: ResolvedField) {
+      if (field.name in changes) {
+        data[field.name] = changes[field.name];
+      }
+    },
   });
 }
 
@@ -32,31 +36,89 @@ for (const input of inputs) {
 fields.set("checkbox", {
   tag: "f-checkbox",
   jsImport: "lume_cms/components/f-checkbox.js",
-  transformData: (value: unknown) => value === "true",
+  applyChanges(data, changes, field: ResolvedField) {
+    data[field.name] = changes[field.name] === "true";
+  },
 });
 
 fields.set("number", {
   tag: "f-number",
   jsImport: "lume_cms/components/f-number.js",
-  transformData: (value: unknown) => value === "" ? null : Number(value),
-});
-
-fields.set("choose-list", {
-  tag: "f-choose-list",
-  jsImport: "lume_cms/components/f-choose-list.js",
-  transformData: (value: unknown) => Object.values(value || {}),
+  applyChanges(data, changes, field: ResolvedField) {
+    data[field.name] = changes[field.name] === ""
+      ? null
+      : Number(changes[field.name]);
+  },
 });
 
 fields.set("list", {
   tag: "f-list",
   jsImport: "lume_cms/components/f-list.js",
-  transformData: (value: unknown) => Object.values(value || {}),
+  applyChanges(data, changes, field: ResolvedField) {
+    data[field.name] = Object.values(changes[field.name] || {}).filter((v) =>
+      !isEmpty(v)
+    );
+  },
+});
+
+fields.set("object", {
+  tag: "f-object",
+  jsImport: "lume_cms/components/f-object.js",
+  async applyChanges(data, changes, field: ResolvedField) {
+    const value = data[field.name] as Data || {};
+
+    for (const f of field.fields || []) {
+      await f.applyChanges(value, changes, f);
+    }
+
+    data[field.name] = value;
+  },
 });
 
 fields.set("object-list", {
   tag: "f-object-list",
   jsImport: "lume_cms/components/f-object-list.js",
-  transformData: (value: unknown) => Object.values(value || {}),
+  async applyChanges(data, changes, field: ResolvedField) {
+    const currentData = data[field.name] as Data[] || [];
+
+    data[field.name] = await Promise.all(
+      Object.values(changes[field.name] || {}).map(async (changes, index) => {
+        const value = currentData[index] || {};
+
+        for (const f of field.fields || []) {
+          await f.applyChanges(value, changes, f);
+        }
+
+        return value;
+      }),
+    );
+  },
+});
+
+fields.set("choose-list", {
+  tag: "f-choose-list",
+  jsImport: "lume_cms/components/f-choose-list.js",
+  async applyChanges(data, changes, field: ResolvedField) {
+    const currentData = data[field.name] as Data[] || [];
+
+    data[field.name] = await Promise.all(
+      Object.values(changes[field.name] || {}).map(async (changes, index) => {
+        const value = currentData[index] || {};
+        const chooseField = field.fields?.find((f) => f.name === changes.type);
+
+        if (!chooseField) {
+          throw new Error(`No field found for type '${changes.type}'`);
+        }
+
+        for (const f of chooseField?.fields || []) {
+          await f.applyChanges(value, changes, f);
+        }
+
+        value.type = changes.type;
+        return value;
+      }),
+    );
+  },
 });
 
 fields.set("file", {
@@ -67,6 +129,12 @@ fields.set("file", {
 
     if (!field.uploads) {
       field.uploads = Object.keys(cmsContent.uploads)[0];
+
+      if (!field.uploads) {
+        throw new Error(
+          `No uploads found for file field '${field.name}'`,
+        );
+      }
     }
 
     if (!field.publicPath) {
@@ -75,10 +143,11 @@ fields.set("file", {
       field.publicPath = publicPath;
     }
   },
-  async transformData(
-    value: { current?: string; uploaded?: File } | undefined,
-    field: ResolvedField,
-  ) {
+  async applyChanges(data, changes, field: ResolvedField) {
+    const value = changes[field.name] as
+      | { current?: string; uploaded?: File }
+      | undefined;
+
     if (!value) {
       return;
     }
@@ -86,7 +155,8 @@ fields.set("file", {
     const { current, uploaded } = value;
 
     if (!uploaded) {
-      return current;
+      data[field.name] = current;
+      return;
     }
 
     const { storage, publicPath } =
@@ -100,8 +170,12 @@ fields.set("file", {
 
     const entry = storage.get(uploaded.name);
     await entry.writeFile(uploaded);
-    return normalizePath(publicPath, uploaded.name);
+    data[field.name] = normalizePath(publicPath, uploaded.name);
   },
 });
 
 export default fields;
+
+function isEmpty(value: unknown) {
+  return value === undefined || value === null || value === "";
+}

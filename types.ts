@@ -84,16 +84,24 @@ export interface Field {
 export interface ResolvedField extends Field {
   tag: string;
   label: string;
-  transformData?: (value: any, field: ResolvedField) => any | Promise<unknown>;
   fields?: ResolvedField[];
   cmsContent: CMSContent;
+  applyChanges(
+    data: Data,
+    changes: Data,
+    field: ResolvedField,
+  ): void | Promise<void>;
 }
 
 export interface FielType {
   tag: string;
   jsImport: string;
-  transformData?: (value: any, field: ResolvedField) => any | Promise<unknown>;
   init?: (field: ResolvedField) => void;
+  applyChanges(
+    data: Data,
+    changes: Data,
+    field: ResolvedField,
+  ): void | Promise<void>;
 }
 
 type Option = string | { value: string | number; label: string };

@@ -89,7 +89,7 @@ export class KvEntry implements Entry {
       throw new Error(`Item not found: ${this.key.join("/")}`);
     }
 
-    return item?.value;
+    return item.value;
   }
 
   async writeData(data: Data) {

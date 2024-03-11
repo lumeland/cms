@@ -1,5 +1,6 @@
 .buttonIcon {
   display: inline-flex;
+  flex: 0 0 auto;
   column-gap: .5em;
   align-items: center;
   justify-content: center;

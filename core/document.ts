@@ -48,35 +48,12 @@ export default class Document {
 
   async write(data: Data) {
     const currentData = await this.read();
-    await mergeRecursive(currentData, data, this.fields);
+
+    for (const field of this.fields || []) {
+      await field.applyChanges(currentData, data, field);
+    }
+
     this.#data = currentData;
     await this.#entry.writeData(currentData);
-  }
-}
-
-async function mergeRecursive(
-  target: Data,
-  changes: Data,
-  fields: ResolvedField[],
-) {
-  for (const [key, value] of Object.entries(changes)) {
-    const field = fields.find((field) => field.name === key);
-
-    // TODO: transformData should be recursive
-    if (field?.transformData) {
-      target[key] = await field.transformData(value, field);
-      continue;
-    }
-
-    if (typeof value === "object" && !Array.isArray(value)) {
-      if (!(key in target)) {
-        target[key] = {};
-      }
-
-      await mergeRecursive(target[key] as Data, value as Data, fields);
-      continue;
-    }
-
-    target[key] = value;
   }
 }

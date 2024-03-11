@@ -24,6 +24,8 @@
   }
 
   .accordion {
+    max-width: 100%;
+
     & summary {
       font: var(--font-ui-bold);
       max-width: none;
@@ -46,6 +48,7 @@
   font: var(--font-ui-bold);
   border-radius: var(--border-radius);
   color: var(--color-text);
+  word-wrap: anywhere;
 
   & u-icon {
     color: var(--color-dim);

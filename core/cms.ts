@@ -359,7 +359,7 @@ export default class Cms {
       const resolvedField = {
         tag: type.tag,
         label: field.label ?? labelify(field.name),
-        transformData: type.transformData,
+        applyChanges: type.applyChanges,
         cmsContent: content,
         ...field,
       } as ResolvedField;
