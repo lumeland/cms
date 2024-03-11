@@ -68,7 +68,7 @@ fields.set("object", {
     const value = data[field.name] as Data || {};
 
     for (const f of field.fields || []) {
-      await f.applyChanges(value, changes, f);
+      await f.applyChanges(value, changes[field.name] as Data || {}, f);
     }
 
     data[field.name] = value;
@@ -82,15 +82,17 @@ fields.set("object-list", {
     const currentData = data[field.name] as Data[] || [];
 
     data[field.name] = await Promise.all(
-      Object.values(changes[field.name] || {}).map(async (changes, index) => {
-        const value = currentData[index] || {};
+      Object.values(changes[field.name] || {}).map(
+        async (subchanges, index) => {
+          const value = currentData[index] || {};
 
-        for (const f of field.fields || []) {
-          await f.applyChanges(value, changes, f);
-        }
+          for (const f of field.fields || []) {
+            await f.applyChanges(value, subchanges, f);
+          }
 
-        return value;
-      }),
+          return value;
+        },
+      ),
     );
   },
 });
@@ -102,21 +104,25 @@ fields.set("choose-list", {
     const currentData = data[field.name] as Data[] || [];
 
     data[field.name] = await Promise.all(
-      Object.values(changes[field.name] || {}).map(async (changes, index) => {
-        const value = currentData[index] || {};
-        const chooseField = field.fields?.find((f) => f.name === changes.type);
+      Object.values(changes[field.name] || {}).map(
+        async (subchanges, index) => {
+          const value = currentData[index] || {};
+          const chooseField = field.fields?.find((f) =>
+            f.name === subchanges.type
+          );
 
-        if (!chooseField) {
-          throw new Error(`No field found for type '${changes.type}'`);
-        }
+          if (!chooseField) {
+            throw new Error(`No field found for type '${subchanges.type}'`);
+          }
 
-        for (const f of chooseField?.fields || []) {
-          await f.applyChanges(value, changes, f);
-        }
+          for (const f of chooseField?.fields || []) {
+            await f.applyChanges(value, subchanges, f);
+          }
 
-        value.type = changes.type;
-        return value;
-      }),
+          value.type = subchanges.type;
+          return value;
+        },
+      ),
     );
   },
 });
