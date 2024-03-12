@@ -47,6 +47,7 @@ export default class Fs implements Storage {
 
     for await (const entry of iterable) {
       const path = normalizePath(entry.path);
+
       yield {
         name: path.slice(root.length + 1),
         src: path,

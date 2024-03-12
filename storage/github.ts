@@ -3,11 +3,13 @@ import {
   decodeBase64,
   encodeBase64,
   extname,
+  globToRegExp,
   posix,
 } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
 import { slugify } from "../core/utils/string.ts";
 import { Octokit } from "npm:octokit";
+import { normalizePath } from "../core/utils/path.ts";
 
 import type {
   OctokitResponse,
@@ -28,7 +30,9 @@ export default class GitHub implements Storage {
   client: Octokit;
   owner: string;
   repo: string;
+  root: string;
   path: string;
+  extension?: string;
   branch?: string;
   commitMessage: (options: Options, info?: OctokitResponse) => string;
 
@@ -36,11 +40,26 @@ export default class GitHub implements Storage {
     this.client = options.client;
     this.owner = options.owner;
     this.repo = options.repo;
-    this.path = options.path || "";
     this.branch = options.branch;
     this.commitMessage = options.commitMessage || (({ path }, info) => {
       return info ? `Update file ${path}` : `Create file ${path}`;
     });
+
+    const path = options.path || "";
+    const pos = path.indexOf("*");
+
+    if (pos === -1) {
+      this.root = normalizePath(path).slice(1);
+      this.path = "**";
+    } else if (pos > 0) {
+      this.root = normalizePath(path.slice(0, pos)).slice(1);
+      this.path = path.slice(pos);
+      this.extension = posix.extname(path);
+    } else {
+      this.root = "";
+      this.path = path;
+      this.extension = posix.extname(path);
+    }
   }
 
   async *[Symbol.asyncIterator]() {
@@ -48,7 +67,7 @@ export default class GitHub implements Storage {
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: this.path,
+      path: this.root,
       branch: this.branch,
     });
 
@@ -57,8 +76,14 @@ export default class GitHub implements Storage {
       // throw new Error(`Invalid directory: ${this.path}`);
     }
 
+    const regexp = globToRegExp(this.path, { extended: true });
+
     for (const entry of info) {
       if (entry.type === "file") {
+        if (!regexp.test(entry.name)) {
+          continue;
+        }
+
         yield {
           name: entry.name,
           src: entry.download_url,
@@ -68,7 +93,11 @@ export default class GitHub implements Storage {
   }
 
   name(name: string): string {
-    return slugify(name);
+    const newName = slugify(name);
+
+    return (this.extension && !newName.endsWith(this.extension))
+      ? newName + this.extension
+      : newName;
   }
 
   directory(id: string): Storage {
@@ -76,7 +105,7 @@ export default class GitHub implements Storage {
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: posix.join(this.path, id),
+      path: posix.join(this.root, id),
       branch: this.branch,
       commitMessage: this.commitMessage,
     });
@@ -87,31 +116,32 @@ export default class GitHub implements Storage {
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: posix.join(this.path, id),
+      path: posix.join(this.root, id),
       branch: this.branch,
       commitMessage: this.commitMessage,
     });
   }
 
   async delete(id: string) {
+    const path = posix.join(this.path, id);
     const info = await fetchInfo({
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: posix.join(this.path, id),
+      path,
       branch: this.branch,
     });
 
     const sha = info?.sha;
 
     if (!sha) {
-      throw new Error(`File not found: ${this.path}`);
+      throw new Error(`File not found: ${path}`);
     }
 
     await this.client.rest.repos.deleteFile({
       owner: this.owner,
       repo: this.repo,
-      path: posix.join(this.path, id),
+      path,
       message: "Delete file",
       branch: this.branch,
       sha,
