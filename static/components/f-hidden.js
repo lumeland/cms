@@ -8,7 +8,11 @@ customElements.define(
       const { schema, value, namePrefix } = this;
       const name = `${namePrefix}.${schema.name}`;
 
-      push(this, "input", { type: "hidden", name, value });
+      push(this, "input", {
+        type: "hidden",
+        name,
+        value: value || schema.value,
+      });
     }
   },
 );
