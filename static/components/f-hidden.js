@@ -11,7 +11,7 @@ customElements.define(
       push(this, "input", {
         type: "hidden",
         name,
-        value: value || schema.value,
+        value: value ?? schema.value,
       });
     }
   },
