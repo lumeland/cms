@@ -112,6 +112,7 @@ export default class GitHub implements Storage {
   }
 
   get(id: string): Entry {
+    const path = posix.join(this.root, id);
     return new GitHubEntry({
       client: this.client,
       owner: this.owner,
@@ -119,6 +120,10 @@ export default class GitHub implements Storage {
       path: posix.join(this.root, id),
       branch: this.branch,
       commitMessage: this.commitMessage,
+    }, {
+      name: id,
+      src:
+        `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}/${path}`,
     });
   }
 
@@ -179,18 +184,14 @@ export class GitHubEntry implements Entry {
   branch?: string;
   commitMessage: (options: Options, info?: OctokitResponse) => string;
 
-  constructor(options: Options) {
+  constructor(options: Options, metadata: EntryMetadata) {
     this.client = options.client;
     this.owner = options.owner;
     this.repo = options.repo;
     this.path = options.path || "";
     this.branch = options.branch;
     this.commitMessage = options.commitMessage!;
-    this.metadata = {
-      name: this.path,
-      src:
-        `https://raw.githubusercontent.com/${options.owner}/${options.repo}/${options.branch}/${options.path}`,
-    };
+    this.metadata = metadata;
   }
 
   async readData(): Promise<Data> {
