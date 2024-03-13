@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Initializes hidden input value to the schema when creating a new document/collection [#9].
+- Updated Hono to the latest version.
 
 ## [0.3.6] - 2024-03-11
 ### Changed
