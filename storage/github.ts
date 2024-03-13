@@ -23,7 +23,12 @@ export interface Options {
   repo: string;
   path?: string;
   branch?: string;
-  commitMessage?: (options: Options, info?: OctokitResponse) => string;
+  commitMessage?: (options: CommitMessageOptions) => string;
+}
+
+interface CommitMessageOptions {
+  action: "create" | "update" | "delete";
+  path: string;
 }
 
 export default class GitHub implements Storage {
@@ -34,16 +39,23 @@ export default class GitHub implements Storage {
   path: string;
   extension?: string;
   branch?: string;
-  commitMessage: (options: Options, info?: OctokitResponse) => string;
+  commitMessage: (options: CommitMessageOptions) => string;
 
   constructor(options: Options) {
     this.client = options.client;
     this.owner = options.owner;
     this.repo = options.repo;
     this.branch = options.branch;
-    this.commitMessage = options.commitMessage || (({ path }, info) => {
-      return info ? `Update file ${path}` : `Create file ${path}`;
-    });
+    this.commitMessage = options.commitMessage || function ({ action, path }) {
+      switch (action) {
+        case "create":
+          return `Create file ${path}`;
+        case "update":
+          return `Update file ${path}`;
+        case "delete":
+          return `Delete file ${path}`;
+      }
+    };
 
     const path = options.path || "";
     const pos = path.indexOf("*");
@@ -147,7 +159,7 @@ export default class GitHub implements Storage {
       owner: this.owner,
       repo: this.repo,
       path,
-      message: "Delete file",
+      message: this.commitMessage({ action: "delete", path }),
       branch: this.branch,
       sha,
     });
@@ -162,11 +174,12 @@ export default class GitHub implements Storage {
       branch: this.branch,
     });
 
+    const path = posix.join(this.root, newId);
     await this.client.rest.repos.createOrUpdateFileContents({
       owner: this.owner,
       repo: this.repo,
-      path: posix.join(this.root, newId),
-      message: "Rename file",
+      path,
+      message: this.commitMessage({ action: "create", path }),
       content: encodeBase64(content || ""),
       branch: this.branch,
     });
@@ -182,7 +195,7 @@ export class GitHubEntry implements Entry {
   repo: string;
   path: string;
   branch?: string;
-  commitMessage: (options: Options, info?: OctokitResponse) => string;
+  commitMessage: (options: CommitMessageOptions) => string;
 
   constructor(options: Options, metadata: EntryMetadata) {
     this.client = options.client;
@@ -315,7 +328,10 @@ async function writeContent(
     repo,
     path,
     branch,
-    message: options.commitMessage!(options, exists),
+    message: options.commitMessage!({
+      action: exists ? "update" : "create",
+      path,
+    }),
     content: encodeBase64(content),
     sha: exists?.sha,
   });
