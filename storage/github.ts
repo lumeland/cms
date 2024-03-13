@@ -128,7 +128,7 @@ export default class GitHub implements Storage {
   }
 
   async delete(id: string) {
-    const path = posix.join(this.path, id);
+    const path = posix.join(this.root, id);
     const info = await fetchInfo({
       client: this.client,
       owner: this.owner,
@@ -158,14 +158,14 @@ export default class GitHub implements Storage {
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: posix.join(this.path, id),
+      path: posix.join(this.root, id),
       branch: this.branch,
     });
 
     await this.client.rest.repos.createOrUpdateFileContents({
       owner: this.owner,
       repo: this.repo,
-      path: posix.join(this.path, newId),
+      path: posix.join(this.root, newId),
       message: "Rename file",
       content: encodeBase64(content || ""),
       branch: this.branch,
