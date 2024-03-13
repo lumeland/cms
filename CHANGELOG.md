@@ -4,9 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.3.7] - Unreleased
+## [0.3.7] - 2024-03-13
 ### Added
-- Glob patterns to GitHub storage.
+- Glob patterns to GitHub storage [#10].
+
+### Changed
+- Commit message function for GitHub storage [#10].
+
+### Fixed
+- Initializes hidden input value to the schema when creating a new document/collection [#9].
 
 ## [0.3.6] - 2024-03-11
 ### Changed
@@ -158,8 +164,10 @@ First version
 [#5]: https://github.com/lumeland/cms/issues/5
 [#7]: https://github.com/lumeland/cms/issues/7
 [#8]: https://github.com/lumeland/cms/issues/8
+[#9]: https://github.com/lumeland/cms/issues/9
+[#10]: https://github.com/lumeland/cms/issues/10
 
-[0.3.7]: https://github.com/lumeland/cms/compare/v0.3.6...HEAD
+[0.3.7]: https://github.com/lumeland/cms/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/lumeland/cms/compare/v0.3.5...v0.3.6
 [0.3.5]: https://github.com/lumeland/cms/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/lumeland/cms/compare/v0.3.3...v0.3.4
