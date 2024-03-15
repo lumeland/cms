@@ -5,52 +5,44 @@ import type { Data, FielType, ResolvedField } from "../types.ts";
 const fields = new Map<string, FielType>();
 
 // Logic-less fields
-const inputs = [
-  "text",
-  "textarea",
-  "markdown",
-  "code",
-  "date",
-  "datetime",
-  "time",
-  "hidden",
-  "color",
-  "email",
-  "url",
-  "select",
-];
+const inputs = {
+  text: null,
+  textarea: null,
+  markdown: null,
+  code: null,
+  datetime: (v: string) => new Date(v),
+  date: null,
+  time: null,
+  hidden: null,
+  color: null,
+  email: null,
+  url: null,
+  select: null,
+  checkbox: (v: string) => v === "true",
+  number: (v: string) => Number(v),
+};
 
-for (const input of inputs) {
+for (const [input, transform] of Object.entries(inputs)) {
   fields.set(input, {
     tag: `f-${input}`,
     jsImport: `lume_cms/components/f-${input}.js`,
     applyChanges(data, changes, field: ResolvedField) {
       if (field.name in changes) {
-        data[field.name] = changes[field.name];
+        const value = transform
+          ? transform(changes[field.name] as string)
+          : changes[field.name];
+
+        if (value === "" && !field.attributes?.required) {
+          delete data[field.name];
+        } else {
+          data[field.name] = value;
+        }
       }
     },
   });
 }
 
 // Add fields with custom logic
-fields.set("checkbox", {
-  tag: "f-checkbox",
-  jsImport: "lume_cms/components/f-checkbox.js",
-  applyChanges(data, changes, field: ResolvedField) {
-    data[field.name] = changes[field.name] === "true";
-  },
-});
-
-fields.set("number", {
-  tag: "f-number",
-  jsImport: "lume_cms/components/f-number.js",
-  applyChanges(data, changes, field: ResolvedField) {
-    data[field.name] = changes[field.name] === ""
-      ? null
-      : Number(changes[field.name]);
-  },
-});
-
 fields.set("list", {
   tag: "f-list",
   jsImport: "lume_cms/components/f-list.js",

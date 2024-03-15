@@ -110,7 +110,8 @@ export class FsEntry implements Entry {
   async writeData(data: Data) {
     const { src } = this.metadata;
     const transformer = fromFilename(src);
-    const content = await transformer.fromData(data);
+    const content = (await transformer.fromData(data))
+      .replaceAll(/\r\n/g, "\n"); // Unify line endings
 
     await ensureDir(posix.dirname(src));
     await Deno.writeTextFile(src, content);

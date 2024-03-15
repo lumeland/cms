@@ -222,7 +222,8 @@ export class GitHubEntry implements Entry {
 
   async writeData(data: Data) {
     const transformer = fromFilename(this.path);
-    const content = await transformer.fromData(data);
+    const content = (await transformer.fromData(data))
+      .replaceAll(/\r\n/g, "\n"); // Unify line endings
 
     await writeContent({
       client: this.client,
