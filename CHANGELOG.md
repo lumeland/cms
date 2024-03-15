@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.3.8] - Unreleased
 ### Fixed
 - Improved value formatting.
+- Unify line endings.
 
 ## [0.3.7] - 2024-03-13
 ### Added
