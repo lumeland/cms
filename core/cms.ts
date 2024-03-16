@@ -121,7 +121,7 @@ export default class Cms {
     return this;
   }
 
-  init(): Hono {
+  initContent(): CMSContent {
     const content: CMSContent = {
       basePath: this.options.basePath,
       site: this.options.site!,
@@ -136,10 +136,6 @@ export default class Cms {
         root: this.options.root,
         prodBranch: this.versionManager,
       });
-    }
-
-    for (const type of this.fields.values()) {
-      this.#jsImports.add(type.jsImport);
     }
 
     for (const [key, [storage, publicPath]] of this.uploads.entries()) {
@@ -174,6 +170,16 @@ export default class Cms {
         name,
         description,
       });
+    }
+
+    return content;
+  }
+
+  init(): Hono {
+    const content = this.initContent();
+
+    for (const type of this.fields.values()) {
+      this.#jsImports.add(type.jsImport);
     }
 
     const app = new Hono({

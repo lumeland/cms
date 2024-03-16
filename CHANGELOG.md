@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.3.8] - Unreleased
+### Changed
+- Internal: Added `Upload.get`, `Upload.delete` and `Upload.rename` functions.
+
 ### Fixed
 - Improved value formatting.
 - Unify line endings.
