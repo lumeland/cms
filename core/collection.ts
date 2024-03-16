@@ -14,12 +14,14 @@ export default class Collection {
   description?: string;
   #storage: Storage;
   #fields: ResolvedField[];
+  #documents: Record<string, Document>;
 
   constructor(options: CollectionOptions) {
     this.name = options.name;
     this.description = options.description;
     this.#storage = options.storage;
     this.#fields = options.fields;
+    this.#documents = {};
   }
 
   get fields() {
@@ -42,15 +44,22 @@ export default class Collection {
   }
 
   get(id: string): Document {
-    return new Document({ entry: this.#storage.get(id), fields: this.#fields });
+    let d = this.#documents[id];
+    if (!d) {
+      d = new Document({ entry: this.#storage.get(id), fields: this.#fields });
+      this.#documents[id] = d;
+    }
+    return d;
   }
 
   async delete(id: string): Promise<void> {
     await this.#storage.delete(id);
+    delete this.#documents[id];
   }
 
   async rename(id: string, newId: string): Promise<void> {
     const newName = this.#storage.name(newId);
     await this.#storage.rename(id, newName);
+    delete this.#documents[id];
   }
 }
