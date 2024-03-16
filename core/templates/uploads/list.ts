@@ -16,8 +16,8 @@ interface Props {
 export default async function template(
   { options, upload, version }: Props,
 ) {
-  const { publicPath, storage, name } = upload;
-  const files = await Array.fromAsync(storage);
+  const { publicPath, name } = upload;
+  const files = await Array.fromAsync(upload);
   const tree = createTree(files);
   const content = folder({ options, collection: name, tree, publicPath })
     .trim();

@@ -27,11 +27,11 @@ export default function (app: Hono) {
 
   app.post("/uploads/:upload/create", async (c: Context) => {
     const { options, uploads, uploadId } = get(c);
-    const { storage } = uploads[uploadId];
+    const upload = uploads[uploadId];
     const body = await c.req.parseBody();
     const file = body.file as File;
     const fileId = slugify(file.name);
-    const entry = storage.get(fileId);
+    const entry = upload.get(fileId);
 
     await entry.writeFile(file);
     return c.redirect(
@@ -46,8 +46,8 @@ export default function (app: Hono) {
       return c.notFound();
     }
 
-    const { storage } = uploads[uploadId];
-    const entry = storage.get(fileId);
+    const upload = uploads[uploadId];
+    const entry = upload.get(fileId);
 
     const file = await entry.readFile();
     c.header("Content-Type", file.type);
@@ -84,19 +84,19 @@ export default function (app: Hono) {
   })
     .post(async (c: Context) => {
       const { options, uploadId, uploads } = get(c);
-      const { storage } = uploads[uploadId];
+      const upload = uploads[uploadId];
       const body = await c.req.parseBody();
       const prevId = c.req.param("file");
       const fileId = body._id as string;
 
       if (prevId !== fileId) {
-        await storage.rename(prevId, fileId);
+        await upload.rename(prevId, fileId);
       }
 
       const file = body.file as File | undefined;
 
       if (file) {
-        const entry = storage.get(fileId);
+        const entry = upload.get(fileId);
         await entry.writeFile(file);
       }
 
@@ -107,9 +107,9 @@ export default function (app: Hono) {
 
   app.post("/uploads/:upload/delete/:file", async (c: Context) => {
     const { options, fileId, uploadId, uploads } = get(c);
-    const { storage } = uploads[uploadId];
+    const upload = uploads[uploadId];
 
-    await storage.delete(fileId);
+    await upload.delete(fileId);
     return c.redirect(getPath(options.basePath, "uploads", uploadId));
   });
 }
