@@ -13,17 +13,14 @@ export default class Document {
   description?: string;
   #entry: Entry;
   #fields: ResolvedField[];
-  #data?: Data;
+  #isNew?: boolean;
 
   constructor(options: DocumentOptions) {
     this.#name = options.name;
     this.description = options.description;
     this.#entry = options.entry;
     this.#fields = options.fields;
-
-    if (options.isNew) {
-      this.#data = {};
-    }
+    this.#isNew = options.isNew;
   }
 
   get fields() {
@@ -39,11 +36,10 @@ export default class Document {
   }
 
   async read() {
-    if (this.#data === undefined) {
-      this.#data = await this.#entry.readData();
+    if (this.#isNew) {
+      return {};
     }
-
-    return this.#data;
+    return await this.#entry.readData();
   }
 
   async write(data: Data) {
@@ -53,7 +49,7 @@ export default class Document {
       await field.applyChanges(currentData, data, field);
     }
 
-    this.#data = currentData;
     await this.#entry.writeData(currentData);
+    this.#isNew = false;
   }
 }

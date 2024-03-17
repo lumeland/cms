@@ -166,7 +166,6 @@ export default class Cms {
       content.documents[name] = new Document({
         entry: this.#getEntry(path),
         fields: this.#resolveFields(fields, content),
-        isNew: false,
         name,
         description,
       });
