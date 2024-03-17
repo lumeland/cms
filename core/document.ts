@@ -5,6 +5,7 @@ export interface DocumentOptions {
   description?: string;
   entry: Entry;
   fields: ResolvedField[];
+  isNew?: boolean;
 }
 
 export default class Document {
@@ -12,12 +13,14 @@ export default class Document {
   description?: string;
   #entry: Entry;
   #fields: ResolvedField[];
+  #isNew?: boolean;
 
   constructor(options: DocumentOptions) {
     this.#name = options.name;
     this.description = options.description;
     this.#entry = options.entry;
     this.#fields = options.fields;
+    this.#isNew = options.isNew;
   }
 
   get fields() {
@@ -33,6 +36,9 @@ export default class Document {
   }
 
   async read() {
+    if (this.#isNew) {
+      return {};
+    }
     return await this.#entry.readData();
   }
 
@@ -44,5 +50,6 @@ export default class Document {
     }
 
     await this.#entry.writeData(currentData);
+    this.#isNew = false;
   }
 }
