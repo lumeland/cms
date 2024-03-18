@@ -9,8 +9,17 @@ customElements.define(
 
       const { schema, value } = this;
       const namePrefix = `${this.namePrefix}.${schema.name}`;
+      let open = true;
 
-      push(this, "label", { for: `field_${namePrefix}.0` }, schema.label);
+      push(this, "label", {
+        for: `field_${namePrefix}.0`,
+        onclick: () => {
+          open = !open;
+          this.querySelectorAll("details.accordion").forEach((el) =>
+            el.open = open
+          );
+        },
+      }, schema.label);
 
       if (schema.description) {
         push(this, "div", { class: "field-description" }, schema.description);

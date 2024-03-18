@@ -45,10 +45,25 @@ customElements.define(
           return;
         }
         this.classList.add("is-drag-over");
+
+        const dragging = this.draggables.find((child) =>
+          child.classList.contains("is-dragging")
+        );
+
+        if (
+          dragging.compareDocumentPosition(this) ===
+            Node.DOCUMENT_POSITION_FOLLOWING
+        ) {
+          this.classList.add("is-drag-over-after");
+        } else {
+          this.classList.add("is-drag-over-before");
+        }
       });
 
       this.addEventListener("dragleave", () => {
         this.classList.remove("is-drag-over");
+        this.classList.remove("is-drag-over-before");
+        this.classList.remove("is-drag-over-after");
       });
 
       this.addEventListener("dragover", (e) => {
@@ -73,6 +88,9 @@ customElements.define(
         } else {
           this.insertAdjacentElement("beforebegin", dragging);
         }
+        this.classList.remove("is-drag-over");
+        this.classList.remove("is-drag-over-before");
+        this.classList.remove("is-drag-over-after");
       });
     }
   },
