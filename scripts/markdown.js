@@ -50,9 +50,9 @@ const markdownBinding = [
   },
 ];
 
-export function init(parent, doc) {
+export function init(parent, textarea) {
   const state = EditorState.create({
-    doc,
+    doc: textarea.value,
     extensions: [
       highlightSpecialChars(),
       history(),
@@ -77,6 +77,15 @@ export function init(parent, doc) {
     ],
   });
 
+  const editor = new EditorView({
+    state,
+    parent,
+  });
+
+  textarea.form.addEventListener("submit", () => {
+    textarea.value = editor.state.doc.toString();
+  });
+
   return {
     makeBold,
     makeItalic,
@@ -88,9 +97,6 @@ export function init(parent, doc) {
     makeH5,
     makeH6,
     insertLink,
-    editor: new EditorView({
-      state,
-      parent,
-    }),
+    editor,
   };
 }

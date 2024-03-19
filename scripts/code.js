@@ -22,9 +22,9 @@ import {
 } from "@codemirror/autocomplete";
 import { languages } from "@codemirror/language-data";
 
-export function init(parent, doc) {
+export function init(parent, textarea) {
   const state = EditorState.create({
-    doc,
+    doc: textarea.value,
     extensions: [
       highlightSpecialChars(),
       history(),
@@ -48,10 +48,14 @@ export function init(parent, doc) {
     ],
   });
 
-  return {
-    editor: new EditorView({
-      state,
-      parent,
-    }),
-  };
+  const editor = new EditorView({
+    state,
+    parent,
+  });
+
+  textarea.form.addEventListener("submit", () => {
+    textarea.value = editor.state.doc.toString();
+  });
+
+  return { editor };
 }

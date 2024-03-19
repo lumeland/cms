@@ -5,15 +5,22 @@
     "@codemirror/language-data": "^6.4.1",
     "@codemirror/state": "^6.4.0",
     "@codemirror/view": "^6.23.0",
+    "@editorjs/delimiter": "^1.4.0",
+    "@editorjs/editorjs": "^2.29.0",
+    "@editorjs/header": "^2.8.1",
+    "@editorjs/nested-list": "^1.4.2",
+    "@editorjs/simple-image": "^1.6.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "codemirror": "^6.0.1",
     "rollup": "^4.9.4",
     "terser": "^5.26.0"
   },
   "scripts": {
-    "build": "rm -f ../static/libs/* && npm run markdown && npm run code && npm run popover && npm run terser",
+    "build": "rm -f ../static/libs/* && npm run markdown && npm run code && npm run editorjs && npm run popover && npm run normalize && npm run terser",
     "markdown": "rollup markdown.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
     "code": "rollup code.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
+    "editorjs": "rollup editorjs.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
+    "normalize": "wget -O ../static/libs/modern-normalize.css https://unpkg.com/modern-normalize/modern-normalize.css",
     "popover": "wget -O ../static/libs/popover.js https://unpkg.com/@oddbird/popover-polyfill/dist/popover.js",
     "terser": "echo ../static/libs/*.js | xargs -n1 sh -c 'terser --output ${1} --compress -- $1' argv0"
   }

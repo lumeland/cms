@@ -41,7 +41,7 @@ customElements.define(
       }
 
       const code = push(this, "div", { class: "code" });
-      const md = init(code, textarea.value);
+      const md = init(code, textarea);
       let tools;
 
       tools = push(helpers, "div", { class: "tools-group" });
@@ -96,9 +96,6 @@ customElements.define(
       }, `<u-icon name="question"></u-icon>`);
 
       this.editor = md.editor;
-      textarea.form.addEventListener("submit", () => {
-        textarea.value = md.editor.state.doc.toString();
-      });
     }
   },
 );

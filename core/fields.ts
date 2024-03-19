@@ -10,7 +10,7 @@ const inputs = {
   textarea: null,
   markdown: null,
   code: null,
-  datetime: (v: string) => new Date(v),
+  datetime: (v: string) => v ? new Date(v) : null,
   date: null,
   time: null,
   hidden: null,
@@ -32,7 +32,7 @@ for (const [input, transform] of Object.entries(inputs)) {
           ? transform(changes[field.name] as string)
           : changes[field.name];
 
-        if (value === "" && !field.attributes?.required) {
+        if (isEmpty(value) && !field.attributes?.required) {
           delete data[field.name];
         } else {
           data[field.name] = value;

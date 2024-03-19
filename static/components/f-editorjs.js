@@ -1,9 +1,9 @@
 import { push } from "./utils.js";
 import { Field } from "./field.js";
-import { init } from "../libs/code.js";
+import { init } from "../libs/editorjs.js";
 
 customElements.define(
-  "f-code",
+  "f-editorjs",
   class extends Field {
     init() {
       this.classList.add("field");
@@ -18,6 +18,7 @@ customElements.define(
       }
 
       const textarea = push(this, "textarea", {
+        ...schema.attributes,
         id,
         name,
         value,
