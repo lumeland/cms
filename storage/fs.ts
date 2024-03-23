@@ -30,11 +30,11 @@ export default class Fs implements Storage {
     } else if (pos > 0) {
       options.root = posix.join(options.root, options.path.slice(0, pos));
       options.path = options.path.slice(pos);
-      this.extension = posix.extname(options.path);
     }
 
     this.root = normalizePath(options.root);
     this.path = options.path;
+    this.extension = posix.extname(options.path);
   }
 
   async *[Symbol.asyncIterator]() {

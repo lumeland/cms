@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Error with empty datetime
+- Automatic extension of paths starting with `*`.
 
 ## [0.3.8] - 2024-03-18
 ### Changed
