@@ -16,10 +16,10 @@ export interface Options {
 }
 
 /** {@link https://fff.js.org/version/1.2.html#base} */
-export const fffBase = (options: Options): (Field | string)[] => [
+export const fffBase = (options?: Options): (Field | string)[] => [
   "title: text",
   "summary: text",
-  ...(options.strict?.categories === false ? [] : [
+  ...(options?.strict?.categories === false ? [] : [
     {
       name: "categories",
       type: "list",
@@ -51,8 +51,8 @@ export const fffBase = (options: Options): (Field | string)[] => [
 ];
 
 /** {@link https://fff.js.org/version/1.2.html#extra} */
-export const fffExtra = (options: Options): (Field | string)[] => [
-  ...(options.extra?.authors === false ? [] : [
+export const fffExtra = (options?: Options): (Field | string)[] => [
+  ...(options?.extra?.authors === false ? [] : [
     {
       name: "authors",
       type: "object-list",
@@ -64,14 +64,14 @@ export const fffExtra = (options: Options): (Field | string)[] => [
       ],
     } satisfies Field,
   ]),
-  ...(options.extra?.lang === false ? [] : [
+  ...(options?.extra?.lang === false ? [] : [
     {
       name: "lang",
       type: "text",
       label: "Language",
     } satisfies Field,
   ]),
-  ...(options.strict?.draft === false ? [] : [
+  ...(options?.strict?.draft === false ? [] : [
     {
       name: "draft",
       type: "checkbox",
@@ -79,7 +79,7 @@ export const fffExtra = (options: Options): (Field | string)[] => [
       description: "If checked, the post will not be published.",
     } satisfies Field,
   ]),
-  ...(options.strict?.visibility === false ? [] : [
+  ...(options?.strict?.visibility === false ? [] : [
     {
       name: "visibility",
       type: "select",
@@ -93,7 +93,7 @@ export const fffExtra = (options: Options): (Field | string)[] => [
   ]),
 ];
 
-export const article = (options: Options): (Field | string)[] => [
+export const article = (options?: Options): (Field | string)[] => [
   ...fffBase(options),
   // https://fff.js.org/version/1.2.html#datetime
   "created: date",
@@ -117,7 +117,7 @@ export const article = (options: Options): (Field | string)[] => [
   },
 ];
 
-export const fffPreset = (options: Options) => ({
+export const fffPreset = (options?: Options) => ({
   article: () => article(options),
 });
 
