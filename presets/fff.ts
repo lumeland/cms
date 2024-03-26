@@ -106,7 +106,6 @@ export const article = (options?: Options): (Field | string)[] => [
     name: "image",
     type: "file",
     label: "Image",
-    uploads: "src:images",
   },
   ...fffExtra(options),
   // markdown content
