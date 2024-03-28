@@ -49,8 +49,9 @@ export default class Collection {
     await this.#storage.delete(id);
   }
 
-  async rename(id: string, newId: string): Promise<void> {
+  async rename(id: string, newId: string): Promise<string> {
     const newName = this.#storage.name(newId);
     await this.#storage.rename(id, newName);
+    return newName;
   }
 }

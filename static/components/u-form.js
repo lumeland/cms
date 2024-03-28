@@ -46,8 +46,7 @@ customElements.define(
       });
 
       if (response.ok && response.url !== location.href) {
-        history.replaceState(null, "", response.url);
-        form.action = response.url;
+        location.href = response.url;
       }
 
       // Preview

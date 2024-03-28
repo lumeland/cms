@@ -53,11 +53,11 @@ export default function (app: Hono) {
       }
 
       const body = await c.req.parseBody();
-      const newName = body._id as string;
+      let newName = body._id as string;
       let document = oldDocument;
 
       if (oldDocument.name !== newName) {
-        await collection.rename(oldDocument.name, newName);
+        newName = await collection.rename(oldDocument.name, newName);
         document = collection.get(newName);
       }
 
