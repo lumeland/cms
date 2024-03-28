@@ -39,10 +39,6 @@ customElements.define(
         lastUrl = url;
       };
 
-      ws.onopen = () => {
-        ws.send(JSON.stringify({ type: "url", src }));
-      };
-
       ws.onmessage = (e) => {
         const data = JSON.parse(e.data);
 
@@ -54,6 +50,10 @@ customElements.define(
         if (data.type === "preview") {
           ws.send(JSON.stringify({ type: "url", src }));
         }
+      };
+
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: "url", src }));
       };
     }
 

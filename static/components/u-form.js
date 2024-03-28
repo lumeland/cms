@@ -47,6 +47,7 @@ customElements.define(
 
       if (response.ok && response.url !== location.href) {
         location.href = response.url;
+        return;
       }
 
       // Preview
