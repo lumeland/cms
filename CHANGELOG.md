@@ -5,9 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.3.9] - Unreleased
-### Added
-- Experimental editorjs field type (disabled by default).
-
 ### Fixed
 - Error with empty datetime
 - Automatic extension of paths starting with `*`.

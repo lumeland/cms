@@ -1,30 +1,4 @@
 .code {
-  > .codex-editor {
-    background: var(--color-white);
-    border: solid 1px var(--color-line);
-    border-radius: var(--border-radius);
-    padding-block: 10px;
-    z-index: 4;
-
-    .ce-block__content,
-    .ce-toolbar__content {
-      max-width: 750px;
-    }
-
-    .codex-editor__redactor {
-      padding-bottom: 0 !important;
-    }
-
-    & :focus-visible {
-      box-shadow: none;
-    }
-
-    &:has(:focus-visible) {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px color-mix(in hsl, var(--color-primary), transparent 75%);
-    }
-  }
-
   > .cm-editor {
     background: var(--color-white);
     border: solid 1px var(--color-line);
