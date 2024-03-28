@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.3.9] - Unreleased
+## [0.3.9] - 2024-03-28
 ### Fixed
 - Error with empty datetime
 - Automatic extension of paths starting with `*`.
@@ -186,7 +186,7 @@ First version
 [#9]: https://github.com/lumeland/cms/issues/9
 [#10]: https://github.com/lumeland/cms/issues/10
 
-[0.3.9]: https://github.com/lumeland/cms/compare/v0.3.8...HEAD
+[0.3.9]: https://github.com/lumeland/cms/compare/v0.3.8...v0.3.9
 [0.3.8]: https://github.com/lumeland/cms/compare/v0.3.7...v0.3.8
 [0.3.7]: https://github.com/lumeland/cms/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/lumeland/cms/compare/v0.3.5...v0.3.6
