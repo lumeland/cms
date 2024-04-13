@@ -33,4 +33,19 @@
       text-decoration: underline;
     }
   }
+  #darkLightModeSwitchToggleButton {
+    background: none;
+    color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: solid 1px var(--color-line);
+    padding: 0.6em;
+    border-radius: 10px;
+    cursor: pointer;
+    vertical-align: middle;
+    font-weight: 450;
+    margin: 1rem 0px; 
+  }
 }
