@@ -57,3 +57,15 @@
   --border-radius: 6px;
   --animation-duration: 0.2s;
 }
+
+/* Dark Colors  */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-text: hsl(200deg, 20%, 100%);
+  --color-dim: hsl(200deg, 20%, 86%);
+  --color-line: hsl(200deg, 20%, 18%);
+  --color-line-hover: hsl(200deg, 20%, 24%);
+  --color-line-light: hsla(200, 14%, 12%, 0.774);
+  --color-highlight: hsl(200deg, 20%, 18%);
+  --color-background: hsl(195, 15%, 5%);
+}

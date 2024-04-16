@@ -33,6 +33,11 @@ export default function template(
       }
     }
   </script>
+  <script>
+    const darkLightModeStorageKey = '__lume_cms__user_theme';
+    const contemporaryTheme = localStorage.getItem(darkLightModeStorageKey);
+    if (contemporaryTheme) document.documentElement.setAttribute('data-theme', contemporaryTheme);
+  </script>
 <script type="module">
 import "lume_cms/components/ui.js";
 ${jsImports.map((file) => `import "${file}";`).join("\n")}
@@ -44,8 +49,25 @@ ${extraHead ?? ""}
     ${content}
   </div>
   <footer class="app-footer">
-    Powered by <a href="https://lume.land/cms/">LumeCMS ${getCurrentVersion()}</a>
+    <div>
+      Powered by <a href="https://lume.land/cms/">LumeCMS ${getCurrentVersion()}</a>
+      <button id="darkLightModeSwitchToggleButton" type="button" aria-label="toggle-theme">Toggle Theme</button>
+    </div>
   </footer>
+  <script>
+    const darkLightModeBtn = document.querySelector('#darkLightModeSwitchToggleButton');
+    function changeLumeCmsUserTheme() {
+        if (localStorage.getItem(darkLightModeStorageKey) == 'dark') {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.removeItem(darkLightModeStorageKey);
+        }
+        else {        
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem(darkLightModeStorageKey, 'dark');
+        }    
+    }
+    darkLightModeBtn.addEventListener('click', changeLumeCmsUserTheme, false);
+  </script>
 </body>
 </html>
     `;
