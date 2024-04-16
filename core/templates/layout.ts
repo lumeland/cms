@@ -49,8 +49,8 @@ ${extraHead ?? ""}
     ${content}
   </div>
   <footer class="app-footer">
-    Powered by <a href="https://lume.land/cms/">LumeCMS ${getCurrentVersion()}</a>
     <div>
+      Powered by <a href="https://lume.land/cms/">LumeCMS ${getCurrentVersion()}</a>
       <button id="darkLightModeSwitchToggleButton" type="button" aria-label="toggle-theme">Toggle Theme</button>
     </div>
   </footer>

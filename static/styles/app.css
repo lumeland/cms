@@ -24,7 +24,7 @@
   text-align: center;
   font: var(--font-small);
   color: var(--color-dim);
-
+  
   & a {
     color: inherit;
     text-decoration: none;
@@ -33,19 +33,25 @@
       text-decoration: underline;
     }
   }
+  
+  div {
+    justify-items: center;
+    gap: 0.5rem;
+    align-items: center;
+    display: inline-flex;
+  }
+
   #darkLightModeSwitchToggleButton {
     background: none;
     color: var(--color-text);
-    display: inline-flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     border: solid 1px var(--color-line);
-    padding: 0.6em;
+    padding: 0.4rem 0.6rem;
     border-radius: 10px;
     cursor: pointer;
     vertical-align: middle;
-    font-weight: 450;
-    margin: 1rem 0px; 
+    font-weight: 420;
   }
 }
