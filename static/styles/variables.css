@@ -8,12 +8,15 @@
   --color-line: hsl(220, 20%, 80%);
   --color-line-light: hsl(220, 20%, 90%);
   --color-background: hsl(220, 20%, 97%);
+  --color-input-text: var(--color-black);
+  --color-input-bg: var(--color-white);
   --color-white: white;
+  --color-black: hsl(220, 20%, 15%);
   --color-highlight: hsl(220, 20%, 94%);
 
   /* Brand colors */
-  --color-primary: hsl(0deg, 50%, 50%);
-  --color-primary-highlight: hsl(0deg, 50%, 40%);
+  --color-primary: hsl(0, 50%, 50%);
+  --color-primary-highlight: hsl(0, 50%, 40%);
 
   /* Code colors */
   --color-code-5: #bf4040;
@@ -61,11 +64,34 @@
 /* Dark Colors  */
 [data-theme="dark"] {
   color-scheme: dark;
-  --color-text: hsl(200deg, 20%, 100%);
-  --color-dim: hsl(200deg, 20%, 86%);
-  --color-line: hsl(200deg, 20%, 18%);
-  --color-line-hover: hsl(200deg, 20%, 24%);
-  --color-line-light: hsla(200, 14%, 12%, 0.774);
-  --color-highlight: hsl(200deg, 20%, 18%);
-  --color-background: hsl(195, 15%, 5%);
+  --color-text: hsl(220, 20%, 90%);
+  --color-dim: hsl(220, 20%, 60%);
+  --color-line: hsl(220, 20%, 20%);
+  --color-line-light: hsl(220, 20%, 15%);
+  --color-highlight: hsl(220, 20%, 18%);
+  --color-background: hsl(220, 20%, 10%);
+  --color-input-text: var(--color-white);
+  --color-input-bg: var(--color-black);
+
+  /* Brand colors */
+  --color-primary: hsl(0, 50%, 45%);
+  --color-primary-highlight: hsl(0, 50%, 35%);
+
+  /* Code colors */
+  --color-code-4: hsl(220, 20%, 50%);
+  --color-code-5: hsl(0, 88%, 65%);
+  --color-code-a: hsl(290, 100%, 40%);
+  --color-code-b: hsl(290, 90%, 70%);
+  --color-code-c: #2913c0;
+  --color-code-d: hsl(155, 75%, 50%);
+  --color-code-e: #bf4040;
+  --color-code-f: hsl(17, 100%, 63%);
+  --color-code-g: #00f;
+  --color-code-h: hsl(220, 95%, 66%);
+  --color-code-i: #0e8759;
+  --color-code-j: #167;
+  --color-code-k: #256;
+  --color-code-l: #00c;
+  --color-code-m: #940;
+  --color-code-n: #f00;
 }

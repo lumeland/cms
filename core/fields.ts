@@ -18,6 +18,7 @@ const inputs = {
   email: null,
   url: null,
   select: null,
+  radio: null,
   checkbox: (v: string) => v === "true",
   number: (v: string) => Number(v),
 };

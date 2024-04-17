@@ -39,6 +39,17 @@ code {
 ::selection {
   background: color-mix(in hsl, var(--color-primary), transparent 85%);
 }
+
+/* Dark Colors  */
+[data-theme="dark"] {
+  :focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 3px color-mix(in hsl, var(--color-primary), transparent 75%);
+  }
+  ::selection {
+    background: color-mix(in hsl, var(--color-primary), transparent 85%);
+  }
+}
 strong, b {
   font-weight: 600;
 }
@@ -55,6 +66,10 @@ hr {
   color: var(--color-line);
   margin: var(--row-gap-medium) 0;
 }
+
 [hidden] {
   display: none !important;
+}
+input {
+  accent-color: var(--color-primary);
 }

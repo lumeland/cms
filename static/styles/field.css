@@ -7,12 +7,28 @@
     width: fit-content;
     min-with: 100px;
     cursor: pointer;
+
+    &.is-secondary {
+      font: var(--font-ui);
+    }
   }
 
   &:has(.fieldset) {
     margin-top: 1rem;
     margin-bottom: 1rem;
   }
+}
+.field-label {
+  font: var(--font-ui-bold);
+}
+.field-check-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  row-gap: 1em;
+  column-gap: 2em;
 }
 .field-check {
   display: flex;
@@ -49,6 +65,7 @@
     margin: 0;
   }
 }
+
 .field-footer {
   margin-top: .5em;
 }

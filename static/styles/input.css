@@ -6,7 +6,8 @@
   min-height: 40px;
   border-radius: var(--border-radius);
   border: solid 1px var(--color-line);
-  background: var(--color-white);
+  color: var(--color-input-text);
+  background: var(--color-input-bg);
   font: var(--font-ui);
 
   &:focus-visible {

@@ -1,10 +1,10 @@
 .code {
   > .cm-editor {
-    background: var(--color-white);
+    color: var(--color-input-text);
+    background: var(--color-input-bg);
     border: solid 1px var(--color-line);
     border-radius: var(--border-radius);
     overflow: hidden;
-    color: var(--color-text);
 
     &.cm-focused {
       outline:0;
@@ -18,9 +18,12 @@
 
   .cm-content {
     padding: .5rem;
+    caret-color: var(--color-input-text);
   }
 
+  .ͼ4 {color: var(--color-code-4);}
   .ͼ5 {color: var(--color-code-5);}
+  .ͼa {color: var(--color-code-a);}
   .ͼb {color: var(--color-code-b);}
   .ͼc {color: var(--color-code-c);}
   .ͼd {color: var(--color-code-d);}

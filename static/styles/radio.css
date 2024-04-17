@@ -1,0 +1,26 @@
+.radio {
+  appearance: none;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  border: solid 1px;
+  vertical-align: middle;
+  color: var(--color-dim);
+  background-color: var(--color-input-bg);
+  transition: border-width 200ms;
+
+  &:checked {
+    border-width: .5em;
+    color: var(--color-primary);
+    background-color: var(--color-white);
+  }
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  &:disabled {
+    opacity: .33;
+    pointer-events: none;
+  }
+}
