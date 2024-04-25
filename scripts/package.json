@@ -11,11 +11,10 @@
     "terser": "^5.26.0"
   },
   "scripts": {
-    "build": "rm -f ../static/libs/* && npm run markdown && npm run code && npm run popover && npm run normalize && npm run terser",
+    "build": "rm -f ../static/libs/* && npm run markdown && npm run code && npm run normalize && npm run terser",
     "markdown": "rollup markdown.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
     "code": "rollup code.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
     "normalize": "wget -O ../static/libs/modern-normalize.css https://unpkg.com/modern-normalize/modern-normalize.css",
-    "popover": "wget -O ../static/libs/popover.js https://unpkg.com/@oddbird/popover-polyfill/dist/popover.js",
     "terser": "echo ../static/libs/*.js | xargs -n1 sh -c 'terser --output ${1} --compress -- $1' argv0"
   }
 }

@@ -1,4 +1,3 @@
-import "../libs/popover.js";
 import { push, randomId } from "./utils.js";
 import { Component } from "./component.js";
 

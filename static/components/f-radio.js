@@ -1,4 +1,4 @@
-import { push, labelify } from "./utils.js";
+import { labelify, push } from "./utils.js";
 import { Field } from "./field.js";
 
 customElements.define(
@@ -18,12 +18,34 @@ customElements.define(
         const li = push(ul, "li", { class: "field-check" });
 
         if (typeof option === "string") {
-          push(li, "input", { type: "radio", id: optionId, name, value: option, class: "radio" });
-          push(li, "label", { for: optionId, class: "is-secondary" }, labelify(option));
+          push(li, "input", {
+            type: "radio",
+            id: optionId,
+            name,
+            value: option,
+            class: "radio",
+          });
+          push(
+            li,
+            "label",
+            { for: optionId, class: "is-secondary" },
+            labelify(option),
+          );
         } else {
           const { label, ...attrs } = option;
-          push(li, "input", { type: "radio", ...attrs, id: optionId, name, value: option });
-          push(li, "label", { for: optionId, class: "is-secondary" }, labelify(label));
+          push(li, "input", {
+            type: "radio",
+            ...attrs,
+            id: optionId,
+            name,
+            value: option,
+          });
+          push(
+            li,
+            "label",
+            { for: optionId, class: "is-secondary" },
+            labelify(label),
+          );
         }
       }
 
