@@ -4,7 +4,7 @@ import { init } from "../libs/gutenberg.js";
 
 const styleLink = document.createElement("link");
 styleLink.rel = "stylesheet";
-styleLink.href = import.meta.resolve("../libs/gutenberg.css");
+styleLink.href = import.meta.resolve("../styles/block-editor.css");
 document.head.appendChild(styleLink);
 
 customElements.define(
@@ -29,7 +29,7 @@ customElements.define(
         hidden: true,
       });
 
-      const code = push(this, "div", { class: "code" });
+      const code = push(this, "div", { class: "block-editor" });
       init(code, textarea);
     }
   },
