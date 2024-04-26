@@ -1,5 +1,6 @@
 @import "./variables.css";
 @import "./reset.css";
+@import "../libs/wp-common.css";
 @import "../libs/wp-components.css";
 @import "../libs/wp-code.css";
 @import "../libs/wp-heading.css";
@@ -14,6 +15,17 @@
 html {
   background: white;
   scrollbar-gutter: stable both-edges;
+
+  --wp-admin-theme-color: var(--color-primary);
+  --wp-admin-theme-color--rgb: 191, 64, 64;
+  --wp-admin-theme-color-darker-10: var(--color-primary-highlight);
+  --wp-admin-theme-color-darker-10--rgb: 153, 51, 51;
+  --wp-admin-theme-color-darker-20: #005a87;
+  --wp-admin-theme-color-darker-20--rgb: 0, 90, 135;
+  --wp-admin-border-width-focus: 2px;
+  --wp-block-synced-color: #7a00df;
+  --wp-block-synced-color--rgb: 122, 0, 223;
+  --wp-bound-block-color: var(--wp-block-synced-color);
 }
 
 body {
@@ -22,4 +34,26 @@ body {
 }
 textarea {
   width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6, strong, b {
+  font-weight: 600;
+}
+h1 {
+  font-size: 3em;
+}
+h2 {
+  font-size: 2em;
+}
+h3 {
+  font-size: 1.5em;
+}
+h4 {
+  font-size: 1.25em;
+}
+h5 {
+  font-size: 1.15em;
+}
+h6 {
+  font-size: 1em;
 }

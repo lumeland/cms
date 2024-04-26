@@ -30,3 +30,7 @@ downloadFile(
   "https://unpkg.com/@wordpress/components/build-style/style.css",
   "../../static/libs/wp-components.css",
 );
+downloadFile(
+  "https://unpkg.com/@wordpress/block-library@8.33.0/build-style/common.css",
+  "../../static/libs/wp-common.css",
+);
