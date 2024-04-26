@@ -8,6 +8,8 @@
   "exclude": [
     "probas",
     "static/libs",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "node_modules",
+    "dist"
   ]
 }

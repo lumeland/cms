@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Block Editor Example</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <textarea id="value"><!-- wp:paragraph -->
+      <p>sdfdasfasfasf</p>
+<!-- /wp:paragraph --></textarea>
+
+    <script type="module">
+      import { init } from "./src/main.js";
+
+      const app = document.getElementById("app");
+      const textarea = document.getElementById("value");
+
+      init(app, textarea);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+import { push } from "./utils.js";
+import { Field } from "./field.js";
+import { init } from "../libs/gutenberg.js";
+
+const styleLink = document.createElement("link");
+styleLink.rel = "stylesheet";
+styleLink.href = import.meta.resolve("../libs/gutenberg.css");
+document.head.appendChild(styleLink);
+
+customElements.define(
+  "f-blocks",
+  class extends Field {
+    init() {
+      this.classList.add("field");
+      const { schema, value, namePrefix } = this;
+      const name = `${namePrefix}.${schema.name}`;
+      const id = `field_${name}`;
+
+      push(this, "label", { for: `field_${namePrefix}.0` }, schema.label);
+
+      if (schema.description) {
+        push(this, "div", { class: "field-description" }, schema.description);
+      }
+
+      const textarea = push(this, "textarea", {
+        id,
+        name,
+        value,
+        hidden: true,
+      });
+
+      const code = push(this, "div", { class: "code" });
+      init(code, textarea);
+    }
+  },
+);
