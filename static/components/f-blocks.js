@@ -1,4 +1,4 @@
-import { push } from "./utils.js";
+import { asset, push } from "./utils.js";
 import { Field } from "./field.js";
 import { init } from "../libs/gutenberg.js";
 
@@ -30,7 +30,7 @@ customElements.define(
       });
 
       const code = push(this, "div", { class: "block-editor" });
-      init(code, textarea);
+      init(code, textarea, asset("styles", "block-editor-preview.css"));
     }
   },
 );

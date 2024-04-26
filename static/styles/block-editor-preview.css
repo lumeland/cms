@@ -1,0 +1,25 @@
+@import "./variables.css";
+@import "./reset.css";
+@import "../libs/wp-components.css";
+@import "../libs/wp-code.css";
+@import "../libs/wp-heading.css";
+@import "../libs/wp-list.css";
+@import "../libs/wp-paragraph.css";
+@import "../libs/wp-preformatted.css";
+@import "../libs/wp-pullquote.css";
+@import "../libs/wp-quote.css";
+@import "../libs/wp-separator.css";
+@import "../libs/wp-table.css";
+
+html {
+  background: white;
+  scrollbar-gutter: stable both-edges;
+}
+
+body {
+  padding: 1rem;
+  background: white;
+}
+textarea {
+  width: 100%;
+}

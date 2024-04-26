@@ -93,7 +93,7 @@ export function url(...parts) {
 
 export function asset(...parts) {
   return [
-    baseassets === "/" ? "" : baseassets,
+    baseassets === "/" ? location.origin : baseassets,
     ...parts
       .filter((part) => part && typeof part === "string")
       .map((part) => encodeURIComponent(part)),

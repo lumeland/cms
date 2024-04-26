@@ -1,10 +1,20 @@
 @import "../libs/gutenberg.css";
 
-.block-editor {
+.block-editor > div {
   color: var(--color-black);
   background: var(--color-white);
   border: solid 1px var(--color-line);
   border-radius: var(--border-radius);
-  overflow: hidden;
-  padding: .5em;
+  padding: 2px;
+
+  --wp-admin-theme-color: var(--color-primary);
+  --wp-admin-theme-color--rgb: 191, 64, 64;
+  --wp-admin-theme-color-darker-10: var(--color-primary-highlight);
+  --wp-admin-theme-color-darker-10--rgb: 153, 51, 51;
+  --wp-admin-theme-color-darker-20: #005a87;
+  --wp-admin-theme-color-darker-20--rgb: 0, 90, 135;
+  --wp-admin-border-width-focus: 2px;
+  --wp-block-synced-color: #7a00df;
+  --wp-block-synced-color--rgb: 122, 0, 223;
+  --wp-bound-block-color: var(--wp-block-synced-color);
 }
