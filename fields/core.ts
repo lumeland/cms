@@ -1,4 +1,5 @@
-import { normalizePath } from "./utils/path.ts";
+import { normalizePath } from "../core/utils/path.ts";
+import { isEmpty } from "../core/utils/string.ts";
 
 import type { Data, FielType, ResolvedField } from "../types.ts";
 
@@ -174,7 +175,3 @@ fields.set("file", {
 });
 
 export default fields;
-
-function isEmpty(value: unknown) {
-  return value === undefined || value === null || value === "";
-}

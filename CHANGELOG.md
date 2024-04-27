@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+### Added
+- New `blocks` field to embed Gutenberg block editor (disabled by default).
+
 ### Changed
 - Removed popover polyfill since it's supported by all modern browsers.
 

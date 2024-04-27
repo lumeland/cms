@@ -27,3 +27,16 @@ export function slugify(text: string) {
     .replace(/[<>:"\\|?*#]+/g, "-")
     .replace(/[\s-]+/g, "-");
 }
+
+/** Check if a value is empty */
+export function isEmpty(value: unknown) {
+  if (value === null || value === undefined) {
+    return true;
+  }
+
+  if (typeof value === "string" && value.trim() === "") {
+    return true;
+  }
+
+  return false;
+}
