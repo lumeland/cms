@@ -25,18 +25,18 @@
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  margin: 0;
+  margin: .5em 0 0;
   padding: 0;
   row-gap: 1em;
   column-gap: 2em;
 }
 .field-check {
   display: flex;
-  column-gap: .5rem;
   align-items: center;
 
   & label {
     cursor: pointer;
+    padding-left: .5rem;
   }
   + .field-description {
     margin-top: .5rem;

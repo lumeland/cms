@@ -40,6 +40,16 @@ export function dom(tag, attrs, ...children) {
       }
       continue;
     }
+    if (k === "style") {
+      for (const [name, value] of Object.entries(v)) {
+        if (name.startsWith("--")) {
+          el.style.setProperty(name, value);
+        } else {
+          el.style[name] = value;
+        }
+      }
+      continue;
+    }
 
     if (v !== undefined) {
       if (v === false && k !== "draggable") {

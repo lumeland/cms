@@ -4,7 +4,7 @@ customElements.define(
   "f-time",
   class extends Input {
     get inputAttributes() {
-      return { type: "time", class: "input is-xnarrow" };
+      return { type: "time", class: "input" };
     }
   },
 );

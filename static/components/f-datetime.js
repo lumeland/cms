@@ -4,7 +4,7 @@ customElements.define(
   "f-datetime",
   class extends Input {
     get inputAttributes() {
-      return { type: "datetime-local", class: "input is-narrow" };
+      return { type: "datetime-local", class: "input" };
     }
   },
 );

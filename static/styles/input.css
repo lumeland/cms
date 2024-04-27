@@ -2,6 +2,7 @@
 .input-autogrow::after {
   display: block;
   width: 100%;
+  max-width: var(--max-width, 100%);
   padding: .5em .8em;
   min-height: 40px;
   border-radius: var(--border-radius);
@@ -29,9 +30,21 @@
     color: var(--color-dim);
   }
 }
-[type="color"].input {
+.input[type="color"] {
   width: 80px;
   padding: 4px;
+}
+.input[type="datetime-local"] {
+  max-width: 15em;
+}
+.input[type="date"] {
+  max-width: 11em;
+}
+.input[type="time"] {
+  max-width: 5em;
+}
+.input[type="number"] {
+  max-width: 11em;
 }
 
 textarea.input {

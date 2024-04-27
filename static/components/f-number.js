@@ -4,7 +4,7 @@ customElements.define(
   "f-number",
   class extends Input {
     get inputAttributes() {
-      return { type: "number", class: "input is-narrow" };
+      return { type: "number", class: "input" };
     }
   },
 );

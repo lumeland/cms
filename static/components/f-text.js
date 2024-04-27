@@ -18,12 +18,17 @@ export class Input extends Field {
       push(this, "div", { class: "field-description" }, schema.description);
     }
 
+    const maxWidth = schema.attributes?.maxlength
+      ? `${Math.max(3, schema.attributes.maxlength)}em`
+      : "none";
+
     const input = push(this, "input", {
       ...schema.attributes,
       id,
       name,
       value,
       ...this.inputAttributes,
+      style: { "--max-width": maxWidth },
     });
 
     if (schema.options) {
