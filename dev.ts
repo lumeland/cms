@@ -38,16 +38,16 @@ app.collection(
     "datetime: datetime",
     "date: date",
     "hour: time",
-    "age: number",
-    "extraHead: code",
-    "bg: color",
+    "number: number",
+    "code: code",
+    "color: color",
     {
-      name: "link",
+      name: "url",
       type: "url",
       value: "https://example.com",
     },
     {
-      name: "type",
+      name: "radio",
       type: "radio",
       options: ["one", "two"],
       init(field) {
@@ -55,9 +55,9 @@ app.collection(
       },
     },
     {
-      name: "draft",
+      name: "checkout",
       type: "checkbox",
-      description: "Check this if it's a draft.",
+      description: "This is a description.",
     },
     {
       name: "layout",
@@ -72,8 +72,8 @@ app.collection(
         "email: email",
       ],
     },
-    "excerpt: markdown",
-    "content: blocks",
+    "markdown: markdown",
+    "blocks: blocks",
   ],
 );
 

@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "publish": "node download.js && npm run build && cp dist/block-editor.js ../../static/libs/gutenberg.js && cp dist/style.css ../../static/libs/gutenberg.css",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

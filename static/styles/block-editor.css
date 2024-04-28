@@ -1,11 +1,11 @@
 @import "../libs/gutenberg.css";
 
-.block-editor > div {
-  color: var(--color-black);
-  background: var(--color-white);
-  border: solid 1px var(--color-line);
-  border-radius: var(--border-radius);
-  padding: 2px;
+body {
+  --wp--preset--font-size--normal: 1rem;
+  --wp--preset--font-size--huge: 2.5rem;
+  --wp--style--block-gap: 2em;
+
+  --wp-components-color-foreground: var(--color-black);
 
   --wp-admin-theme-color: var(--color-primary);
   --wp-admin-theme-color--rgb: 191, 64, 64;
@@ -14,7 +14,51 @@
   --wp-admin-theme-color-darker-20: #005a87;
   --wp-admin-theme-color-darker-20--rgb: 0, 90, 135;
   --wp-admin-border-width-focus: 2px;
+
   --wp-block-synced-color: #7a00df;
   --wp-block-synced-color--rgb: 122, 0, 223;
   --wp-bound-block-color: var(--wp-block-synced-color);
+}
+
+.block-editor > div {
+  color: var(--color-black);
+  background: var(--color-white);
+  border: solid 1px var(--color-line);
+  border-radius: var(--border-radius);
+  padding: 2px;
+}
+
+.block-editor-iframe__html {
+  background: white;
+  scrollbar-gutter: auto;
+
+  body {
+    padding: 1rem;
+    background: white;
+  }
+  textarea {
+    width: 100%;
+  }
+
+  h1, h2, h3, h4, h5, h6, strong, b {
+    font-weight: 600;
+  }
+  h1 {
+    font-size: 3em;
+  }
+  h2 {
+    font-size: 2em;
+  }
+  h3 {
+    font-size: 1.5em;
+  }
+  h4 {
+    font-size: 1.25em;
+  }
+  h5 {
+    font-size: 1.15em;
+  }
+  h6 {
+    font-size: 1em;
+  }
 }

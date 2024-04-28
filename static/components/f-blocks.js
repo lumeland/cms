@@ -30,7 +30,11 @@ customElements.define(
       });
 
       const code = push(this, "div", { class: "block-editor" });
-      init(code, textarea, asset("styles", "block-editor-preview.css"));
+      init(code, textarea, [
+        asset("styles", "variables.css"),
+        asset("styles", "reset.css"),
+        asset("styles", "block-editor.css"),
+      ], "max(100vh - 10em, 500px)");
     }
   },
 );
