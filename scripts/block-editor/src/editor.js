@@ -4,7 +4,6 @@ import { BlockCanvas, BlockEditorProvider } from "@wordpress/block-editor";
 import { parse, serialize, setDefaultBlockName } from "@wordpress/blocks";
 
 // Register the core blocks.
-import "@wordpress/format-library";
 import "@wordpress/block-library/build-module/paragraph/init";
 import "@wordpress/block-library/build-style/paragraph/style.css";
 import "@wordpress/block-library/build-style/paragraph/editor.css";
@@ -41,7 +40,26 @@ import "@wordpress/block-library/build-module/table/init";
 import "@wordpress/block-library/build-style/table/style.css";
 import "@wordpress/block-library/build-style/table/editor.css";
 
+import "@wordpress/block-library/build-module/details/init";
+import "@wordpress/block-library/build-style/details/style.css";
+import "@wordpress/block-library/build-style/details/editor.css";
+
+import "@wordpress/block-library/build-module/verse/init";
+import "@wordpress/block-library/build-style/verse/style.css";
+
 setDefaultBlockName("core/paragraph");
+
+// Register format types
+import { registerFormatType } from "@wordpress/rich-text";
+import { bold } from "@wordpress/format-library/build-module/bold";
+import { italic } from "@wordpress/format-library/build-module/italic";
+import { strikethrough } from "@wordpress/format-library/build-module/strikethrough";
+import { code } from "@wordpress/format-library/build-module/code";
+import { link } from "@wordpress/format-library/build-module/link";
+
+[bold, code, italic, link, strikethrough].forEach(({ name, ...settings }) =>
+  registerFormatType(name, settings)
+);
 
 // Default styles that are needed for the editor.
 import "@wordpress/block-library/build-style/common.css";

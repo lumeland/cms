@@ -23,8 +23,7 @@ customElements.define(
         e.preventDefault();
 
         const tooltip = push(this, "div", {
-          role: "tooltip",
-          class: "is-toast",
+          class: "tooltip is-toast",
         }, "Saving...");
 
         setTimeout(async () => {
