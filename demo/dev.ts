@@ -1,6 +1,6 @@
-import cms from "./mod.ts";
-import KvStorage from "./storage/kv.ts";
-import blocks from "./fields/blocks.ts";
+import cms from "../mod.ts";
+import KvStorage from "../storage/kv.ts";
+import blocks from "../fields/blocks.ts";
 
 const app = cms({
   site: {
@@ -12,8 +12,8 @@ const app = cms({
 
 app.use(blocks());
 
-app.storage("src", "probas");
-app.upload("img", "src");
+app.storage("src", "demo");
+app.upload("img", "src:img");
 
 app.storage(
   "kv",

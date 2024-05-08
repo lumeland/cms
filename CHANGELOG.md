@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 ### Added
 - New `blocks` field to embed Gutenberg block editor (disabled by default).
+- File field: allow to specify subfolders in the uploads option.
 
 ### Changed
 - Removed popover polyfill since it's supported by all modern browsers.

@@ -28,6 +28,8 @@ customElements.define(
         class: "buttonIcon",
         type: "button",
         onclick() {
+          const uploads = schema.uploads.split(":").shift();
+
           if (curr.value) {
             let filename = curr.value.startsWith(schema.publicPath || "")
               ? curr.value.substring(schema.publicPath.length)
@@ -37,11 +39,11 @@ customElements.define(
             }
 
             push(document.body, "u-modal", {
-              data: { src: url("uploads", schema.uploads, "file", filename) },
+              data: { src: url("uploads", uploads, "file", filename) },
             });
           } else {
             push(document.body, "u-modal", {
-              data: { src: url("uploads", schema.uploads) },
+              data: { src: url("uploads", uploads) },
             });
           }
         },

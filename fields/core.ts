@@ -158,19 +158,19 @@ fields.set("file", {
       data[field.name] = current;
       return;
     }
-
-    const { storage, publicPath } =
-      field.cmsContent.uploads[field.uploads || "default"];
+    const uploads = field.uploads || "default";
+    const [uploadsKey, uploadsPath] = uploads.split(":");
+    const { storage, publicPath } = field.cmsContent.uploads[uploadsKey];
 
     if (!storage) {
       throw new Error(
         `No storage found for file field '${field.name}'`,
       );
     }
-
-    const entry = storage.get(uploaded.name);
+    const entry = storage.get(normalizePath(uploadsPath, uploaded.name));
+    console.log("entry", entry);
     await entry.writeFile(uploaded);
-    data[field.name] = normalizePath(publicPath, uploaded.name);
+    data[field.name] = normalizePath(publicPath, uploadsPath, uploaded.name);
   },
 });
 
