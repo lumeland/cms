@@ -12,6 +12,9 @@ const app = cms({
 
 app.use(blocks());
 
+app.storage("src", "probas");
+app.upload("img", "src");
+
 app.storage(
   "kv",
   new KvStorage({
@@ -41,6 +44,11 @@ app.collection(
     "number: number",
     "code: code",
     "color: color",
+    {
+      name: "cover",
+      type: "file",
+      uploads: "img:images",
+    },
     {
       name: "url",
       type: "url",
