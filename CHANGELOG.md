@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.3.11] - 2024-05-09
 ### Added
 - New `blocks` field to embed Gutenberg block editor (disabled by default).
 - File field: allow to specify subfolders in the uploads option.
@@ -205,7 +205,7 @@ First version
 [#9]: https://github.com/lumeland/cms/issues/9
 [#10]: https://github.com/lumeland/cms/issues/10
 
-[Unreleased]: https://github.com/lumeland/cms/compare/v0.3.10...HEAD
+[0.3.11]: https://github.com/lumeland/cms/compare/v0.3.10...v0.3.11
 [0.3.10]: https://github.com/lumeland/cms/compare/v0.3.9...v0.3.10
 [0.3.9]: https://github.com/lumeland/cms/compare/v0.3.8...v0.3.9
 [0.3.8]: https://github.com/lumeland/cms/compare/v0.3.7...v0.3.8

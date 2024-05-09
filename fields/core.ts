@@ -168,7 +168,6 @@ fields.set("file", {
       );
     }
     const entry = storage.get(normalizePath(uploadsPath, uploaded.name));
-    console.log("entry", entry);
     await entry.writeFile(uploaded);
     data[field.name] = normalizePath(publicPath, uploadsPath, uploaded.name);
   },

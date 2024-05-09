@@ -22,7 +22,7 @@ customElements.define(
           await navigator.clipboard.writeText(text);
           icon.setAttribute("name", "check");
           const tooltip = push(this, "div", {
-            role: "tooltip",
+            class: "tooltip",
           }, type === "markdown" ? "Code copied!" : "URL copied!");
           setTimeout(() => {
             icon.setAttribute("name", iconName);
