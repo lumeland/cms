@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.3.12] - 2024-05-13
+### Changed
+- object-list improvements:
+  - The inner objects are collapsed by default.
+  - Use the first field value as the label of each object.
+- choose-list improvements:
+  - The inner objects are collapsed by default.
+
 ## [0.3.11] - 2024-05-09
 ### Added
 - New `blocks` field to embed Gutenberg block editor (disabled by default).
@@ -205,6 +213,7 @@ First version
 [#9]: https://github.com/lumeland/cms/issues/9
 [#10]: https://github.com/lumeland/cms/issues/10
 
+[0.3.12]: https://github.com/lumeland/cms/compare/v0.3.11...v0.3.12
 [0.3.11]: https://github.com/lumeland/cms/compare/v0.3.10...v0.3.11
 [0.3.10]: https://github.com/lumeland/cms/compare/v0.3.9...v0.3.10
 [0.3.9]: https://github.com/lumeland/cms/compare/v0.3.8...v0.3.9

@@ -30,9 +30,13 @@ customElements.define(
 
       function addOption(value) {
         const el = push(div, "u-draggable");
+        const label = Object.values(value || {}).shift() ||
+          `${schema.label} Item ${index}`;
+        const attributes = schema.attributes || {};
+        attributes.open ??= !value;
 
         push(el, "f-object", {
-          schema: { ...schema, name: index++ },
+          schema: { ...schema, attributes, name: index++, label },
           namePrefix,
           value,
         });

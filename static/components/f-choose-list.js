@@ -28,19 +28,24 @@ customElements.define(
       const div = push(this, "div", { class: "fieldset" });
       let index = 0;
 
-      function addOption(value) {
+      function addOption(value, isNew = false) {
         const field = schema.fields.find((f) => f.name === value.type);
         if (!field) {
           throw new Error(`Unknown field type: ${value.type}`);
         }
+
+        const open = field.attributes?.open ?? isNew;
+        ++index;
+        const label = `${field.label ?? field.name} (${index})`;
 
         const el = push(div, "u-draggable");
 
         push(el, field.tag, {
           schema: {
             ...field,
-            name: index++,
-            label: field.label ?? field.name,
+            attributes: { ...field.attributes, open },
+            name: index,
+            label,
             fields: [
               {
                 name: "type",
@@ -76,7 +81,7 @@ customElements.define(
           "button",
           {
             type: "button",
-            onclick: () => addOption({ type: field.name }),
+            onclick: () => addOption({ type: field.name }, true),
             class: "button is-secondary",
           },
           '<u-icon name="plus-circle"></u-icon>',

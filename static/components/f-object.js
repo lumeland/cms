@@ -8,7 +8,12 @@ customElements.define(
       this.classList.add("field", "is-group");
       const { schema, value } = this;
       const namePrefix = `${this.namePrefix}.${schema.name}`;
-      const details = push(this, "details", { class: "accordion", open: true });
+      const attributes = schema.attributes || {};
+      attributes.open ??= true;
+      const details = push(this, "details", {
+        class: "accordion",
+        ...attributes,
+      });
       const summary = push(details, "summary");
 
       push(
