@@ -1,4 +1,4 @@
-import { push } from "./utils.js";
+import { dom, push } from "./utils.js";
 import { Field } from "./field.js";
 
 customElements.define(
@@ -29,25 +29,29 @@ customElements.define(
       let index = 0;
 
       function addOption(value) {
-        const el = push(div, "u-draggable");
         const label = Object.values(value || {}).shift() ||
           `${schema.label} Item ${index}`;
         const attributes = schema.attributes || {};
         attributes.open ??= !value;
 
-        push(el, "f-object", {
-          schema: { ...schema, attributes, name: index++, label },
-          namePrefix,
-          value,
-        });
-
-        push(el, "button", {
-          type: "button",
-          class: "buttonIcon",
-          onclick() {
-            this.closest("u-draggable").remove();
+        push(
+          div,
+          "f-object",
+          {
+            schema: { ...schema, attributes, name: index++, label },
+            namePrefix,
+            value,
           },
-        }, '<u-icon name="trash"></u-icon>');
+          dom("button", {
+            type: "button",
+            class: "buttonIcon",
+            slot: "buttons",
+            onclick() {
+              this.closest("u-draggable").remove();
+            },
+          }, '<u-icon name="trash"></u-icon>'),
+          dom("u-draggable", { slot: "buttons" }),
+        );
       }
       for (const v of value ?? []) {
         addOption(v);

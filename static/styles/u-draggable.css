@@ -12,38 +12,38 @@ u-draggable {
     flex: 1 1 auto;
     margin: 0 !important;
   }
+}
 
-  &[draggable] {
-    &.is-dragging {
-      opacity: 1;
-      background: var(--color-background);
-    }
-    &.is-drag-hint {
-      opacity: 0.4;
+[draggable] {
+  &.is-dragging {
+    opacity: 1;
+    background: var(--color-background);
+  }
+  &.is-drag-hint {
+    opacity: 0.4;
 
-      & * {
-        pointer-events: none;
-      }
+    & * {
+      pointer-events: none;
     }
-    &.is-drag-over {
-      opacity: 1;
-      position: relative;
+  }
+  &.is-drag-over {
+    opacity: 1;
+    position: relative;
 
-      &::after {
-        content: "";
-        display: block;
-        position: absolute;
-        width: 100%;
-        height: 1px;
-        left: 0;
-        background: var(--color-primary);
-      }
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      left: 0;
+      background: var(--color-primary);
     }
-    &.is-drag-over-after::after {
-      bottom: -0.75em;
-    }
-    &.is-drag-over-before::after {
-      top: -0.75em;
-    }
+  }
+  &.is-drag-over-after::after {
+    bottom: -0.75em;
+  }
+  &.is-drag-over-before::after {
+    top: -0.75em;
   }
 }

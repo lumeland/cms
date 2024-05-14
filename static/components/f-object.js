@@ -8,13 +8,31 @@ customElements.define(
       this.classList.add("field", "is-group");
       const { schema, value } = this;
       const namePrefix = `${this.namePrefix}.${schema.name}`;
-      const attributes = schema.attributes || {};
-      attributes.open ??= true;
       const details = push(this, "details", {
         class: "accordion",
-        ...attributes,
+        ...schema.attributes,
       });
-      const summary = push(details, "summary");
+      const summary = push(details, "summary", { slot: "content" });
+
+      const shadow = this.attachShadow({ mode: "open" });
+      shadow.innerHTML = `
+      <style>
+        .root {
+          position: relative;
+        }
+        .buttons {
+          display: flex;
+          column-gap: 0.5em;
+          position: absolute;
+          right: 0;
+          top: 0;
+        }
+      </style>
+      <div class="root">
+        <slot></slot>
+        <div class="buttons"><slot name="buttons"></slot></div>
+      </div>
+      `;
 
       push(
         summary,
@@ -32,7 +50,9 @@ customElements.define(
         );
       }
 
-      const div = push(details, "div", { class: "accordion-body fieldset" });
+      const div = push(details, "div", {
+        class: "accordion-body fieldset is-separated",
+      });
 
       for (const field of schema.fields) {
         push(div, field.tag, {

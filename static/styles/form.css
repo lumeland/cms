@@ -1,5 +1,5 @@
 .form {
   display: grid;
-  row-gap: var(--row-gap-normal);
+  row-gap: 1.5rem;
   margin: var(--row-gap-normal) 0;
 }

@@ -5,17 +5,12 @@
   & label {
     font: var(--font-ui-bold);
     width: fit-content;
-    min-with: 100px;
+    min-width: 100px;
     cursor: pointer;
 
     &.is-secondary {
       font: var(--font-ui);
     }
-  }
-
-  &:has(.fieldset) {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
   }
 }
 .field-label {
@@ -72,7 +67,7 @@
 
 .fieldset {
   display: grid;
-  row-gap: 1.5em;
+  row-gap: .5em;
   list-style: none;
   margin: .5em 0 0 .5em;
   padding: .3rem 0 .3rem 1rem;;
@@ -80,6 +75,9 @@
 
   &:empty {
     display: none;
+  }
+  &.is-separated {
+    row-gap: 1.5em;
   }
 }
 

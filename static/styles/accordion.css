@@ -14,8 +14,9 @@
   list-style: none;
   border-radius: inherit;
   border-radius: var(--border-radius);
-  transition-properties: color, background;
+  transition-property: color, background;
   transition-duration: var(--animation-duration);
+  margin-left: -.6em;
 
   &:hover {
     background: var(--color-line-light);
@@ -54,5 +55,4 @@
 
 .accordion-body {
   margin-top: .5rem;
-  margin-left: calc(1rem - 1px);
 }

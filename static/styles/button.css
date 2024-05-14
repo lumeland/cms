@@ -13,7 +13,7 @@
   background: none;
   cursor: pointer;
   border-radius: var(--border-radius);
-  transition-properties: color, background;
+  transition-property: color, background;
   transition-duration: var(--animation-duration);
 
   &[hidden] {

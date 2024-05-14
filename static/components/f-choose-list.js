@@ -1,4 +1,4 @@
-import { push } from "./utils.js";
+import { dom, push } from "./utils.js";
 import { Field } from "./field.js";
 
 customElements.define(
@@ -37,33 +37,36 @@ customElements.define(
         const open = field.attributes?.open ?? isNew;
         ++index;
 
-        const el = push(div, "u-draggable");
-
-        push(el, field.tag, {
-          schema: {
-            ...field,
-            attributes: { ...field.attributes, open },
-            name: index,
-            label: field.label || field.name,
-            fields: [
-              {
-                name: "type",
-                tag: "f-hidden",
-              },
-              ...field.fields,
-            ],
+        push(
+          div,
+          field.tag,
+          {
+            schema: {
+              ...field,
+              attributes: { ...field.attributes, open },
+              name: index,
+              label: field.label || field.name,
+              fields: [
+                {
+                  name: "type",
+                  tag: "f-hidden",
+                },
+                ...field.fields,
+              ],
+            },
+            namePrefix,
+            value,
           },
-          namePrefix,
-          value,
-        });
-
-        push(el, "button", {
-          type: "button",
-          class: "buttonIcon",
-          onclick() {
-            this.closest("u-draggable").remove();
-          },
-        }, '<u-icon name="trash"></u-icon>');
+          dom("button", {
+            type: "button",
+            class: "buttonIcon",
+            slot: "buttons",
+            onclick() {
+              this.closest("u-draggable").remove();
+            },
+          }, '<u-icon name="trash"></u-icon>'),
+          dom("u-draggable", { slot: "buttons" }),
+        );
       }
 
       for (const v of value ?? []) {

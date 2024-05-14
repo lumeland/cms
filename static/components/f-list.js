@@ -25,9 +25,8 @@ customElements.define(
 
       function addOption(value) {
         const name = `${namePrefix}.${index++}`;
-        const el = push(div, "u-draggable");
-
-        const input = push(el, "input", {
+        const item = push(div, "div", { class: "ly-rowStack is-narrow" });
+        const input = push(item, "input", {
           type: "text",
           class: "input is-narrow",
           id: `field_${name}`,
@@ -40,13 +39,14 @@ customElements.define(
           input.setAttribute("autocomplete", "off");
         }
 
-        push(el, "button", {
+        push(item, "button", {
           type: "button",
           class: "buttonIcon",
           onclick() {
-            this.closest("u-draggable").remove();
+            item.remove();
           },
         }, '<u-icon name="trash"></u-icon>');
+        push(item, "u-draggable");
       }
 
       for (const v of value ?? []) {

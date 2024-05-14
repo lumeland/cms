@@ -4,8 +4,7 @@ customElements.define(
   "u-draggable",
   class Draggable extends Component {
     get draggables() {
-      return Array.from(this.parentElement.children)
-        .filter((child) => child instanceof Draggable);
+      return Array.from(this.parentElement.parentElement.children);
     }
 
     init() {
@@ -15,6 +14,8 @@ customElements.define(
       button.innerHTML = "<u-icon name='dots-six-vertical'></u-icon>";
       this.prepend(button);
 
+      const item = this.parentElement;
+
       button.addEventListener("mousedown", () => {
         this.draggables.forEach((child) => child.draggable = true);
       });
@@ -23,9 +24,9 @@ customElements.define(
         this.draggables.forEach((child) => child.draggable = false);
       });
 
-      this.addEventListener("dragstart", () => {
+      item.addEventListener("dragstart", () => {
         this.draggables.forEach((child) => {
-          if (child !== this) {
+          if (child !== item) {
             child.classList.add("is-drag-hint");
           } else {
             child.classList.add("is-dragging");
@@ -33,46 +34,46 @@ customElements.define(
         });
       });
 
-      this.addEventListener("dragend", () => {
+      item.addEventListener("dragend", () => {
         this.draggables.forEach((child) => {
           child.classList.remove("is-drag-hint", "is-dragging", "is-drag-over");
           child.draggable = false;
         });
       });
 
-      this.addEventListener("dragenter", () => {
-        if (this.classList.contains("is-dragging")) {
+      item.addEventListener("dragenter", () => {
+        if (item.classList.contains("is-dragging")) {
           return;
         }
-        this.classList.add("is-drag-over");
+        item.classList.add("is-drag-over");
 
         const dragging = this.draggables.find((child) =>
           child.classList.contains("is-dragging")
         );
 
         if (
-          dragging.compareDocumentPosition(this) ===
+          dragging.compareDocumentPosition(item) ===
             Node.DOCUMENT_POSITION_FOLLOWING
         ) {
-          this.classList.add("is-drag-over-after");
+          item.classList.add("is-drag-over-after");
         } else {
-          this.classList.add("is-drag-over-before");
+          item.classList.add("is-drag-over-before");
         }
       });
 
-      this.addEventListener("dragleave", () => {
-        this.classList.remove("is-drag-over");
-        this.classList.remove("is-drag-over-before");
-        this.classList.remove("is-drag-over-after");
+      item.addEventListener("dragleave", () => {
+        item.classList.remove("is-drag-over");
+        item.classList.remove("is-drag-over-before");
+        item.classList.remove("is-drag-over-after");
       });
 
-      this.addEventListener("dragover", (e) => {
+      item.addEventListener("dragover", (e) => {
         e.preventDefault();
       });
 
-      this.addEventListener("drop", (e) => {
+      item.addEventListener("drop", (e) => {
         e.preventDefault();
-        if (this.classList.contains("is-dragging")) {
+        if (item.classList.contains("is-dragging")) {
           return;
         }
 
@@ -81,16 +82,16 @@ customElements.define(
         );
 
         if (
-          dragging.compareDocumentPosition(this) ===
+          dragging.compareDocumentPosition(item) ===
             Node.DOCUMENT_POSITION_FOLLOWING
         ) {
-          this.insertAdjacentElement("afterend", dragging);
+          item.insertAdjacentElement("afterend", dragging);
         } else {
-          this.insertAdjacentElement("beforebegin", dragging);
+          item.insertAdjacentElement("beforebegin", dragging);
         }
-        this.classList.remove("is-drag-over");
-        this.classList.remove("is-drag-over-before");
-        this.classList.remove("is-drag-over-after");
+        item.classList.remove("is-drag-over");
+        item.classList.remove("is-drag-over-before");
+        item.classList.remove("is-drag-over-after");
       });
     }
   },

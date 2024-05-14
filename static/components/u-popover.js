@@ -17,11 +17,6 @@ customElements.define(
         popover: "auto",
         onbeforetoggle() {
           if (!init) {
-            push(this, "button", {
-              class: "buttonIcon popover-close",
-              onclick: () => this.hidePopover(),
-            }, "<u-icon name='x'></u-icon>");
-
             this.append(template.content.cloneNode(true));
             init = true;
           }
