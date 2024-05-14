@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.3.13] - Unreleased
+### Fixed
+- `file` field when the value is an URL.
+- Removed the numbers in the choose-list items.
+
 ## [0.3.12] - 2024-05-13
 ### Changed
 - object-list improvements:
@@ -213,6 +218,7 @@ First version
 [#9]: https://github.com/lumeland/cms/issues/9
 [#10]: https://github.com/lumeland/cms/issues/10
 
+[0.3.13]: https://github.com/lumeland/cms/compare/v0.3.12...HEAD
 [0.3.12]: https://github.com/lumeland/cms/compare/v0.3.11...v0.3.12
 [0.3.11]: https://github.com/lumeland/cms/compare/v0.3.10...v0.3.11
 [0.3.10]: https://github.com/lumeland/cms/compare/v0.3.9...v0.3.10

@@ -30,7 +30,7 @@ customElements.define(
         onclick() {
           const uploads = schema.uploads.split(":").shift();
 
-          if (curr.value) {
+          if (curr.value && !curr.value.match(/^https?:\/\//)) {
             let filename = curr.value.startsWith(schema.publicPath || "")
               ? curr.value.substring(schema.publicPath.length)
               : curr.value;

@@ -36,7 +36,6 @@ customElements.define(
 
         const open = field.attributes?.open ?? isNew;
         ++index;
-        const label = `${field.label ?? field.name} (${index})`;
 
         const el = push(div, "u-draggable");
 
@@ -45,7 +44,7 @@ customElements.define(
             ...field,
             attributes: { ...field.attributes, open },
             name: index,
-            label,
+            label: field.label || field.name,
             fields: [
               {
                 name: "type",
