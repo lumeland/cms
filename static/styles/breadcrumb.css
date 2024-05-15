@@ -38,13 +38,14 @@
 .breadcrumb-version {
   margin-right: 1em;
   
-  > a {
+  > a[href] {
     background: gold;
     padding: .3rem .5em;
     border-radius: var(--border-radius);
+    color: black;
   }
 
-  &.is-production > a {
+  &.is-production > a[href] {
     background: lightgreen;
   }
 
