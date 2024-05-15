@@ -42,6 +42,9 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
     margin: 0;
     z-index: 2;
     transition: transform var(--animation-duration);
+    display:flex;
+    resize: both;
+    overflow: hidden;
 
     @media (min-width: 850px) {
       width: clamp(300px, 50vw, 1200px);

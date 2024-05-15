@@ -61,6 +61,22 @@ const defaults: CmsOptions = {
   basePath: "/",
 };
 
+interface DocumentOptions {
+  name: string;
+  description?: string;
+  store: string;
+  fields: (Field | string)[];
+  url?: string;
+}
+
+interface CollectionOptions {
+  name: string;
+  description?: string;
+  store: string;
+  fields: (Field | string)[];
+  url?: string;
+}
+
 export default class Cms {
   #jsImports = new Set<string>();
 
@@ -68,8 +84,8 @@ export default class Cms {
   storages = new Map<string, Storage | string>();
   uploads = new Map<string, [string, string]>();
   fields = new Map<string, FielType>();
-  collections = new Map<string, [string, (Field | string)[]]>();
-  documents = new Map<string, [string, (Field | string)[]]>();
+  collections = new Map<string, CollectionOptions>();
+  documents = new Map<string, DocumentOptions>();
   versionManager: Versioning | string | undefined;
 
   constructor(options?: Partial<CmsOptions>) {
@@ -101,13 +117,57 @@ export default class Cms {
     return this;
   }
 
-  collection(name: string, store: string, fields: (Field | string)[]): this {
-    this.collections.set(name, [store, fields]);
+  collection(options: CollectionOptions): this;
+  collection(key: string, store: string, fields: (Field | string)[]): this;
+  collection(
+    key: string | CollectionOptions,
+    store?: string,
+    fields?: (Field | string)[],
+  ): this {
+    const options = typeof key === "string"
+      ? {
+        name: key,
+        store: store,
+        fields,
+      } as CollectionOptions
+      : key;
+
+    if (!options.description) {
+      const [name, description] = options.name.split(":").map((part) =>
+        part.trim()
+      );
+      options.name = name;
+      options.description = description;
+    }
+
+    this.collections.set(options.name, options);
     return this;
   }
 
-  document(name: string, store: string, fields: (Field | string)[]): this {
-    this.documents.set(name, [store, fields]);
+  document(options: DocumentOptions): this;
+  document(key: string, store: string, fields: (Field | string)[]): this;
+  document(
+    key: string | DocumentOptions,
+    store?: string,
+    fields?: (Field | string)[],
+  ): this {
+    const options = typeof key === "string"
+      ? {
+        name: key,
+        store: store,
+        fields,
+      } as DocumentOptions
+      : key;
+
+    if (!options.description) {
+      const [name, description] = options.name.split(":").map((part) =>
+        part.trim()
+      );
+      options.name = name;
+      options.description = description;
+    }
+
+    this.documents.set(options.name, options);
     return this;
   }
 
@@ -149,25 +209,28 @@ export default class Cms {
       });
     }
 
-    for (const [key, [path, fields]] of this.collections) {
-      const [name, description] = key.split(":").map((part) => part.trim());
-
+    for (
+      const { name, description, store, fields, url } of this.collections
+        .values()
+    ) {
       content.collections[name] = new Collection({
-        storage: this.#getStorage(path),
+        storage: this.#getStorage(store),
         fields: this.#resolveFields(fields, content),
         name,
         description,
+        url,
       });
     }
 
-    for (const [key, [path, fields]] of this.documents) {
-      const [name, description] = key.split(":").map((part) => part.trim());
-
+    for (
+      const { name, description, store, fields, url } of this.documents.values()
+    ) {
       content.documents[name] = new Document({
-        entry: this.#getEntry(path),
+        entry: this.#getEntry(store),
         fields: this.#resolveFields(fields, content),
         name,
         description,
+        url,
       });
     }
 

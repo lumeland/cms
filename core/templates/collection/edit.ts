@@ -88,7 +88,9 @@ ${
           Delete
         </button>
       </u-confirm>
-      <u-pagepreview class="ly-rowStack" data-src="${document.src}"></u-pagepreview>
+      <u-pagepreview class="ly-rowStack" data-url="${
+    document.url || ""
+  }" data-src="${document.src}"></u-pagepreview>
     </footer>
   </form>
 </u-form>

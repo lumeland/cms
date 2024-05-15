@@ -6,6 +6,7 @@ export interface DocumentOptions {
   entry: Entry;
   fields: ResolvedField[];
   isNew?: boolean;
+  url?: string;
 }
 
 export default class Document {
@@ -14,6 +15,7 @@ export default class Document {
   #entry: Entry;
   #fields: ResolvedField[];
   #isNew?: boolean;
+  url?: string;
 
   constructor(options: DocumentOptions) {
     this.#name = options.name;
@@ -21,6 +23,7 @@ export default class Document {
     this.#entry = options.entry;
     this.#fields = options.fields;
     this.#isNew = options.isNew;
+    this.url = options.url;
   }
 
   get fields() {

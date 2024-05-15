@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.4.1] - Unreleased
+### Added
+- Allow to create documents and collections using a single object instead of arguments.
+- New option `url` to documents and collections.
+- Allow to resize the preview window.
+
 ### Fixed
 - Version color in the breadcrumb in dark mode.
 - Removed unused script.

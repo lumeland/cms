@@ -9,7 +9,7 @@ customElements.define(
     }
 
     init() {
-      const { src } = this.dataset;
+      const { src, url: initUrl } = this.dataset;
 
       if (!src) {
         this.innerHTML = "";
@@ -48,11 +48,19 @@ customElements.define(
         }
 
         if (data.type === "preview") {
+          if (initUrl) {
+            reload(initUrl);
+            return;
+          }
           ws.send(JSON.stringify({ type: "url", src }));
         }
       };
 
       ws.onopen = () => {
+        if (initUrl) {
+          reload(initUrl);
+          return;
+        }
         ws.send(JSON.stringify({ type: "url", src }));
       };
     }
