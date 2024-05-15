@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.4.1] - Unreleased
 ### Fixed
 - Version color in the breadcrumb in dark mode.
+- Removed unused script.
 
 ## [0.4.0] - 2024-05-14
 ### Changed
