@@ -4,15 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.4.1] - Unreleased
+## [0.4.1] - 2024-05-15
 ### Added
 - Allow to create documents and collections using a single object instead of arguments.
-- New option `url` to documents and collections.
+- New option `url` to documents and collections. It allows to set/override the preview URL.
 - Allow to resize the preview window.
 
 ### Fixed
 - Version color in the breadcrumb in dark mode.
 - Removed unused script.
+- Updated Hono to the latest version.
 
 ## [0.4.0] - 2024-05-14
 ### Changed
@@ -233,7 +234,7 @@ First version
 [#9]: https://github.com/lumeland/cms/issues/9
 [#10]: https://github.com/lumeland/cms/issues/10
 
-[0.4.1]: https://github.com/lumeland/cms/compare/v0.4.0...HEAD
+[0.4.1]: https://github.com/lumeland/cms/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/lumeland/cms/compare/v0.3.12...v0.4.0
 [0.3.12]: https://github.com/lumeland/cms/compare/v0.3.11...v0.3.12
 [0.3.11]: https://github.com/lumeland/cms/compare/v0.3.10...v0.3.11
