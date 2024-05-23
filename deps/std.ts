@@ -1,12 +1,12 @@
-export { escape } from "https://deno.land/std@0.224.0/html/entities.ts";
+export { escape } from "jsr:@std/html@0.224.0/entities";
 export {
   parse as parseYaml,
   stringify as stringifyYaml,
-} from "https://deno.land/std@0.224.0/yaml/mod.ts";
-export { test as testFrontMatter } from "https://deno.land/std@0.224.0/front_matter/mod.ts";
-export { extract as extractFrontMatter } from "https://deno.land/std@0.224.0/front_matter/yaml.ts";
-export { ensureDir, expandGlob } from "https://deno.land/std@0.224.0/fs/mod.ts";
-export * as posix from "https://deno.land/std@0.224.0/path/posix/mod.ts";
+} from "jsr:@std/yaml@0.224.0";
+export { test as testFrontMatter } from "jsr:@std/front-matter@0.224.0";
+export { extract as extractFrontMatter } from "jsr:@std/front-matter@0.224.0/yaml";
+export { ensureDir, expandGlob } from "jsr:@std/fs@0.229.1";
+export * as posix from "jsr:@std/path@0.225.1/posix";
 export {
   basename,
   dirname,
@@ -15,11 +15,8 @@ export {
   globToRegExp,
   relative,
   SEPARATOR,
-} from "https://deno.land/std@0.224.0/path/mod.ts";
-export { format as formatBytes } from "https://deno.land/std@0.224.0/fmt/bytes.ts";
-export {
-  decodeBase64,
-  encodeBase64,
-} from "https://deno.land/std@0.224.0/encoding/base64.ts";
-export { contentType } from "https://deno.land/std@0.224.0/media_types/content_type.ts";
-export * as logger from "https://deno.land/std@0.224.0/log/mod.ts";
+} from "jsr:@std/path@0.225.1";
+export { format as formatBytes } from "jsr:@std/fmt@0.225.1/bytes";
+export { decodeBase64, encodeBase64 } from "jsr:@std/encoding@0.224.2/base64";
+export { contentType } from "jsr:@std/media-types@0.224.1/content-type";
+export * as logger from "jsr:@std/log@0.224.1";
