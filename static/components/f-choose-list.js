@@ -62,7 +62,9 @@ customElements.define(
             class: "buttonIcon",
             slot: "buttons",
             onclick() {
-              this.closest("u-draggable").remove();
+              if (confirm("Are you sure you want to delete this item?")) {
+                this.parentElement.remove();
+              }
             },
           }, '<u-icon name="trash"></u-icon>'),
           dom("u-draggable", { slot: "buttons" }),

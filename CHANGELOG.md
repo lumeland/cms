@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 - Updated dependencies: `hono`, `std`.
 - Some dependencies have been migrated to `jsr` because are not longer updated on `land/x`.
+- Error removing elements in `choose-list` and `object-list` fields.
 
 ## [0.4.1] - 2024-05-15
 ### Added
