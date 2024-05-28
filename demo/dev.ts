@@ -85,5 +85,4 @@ app.collection(
   ],
 );
 
-// Start the server
-Deno.serve(app.init().fetch);
+export default app;

@@ -1,8 +1,8 @@
 {
   "lock": false,
   "tasks": {
-    "dev": "deno run --unstable-kv --check --watch -A demo/dev.ts",
-    "update-deps": "deno run -A --quiet 'https://deno.land/x/nudd@v0.1.2/cli.ts' deps/*.ts",
+    "dev": "deno run --unstable-kv --check --watch -A demo/serve.ts",
+    "update-deps": "deno run -A 'https://deno.land/x/nudd@v0.2.4/cli.ts' update deps/*.ts deno.json",
     "build-libs": "cd scripts && npm run build"
   },
   "exclude": [
