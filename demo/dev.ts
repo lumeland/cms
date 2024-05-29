@@ -11,7 +11,7 @@ const app = cms({
 });
 
 app.use(blocks());
-
+app.versioning("main");
 app.storage("src", "demo");
 app.upload("img", "src:img");
 

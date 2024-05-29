@@ -154,8 +154,10 @@ async function versions(options: CMSContent, versioning: Versioning) {
   <dialog class="modal is-center" id="modal-new-version">
   <form
     method="post"
-    action="${getPath(options.basePath, "versions", "create")}"
+    action="${getPath(options.basePath, "_action")}"
   >
+    <input type="hidden" name="type" value="git">
+    <input type="hidden" name="action" value="create">
     <div class="field">
       <label for="version-name">Name of the new version</label>
       <input

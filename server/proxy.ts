@@ -6,7 +6,7 @@ export interface Options {
 
 export const defaults: Required<Options> = {
   port: 3000,
-  path: "/admin",
+  path: "",
   args: ["run", "--allow-net", "_cms.serve.ts"],
 };
 
@@ -20,11 +20,25 @@ export default function proxy(userOptions?: Options): Deno.ServeHandler {
 
   return async function (request: Request): Promise<Response> {
     const url = new URL(request.url);
+    console.log(url.pathname);
+    if (url.pathname === `${path}/_action`) {
+      // Get the request form data
+      const formData = await request.formData();
+      const type = formData.get("type") as string;
 
-    if (url.pathname === `${path}/_reload`) {
-      closeServer();
-      await startServer();
-      return Response.redirect(url.origin + path, 303);
+      if (type === "git") {
+        try {
+          closeServer();
+          const { handleForm } = await import("./actions/git.ts");
+          await handleForm(formData);
+          await startServer();
+        } catch (error) {
+          const message = Deno.inspect(error);
+          return new Response(message, { status: 500 });
+        }
+      }
+      const redirect = url.searchParams.get("redirect") || url.origin + path;
+      return Response.redirect(redirect, 303);
     }
 
     if (!process) {
