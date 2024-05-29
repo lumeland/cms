@@ -1,4 +1,4 @@
-import proxy from "../adapters/proxy.ts";
+import proxy from "../server/proxy.ts";
 
 Deno.serve({
   handler: proxy({
