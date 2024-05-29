@@ -121,8 +121,10 @@ async function versions(options: CMSContent, versioning: Versioning) {
       !version.isProduction &&
         `<u-confirm data-message="Are you sure?">
       <form method="post" action="${
-          getPath(options.basePath, "versions", "delete")
+          getPath(options.basePath, "_action")
         }">
+        <input type="hidden" name="type" value="git">
+        <input type="hidden" name="action" value="delete">
         <input type="hidden" name="name" value="${version.name}">
         <button class="buttonIcon" aria-label="Delete">
           <u-icon name="trash"></u-icon>
