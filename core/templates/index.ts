@@ -107,8 +107,9 @@ async function versions(options: CMSContent, versioning: Versioning) {
         }" name="check-circle"></u-icon> ${version.name}
           </span>`
         : `<form class="list-item" method="post" action="${
-          getPath(options.basePath, "versions", "change")
+          getPath(options.basePath, "_git")
         }">
+            <input type="hidden" name="action" value="change">
             <input type="hidden" name="name" value="${version.name}">
             <button>
               <u-icon name="circle"></u-icon>
@@ -120,10 +121,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
     ${
       !version.isProduction &&
         `<u-confirm data-message="Are you sure?">
-      <form method="post" action="${
-          getPath(options.basePath, "_action")
-        }">
-        <input type="hidden" name="type" value="git">
+      <form method="post" action="${getPath(options.basePath, "_git")}">
         <input type="hidden" name="action" value="delete">
         <input type="hidden" name="name" value="${version.name}">
         <button class="buttonIcon" aria-label="Delete">
@@ -133,9 +131,8 @@ async function versions(options: CMSContent, versioning: Versioning) {
     </u-confirm>` || ""
     }
 
-    <form method="post" action="${
-      getPath(options.basePath, "versions", "publish")
-    }">
+    <form method="post" action="${getPath(options.basePath, "_git")}">
+      <input type="hidden" name="action" value="publish">
       <input type="hidden" name="name" value="${version.name}">
       <button class="button is-secondary">
         ${
@@ -156,9 +153,8 @@ async function versions(options: CMSContent, versioning: Versioning) {
   <dialog class="modal is-center" id="modal-new-version">
   <form
     method="post"
-    action="${getPath(options.basePath, "_action")}"
+    action="${getPath(options.basePath, "_git")}"
   >
-    <input type="hidden" name="type" value="git">
     <input type="hidden" name="action" value="create">
     <div class="field">
       <label for="version-name">Name of the new version</label>

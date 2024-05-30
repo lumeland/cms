@@ -20,23 +20,20 @@ export default function proxy(userOptions?: Options): Deno.ServeHandler {
 
   return async function (request: Request): Promise<Response> {
     const url = new URL(request.url);
-    console.log(url.pathname);
-    if (url.pathname === `${path}/_action`) {
+
+    if (url.pathname === `${path}/_git`) {
       // Get the request form data
       const formData = await request.formData();
-      const type = formData.get("type") as string;
 
-      if (type === "git") {
-        try {
-          closeServer();
-          const { handleForm } = await import("./actions/git.ts");
-          await handleForm(formData);
-          await startServer();
-        } catch (error) {
-          const message = Deno.inspect(error);
-          return new Response(message, { status: 500 });
-        }
+      try {
+        closeServer();
+        const { handleForm } = await import("./actions/git.ts");
+        await handleForm(formData);
+      } catch (error) {
+        const message = Deno.inspect(error);
+        return new Response(message, { status: 500 });
       }
+
       const redirect = url.searchParams.get("redirect") || url.origin + path;
       return Response.redirect(redirect, 303);
     }
@@ -51,6 +48,7 @@ export default function proxy(userOptions?: Options): Deno.ServeHandler {
     const headers = new Headers(request.headers);
     headers.set("host", url.host);
     headers.set("origin", url.origin);
+    headers.set("x-lume-cms-proxy", "true");
 
     if (headers.get("upgrade") === "websocket") {
       return proxyWebSocket(request);
