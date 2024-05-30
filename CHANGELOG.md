@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.4.3] - Unreleased
+## [0.4.3] - 2024-05-30
 ### Added
 - New option `transform` to field, to pass an arbitrary function to transform the value before saving it. For example, to ensure all urls ends with `/`:
   ```js
@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
     }
   ])
   ```
+
+### Fixed
+- Updated dependencies: `std`.
 
 ## [0.4.2] - 2024-05-24
 ### Fixed
@@ -253,7 +256,7 @@ First version
 [#9]: https://github.com/lumeland/cms/issues/9
 [#10]: https://github.com/lumeland/cms/issues/10
 
-[0.4.3]: https://github.com/lumeland/cms/compare/v0.4.2...HEAD
+[0.4.3]: https://github.com/lumeland/cms/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/lumeland/cms/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/lumeland/cms/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/lumeland/cms/compare/v0.3.12...v0.4.0
