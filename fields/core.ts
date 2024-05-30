@@ -30,8 +30,9 @@ for (const [input, transform] of Object.entries(inputs)) {
     jsImport: `lume_cms/components/f-${input}.js`,
     applyChanges(data, changes, field: ResolvedField) {
       if (field.name in changes) {
-        const value = transform
-          ? transform(changes[field.name] as string)
+        const fn = field.transform || transform;
+        const value = fn
+          ? fn(changes[field.name] as string, field)
           : changes[field.name];
 
         if (isEmpty(value) && !field.attributes?.required) {
@@ -49,9 +50,12 @@ fields.set("list", {
   tag: "f-list",
   jsImport: "lume_cms/components/f-list.js",
   applyChanges(data, changes, field: ResolvedField) {
-    data[field.name] = Object.values(changes[field.name] || {}).filter((v) =>
+    const value = Object.values(changes[field.name] || {}).filter((v) =>
       !isEmpty(v)
     );
+
+    const fn = field.transform;
+    data[field.name] = fn ? fn(value, field) : value;
   },
 });
 
@@ -65,7 +69,8 @@ fields.set("object", {
       await f.applyChanges(value, changes[field.name] as Data || {}, f);
     }
 
-    data[field.name] = value;
+    const fn = field.transform;
+    data[field.name] = fn ? fn(value, field) : value;
   },
 });
 
@@ -75,7 +80,7 @@ fields.set("object-list", {
   async applyChanges(data, changes, field: ResolvedField) {
     const currentData = data[field.name] as Data[] || [];
 
-    data[field.name] = await Promise.all(
+    const value = await Promise.all(
       Object.values(changes[field.name] || {}).map(
         async (subchanges, index) => {
           const value = currentData[index] || {};
@@ -88,6 +93,9 @@ fields.set("object-list", {
         },
       ),
     );
+
+    const fn = field.transform;
+    data[field.name] = fn ? fn(value, field) : value;
   },
 });
 
@@ -97,7 +105,7 @@ fields.set("choose-list", {
   async applyChanges(data, changes, field: ResolvedField) {
     const currentData = data[field.name] as Data[] || [];
 
-    data[field.name] = await Promise.all(
+    const value = await Promise.all(
       Object.values(changes[field.name] || {}).map(
         async (subchanges, index) => {
           const value = currentData[index] || {};
@@ -118,6 +126,9 @@ fields.set("choose-list", {
         },
       ),
     );
+
+    const fn = field.transform;
+    data[field.name] = fn ? fn(value, field) : value;
   },
 });
 

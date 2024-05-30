@@ -78,6 +78,7 @@ export interface Field {
     [key: string]: unknown;
   };
   init?: (field: ResolvedField) => void | Promise<void>;
+  transform?(value: any, field: ResolvedField): any;
   [key: string]: unknown;
 }
 
