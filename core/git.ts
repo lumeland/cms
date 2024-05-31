@@ -80,6 +80,8 @@ export class Git implements Versioning {
 
   /* Changes the current version */
   async change(name: string) {
+    name = slugify(name);
+
     if (!(await this.#exists(name))) {
       throw new Error(`Version ${name} does not exist`);
     }
