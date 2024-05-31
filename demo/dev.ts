@@ -1,8 +1,8 @@
-import cms from "../mod.ts";
+import lumeCMS from "../mod.ts";
 import KvStorage from "../storage/kv.ts";
 import blocks from "../fields/blocks.ts";
 
-const app = cms({
+const cms = lumeCMS({
   site: {
     name: "Site name",
     url: "https://lume.land/cms/",
@@ -10,19 +10,19 @@ const app = cms({
   },
 });
 
-app.use(blocks());
-app.versioning("main");
-app.storage("src", "demo");
-app.upload("img", "src:img");
+cms.use(blocks());
+cms.versioning("main");
+cms.storage("src", "demo");
+cms.upload("img", "src:img");
 
-app.storage(
+cms.storage(
   "kv",
   new KvStorage({
     kv: await Deno.openKv(),
   }),
 );
 
-app.collection(
+cms.collection(
   "posts: List of posts for the blog",
   "kv:posts/*",
   [
@@ -85,4 +85,4 @@ app.collection(
   ],
 );
 
-export default app;
+export default cms;

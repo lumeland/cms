@@ -24,6 +24,9 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
 
   const { site, cms, basePath } = options;
 
+  // Enable drafts previews in the CMS
+  Deno.env.set("LUME_DRAFTS", "true");
+
   await site.build();
 
   // Start the watcher
