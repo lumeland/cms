@@ -5,18 +5,31 @@ export interface Options {
   path?: string;
   serve: string;
   git?: GitOptions | boolean;
+  auth?: AuthOptions;
+  env?: Record<string, string>;
 }
 
-export const defaults: Required<Options> = {
+export interface AuthOptions {
+  method: "basic";
+  users: Record<string, string>;
+}
+
+export const defaults = {
   port: 3000,
   path: "",
   serve: "_cms.serve.ts",
   git: false,
 };
 
-export default function proxy(userOptions?: Options): Deno.ServeHandler {
+export default function serve(userOptions?: Options) {
+  return {
+    fetch: proxy(userOptions),
+  };
+}
+
+export function proxy(userOptions?: Options): Deno.ServeHandler {
   const options = { ...defaults, ...userOptions };
-  const { port, path, serve, git } = options;
+  const { port, path, serve, git, env } = options;
 
   let process: Deno.ChildProcess | undefined;
   let ws: WebSocket | undefined;
@@ -25,8 +38,21 @@ export default function proxy(userOptions?: Options): Deno.ServeHandler {
   return async function (request: Request): Promise<Response> {
     const url = new URL(request.url);
 
+    // Basic authentication
+    if (options.auth) {
+      const { method, users } = options.auth;
+      if (method === "basic") {
+        if (!handleBasicAuthentication(request, users)) {
+          return new Response("Unauthorized", {
+            status: 401,
+            headers: { "www-authenticate": 'Basic realm="Secure Area"' },
+          });
+        }
+      }
+    }
+
+    // Git actions
     if (url.pathname === `${path}/_git`) {
-      // Get the request form data
       const formData = await request.formData();
 
       try {
@@ -57,7 +83,6 @@ export default function proxy(userOptions?: Options): Deno.ServeHandler {
     if (headers.get("upgrade") === "websocket") {
       return proxyWebSocket(request);
     }
-
     const response = await fetch(url, {
       redirect: "manual",
       headers,
@@ -70,15 +95,16 @@ export default function proxy(userOptions?: Options): Deno.ServeHandler {
 
   // Start the server
   async function startServer() {
-    const env: Record<string, string> = {};
+    console.log("Starting proxy server");
+    const envVars = { ...env };
 
     if (git) {
-      env["LUMECMS_GIT"] = JSON.stringify(git === true ? {} : git);
+      envVars["LUMECMS_GIT"] = JSON.stringify(git === true ? {} : git);
     }
 
     const command = new Deno.Command(Deno.execPath(), {
       args: ["serve", "--allow-all", "--unstable-kv", `--port=${port}`, serve],
-      env,
+      env: envVars,
     });
 
     process = command.spawn();
@@ -96,6 +122,8 @@ export default function proxy(userOptions?: Options): Deno.ServeHandler {
 
   // Start the WebSocket server
   async function startWebSocket(): Promise<WebSocket> {
+    let timeout = 0;
+
     while (true) {
       try {
         const ws = new WebSocket(`ws://localhost:${port}${path}/_socket`);
@@ -111,8 +139,8 @@ export default function proxy(userOptions?: Options): Deno.ServeHandler {
           ws.onerror = reject;
         });
       } catch {
-        console.log("Waiting for the server to start...");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        timeout += 1000;
+        await new Promise((resolve) => setTimeout(resolve, timeout));
       }
     }
   }
@@ -135,4 +163,26 @@ export default function proxy(userOptions?: Options): Deno.ServeHandler {
 
     return response;
   }
+}
+
+function handleBasicAuthentication(
+  request: Request,
+  users: Record<string, string>,
+): boolean {
+  const auth = request.headers.get("authorization");
+  if (!auth) {
+    return false;
+  }
+
+  const [type, credentials] = auth.split(" ");
+  if (type.toLowerCase() !== "basic") {
+    return false;
+  }
+
+  const [username, password] = atob(credentials).split(":");
+  if (!users[username] || users[username] !== password) {
+    return false;
+  }
+
+  return true;
 }
