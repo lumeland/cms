@@ -1,18 +1,22 @@
+import { Options as GitOptions } from "../core/git.ts";
+
 export interface Options {
   port?: number;
   path?: string;
-  args?: string[];
+  serve: string;
+  git?: GitOptions | boolean;
 }
 
 export const defaults: Required<Options> = {
   port: 3000,
   path: "",
-  args: ["run", "--allow-net", "_cms.serve.ts"],
+  serve: "_cms.serve.ts",
+  git: false,
 };
 
 export default function proxy(userOptions?: Options): Deno.ServeHandler {
   const options = { ...defaults, ...userOptions };
-  const { port, path, args } = options;
+  const { port, path, serve, git } = options;
 
   let process: Deno.ChildProcess | undefined;
   let ws: WebSocket | undefined;
@@ -66,7 +70,17 @@ export default function proxy(userOptions?: Options): Deno.ServeHandler {
 
   // Start the server
   async function startServer() {
-    const command = new Deno.Command(Deno.execPath(), { args });
+    const env: Record<string, string> = {};
+
+    if (git) {
+      env["LUMECMS_GIT"] = JSON.stringify(git === true ? {} : git);
+    }
+
+    const command = new Deno.Command(Deno.execPath(), {
+      args: ["serve", "--allow-all", "--unstable-kv", `--port=${port}`, serve],
+      env,
+    });
+
     process = command.spawn();
     ws = await startWebSocket();
   }

@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.5.0] - Unreleased
 ### Added
+- New `server/proxy.ts` script to run the CMS in a server.
 - Support for `deno serve` command.
 
 ### Changed

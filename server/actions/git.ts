@@ -1,4 +1,4 @@
-import { Git, type Options } from "../../versioning/git.ts";
+import { Git, type Options } from "../../core/git.ts";
 
 interface Action {
   action: "create" | "change" | "publish" | "delete";

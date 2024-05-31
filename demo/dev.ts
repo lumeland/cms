@@ -11,7 +11,6 @@ const cms = lumeCMS({
 });
 
 cms.use(blocks());
-cms.versioning("main");
 cms.storage("src", "demo");
 cms.upload("img", "src:img");
 

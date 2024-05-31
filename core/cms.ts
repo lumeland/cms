@@ -10,7 +10,6 @@ import Collection from "./collection.ts";
 import Document from "./document.ts";
 import Upload from "./upload.ts";
 import FsStorage from "../storage/fs.ts";
-import { Git } from "../versioning/git.ts";
 import { normalizePath } from "./utils/path.ts";
 import {
   basename,
@@ -87,7 +86,7 @@ export default class Cms {
   fields = new Map<string, FielType>();
   collections = new Map<string, CollectionOptions>();
   documents = new Map<string, DocumentOptions>();
-  versionManager: Versioning | string | undefined;
+  versionManager: Versioning | undefined;
 
   constructor(options?: Partial<CmsOptions>) {
     this.options = {
@@ -111,11 +110,6 @@ export default class Cms {
 
   storage(name: string, storage: Storage | string = ""): this {
     this.storages.set(name, storage);
-    return this;
-  }
-
-  versioning(versioning: Versioning | string): this {
-    this.versionManager = versioning;
     return this;
   }
 
@@ -203,11 +197,8 @@ export default class Cms {
       uploads: {},
     };
 
-    if (typeof this.versionManager === "string") {
-      content.versioning = new Git({
-        root: this.options.root,
-        prodBranch: this.versionManager,
-      });
+    if (this.versionManager) {
+      content.versioning = this.versionManager;
     }
 
     for (const [key, [storage, publicPath]] of this.uploads.entries()) {

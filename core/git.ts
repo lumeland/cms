@@ -1,4 +1,4 @@
-import { slugify } from "../core/utils/string.ts";
+import { slugify } from "./utils/string.ts";
 
 import type { Versioning } from "../types.ts";
 
@@ -6,7 +6,7 @@ export interface Options {
   root?: string;
   prodBranch?: string;
   prefix?: string;
-  git?: string;
+  command?: string;
   remote?: string;
 }
 
@@ -14,14 +14,14 @@ export const defaults: Required<Omit<Options, "remoteUrl">> = {
   root: Deno.cwd(),
   prodBranch: "main",
   prefix: "lumecms/",
-  git: "git",
+  command: "git",
   remote: "origin",
 };
 
 export class Git implements Versioning {
   root: string;
   prodBranch: string;
-  git: string;
+  command: string;
   prefix: string;
   remote: string;
 
@@ -31,7 +31,7 @@ export class Git implements Versioning {
     this.root = options.root;
     this.prodBranch = options.prodBranch;
     this.prefix = options.prefix;
-    this.git = options.git;
+    this.command = options.command;
     this.remote = options.remote;
   }
 
@@ -175,7 +175,7 @@ export class Git implements Versioning {
   }
 
   async #runGitCommand(...args: string[]): Promise<string> {
-    const command = new Deno.Command(this.git, {
+    const command = new Deno.Command(this.command, {
       args,
       cwd: this.root,
       stdout: "piped",

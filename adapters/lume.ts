@@ -2,7 +2,7 @@ import { Context, Hono, Next, serveStatic } from "../deps/hono.ts";
 import authRoutes from "../core/routes/auth.ts";
 import { dispatch } from "../core/utils/event.ts";
 import { asset, getPath } from "../core/utils/path.ts";
-
+import { Git, Options as GitOptions } from "../core/git.ts";
 import type Cms from "../core/cms.ts";
 
 export interface Options {
@@ -26,6 +26,17 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
 
   // Enable drafts previews in the CMS
   Deno.env.set("LUME_DRAFTS", "true");
+
+  const git = Deno.env.get("LUMECMS_GIT");
+
+  if (git) {
+    const gitOption = JSON.parse(git) as GitOptions;
+
+    cms.versionManager = new Git({
+      root: cms.options.root,
+      ...gitOption,
+    });
+  }
 
   await site.build();
 
