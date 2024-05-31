@@ -2,7 +2,7 @@ import { Options as GitOptions } from "../core/git.ts";
 
 export interface Options {
   port?: number;
-  path?: string;
+  basePath?: string;
   serve: string;
   git?: GitOptions | boolean;
   auth?: AuthOptions;
@@ -16,7 +16,7 @@ export interface AuthOptions {
 
 export const defaults = {
   port: 3000,
-  path: "",
+  basePath: "/admin",
   serve: "_cms.serve.ts",
   git: false,
 };
@@ -29,7 +29,7 @@ export default function serve(userOptions?: Options) {
 
 export function proxy(userOptions?: Options): Deno.ServeHandler {
   const options = { ...defaults, ...userOptions };
-  const { port, path, serve, git, env } = options;
+  const { port, basePath, serve, git, env } = options;
 
   let process: Deno.ChildProcess | undefined;
   let ws: WebSocket | undefined;
@@ -52,19 +52,20 @@ export function proxy(userOptions?: Options): Deno.ServeHandler {
     }
 
     // Git actions
-    if (url.pathname === `${path}/_git`) {
+    if (git && url.pathname === `${basePath}/_git`) {
       const formData = await request.formData();
 
       try {
         closeServer();
         const { handleForm } = await import("./actions/git.ts");
-        await handleForm(formData);
+        await handleForm(formData, typeof git === "boolean" ? {} : git);
       } catch (error) {
         const message = Deno.inspect(error);
         return new Response(message, { status: 500 });
       }
 
-      const redirect = url.searchParams.get("redirect") || url.origin + path;
+      const redirect = url.searchParams.get("redirect") ||
+        url.origin + basePath;
       return Response.redirect(redirect, 303);
     }
 
@@ -126,7 +127,7 @@ export function proxy(userOptions?: Options): Deno.ServeHandler {
 
     while (true) {
       try {
-        const ws = new WebSocket(`ws://localhost:${port}${path}/_socket`);
+        const ws = new WebSocket(`ws://localhost:${port}${basePath}/_socket`);
 
         ws.onmessage = (event) => {
           for (const socket of sockets) {

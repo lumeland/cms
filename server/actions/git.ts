@@ -5,11 +5,11 @@ interface Action {
   name: string;
 }
 
-export async function handleForm(form: FormData) {
+export async function handleForm(form: FormData, userOptions: Options = {}) {
   const action = form.get("action") as Action["action"];
   const name = form.get("name") as string;
 
-  await handle({ action, name });
+  await handle({ action, name }, userOptions);
 }
 
 async function handle(actionData: Action, userOptions: Options = {}) {
