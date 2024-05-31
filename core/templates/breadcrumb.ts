@@ -17,9 +17,9 @@ export default function breadcrumb(
     version
       ? `<li class="breadcrumb-version ${
         version.isProduction ? "is-production" : ""
-      }"><a href="${
+      }"><a title="${labelify(version.name)}" href="${
         getPath(options.basePath)
-      }#versions">${version.name}</a></li>`
+      }#versions">${labelify(version.name)}</a></li>`
       : ""
   }
     <li><a href="${

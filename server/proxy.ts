@@ -52,7 +52,9 @@ export function proxy(userOptions?: Options): Deno.ServeHandler {
     }
 
     // Git actions
-    if (git && url.pathname === `${basePath}/_git`) {
+    if (
+      request.method === "POST" && git && url.pathname === `${basePath}/_git`
+    ) {
       const formData = await request.formData();
 
       try {

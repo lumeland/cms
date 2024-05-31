@@ -104,7 +104,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
         ? `<span class="list-item">
             <u-icon class="is-version ${
           version.isProduction ? "is-production" : ""
-        }" name="check-circle"></u-icon> ${version.name}
+        }" name="check-circle"></u-icon> ${labelify(version.name)}
           </span>`
         : `<form class="list-item" method="post" action="${
           getPath(options.basePath, "_git")
@@ -113,7 +113,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
             <input type="hidden" name="name" value="${version.name}">
             <button>
               <u-icon name="circle"></u-icon>
-              ${version.name}
+              ${labelify(version.name)}
             </button>
           </form>`
     }
