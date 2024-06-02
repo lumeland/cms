@@ -33,6 +33,7 @@ export function proxy(userOptions?: Options): Deno.ServeHandler {
 
   let process: Deno.ChildProcess | undefined;
   let ws: WebSocket | undefined;
+  let timeout: number | undefined;
   const sockets = new Set<WebSocket>();
 
   return async function (request: Request): Promise<Response> {
@@ -71,9 +72,14 @@ export function proxy(userOptions?: Options): Deno.ServeHandler {
       return Response.redirect(redirect, 303);
     }
 
+    // Start the server on the first request
     if (!process) {
       await startServer();
     }
+
+    // Close the server after 2 hours of inactivity
+    clearTimeout(timeout);
+    timeout = setTimeout(closeServer, 2 * 60 * 60 * 1000);
 
     // Forward the request to the server
     url.port = port.toString();
