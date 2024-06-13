@@ -79,6 +79,14 @@ cms.collection(
         "email: email",
       ],
     },
+    {
+      name: "object-list",
+      type: "object-list",
+      fields: [
+        "name: text",
+        "date: date",
+      ],
+    },
     "markdown: markdown",
     "blocks: blocks",
   ],
