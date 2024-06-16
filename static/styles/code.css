@@ -18,7 +18,7 @@
 
   .cm-content {
     padding: .5rem;
-    caret-color: var(--color-input-text);
+    caret-color: var(--color-input-text) !important; /* Avoid override */
   }
 
   .ͼ4 {color: var(--color-code-4);}

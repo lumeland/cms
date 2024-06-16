@@ -79,17 +79,25 @@ customElements.define(
         class: "field-footer ly-rowStack",
       });
 
+      const select = push(footer, "select", {
+        class: "select",
+        onchange: () => {
+          if (select.value) {
+            addOption({ type: select.value }, true);
+            select.value = "";
+          }
+        },
+      });
+
+      push(select, "option", { value: "" }, "Add new...");
+      push(select, "hr");
+
       for (const field of schema.fields) {
         push(
-          footer,
-          "button",
-          {
-            type: "button",
-            onclick: () => addOption({ type: field.name }, true),
-            class: "button is-secondary",
-          },
-          '<u-icon name="plus-circle"></u-icon>',
-          `Add ${field.label ?? field.name}`,
+          select,
+          "option",
+          { value: field.name },
+          field.label ?? field.name,
         );
       }
     }

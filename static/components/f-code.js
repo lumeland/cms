@@ -1,4 +1,4 @@
-import { push } from "./utils.js";
+import { asset, push } from "./utils.js";
 import { Field } from "./field.js";
 import { init } from "../libs/code.js";
 
@@ -24,7 +24,13 @@ customElements.define(
         hidden: true,
       });
 
-      const code = push(this, "div", { class: "code" });
+      const shadow = this.attachShadow({ mode: "open" });
+      shadow.innerHTML = `
+      <link rel="stylesheet" href="${asset("styles", "code.css")}">
+      <slot></slot>
+      `;
+
+      const code = push(shadow, "div", { class: "code" });
       this.editor = init(code, textarea).editor;
     }
   },

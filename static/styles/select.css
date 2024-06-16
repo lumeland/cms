@@ -4,7 +4,7 @@
   appearance: none;
   padding: .6em;
   min-height: 2.5em;
-  padding-right: 2em;
+  padding-right: 2.5em;
   background: var(--marker-image) no-repeat center right 1em;
   background-size: 1em 1em;
   background-color: var(--color-input-bg);

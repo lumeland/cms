@@ -26,13 +26,13 @@
   --color-code-e: #bf4040;
   --color-code-f: #e40;
   --color-code-g: #00f;
-  --color-code-h: #30a;
+  --color-code-h: hsl(220, 100%, 65%);
   --color-code-i: #0e8759;
   --color-code-j: #167;
   --color-code-k: #256;
   --color-code-l: #00c;
   --color-code-m: #940;
-  --color-code-n: #f00;
+  --color-code-n: hsl(220, 20%, 20%);
 
   /* Fonts */
   --font-family-code: Consolas, Menlo, Monaco, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Courier New", Courier, monospace;
@@ -87,11 +87,11 @@
   --color-code-e: #bf4040;
   --color-code-f: hsl(17, 100%, 63%);
   --color-code-g: #00f;
-  --color-code-h: hsl(220, 95%, 66%);
+  --color-code-h: hsl(220, 100%, 65%);
   --color-code-i: #0e8759;
   --color-code-j: #167;
   --color-code-k: #256;
   --color-code-l: #00c;
   --color-code-m: #940;
-  --color-code-n: #f00;
+  --color-code-n: hsl(220, 20%, 80%);
 }

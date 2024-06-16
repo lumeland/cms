@@ -1,4 +1,4 @@
-import { labelify, push, url } from "./utils.js";
+import { asset, labelify, push, url } from "./utils.js";
 import { Field } from "./field.js";
 import { init } from "../libs/markdown.js";
 
@@ -24,7 +24,14 @@ customElements.define(
         hidden: true,
       });
 
+      const shadow = this.attachShadow({ mode: "open" });
+      shadow.innerHTML = `
+      <link rel="stylesheet" href="${asset("styles", "code.css")}">
+      <slot></slot>
+      `;
+
       const helpers = push(this, "div", { class: "tools" });
+
       for (const name of Object.keys(schema.cmsContent.uploads || {})) {
         push(helpers, "button", {
           class: "button is-secondary",
@@ -40,7 +47,7 @@ customElements.define(
         }, `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`);
       }
 
-      const code = push(this, "div", { class: "code" });
+      const code = push(shadow, "div", { class: "code" });
       const md = init(code, textarea);
       let tools;
 
