@@ -15,7 +15,7 @@ interface Props {
 export default async function template(
   { options, document, version }: Props,
 ) {
-  const data = await document.read();
+  const data = await document.read(true);
   const fields = await Promise.all(document.fields.map(async (field) => `
     <${field.tag}
       data-nameprefix="changes"

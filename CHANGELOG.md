@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.5.3] - Unreleased
+### Changed
+- Documents are created if they don't exist [#16].
+
 ## [0.5.2] - 2024-06-16
 ### Changed
 - choose-list: Replace the buttons to add new items with a select.
@@ -285,7 +289,9 @@ First version
 [#9]: https://github.com/lumeland/cms/issues/9
 [#10]: https://github.com/lumeland/cms/issues/10
 [#15]: https://github.com/lumeland/cms/issues/15
+[#16]: https://github.com/lumeland/cms/issues/16
 
+[0.5.3]: https://github.com/lumeland/cms/compare/v0.5.2...HEAD
 [0.5.2]: https://github.com/lumeland/cms/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/lumeland/cms/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/lumeland/cms/compare/v0.4.3...v0.5.0

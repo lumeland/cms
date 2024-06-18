@@ -5,7 +5,6 @@ export interface DocumentOptions {
   description?: string;
   entry: Entry;
   fields: ResolvedField[];
-  isNew?: boolean;
   url?: string;
 }
 
@@ -14,7 +13,6 @@ export default class Document {
   description?: string;
   #entry: Entry;
   #fields: ResolvedField[];
-  #isNew?: boolean;
   url?: string;
 
   constructor(options: DocumentOptions) {
@@ -22,7 +20,6 @@ export default class Document {
     this.description = options.description;
     this.#entry = options.entry;
     this.#fields = options.fields;
-    this.#isNew = options.isNew;
     this.url = options.url;
   }
 
@@ -38,21 +35,24 @@ export default class Document {
     return this.#entry.metadata.src;
   }
 
-  async read() {
-    if (this.#isNew) {
-      return {};
+  async read(create = false) {
+    try {
+      return await this.#entry.readData();
+    } catch (err) {
+      if (create) {
+        return {};
+      }
+      throw err;
     }
-    return await this.#entry.readData();
   }
 
-  async write(data: Data) {
-    const currentData = await this.read();
+  async write(data: Data, create = false) {
+    const currentData = await this.read(create);
 
     for (const field of this.fields || []) {
       await field.applyChanges(currentData, data, field);
     }
 
     await this.#entry.writeData(currentData);
-    this.#isNew = false;
   }
 }

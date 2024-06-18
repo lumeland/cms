@@ -40,7 +40,6 @@ export default class Collection {
     return new Document({
       entry: this.#storage.get(name),
       fields: this.#fields,
-      isNew: true,
       url: this.url,
     });
   }

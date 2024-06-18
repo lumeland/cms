@@ -103,7 +103,7 @@ export default function (app: Hono) {
       const body = await c.req.parseBody();
       const document = collection.create(body._id as string);
 
-      await document.write(changesToData(body));
+      await document.write(changesToData(body), true);
 
       return c.redirect(
         getPath(

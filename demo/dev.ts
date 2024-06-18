@@ -21,6 +21,11 @@ cms.storage(
   }),
 );
 
+cms.document("Settings", "kv:_data.yml", [
+  "title: text",
+  "description: text",
+]);
+
 cms.collection(
   "posts: List of posts for the blog",
   "kv:posts/*",
