@@ -67,7 +67,7 @@ function folder({ options, collection, tree }: FolderProps) {
     .map(([name, subTree]) => `
     <li>
       <details open class="accordion">
-        <summary>${name}</summary>
+        <summary>${labelify(name)}</summary>
         <ul>
           ${folder({ options, collection, tree: subTree })}
         </ul>

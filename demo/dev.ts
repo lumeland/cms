@@ -8,6 +8,12 @@ const cms = lumeCMS({
     url: "https://lume.land/cms/",
     description: "This is a demo of Lume CMS.",
   },
+  auth: {
+    method: "basic",
+    users: {
+      admin: "admin",
+    },
+  },
 });
 
 cms.use(blocks());
@@ -22,6 +28,10 @@ cms.storage(
 );
 
 cms.document("Settings", "kv:_data.yml", [
+  "title: text",
+  "description: text",
+]);
+cms.collection("Articles", "src:articles/**/*.md", [
   "title: text",
   "description: text",
 ]);

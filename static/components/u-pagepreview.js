@@ -1,6 +1,9 @@
 import { options, push, url } from "./utils.js";
 import { Component } from "./component.js";
 
+const res = await fetch(new URL(url("_socket_auth"), document.location.origin));
+const socketUrl = await res.json();
+
 customElements.define(
   "u-pagepreview",
   class Modal extends Component {
@@ -16,12 +19,7 @@ customElements.define(
         return;
       }
 
-      const protocol = document.location.protocol === "https:"
-        ? "wss://"
-        : "ws://";
-      const ws = new WebSocket(
-        protocol + document.location.host + url("_socket"),
-      );
+      const ws = new WebSocket(socketUrl.url);
 
       let iframe, lastUrl;
 
