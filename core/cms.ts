@@ -300,9 +300,7 @@ export default class Cms {
       return c.text("There was an error. See logs for more info.", 500);
     });
 
-    if (this.options.auth) {
-      authRoutes(app, this.options.auth);
-    }
+    authRoutes(app, this.options.auth);
 
     app.use("*", (c: Context, next: Next) => {
       c.setRenderer(async (content) => {
