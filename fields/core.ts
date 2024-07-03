@@ -78,12 +78,10 @@ fields.set("object-list", {
   tag: "f-object-list",
   jsImport: "lume_cms/components/f-object-list.js",
   async applyChanges(data, changes, field: ResolvedField) {
-    const currentData = data[field.name] as Data[] || [];
-
     const value = await Promise.all(
       Object.values(changes[field.name] || {}).map(
-        async (subchanges, index) => {
-          const value = currentData[index] || {};
+        async (subchanges) => {
+          const value = {} as Data;
 
           for (const f of field.fields || []) {
             await f.applyChanges(value, subchanges, f);
@@ -103,25 +101,21 @@ fields.set("choose-list", {
   tag: "f-choose-list",
   jsImport: "lume_cms/components/f-choose-list.js",
   async applyChanges(data, changes, field: ResolvedField) {
-    const currentData = data[field.name] as Data[] || [];
-
     const value = await Promise.all(
       Object.values(changes[field.name] || {}).map(
-        async (subchanges, index) => {
-          const value = currentData[index] || {};
-          const chooseField = field.fields?.find((f) =>
-            f.name === subchanges.type
-          );
+        async (subchanges) => {
+          const type = subchanges.type as string;
+          const value = { type } as Data;
+          const chooseField = field.fields?.find((f) => f.name === type);
 
           if (!chooseField) {
-            throw new Error(`No field found for type '${subchanges.type}'`);
+            throw new Error(`No field found for type '${type}'`);
           }
 
           for (const f of chooseField?.fields || []) {
             await f.applyChanges(value, subchanges, f);
           }
 
-          value.type = subchanges.type;
           return value;
         },
       ),
