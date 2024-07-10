@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 ### Added
 - Button to duplicate a page in a collection.
+- New option `nameField` for collections to use the value of a field as the document name #19.
 
 ### Fixed
 - Allow to set empty values to `select` by default.

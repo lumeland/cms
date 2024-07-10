@@ -31,10 +31,15 @@ cms.document("Settings", "kv:_data.yml", [
   "title: text",
   "description: text",
 ]);
-cms.collection("Articles", "src:articles/**/*.md", [
-  "title: text",
-  "description: text",
-]);
+cms.collection({
+  name: "Articles",
+  store: "src:articles/**/*.md",
+  fields: [
+    "title: text",
+    "description: text",
+  ],
+  nameField: "title",
+});
 
 cms.collection(
   "posts: List of posts for the blog",

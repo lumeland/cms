@@ -137,8 +137,21 @@ export default function (app: Hono) {
     .post(async (c: Context) => {
       const { options, collection } = get(c);
       const body = await c.req.parseBody();
-      const document = collection.create(body._id as string);
+      let name = body._id as string;
 
+      if (!name && collection.nameField) {
+        const autoname = body[`changes.${collection.nameField}`];
+
+        if (typeof autoname === "string" && autoname.trim() !== "") {
+          name = autoname;
+        }
+      }
+
+      if (!name) {
+        throw new Error("Document name is required");
+      }
+
+      const document = collection.create(name);
       await document.write(changesToData(body), true);
 
       return c.redirect(

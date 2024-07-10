@@ -74,6 +74,7 @@ interface CollectionOptions {
   store: string;
   fields: (Field | string)[];
   url?: string;
+  nameField?: string;
 }
 
 export default class Cms {
@@ -130,7 +131,7 @@ export default class Cms {
     store?: string,
     fields?: (Field | string)[],
   ): this {
-    const options = typeof key === "string"
+    const options: CollectionOptions = typeof key === "string"
       ? {
         name: key,
         store: store,
@@ -213,7 +214,8 @@ export default class Cms {
     }
 
     for (
-      const { name, description, store, fields, url } of this.collections
+      const { name, description, store, fields, url, nameField } of this
+        .collections
         .values()
     ) {
       content.collections[name] = new Collection({
@@ -222,6 +224,7 @@ export default class Cms {
         name,
         description,
         url,
+        nameField,
       });
     }
 

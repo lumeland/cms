@@ -8,6 +8,7 @@ export interface CollectionOptions {
   storage: Storage;
   fields: ResolvedField[];
   url?: string;
+  nameField?: string;
 }
 
 export default class Collection {
@@ -16,6 +17,7 @@ export default class Collection {
   #storage: Storage;
   #fields: ResolvedField[];
   url?: string;
+  nameField?: string;
 
   constructor(options: CollectionOptions) {
     this.name = options.name;
@@ -23,6 +25,7 @@ export default class Collection {
     this.#storage = options.storage;
     this.#fields = options.fields;
     this.url = options.url;
+    this.nameField = options.nameField;
   }
 
   get fields() {
