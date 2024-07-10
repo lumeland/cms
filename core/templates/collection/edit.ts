@@ -50,6 +50,11 @@ ${
         placeholder="Rename the file…"
         form="form-edit"
         aria-label="File name"
+        ${
+    collection.permissions.create && collection.permissions.delete
+      ? ""
+      : "readonly"
+  }
         required
       >
     </h1>
@@ -70,42 +75,54 @@ ${
         <u-icon name="check"></u-icon>
         Save changes
       </button>
+      ${
+    collection.permissions.create
+      ? `
       <u-confirm data-message="Duplicate this file?">
         <button
           class="button is-secondary"
           type="submit"
           formAction="${
-    getPath(
-      options.basePath,
-      "collection",
-      collection.name,
-      "duplicate",
-      document.name,
-    )
-  }"
+        getPath(
+          options.basePath,
+          "collection",
+          collection.name,
+          "duplicate",
+          document.name,
+        )
+      }"
         >
           <u-icon name="files"></u-icon>
           Duplicate
         </button>
       </u-confirm>
+      `
+      : ""
+  }
+      ${
+    collection.permissions.delete
+      ? `
       <u-confirm data-message="Are you sure?">
         <button
           class="button is-secondary"
           type="submit"
           formAction="${
-    getPath(
-      options.basePath,
-      "collection",
-      collection.name,
-      "delete",
-      document.name,
-    )
-  }"
+        getPath(
+          options.basePath,
+          "collection",
+          collection.name,
+          "delete",
+          document.name,
+        )
+      }"
         >
           <u-icon name="trash"></u-icon>
           Delete
         </button>
       </u-confirm>
+      `
+      : ""
+  }
       <u-pagepreview class="ly-rowStack" data-url="${
     document.url || ""
   }" data-src="${document.src}"></u-pagepreview>

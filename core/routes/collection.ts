@@ -82,6 +82,10 @@ export default function (app: Hono) {
         throw new Error("Document not found");
       }
 
+      if (!collection.permissions.create) {
+        throw new Error("Permission denied");
+      }
+
       const body = await c.req.parseBody();
       let name = body._id as string;
 
@@ -117,6 +121,10 @@ export default function (app: Hono) {
       throw new Error("Document not found");
     }
 
+    if (!collection.permissions.delete) {
+      throw new Error("Permission denied");
+    }
+
     await collection.delete(document.name);
 
     return c.redirect(getPath(options.basePath, "collection", collection.name));
@@ -136,6 +144,11 @@ export default function (app: Hono) {
     })
     .post(async (c: Context) => {
       const { options, collection } = get(c);
+
+      if (!collection.permissions.create) {
+        throw new Error("Permission denied");
+      }
+
       const body = await c.req.parseBody();
       let name = body._id as string;
 

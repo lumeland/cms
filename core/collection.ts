@@ -9,6 +9,13 @@ export interface CollectionOptions {
   fields: ResolvedField[];
   url?: string;
   nameField?: string;
+  create?: boolean;
+  delete?: boolean;
+}
+
+interface Permissions {
+  create: boolean;
+  delete: boolean;
 }
 
 export default class Collection {
@@ -18,6 +25,7 @@ export default class Collection {
   #fields: ResolvedField[];
   url?: string;
   nameField?: string;
+  permissions: Permissions;
 
   constructor(options: CollectionOptions) {
     this.name = options.name;
@@ -26,6 +34,10 @@ export default class Collection {
     this.#fields = options.fields;
     this.url = options.url;
     this.nameField = options.nameField;
+    this.permissions = {
+      create: options.create ?? true,
+      delete: options.delete ?? true,
+    };
   }
 
   get fields() {

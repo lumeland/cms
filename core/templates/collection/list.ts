@@ -45,6 +45,9 @@ ${
   }
 
 <footer class="ly-rowStack footer is-responsive">
+  ${
+    collection.permissions.create
+      ? `
   <a
     href="${getPath(options.basePath, "collection", collection.name, "create")}"
     class="button is-primary"
@@ -52,6 +55,9 @@ ${
     <u-icon name="plus-circle"></u-icon>
     Create new
   </a>
+  `
+      : ""
+  }
 </footer>
   `;
 }

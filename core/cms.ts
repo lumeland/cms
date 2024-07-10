@@ -75,6 +75,8 @@ interface CollectionOptions {
   fields: (Field | string)[];
   url?: string;
   nameField?: string;
+  create?: boolean;
+  delete?: boolean;
 }
 
 export default class Cms {
@@ -214,7 +216,7 @@ export default class Cms {
     }
 
     for (
-      const { name, description, store, fields, url, nameField } of this
+      const { name, store, fields, ...options } of this
         .collections
         .values()
     ) {
@@ -222,9 +224,7 @@ export default class Cms {
         storage: this.#getStorage(store),
         fields: this.#resolveFields(fields, content),
         name,
-        description,
-        url,
-        nameField,
+        ...options,
       });
     }
 

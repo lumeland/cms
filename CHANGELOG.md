@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 ### Added
 - Button to duplicate a page in a collection.
-- New option `nameField` for collections to use the value of a field as the document name #19.
+- New option `nameField` for collections to use the value of a field as the document name [#19].
+- New option `create` and `delete` for collections to customize permissions [#20].
 
 ### Fixed
 - Allow to set empty values to `select` by default.
@@ -309,6 +310,8 @@ First version
 [#15]: https://github.com/lumeland/cms/issues/15
 [#16]: https://github.com/lumeland/cms/issues/16
 [#18]: https://github.com/lumeland/cms/issues/18
+[#19]: https://github.com/lumeland/cms/issues/19
+[#20]: https://github.com/lumeland/cms/issues/20
 
 [Unreleased]: https://github.com/lumeland/cms/compare/v0.5.4...HEAD
 [0.5.4]: https://github.com/lumeland/cms/compare/v0.5.3...v0.5.4
