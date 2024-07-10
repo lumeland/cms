@@ -142,8 +142,8 @@ export default function (app: Hono) {
       if (!name && collection.nameField) {
         const autoname = body[`changes.${collection.nameField}`];
 
-        if (typeof autoname === "string" && autoname.trim() !== "") {
-          name = autoname;
+        if (typeof autoname === "string") {
+          name = autoname.replaceAll("/", "").trim();
         }
       }
 
