@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+### Added
+- Button to duplicate a page in a collection.
+
 ### Fixed
 - Allow to set empty values to `select` by default.
 

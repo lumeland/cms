@@ -70,6 +70,24 @@ ${
         <u-icon name="check"></u-icon>
         Save changes
       </button>
+      <u-confirm data-message="Duplicate this file?">
+        <button
+          class="button is-secondary"
+          type="submit"
+          formAction="${
+    getPath(
+      options.basePath,
+      "collection",
+      collection.name,
+      "duplicate",
+      document.name,
+    )
+  }"
+        >
+          <u-icon name="files"></u-icon>
+          Duplicate
+        </button>
+      </u-confirm>
       <u-confirm data-message="Are you sure?">
         <button
           class="button is-secondary"

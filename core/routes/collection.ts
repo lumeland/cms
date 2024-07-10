@@ -73,6 +73,42 @@ export default function (app: Hono) {
         ),
       );
     });
+  app.post(
+    "/collection/:collection/duplicate/:document",
+    async (c: Context) => {
+      const { options, collection, document } = get(c);
+
+      if (!document) {
+        throw new Error("Document not found");
+      }
+
+      const body = await c.req.parseBody();
+      let name = body._id as string;
+
+      if (document.name === name) {
+        const ext = name.split(".").pop();
+        if (ext) {
+          name = name.substring(0, name.length - ext.length - 1) + "-copy." +
+            ext;
+        } else {
+          name = `${name}-copy`;
+        }
+      }
+
+      const duplicate = collection.create(name as string);
+      await duplicate.write(changesToData(body), true);
+
+      return c.redirect(
+        getPath(
+          options.basePath,
+          "collection",
+          collection.name,
+          "edit",
+          duplicate.name,
+        ),
+      );
+    },
+  );
 
   app.post("/collection/:collection/delete/:document", async (c: Context) => {
     const { options, collection, document } = get(c);
