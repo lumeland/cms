@@ -24,8 +24,7 @@ customElements.define(
       });
 
       pushOptions(select, schema.options);
-
-      select.value = value;
+      select.value = value ?? "";
     }
   },
 );

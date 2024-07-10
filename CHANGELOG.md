@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+### Fixed
+- Allow to set empty values to `select` by default.
+
 ## [0.5.4] - 2024-07-03
 ### Fixed
 - Preview with no credentials.
@@ -302,6 +306,7 @@ First version
 [#16]: https://github.com/lumeland/cms/issues/16
 [#18]: https://github.com/lumeland/cms/issues/18
 
+[Unreleased]: https://github.com/lumeland/cms/compare/v0.5.4...HEAD
 [0.5.4]: https://github.com/lumeland/cms/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/lumeland/cms/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/lumeland/cms/compare/v0.5.1...v0.5.2
