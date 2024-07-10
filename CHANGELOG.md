@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Allow to set empty values to `select` by default.
+- Updated `hono` and `std` dependencies.
 
 ## [0.5.4] - 2024-07-03
 ### Fixed
