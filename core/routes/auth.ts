@@ -5,19 +5,11 @@ import type { AuthOptions } from "../cms.ts";
 
 export default function (app: Hono, auth?: AuthOptions) {
   app.get("_socket_auth", (c) => {
-    const auth = c.req.header("authorization") || "";
-    const token = auth.split(" ").pop();
-    const url = new URL(c.req.url);
-    url.pathname = url.pathname.replace(/\/_socket_auth$/, "/_socket");
-    url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+    const header = c.req.header("authorization") || "";
+    const token = header.split(" ").pop();
+    const auth = token ? atob(token) : "";
 
-    if (token) {
-      const [user, pass] = atob(token).split(":");
-      url.username = user;
-      url.password = pass;
-    }
-
-    return c.json({ url: url.toString() });
+    return c.json({ auth });
   });
 
   if (auth?.method !== "basic") {

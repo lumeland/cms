@@ -2,7 +2,15 @@ import { options, push, url } from "./utils.js";
 import { Component } from "./component.js";
 
 const res = await fetch(new URL(url("_socket_auth"), document.location.origin));
-const socketUrl = await res.json();
+const json = await res.json();
+const socketUrl = new URL(url("_socket"), document.location.origin);
+
+if (json?.auth) {
+  const [user, pass] = json.auth.split(":");
+  socketUrl.username = user;
+  socketUrl.password = pass;
+}
+socketUrl.protocol = document.location.protocol === "https:" ? "wss:" : "ws:";
 
 customElements.define(
   "u-pagepreview",
@@ -19,7 +27,7 @@ customElements.define(
         return;
       }
 
-      const ws = new WebSocket(socketUrl.url);
+      const ws = new WebSocket(socketUrl);
 
       let iframe, lastUrl;
 
