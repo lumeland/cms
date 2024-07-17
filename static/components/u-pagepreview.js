@@ -1,17 +1,6 @@
 import { options, push, url } from "./utils.js";
 import { Component } from "./component.js";
 
-const res = await fetch(new URL(url("_socket_auth"), document.location.origin));
-const json = await res.json();
-const socketUrl = new URL(url("_socket"), document.location.origin);
-
-if (json?.auth) {
-  const [user, pass] = json.auth.split(":");
-  socketUrl.username = user;
-  socketUrl.password = pass;
-}
-socketUrl.protocol = document.location.protocol === "https:" ? "wss:" : "ws:";
-
 customElements.define(
   "u-pagepreview",
   class Modal extends Component {
@@ -26,6 +15,11 @@ customElements.define(
         this.innerHTML = "";
         return;
       }
+
+      const socketUrl = new URL(url("_socket"), document.location.origin);
+      socketUrl.protocol = document.location.protocol === "https:"
+        ? "wss:"
+        : "ws:";
 
       const ws = new WebSocket(socketUrl);
 
@@ -121,13 +115,6 @@ customElements.define(
         icon = push(button, "u-icon", { name: "eye-slash" });
         button.setAttribute("aria-pressed", "false");
       }
-
-      push(this, "a", {
-        class: "button is-link",
-        href: url,
-        target: "_blank",
-        rel: "noopener",
-      }, "Open ↗");
 
       mq.addEventListener("change", (ev) => {
         if (ev.matches) {

@@ -2,11 +2,8 @@ html:has(.modal.is-aside[open]) {
   overflow: hidden;
 }
 html:has(.modal.is-preview:not(.is-hidden)[open]) {
-  padding-left: calc(100% - 450px);
-
-  @media (min-width: 850px) {
-    padding-left: clamp(300px, 50vw, 1200px);
-  }
+  --modal-width: calc(100% - min(50vw, 1000px));
+  padding-left: var(--modal-width);
 }
 .modal[open] {
   border: none;
@@ -34,7 +31,7 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
 
   &.is-preview {
     animation: previewIn var(--animation-duration);
-    width: min(450px, 100%);
+    width: var(--modal-width);
     inset: 0 auto 0 0;
     position: fixed;
     max-height: 100vh;
@@ -45,10 +42,6 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
     display:flex;
     resize: both;
     overflow: hidden;
-
-    @media (min-width: 850px) {
-      width: clamp(300px, 50vw, 1200px);
-    }
   }
 }
 
