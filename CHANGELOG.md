@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.5.7] - Unreleased
+### Fixed
+- Removed auth for websockets in the proxy.
+
 ## [0.5.6] - 2024-07-17
 ### Fixed
 - Auth throught server/proxy.ts.
@@ -322,6 +326,7 @@ First version
 [#19]: https://github.com/lumeland/cms/issues/19
 [#20]: https://github.com/lumeland/cms/issues/20
 
+[0.5.7]: https://github.com/lumeland/cms/compare/v0.5.6...HEAD
 [0.5.6]: https://github.com/lumeland/cms/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/lumeland/cms/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/lumeland/cms/compare/v0.5.3...v0.5.4

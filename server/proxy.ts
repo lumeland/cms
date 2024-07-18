@@ -40,7 +40,7 @@ export function proxy(userOptions?: Options): Deno.ServeHandler {
     const url = new URL(request.url);
 
     // Basic authentication
-    if (options.auth) {
+    if (options.auth && url.pathname !== `${basePath}/_socket`) {
       const { method, users } = options.auth;
       if (method === "basic") {
         if (!handleBasicAuthentication(request, users)) {
@@ -87,7 +87,6 @@ export function proxy(userOptions?: Options): Deno.ServeHandler {
     const headers = new Headers(request.headers);
     headers.set("host", url.host);
     headers.set("origin", url.origin);
-    headers.set("x-lume-cms-proxy", "true");
 
     if (headers.get("upgrade") === "websocket") {
       return proxyWebSocket(request);
