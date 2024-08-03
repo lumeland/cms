@@ -3,16 +3,18 @@ import {
   stringifyYaml,
   testFrontMatter,
 } from "../../deps/std.ts";
-import type { Transformer } from "../../types.ts";
+
+import type { Data, Transformer } from "../../types.ts";
 
 export const FrontMatter: Transformer<string> = {
   toData(content) {
     if (testFrontMatter(content, ["yaml"])) {
-      let { attrs, body } = extractFrontMatter(content);
-      attrs ??= {};
-      attrs.content = body.trim();
+      const { attrs, body } = extractFrontMatter(content);
+      const data = {} as Data;
+      Object.assign(data, attrs);
+      data.content = body.trim();
 
-      return attrs;
+      return data;
     }
 
     return { content };

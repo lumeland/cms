@@ -8,8 +8,8 @@ const fields = new Map<string, FielType>();
 // Logic-less fields
 const inputs = {
   text: null,
-  textarea: null,
-  markdown: null,
+  textarea: normalizeLineBreaks,
+  markdown: normalizeLineBreaks,
   code: null,
   datetime: (v: string) => v ? new Date(v) : null,
   date: null,
@@ -164,7 +164,7 @@ fields.set("file", {
       return;
     }
     const uploads = field.uploads || "default";
-    const [uploadsKey, uploadsPath] = uploads.split(":");
+    const [uploadsKey, uploadsPath = ""] = uploads.split(":");
     const { storage, publicPath } = field.cmsContent.uploads[uploadsKey];
 
     if (!storage) {
@@ -172,10 +172,15 @@ fields.set("file", {
         `No storage found for file field '${field.name}'`,
       );
     }
+
     const entry = storage.get(normalizePath(uploadsPath, uploaded.name));
     await entry.writeFile(uploaded);
     data[field.name] = normalizePath(publicPath, uploadsPath, uploaded.name);
   },
 });
+
+function normalizeLineBreaks(value: string) {
+  return value.replaceAll("\r\n", "\n");
+}
 
 export default fields;
