@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.5.8] - 2024-08-06
+### Fixed
+- Back to `hono` 4.4.3 due https://github.com/honojs/hono/issues/3238
+
 ## [0.5.7] - 2024-08-03
 ### Fixed
 - YAML generation with weird linebreaks.
@@ -329,6 +333,7 @@ First version
 [#19]: https://github.com/lumeland/cms/issues/19
 [#20]: https://github.com/lumeland/cms/issues/20
 
+[0.5.8]: https://github.com/lumeland/cms/compare/v0.5.7...v0.5.8
 [0.5.7]: https://github.com/lumeland/cms/compare/v0.5.6...v0.5.7
 [0.5.6]: https://github.com/lumeland/cms/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/lumeland/cms/compare/v0.5.4...v0.5.5
