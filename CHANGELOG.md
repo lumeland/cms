@@ -5,7 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.5.9] - Unreleased
+### Fixed
 - Updated deps: `hono`, `std`.
+- Show URL preview in Document edit view.
 
 ## [0.5.8] - 2024-08-06
 ### Fixed

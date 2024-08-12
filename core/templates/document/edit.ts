@@ -42,7 +42,9 @@ ${breadcrumb(options, version, document.name)}
 
     <footer class="footer ly-rowStack is-responsive">
       <button class="button is-primary" type="submit">Save changes</button>
-      <u-pagepreview class="ly-rowStack" data-src="${document.src}"></u-pagepreview>
+      <u-pagepreview class="ly-rowStack" data-url="${
+    document.url || ""
+  }" data-src="${document.src}"></u-pagepreview>
     </footer>
   </form>
 </u-form>
