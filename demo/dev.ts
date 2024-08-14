@@ -41,10 +41,12 @@ cms.collection({
   nameField: "title",
 });
 
-cms.collection(
-  "posts: List of posts for the blog",
-  "kv:posts/*",
-  [
+cms.collection({
+  name: "Posts",
+  description: "List of posts for the blog",
+  store: "kv:posts/*",
+  nameField: "title",
+  fields: [
     {
       name: "title",
       type: "text",
@@ -110,6 +112,6 @@ cms.collection(
     "markdown: markdown",
     "blocks: blocks",
   ],
-);
+});
 
 export default cms;

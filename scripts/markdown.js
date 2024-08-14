@@ -74,6 +74,30 @@ export function init(parent, textarea) {
         codeLanguages: languages,
       }),
       EditorView.lineWrapping,
+      EditorView.domEventHandlers({
+        paste(event, view) {
+          const text = event.clipboardData.getData("text/plain");
+          const selectedText = view.state.doc.sliceString(
+            view.state.selection.main.from,
+            view.state.selection.main.to,
+          );
+          const insert = URL.canParse(text) && selectedText
+            ? `[${selectedText}](${text})`
+            : text;
+
+          view.dispatch({
+            changes: {
+              from: view.state.selection.main.from,
+              to: view.state.selection.main.to,
+              insert,
+            },
+            selection: {
+              anchor: view.state.selection.main.from + insert.length,
+            },
+          });
+          return true;
+        },
+      }),
     ],
   });
 
