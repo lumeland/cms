@@ -59,7 +59,27 @@ cms.collection({
         maxlength: 20,
       },
     },
+    {
+      name: "created_at",
+      type: "datetime",
+      mode: "create",
+    },
+    {
+      name: "updated_at",
+      type: "datetime",
+      mode: "update",
+    },
     "datetime: datetime",
+    {
+      name: "created_at",
+      type: "date",
+      mode: "create",
+    },
+    {
+      name: "updated_at",
+      type: "date",
+      mode: "update",
+    },
     "date: date",
     "hour: time",
     "number: number",

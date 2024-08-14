@@ -4,12 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.5.10] - Unreleased
+## [0.5.10] - 2024-08-14
 ### Added
 - Markdown field: create links on paste url-like content.
+- New option `mode` for `date` and `datetime` fields with the options "create" and "update":
+  - create: Add the current time if the value is empty
+  - update: Update always the value to the current time
 
 ### Fixed
 - Updated Codemirror and dev libraries (rollup, terser).
+- Datetime field doesn't load the previous value
 
 ## [0.5.9] - 2024-08-12
 ### Fixed
@@ -345,7 +349,7 @@ First version
 [#19]: https://github.com/lumeland/cms/issues/19
 [#20]: https://github.com/lumeland/cms/issues/20
 
-[0.5.10]: https://github.com/lumeland/cms/compare/v0.5.9...HEAD
+[0.5.10]: https://github.com/lumeland/cms/compare/v0.5.9...v0.5.10
 [0.5.9]: https://github.com/lumeland/cms/compare/v0.5.8...v0.5.9
 [0.5.8]: https://github.com/lumeland/cms/compare/v0.5.7...v0.5.8
 [0.5.7]: https://github.com/lumeland/cms/compare/v0.5.6...v0.5.7

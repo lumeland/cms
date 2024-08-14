@@ -172,3 +172,10 @@ export const options = {
     localStorage.setItem(optionsKey, JSON.stringify(currOptions));
   },
 };
+
+/** Convert a Date to local timezone */
+export function toLocal(date) {
+  const offset = date.getTimezoneOffset();
+  date.setMinutes(date.getMinutes() - offset);
+  return date;
+}

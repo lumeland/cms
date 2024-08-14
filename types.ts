@@ -67,6 +67,7 @@ export interface Field {
   description?: string;
   options?: Option[];
   uploads?: string;
+  mode?: string;
   publicPath?: string;
   attributes?: {
     required?: boolean;

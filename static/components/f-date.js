@@ -1,3 +1,4 @@
+import { toLocal } from "./utils.js";
 import { Input } from "./f-text.js";
 
 customElements.define(
@@ -7,19 +8,35 @@ customElements.define(
       return { type: "date", class: "input" };
     }
 
-    get value() {
-      let value = super.value;
+    init() {
+      super.init();
+      const { schema } = this;
+      const input = this.querySelector("input");
 
-      if (typeof value === "string") {
-        value = new Date(value);
-        super.value = value;
+      switch (schema.mode) {
+        case "create":
+          if (!input.value) {
+            input.value = format();
+          }
+          break;
+        case "update":
+          input.value = format();
+          break;
       }
-
-      // Get the value in the format "YYYY-MM-DD"
-      return value?.toISOString().split("T")[0];
     }
-    set value(value) {
-      super.value = value;
+
+    get value() {
+      const value = super.value;
+
+      if (value) {
+        return format(new Date(value));
+      }
+      return null;
     }
   },
 );
+
+// Get the value in the format "YYYY-MM-DD"
+function format(date = new Date()) {
+  return toLocal(date).toISOString().split("T")[0];
+}
