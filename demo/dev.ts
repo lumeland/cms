@@ -110,6 +110,7 @@ cms.collection({
       ],
     },
     "markdown: markdown",
+    "code: code",
     "blocks: blocks",
   ],
 });

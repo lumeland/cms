@@ -81,7 +81,7 @@ export function init(parent, textarea) {
             view.state.selection.main.from,
             view.state.selection.main.to,
           );
-          const insert = URL.canParse(text) && selectedText
+          const insert = isUrlLike(text) && selectedText
             ? `[${selectedText}](${text})`
             : text;
 
@@ -123,4 +123,18 @@ export function init(parent, textarea) {
     insertLink,
     editor,
   };
+}
+
+function isUrlLike(text) {
+  if (URL.canParse(text)) {
+    return true;
+  }
+
+  if (text.includes(" ")) {
+    return false;
+  }
+
+  // It's a path
+  return text.startsWith("./") || text.startsWith("/") ||
+    text.startsWith("#") || text.startsWith("?");
 }
