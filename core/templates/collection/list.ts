@@ -78,6 +78,17 @@ function folder({ options, collection, tree }: FolderProps) {
           ${folder({ options, collection, tree: subTree })}
         </ul>
       </details>
+      <div class="list-actions">
+        <a
+          href="${
+      getPath(options.basePath, "collection", collection.name, "create")
+    }?folder=${subTree.path}"
+          title="Create new item inside ${labelify(name)}"
+          class="buttonIcon"
+        >
+          <u-icon name="plus-circle"></u-icon>
+        </a>
+      </div>
     </li>`);
 
   return `

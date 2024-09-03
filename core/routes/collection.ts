@@ -3,6 +3,7 @@ import collectionList from "../templates/collection/list.ts";
 import collectionEdit from "../templates/collection/edit.ts";
 import collectionCreate from "../templates/collection/create.ts";
 import { getPath } from "../utils/path.ts";
+import { posix } from "../../deps/std.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
@@ -139,6 +140,7 @@ export default function (app: Hono) {
           options,
           collection,
           version: await versioning?.current(),
+          folder: c.req.query("folder"),
         }),
       );
     })
@@ -162,6 +164,10 @@ export default function (app: Hono) {
 
       if (!name) {
         throw new Error("Document name is required");
+      }
+
+      if (body._prefix) {
+        name = posix.join(body._prefix as string, name);
       }
 
       const document = collection.create(name);

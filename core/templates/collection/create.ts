@@ -10,10 +10,11 @@ interface Props {
   options: CMSContent;
   collection: Collection;
   version?: Version;
+  folder?: string;
 }
 
 export default async function template(
-  { options, collection, version }: Props,
+  { options, collection, version, folder }: Props,
 ) {
   const { basePath } = options;
   const fields = await Promise.all(collection.fields.map(async (field) => `
@@ -35,16 +36,19 @@ ${
 <header class="header">
   <h1 class="header-title">
     Creating new file
-    <input
-      class="input is-inline"
-      id="_id"
-      type="text"
-      name="_id"
-      placeholder="Name your file…"
-      form="form-create"
-      aria-label="File name"
-      ${collection.nameField ? "" : "required autofocus"}
-    >
+    <label class="header-file">
+      ${folder || ""}
+      <input
+        class="input is-inline"
+        id="_id"
+        type="text"
+        name="_id"
+        placeholder="Name your file…"
+        form="form-create"
+        aria-label="File name"
+        ${collection.nameField ? "" : "required autofocus"}
+      >
+    </label>
   </h1>
 </header>
 <form
@@ -54,6 +58,7 @@ ${
   enctype="multipart/form-data"
   id="form-create"
 >
+  <input type="hidden" name="_prefix" value="${folder || ""}">
   ${fields.join("")}
   <footer class="footer ly-rowStack">
     <button class="button is-primary" type="submit">Create</button>

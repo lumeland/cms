@@ -7,6 +7,7 @@
     display: flex;
     gap: .25rem;
     align-items: center;
+    position: relative;
 
     > :first-child {
       flex-grow: 1;
@@ -57,6 +58,11 @@
   &[href]:hover {
     background-color: var(--color-line-light);
   }
+}
+.list-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 form.list-item {
   padding: 0;

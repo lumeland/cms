@@ -85,3 +85,25 @@ dl.header-description {
     font: var(--font-body-bold);
   }
 }
+.header-file {
+  font: var(--font-ui);
+  display: flex;
+  white-space: nowrap;
+  align-items: center;
+  color: var(--color-dim);
+  background: var(--color-input-bg);
+  padding-left: .8em;
+  border-radius: var(--border-radius);
+  gap: .15em;
+
+  & input {
+    border: none;
+    padding-left: 0;
+  }
+  & input:focus-visible {
+    box-shadow: none;
+  }
+  &:focus-within {
+    box-shadow: 0 0 0 3px color-mix(in hsl, var(--color-primary), transparent 75%);
+  }
+}
