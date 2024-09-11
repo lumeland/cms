@@ -70,7 +70,7 @@ export async function prepareField(
 }
 
 export function getDefaultValue(field: ResolvedField): unknown {
-  if (field.fields) {
+  if (field.fields && !field.type.endsWith("-list")) {
     const values = {} as Data;
     for (const f of field.fields) {
       values[f.name] = getDefaultValue(f);

@@ -87,6 +87,7 @@ dl.header-description {
 }
 .header-file {
   font: var(--font-ui);
+  letter-spacing: 0;
   display: flex;
   white-space: nowrap;
   align-items: center;
@@ -94,7 +95,6 @@ dl.header-description {
   background: var(--color-input-bg);
   padding-left: .8em;
   border-radius: var(--border-radius);
-  gap: .15em;
 
   & input {
     border: none;
