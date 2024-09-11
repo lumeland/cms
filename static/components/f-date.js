@@ -8,23 +8,6 @@ customElements.define(
       return { type: "date", class: "input" };
     }
 
-    init() {
-      super.init();
-      const { schema } = this;
-      const input = this.querySelector("input");
-
-      switch (schema.mode) {
-        case "create":
-          if (!input.value) {
-            input.value = format();
-          }
-          break;
-        case "update":
-          input.value = format();
-          break;
-      }
-    }
-
     get value() {
       const value = super.value;
 

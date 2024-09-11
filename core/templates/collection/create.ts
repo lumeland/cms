@@ -1,6 +1,6 @@
 import { escape } from "../../../deps/std.ts";
 import { getPath } from "../../utils/path.ts";
-import { prepareField } from "../../utils/data.ts";
+import { getDefaultValue, prepareField } from "../../utils/data.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type Collection from "../../collection.ts";
@@ -17,13 +17,18 @@ export default async function template(
   { options, collection, version, folder }: Props,
 ) {
   const { basePath } = options;
-  const fields = await Promise.all(collection.fields.map(async (field) => `
+  const fields = await Promise.all(collection.fields.map(async (field) => {
+    const prep = await prepareField(field);
+    const value = getDefaultValue(prep);
+    return `
     <${field.tag}
       data-nameprefix="changes"
-      data-field="${escape(JSON.stringify(await prepareField(field)))}"
+      data-value="${escape(JSON.stringify(value))}"
+      data-field="${escape(JSON.stringify(prep))}"
     >
     </${field.tag}>
-  `));
+  `;
+  }));
 
   return `
 ${

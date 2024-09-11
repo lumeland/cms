@@ -68,3 +68,15 @@ export async function prepareField(
 
   return json;
 }
+
+export function getDefaultValue(field: ResolvedField): unknown {
+  if (field.fields) {
+    const values = {} as Data;
+    for (const f of field.fields) {
+      values[f.name] = getDefaultValue(f);
+    }
+    return values;
+  }
+
+  return field.value ?? null;
+}

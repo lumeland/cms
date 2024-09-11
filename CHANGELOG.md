@@ -4,9 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.5.11] - Unreleased
+## [0.6.0] - 2024-09-11
 ### Added
 - Allow to create collection items in subfolders.
+- New field `current_datetime`, to set always the current datetime on save.
+
+### Removed
+- `mode` option introduced in `0.5.10`.
+  - Use the new `current_datetime` field for `update` mode.
+  - Use the `field.value` option for `create` mode.
+
+### Fixed
+- `field.value` is used as the default value for new entries [#22].
 
 ## [0.5.10] - 2024-08-14
 ### Added
@@ -352,8 +361,13 @@ First version
 [#18]: https://github.com/lumeland/cms/issues/18
 [#19]: https://github.com/lumeland/cms/issues/19
 [#20]: https://github.com/lumeland/cms/issues/20
+[#22]: https://github.com/lumeland/cms/issues/22
 
+<<<<<<< HEAD
 [0.5.11]: https://github.com/lumeland/cms/compare/v0.5.10...HEAD
+=======
+[0.6.0]: https://github.com/lumeland/cms/compare/v0.5.10...v0.6.0
+>>>>>>> e47dbd1 (new current_datetime field)
 [0.5.10]: https://github.com/lumeland/cms/compare/v0.5.9...v0.5.10
 [0.5.9]: https://github.com/lumeland/cms/compare/v0.5.8...v0.5.9
 [0.5.8]: https://github.com/lumeland/cms/compare/v0.5.7...v0.5.8

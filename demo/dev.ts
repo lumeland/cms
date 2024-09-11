@@ -62,24 +62,13 @@ cms.collection({
     {
       name: "created_at",
       type: "datetime",
-      mode: "create",
+      value: new Date(),
     },
     {
       name: "updated_at",
-      type: "datetime",
-      mode: "update",
+      type: "current_datetime",
     },
     "datetime: datetime",
-    {
-      name: "created_at",
-      type: "date",
-      mode: "create",
-    },
-    {
-      name: "updated_at",
-      type: "date",
-      mode: "update",
-    },
     "date: date",
     "hour: time",
     "number: number",
@@ -99,6 +88,7 @@ cms.collection({
       name: "radio",
       type: "radio",
       options: ["one", "two"],
+      value: "three",
       init(field) {
         field.options = [...field.options!, "three", "four"];
       },
