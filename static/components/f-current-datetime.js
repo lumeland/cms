@@ -8,11 +8,11 @@ customElements.define(
       this.removeEventListener("input", this.inputHandler);
       // When the user inputs, the value will not be modified before submitting
       this.closest("form").removeEventListener("submit", this.submitHandler);
-    }
+    };
 
     submitHandler = () => {
       this.querySelector("input").value = format(new Date());
-    }
+    };
 
     init() {
       super.init();

@@ -15,6 +15,11 @@
     border-color: var(--color-primary);
   }
 
+  &:read-only {
+    color: var(--color-dim);
+    background: none;
+  }
+
   &.is-narrow {
     max-width: 300px;
   }

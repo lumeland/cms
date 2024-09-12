@@ -62,11 +62,16 @@ cms.collection({
     {
       name: "created_at",
       type: "datetime",
-      value: new Date(),
+      init(field) {
+        field.value = new Date();
+      },
     },
     {
       name: "updated_at",
       type: "current-datetime",
+      attributes: {
+        readonly: false,
+      },
     },
     "datetime: datetime",
     "date: date",
