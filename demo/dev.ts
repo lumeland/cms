@@ -66,7 +66,7 @@ cms.collection({
     },
     {
       name: "updated_at",
-      type: "current_datetime",
+      type: "current-datetime",
     },
     "datetime: datetime",
     "date: date",

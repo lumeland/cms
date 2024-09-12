@@ -2,7 +2,7 @@ import { toLocal } from "./utils.js";
 import { Input } from "./f-text.js";
 
 customElements.define(
-  "f-current_datetime",
+  "f-current-datetime",
   class extends Input {
     inputHandler = () => {
       this.removeEventListener("input", this.inputHandler);
