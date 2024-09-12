@@ -1,7 +1,7 @@
 import { normalizePath } from "../core/utils/path.ts";
 import { isEmpty } from "../core/utils/string.ts";
 
-import type { Data, FielType, ResolvedField } from "../types.ts";
+import type { Data, FieldType, ResolvedField } from "../types.ts";
 
 // Logic-less fields
 const inputs = {
@@ -27,7 +27,7 @@ type DumpFieldKeys = keyof typeof inputs;
 type SmartFieldKeys = "list" | "object" | "object-list" | "choose-list" | "file";
 export type FieldKeys = DumpFieldKeys | SmartFieldKeys;
 
-const fields = new Map<FieldKeys, FielType>();
+const fields = new Map<FieldKeys, FieldType>();
 
 for (const [input, transform] of Object.entries(inputs)) {
   fields.set(input as DumpFieldKeys, {
