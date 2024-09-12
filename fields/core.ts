@@ -1,9 +1,9 @@
 import { normalizePath } from "../core/utils/path.ts";
 import { isEmpty } from "../core/utils/string.ts";
 
-import type { Data, FielType, ResolvedField } from "../types.ts";
+import type { Data, FieldType, ResolvedField } from "../types.ts";
 
-const fields = new Map<string, FielType>();
+const fields = new Map<string, FieldType>();
 
 // Logic-less fields
 const inputs = {
