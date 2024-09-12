@@ -2,6 +2,7 @@
 import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
+import { FieldKeys } from "./fields/core.ts";
 
 /** Generic data to store */
 export type Data = Record<string, unknown>;
@@ -59,7 +60,9 @@ export interface Transformer<T> {
 
 /** The schema for a field */
 export interface Field {
-  type: string;
+  type: FieldKeys | (string & Record<never, never>);
+  //                ^ Typescript hack to suggest the correct keys but allow any string
+  //                  https://x.com/diegohaz/status/1524257274012876801
   name: string;
   value?: unknown;
   fields?: (Field | string)[];

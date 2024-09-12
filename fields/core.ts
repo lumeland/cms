@@ -3,8 +3,6 @@ import { isEmpty } from "../core/utils/string.ts";
 
 import type { Data, FieldType, ResolvedField } from "../types.ts";
 
-const fields = new Map<string, FieldType>();
-
 // Logic-less fields
 const inputs = {
   text: null,
@@ -25,8 +23,19 @@ const inputs = {
   number: (v: string) => Number(v),
 };
 
+type DumpFieldKeys = keyof typeof inputs;
+type SmartFieldKeys =
+  | "list"
+  | "object"
+  | "object-list"
+  | "choose-list"
+  | "file";
+export type FieldKeys = DumpFieldKeys | SmartFieldKeys;
+
+const fields = new Map<FieldKeys, FieldType>();
+
 for (const [input, transform] of Object.entries(inputs)) {
-  fields.set(input, {
+  fields.set(input as DumpFieldKeys, {
     tag: `f-${input}`,
     jsImport: `lume_cms/components/f-${input}.js`,
     applyChanges(data, changes, field: ResolvedField) {
