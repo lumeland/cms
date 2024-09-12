@@ -4,34 +4,30 @@ import { Input } from "./f-text.js";
 customElements.define(
   "f-current_datetime",
   class extends Input {
-    init() {
-      super.init();
-
-      // If there is a value, show the previous value
+    inputHandler = () => {
+      this.removeEventListener("input", this.inputHandler);
+      // When the user inputs, the value will not be modified before submitting
+      this.closest("form").removeEventListener("submit", this.submitHandler);
+      // Also, the previous value will be shown
       if (super.value) {
         push(this, "div", { class: "field-description" }, `Was: ${new Date(super.value).toLocaleString()}`);
       }
     }
 
-    inputHandler = () => {
-      // When the user inputs, stop updating the value
-      this.interval && clearInterval(this.interval) && (this.interval = null);
+    submitHandler = () => {
+      this.querySelector("input").value = format(new Date());
     }
 
     connectedCallback() {
       super.connectedCallback();
 
-      // Update the value every second
-      this.interval = setInterval(() => {
-        this.querySelector("input").value = format();
-      }, 1000);
-
       this.addEventListener("input", this.inputHandler);
+      this.closest("form").addEventListener("submit", this.submitHandler);
     }
 
     disconnectedCallback() {
-      clearInterval(this.interval) && (this.interval = null);
       this.removeEventListener("input", this.inputHandler);
+      this.closest("form").removeEventListener("submit", this.submitHandler);
     }
 
     get inputAttributes() {
@@ -39,6 +35,11 @@ customElements.define(
     }
 
     get value() {
+      const value = super.value;
+
+      if (value) {
+        return format(new Date(value));
+      }
       return format(new Date());
     }
   },
