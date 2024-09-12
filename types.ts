@@ -94,7 +94,7 @@ export interface ResolvedField extends Field {
   ): void | Promise<void>;
 }
 
-export interface FielType {
+export interface FieldType {
   tag: string;
   jsImport: string;
   init?: (field: ResolvedField) => void;
