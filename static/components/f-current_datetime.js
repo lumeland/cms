@@ -1,4 +1,4 @@
-import { toLocal, push } from "./utils.js";
+import { toLocal } from "./utils.js";
 import { Input } from "./f-text.js";
 
 customElements.define(
@@ -8,18 +8,14 @@ customElements.define(
       this.removeEventListener("input", this.inputHandler);
       // When the user inputs, the value will not be modified before submitting
       this.closest("form").removeEventListener("submit", this.submitHandler);
-      // Also, the previous value will be shown
-      if (super.value) {
-        push(this, "div", { class: "field-description" }, `Was: ${new Date(super.value).toLocaleString()}`);
-      }
     }
 
     submitHandler = () => {
       this.querySelector("input").value = format(new Date());
     }
 
-    connectedCallback() {
-      super.connectedCallback();
+    init() {
+      super.init();
 
       this.addEventListener("input", this.inputHandler);
       this.closest("form").addEventListener("submit", this.submitHandler);
