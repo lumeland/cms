@@ -13,7 +13,6 @@ const inputs = {
   code: null,
   datetime: (v: string) => v ? new Date(v) : null,
   current_datetime: (v: string) => v ? new Date(v) : null,
-  readonly_current_datetime: (v: string) => v ? new Date(v) : null,
   date: null,
   time: null,
   hidden: null,
