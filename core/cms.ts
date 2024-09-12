@@ -26,7 +26,7 @@ import type {
   CMSContent,
   Entry,
   Field,
-  FielType,
+  FieldType,
   ResolvedField,
   SiteInfo,
   Storage,
@@ -86,7 +86,7 @@ export default class Cms {
   options: CmsOptions;
   storages = new Map<string, Storage | string>();
   uploads = new Map<string, [string, string]>();
-  fields = new Map<string, FielType>();
+  fields = new Map<string, FieldType>();
   collections = new Map<string, CollectionOptions>();
   documents = new Map<string, DocumentOptions>();
   versionManager: Versioning | undefined;
@@ -180,7 +180,7 @@ export default class Cms {
     return this;
   }
 
-  field(name: string, field: FielType): this {
+  field(name: string, field: FieldType): this {
     this.fields.set(name, field);
     return this;
   }

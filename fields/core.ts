@@ -24,7 +24,12 @@ const inputs = {
 };
 
 type DumpFieldKeys = keyof typeof inputs;
-type SmartFieldKeys = "list" | "object" | "object-list" | "choose-list" | "file";
+type SmartFieldKeys =
+  | "list"
+  | "object"
+  | "object-list"
+  | "choose-list"
+  | "file";
 export type FieldKeys = DumpFieldKeys | SmartFieldKeys;
 
 const fields = new Map<FieldKeys, FieldType>();
