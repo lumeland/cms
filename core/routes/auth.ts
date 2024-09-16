@@ -19,11 +19,20 @@ export default function (app: Hono, auth?: AuthOptions) {
     ...users.shift()!,
   }, ...users);
 
+  app.get("/logout", () => {
+    return new Response("Logged out", {
+      status: 401,
+      headers: {
+        "WWW-Authenticate": 'Basic realm="Secure Area"',
+      },
+    });
+  });
+
   app.use(
     "*",
     (c, next) => {
       // Skip auth for socket because Safari doesn't keep the auth header
-      if (c.req.url === "/_socket") {
+      if (c.req.url === "/_socket" || c.req.url === "/logout") {
         return next();
       }
 

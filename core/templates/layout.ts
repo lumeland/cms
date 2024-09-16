@@ -49,24 +49,32 @@ ${extraHead ?? ""}
     ${content}
   </div>
   <footer class="app-footer">
-    <div>
+    <p>
       Powered by <a href="https://lume.land/cms/">LumeCMS ${getCurrentVersion()}</a>
-      <button id="darkLightModeSwitchToggleButton" type="button" aria-label="toggle-theme">Toggle Theme</button>
-    </div>
+    </p>
+    <button class="buttonIcon" id="themeButton" type="button" aria-label="toggle-theme"><u-icon name="theme"></u-icon></button>
+    <button class="button is-tertiary" id="logoutButton" type="button" aria-label="logout">Logout</button>
   </footer>
-  <script>
-    const darkLightModeBtn = document.querySelector('#darkLightModeSwitchToggleButton');
-    function changeLumeCmsUserTheme() {
+  <script type="module">
+    document.querySelector('#themeButton')
+      .addEventListener('click', function() {
         if (localStorage.getItem(darkLightModeStorageKey) == 'dark') {
             document.documentElement.removeAttribute('data-theme');
             localStorage.removeItem(darkLightModeStorageKey);
-        }
-        else {        
+        } else {        
           document.documentElement.setAttribute('data-theme', 'dark');
           localStorage.setItem(darkLightModeStorageKey, 'dark');
-        }    
-    }
-    darkLightModeBtn.addEventListener('click', changeLumeCmsUserTheme, false);
+        }
+      }, false);
+
+    document.querySelector('#logoutButton')
+      .addEventListener('click', function () {
+        const logoutUrl = '${getPath("logout")}'; 
+        const xmlHttp = new XMLHttpRequest();
+        xmlHttp.open('POST', logoutUrl, true, 'logout');
+        xmlHttp.send();
+        document.body.innerHTML = '<p class="emptyState">Logged out</p>';
+      }, false);
   </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
   margin: auto;
   padding: 2rem 0;
   max-width: min(100% - 10vw, 900px);
-  min-height: calc(100vh - 3rem);
+  min-height: calc(100vh - 4rem);
 
   &.is-preview {
     margin: 0;
@@ -20,10 +20,13 @@
   }
 }
 .app-footer {
-  height: 3rem;
+  height: 4rem;
   text-align: center;
   font: var(--font-small);
   color: var(--color-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   & a {
     color: inherit;
@@ -33,25 +36,7 @@
       text-decoration: underline;
     }
   }
-  
-  div {
-    justify-items: center;
-    gap: 0.5rem;
-    align-items: center;
-    display: inline-flex;
-  }
-
-  #darkLightModeSwitchToggleButton {
-    background: none;
-    color: var(--color-text);
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border: solid 1px var(--color-line);
-    padding: 0.4rem 0.6rem;
-    border-radius: 10px;
-    cursor: pointer;
-    vertical-align: middle;
-    font-weight: 420;
+  p {
+    margin: 0 1em 0 0;
   }
 }

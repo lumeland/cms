@@ -1,5 +1,6 @@
 import uploadsList from "../templates/uploads/list.ts";
 import uploadsView from "../templates/uploads/view.ts";
+import uploadsCreate from "../templates/uploads/create.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath, normalizePath } from "../utils/path.ts";
 
@@ -25,7 +26,18 @@ export default function (app: Hono) {
     );
   });
 
-  app.post("/uploads/:upload/create", async (c: Context) => {
+  app.get("/uploads/:upload/create", async (c: Context) => {
+    const { options, uploadId, versioning } = get(c);
+
+    return c.render(
+      uploadsCreate({
+        options,
+        collection: uploadId,
+        version: await versioning?.current(),
+        folder: c.req.query("folder"),
+      }),
+    );
+  }).post("/uploads/:upload/create", async (c: Context) => {
     const { options, uploads, uploadId } = get(c);
     const upload = uploads[uploadId];
     const body = await c.req.parseBody();

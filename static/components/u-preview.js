@@ -29,7 +29,8 @@ customElements.define(
           break;
 
         default:
-          this.innerHTML = `<p>Cannot preview</p>`;
+          this.innerHTML =
+            `<p>Cannot preview. <a href="${src}" download>Download</a></p>`;
           break;
       }
     }

@@ -19,6 +19,9 @@ u-preview {
     width: 100%;
     border: solid 1px #0002;
   }
+  & p {
+    text-align: center;
+  }
 
   &[popover] {
     max-width: 300px;

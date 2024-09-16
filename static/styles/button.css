@@ -54,6 +54,19 @@
       color: var(--color-dim);
     }
   }
+  &.is-tertiary {
+    color: var(--color-dim);
+    font: inherit;
+    font-weight: 600;
+    
+    &:hover {
+      background: var(--color-line-light);
+    }
+
+    &[aria-pressed="false"] {
+      color: var(--color-dim);
+    }
+  }
   &.is-link {
     padding: 0;
     color: var(--color-link);

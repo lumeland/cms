@@ -46,25 +46,15 @@ ${
       : '<p class="emptyState">No results</p>'
   }
 
-<form
-  method="post"
-  class="footer ly-rowStack is-responsive"
-  enctype="multipart/form-data"
-  action="${getPath(options.basePath, "uploads", name, "create")}"
->
-  <input
-    aria-label="Add file"
-    id="new-file"
-    type="file"
-    name="file"
-    required
-    class="inputFile"
+<footer class="ly-rowStack footer is-responsive">
+  <a
+    href="${getPath(options.basePath, "uploads", name, "create")}"
+    class="button is-primary"
   >
-  <button class="button is-primary" type="submit">
-    <u-icon name="upload-simple"></u-icon>
-    Upload file
-  </button>
-</form>
+    <u-icon name="plus-circle"></u-icon>
+    Add file
+  </a>
+</footer>
   `;
 }
 
@@ -85,6 +75,17 @@ function folder({ options, collection, publicPath, tree }: FolderProps) {
           ${folder({ options, collection, publicPath, tree: subTree })}
         </ul>
       </details>
+      <div class="list-actions">
+        <a
+          href="${
+      getPath(options.basePath, "uploads", collection, "create")
+    }?folder=${subTree.path}"
+          title="Upload file inside ${labelify(name)}"
+          class="buttonIcon"
+        >
+          <u-icon name="plus-circle"></u-icon>
+        </a>
+      </div>
     </li>`);
 
   return `
