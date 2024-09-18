@@ -1,12 +1,12 @@
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 import { push } from "./utils.js";
 
 customElements.define(
   "f-textarea",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix } = this;
+      const { schema, value, namePrefix, isNew } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
@@ -21,7 +21,7 @@ customElements.define(
         ...schema.attributes,
         id,
         name,
-        value,
+        value: isNew ? schema.value : value,
         class: "input",
         oninput() {
           this.parentNode.dataset.replicatedValue = this.value;

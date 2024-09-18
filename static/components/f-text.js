@@ -1,14 +1,14 @@
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 import { push, pushOptions } from "./utils.js";
 
-export class Input extends Field {
+export class Input extends Component {
   get inputAttributes() {
     return { type: "text", class: "input" };
   }
 
   init() {
     this.classList.add("field");
-    const { schema, value, namePrefix } = this;
+    const { schema, value, namePrefix, isNew } = this;
     const name = `${namePrefix}.${schema.name}`;
     const id = `field_${name}`;
 
@@ -26,7 +26,7 @@ export class Input extends Field {
       ...schema.attributes,
       id,
       name,
-      value,
+      value: isNew ? schema.value : value,
       ...this.inputAttributes,
       style: { "--max-width": maxWidth },
     });

@@ -1,12 +1,12 @@
 import { push, pushOptions } from "./utils.js";
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 
 customElements.define(
   "f-select",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix } = this;
+      const { schema, value, namePrefix, isNew } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
@@ -24,7 +24,7 @@ customElements.define(
       });
 
       pushOptions(select, schema.options);
-      select.value = value ?? "";
+      select.value = (isNew ? schema.value : value) ?? "";
     }
   },
 );

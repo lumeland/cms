@@ -57,6 +57,7 @@ cms.collection({
       ],
       attributes: {
         maxlength: 20,
+        required: true,
       },
     },
     {
@@ -122,11 +123,44 @@ cms.collection({
       fields: [
         "name: text",
         "date: date",
+        {
+          name: "tags",
+          type: "select",
+          value: "tag2",
+          options: [
+            "tag1",
+            "tag2",
+            "tag3",
+          ],
+        },
       ],
     },
     "markdown: markdown",
     "code: code",
-    "blocks: blocks",
+    {
+      name: "blocks",
+      type: "choose-list",
+      fields: [
+        {
+          name: "title",
+          type: "object",
+          fields: [
+            {
+              name: "text",
+              type: "text",
+              value: "Hello world!",
+            },
+          ],
+        },
+        {
+          name: "content",
+          type: "object",
+          fields: [
+            "body: markdown",
+          ],
+        },
+      ],
+    },
   ],
 });
 

@@ -8,17 +8,12 @@ customElements.define(
       return { type: "date", class: "input" };
     }
 
-    get value() {
-      const value = super.value;
-
-      if (value) {
-        return format(new Date(value));
+    init() {
+      if (this.value) {
+        this.value = format(new Date(this.value));
       }
-      return null;
-    }
 
-    set value(value) {
-      super.value = value;
+      super.init();
     }
   },
 );

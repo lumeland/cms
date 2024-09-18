@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.6.3] - Unreleased
 ### Fixed
 - Set default value to `date`, `datetime`, and `current-datetime` fields.
+- Default values for fields created in containers like `object-list` and similar.
 
 ## [0.6.2] - 2024-09-16
 ### Added

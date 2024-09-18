@@ -1,12 +1,12 @@
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 import { push } from "./utils.js";
 
 customElements.define(
   "f-object",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field", "is-group");
-      const { schema, value } = this;
+      const { schema, value, isNew } = this;
       const namePrefix = `${this.namePrefix}.${schema.name}`;
       const details = push(this, "details", {
         class: "accordion",
@@ -59,6 +59,7 @@ customElements.define(
           schema: field,
           namePrefix,
           value: value?.[field.name] ?? null,
+          isNew,
         });
       }
     }

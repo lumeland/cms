@@ -16,14 +16,9 @@ export default async function template(
   { options, document, version }: Props,
 ) {
   const data = await document.read(true);
-  const fields = await Promise.all(document.fields.map(async (field) => `
-    <${field.tag}
-      data-nameprefix="changes"
-      data-value="${escape(JSON.stringify(data[field.name] ?? null))}"
-      data-field="${escape(JSON.stringify(await prepareField(field)))}"
-    >
-    </${field.tag}>
-  `));
+  const fields = await Promise.all(
+    document.fields.map((field) => prepareField(field)),
+  );
 
   return `
 ${breadcrumb(options, version, document.name)}
@@ -38,7 +33,9 @@ ${breadcrumb(options, version, document.name)}
     class="form"
     enctype="multipart/form-data"
   >
-    ${fields.join("")}
+    <u-fields data-fields="${escape(JSON.stringify(fields))}" data-value="${
+    escape(JSON.stringify(data))
+  }"></u-fields>
 
     <footer class="footer ly-rowStack is-responsive">
       <button class="button is-primary" type="submit">Save changes</button>

@@ -17,17 +17,11 @@ interface Props {
 export default async function template(
   { options, collection, document, version }: Props,
 ) {
-  const data = await document.read();
-  const fields = await Promise.all(document.fields.map(async (field) => `
-  <${field.tag}
-    data-nameprefix="changes"
-    data-value="${escape(JSON.stringify(data[field.name] ?? null))}"
-    data-field="${escape(JSON.stringify(await prepareField(field)))}"
-  >
-  </${field.tag}>
-`));
-
   const { basePath } = options;
+  const data = await document.read();
+  const fields = await Promise.all(
+    collection.fields.map((field) => prepareField(field)),
+  );
 
   return `
 ${
@@ -68,7 +62,9 @@ ${
     enctype="multipart/form-data"
     id="form-edit"
   >
-    ${fields.join("")}
+    <u-fields data-fields="${escape(JSON.stringify(fields))}" data-value="${
+    escape(JSON.stringify(data))
+  }"></u-fields>
 
     <footer class="footer ly-rowStack is-responsive">
       <button class="button is-primary" type="submit">

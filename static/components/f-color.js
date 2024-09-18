@@ -1,12 +1,12 @@
 import { push } from "./utils.js";
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 
 customElements.define(
   "f-color",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix } = this;
+      const { schema, value, namePrefix, isNew } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
@@ -22,7 +22,7 @@ customElements.define(
         type: "color",
         id,
         name,
-        value,
+        value: isNew ? schema.value : value,
       });
       const text = push(div, "input", {
         class: "input is-narrow",

@@ -1,12 +1,12 @@
 import { labelify, push } from "./utils.js";
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 
 customElements.define(
   "f-radio",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix } = this;
+      const { schema, value, namePrefix, isNew } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
@@ -50,7 +50,7 @@ customElements.define(
       }
 
       const form = this.closest("form");
-      form[name].value = value;
+      form[name].value = isNew ? schema.value : value;
 
       if (schema.description) {
         push(this, "div", { class: "field-description" }, schema.description);

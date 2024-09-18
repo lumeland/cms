@@ -1,17 +1,17 @@
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 import { push } from "./utils.js";
 
 customElements.define(
   "f-hidden",
-  class extends Field {
+  class extends Component {
     init() {
-      const { schema, value, namePrefix } = this;
+      const { schema, value, namePrefix, isNew } = this;
       const name = `${namePrefix}.${schema.name}`;
 
       push(this, "input", {
         type: "hidden",
         name,
-        value: value ?? schema.value,
+        value: isNew ? schema.value : value,
       });
     }
   },

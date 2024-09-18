@@ -17,7 +17,7 @@ export function pushOptions(el, options) {
   }
 }
 
-const props = new Set(["namePrefix", "value", "schema"]);
+const props = new Set(["namePrefix", "value", "schema", "isNew"]);
 
 /** Create a new DOM element */
 export function dom(tag, attrs, ...children) {

@@ -1,12 +1,12 @@
 import { push } from "./utils.js";
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 
 customElements.define(
   "f-checkbox",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix } = this;
+      const { schema, value, namePrefix, isNew } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
       const div = push(this, "div", { class: "field-check" });
@@ -16,7 +16,7 @@ customElements.define(
         id,
         name,
         value: true,
-        checked: value || undefined,
+        checked: (isNew ? schema.value : value) ?? undefined,
         type: "checkbox",
         class: "checkbox",
       });

@@ -1,5 +1,9 @@
 .form {
   display: grid;
-  row-gap: 1.5rem;
+  row-gap: 2rem;
   margin: var(--row-gap-normal) 0;
+
+  u-fields {
+    display: contents;
+  }
 }

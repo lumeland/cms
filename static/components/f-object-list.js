@@ -1,13 +1,13 @@
 import { dom, push } from "./utils.js";
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 
 customElements.define(
   "f-object-list",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field");
 
-      const { schema, value } = this;
+      const { schema, value, isNew } = this;
       const namePrefix = `${this.namePrefix}.${schema.name}`;
       let open = true;
 
@@ -56,7 +56,7 @@ customElements.define(
           dom("u-draggable", { slot: "buttons" }),
         );
       }
-      for (const v of value ?? []) {
+      for (const v of (isNew ? schema.value : value) ?? []) {
         addOption(v);
       }
 

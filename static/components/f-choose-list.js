@@ -1,13 +1,13 @@
 import { dom, push } from "./utils.js";
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 
 customElements.define(
   "f-choose-list",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field");
 
-      const { schema, value } = this;
+      const { schema, value, isNew } = this;
       const namePrefix = `${this.namePrefix}.${schema.name}`;
       let open = true;
 
@@ -50,12 +50,14 @@ customElements.define(
                 {
                   name: "type",
                   tag: "f-hidden",
+                  value: value.type,
                 },
                 ...field.fields,
               ],
             },
             namePrefix,
             value,
+            isNew,
           },
           dom("button", {
             type: "button",
@@ -71,7 +73,7 @@ customElements.define(
         );
       }
 
-      for (const v of value ?? []) {
+      for (const v of (isNew ? schema.value : value) ?? []) {
         addOption(v);
       }
 

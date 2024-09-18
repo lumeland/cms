@@ -1,13 +1,13 @@
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 import { push, pushOptions } from "./utils.js";
 
 customElements.define(
   "f-list",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field");
 
-      const { schema, value } = this;
+      const { schema, value, isNew } = this;
       const namePrefix = `${this.namePrefix}.${schema.name}`;
 
       push(this, "label", { for: `field_${namePrefix}.0` }, schema.label);
@@ -49,7 +49,7 @@ customElements.define(
         push(item, "u-draggable");
       }
 
-      for (const v of value ?? []) {
+      for (const v of (isNew ? schema.value : value) ?? []) {
         addOption(v);
       }
 

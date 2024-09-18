@@ -1,12 +1,12 @@
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 import { push, url } from "./utils.js";
 
 customElements.define(
   "f-file",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix } = this;
+      const { schema, value, namePrefix, isNew } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
@@ -20,7 +20,7 @@ customElements.define(
       const curr = push(divValue, "input", {
         name: `${name}.current`,
         type: "text",
-        value,
+        value: isNew ? schema.value : value,
         class: "input is-narrow",
       });
 

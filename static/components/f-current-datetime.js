@@ -15,6 +15,9 @@ customElements.define(
     };
 
     init() {
+      this.value = this.value ? format(new Date(this.value)) : format();
+      this.isNew = false;
+
       super.init();
 
       this.addEventListener("input", this.inputHandler);
@@ -28,19 +31,6 @@ customElements.define(
 
     get inputAttributes() {
       return { type: "datetime-local", class: "input" };
-    }
-
-    get value() {
-      const value = super.value;
-
-      if (value) {
-        return format(new Date(value));
-      }
-      return format(new Date());
-    }
-
-    set value(value) {
-      super.value = value;
     }
   },
 );

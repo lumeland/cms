@@ -1,6 +1,6 @@
 import { escape } from "../../../deps/std.ts";
 import { getPath } from "../../utils/path.ts";
-import { getDefaultValue, prepareField } from "../../utils/data.ts";
+import { prepareField } from "../../utils/data.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type Collection from "../../collection.ts";
@@ -17,18 +17,9 @@ export default async function template(
   { options, collection, version, folder }: Props,
 ) {
   const { basePath } = options;
-  const fields = await Promise.all(collection.fields.map(async (field) => {
-    const prep = await prepareField(field);
-    const value = getDefaultValue(prep);
-    return `
-    <${field.tag}
-      data-nameprefix="changes"
-      data-value="${escape(JSON.stringify(value))}"
-      data-field="${escape(JSON.stringify(prep))}"
-    >
-    </${field.tag}>
-  `;
-  }));
+  const fields = await Promise.all(
+    collection.fields.map((field) => prepareField(field)),
+  );
 
   return `
 ${
@@ -64,7 +55,7 @@ ${
   id="form-create"
 >
   <input type="hidden" name="_prefix" value="${folder || ""}">
-  ${fields.join("")}
+  <u-fields data-fields="${escape(JSON.stringify(fields))}"></u-fields>
   <footer class="footer ly-rowStack">
     <button class="button is-primary" type="submit">Create</button>
   </footer>

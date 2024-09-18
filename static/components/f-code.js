@@ -1,13 +1,13 @@
 import { asset, push } from "./utils.js";
-import { Field } from "./field.js";
+import { Component } from "./component.js";
 import { init } from "../libs/code.js";
 
 customElements.define(
   "f-code",
-  class extends Field {
+  class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix } = this;
+      const { schema, value, namePrefix, isNew } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
@@ -20,7 +20,7 @@ customElements.define(
       const textarea = push(this, "textarea", {
         id,
         name,
-        value,
+        value: isNew ? schema.value : value,
         hidden: true,
       });
 
