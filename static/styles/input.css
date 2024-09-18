@@ -3,7 +3,7 @@
   display: block;
   width: 100%;
   max-width: var(--max-width, 100%);
-  padding: .5em .8em;
+  padding: 0.5em 0.8em;
   min-height: 40px;
   border-radius: var(--border-radius);
   border: solid 1px var(--color-line);

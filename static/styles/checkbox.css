@@ -15,7 +15,7 @@
   transition: background-color 200ms;
 
   &::before {
-    content: '';
+    content: "";
     display: block;
     mask-repeat: no-repeat;
     mask-position: center center;
@@ -45,7 +45,7 @@
   }
 
   &:disabled {
-    opacity: .33;
+    opacity: 0.33;
     pointer-events: none;
   }
 }

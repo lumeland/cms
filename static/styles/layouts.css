@@ -3,10 +3,10 @@
   flex-wrap: wrap;
   align-items: center;
   column-gap: 4px;
-  row-gap: .5rem;
+  row-gap: 0.5rem;
 
   &.is-narrow {
-    column-gap: .5rem;
+    column-gap: 0.5rem;
     flex-wrap: nowrap;
   }
 

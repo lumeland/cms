@@ -8,7 +8,7 @@
   color: var(--color-background);
   font: var(--font-small);
   margin: 0;
-  padding: .25em .5em;
+  padding: 0.25em 0.5em;
   width: max-content;
   border-radius: var(--border-radius);
   box-shadow: 0 4px 10px #0002;

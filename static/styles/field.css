@@ -20,7 +20,7 @@
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  margin: .5em 0 0;
+  margin: 0.5em 0 0;
   padding: 0;
   row-gap: 1em;
   column-gap: 2em;
@@ -31,10 +31,10 @@
 
   & label {
     cursor: pointer;
-    padding-left: .5rem;
+    padding-left: 0.5rem;
   }
   + .field-description {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
   }
 }
 .field-title {
@@ -51,10 +51,10 @@
   margin: 0;
   font: var(--font-small);
   color: var(--color-dim);
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  gap: .5rem;
+  gap: 0.5rem;
 
   & p {
     margin: 0;
@@ -62,15 +62,15 @@
 }
 
 .field-footer {
-  margin-top: .5em;
+  margin-top: 0.5em;
 }
 
 .fieldset {
   display: grid;
-  row-gap: .5em;
+  row-gap: 0.5em;
   list-style: none;
-  margin: .5em 0 0 .5em;
-  padding: .3rem 0 .3rem 1rem;;
+  margin: 0.5em 0 0 0.5em;
+  padding: 0.3rem 0 0.3rem 1rem;
   border-left: solid 1px var(--color-line);
 
   &:empty {

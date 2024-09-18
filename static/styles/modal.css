@@ -39,7 +39,7 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
     margin: 0;
     z-index: 2;
     transition: transform var(--animation-duration);
-    display:flex;
+    display: flex;
     resize: both;
     overflow: hidden;
   }
@@ -47,8 +47,8 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
 
 .modal-close {
   position: absolute;
-  top: .5rem;
-  right: .5rem;
+  top: 0.5rem;
+  right: 0.5rem;
 }
 
 .modal-content {

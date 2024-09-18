@@ -1,6 +1,6 @@
 u-draggable {
   display: flex;
-  column-gap: .5em;
+  column-gap: 0.5em;
   align-items: start;
   border-radius: var(--border-radius);
 

@@ -3,9 +3,9 @@
   display: flex;
   flex-wrap: wrap;
   min-width: 100px;
-  column-gap: .5em;
+  column-gap: 0.5em;
   align-items: center;
-  padding: .5em;
+  padding: 0.5em;
   min-height: 2.5em;
   text-decoration: none;
   color: inherit;
@@ -16,7 +16,7 @@
   border-radius: var(--border-radius);
   transition-property: color, background;
   transition-duration: var(--animation-duration);
-  margin-left: -.6em;
+  margin-left: -0.6em;
 
   &:hover {
     background: var(--color-line-light);
@@ -27,7 +27,7 @@
   }
 
   &::before {
-    content: '';
+    content: "";
     display: block;
     mask: var(--marker-image) center center / 100% 100% no-repeat;
     -webkit-mask: var(--marker-image) center center / 100% 100% no-repeat;
@@ -54,5 +54,5 @@
 }
 
 .accordion-body {
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 }

@@ -1,7 +1,7 @@
 .buttonIcon {
   display: inline-flex;
   flex: 0 0 auto;
-  column-gap: .5em;
+  column-gap: 0.5em;
   align-items: center;
   justify-content: center;
   border: none;
@@ -14,7 +14,7 @@
   &:disabled,
   &[aria-disabled="true"] {
     cursor: default;
-    opacity: .33;
+    opacity: 0.33;
     pointer-events: none;
   }
 

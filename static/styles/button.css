@@ -1,11 +1,11 @@
 .button {
   display: inline-flex;
-  column-gap: .5em;
+  column-gap: 0.5em;
   align-items: center;
   justify-content: center;
   text-align: center;
   border: none;
-  padding: 0 .75em;
+  padding: 0 0.75em;
   min-height: 40px;
   font: var(--font-ui);
   text-decoration: none;
@@ -23,7 +23,7 @@
   &:disabled,
   &[aria-disabled="true"] {
     cursor: default;
-    opacity: .33;
+    opacity: 0.33;
     pointer-events: none;
   }
 
@@ -58,7 +58,7 @@
     color: var(--color-dim);
     font: inherit;
     font-weight: 600;
-    
+
     &:hover {
       background: var(--color-line-light);
     }

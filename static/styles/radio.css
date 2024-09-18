@@ -10,7 +10,7 @@
   transition: border-width 200ms;
 
   &:checked {
-    border-width: .5em;
+    border-width: 0.5em;
     color: var(--color-primary);
     background-color: var(--color-white);
   }
@@ -20,7 +20,7 @@
   }
 
   &:disabled {
-    opacity: .33;
+    opacity: 0.33;
     pointer-events: none;
   }
 }
