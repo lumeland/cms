@@ -16,6 +16,10 @@ customElements.define(
       }
       return null;
     }
+
+    set value(value) {
+      super.value = value;
+    }
   },
 );
 

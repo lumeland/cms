@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.6.3] - Unreleased
+### Fixed
+- Set default value to `date`, `datetime`, and `current-datetime` fields.
+
 ## [0.6.2] - 2024-09-16
 ### Added
 - Button to logout.
@@ -380,6 +384,7 @@ First version
 [#22]: https://github.com/lumeland/cms/issues/22
 [#23]: https://github.com/lumeland/cms/issues/23
 
+[0.6.3]: https://github.com/lumeland/cms/compare/v0.6.2...HEAD
 [0.6.2]: https://github.com/lumeland/cms/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/lumeland/cms/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/lumeland/cms/compare/v0.5.10...v0.6.0

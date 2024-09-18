@@ -38,6 +38,10 @@ customElements.define(
       }
       return format(new Date());
     }
+
+    set value(value) {
+      super.value = value;
+    }
   },
 );
 
