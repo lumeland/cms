@@ -2,7 +2,7 @@ import { Hono, HTTPException, serveStatic } from "../deps/hono.ts";
 import layout from "./templates/layout.ts";
 import documentRoutes from "./routes/document.ts";
 import collectionRoutes from "./routes/collection.ts";
-import versionsRoutes from "./routes/versions.tsx";
+import versionsRoutes from "./routes/versions.ts";
 import indexRoute from "./routes/index.ts";
 import filesRoutes from "./routes/files.ts";
 import authRoutes from "./routes/auth.ts";
