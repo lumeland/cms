@@ -1,4 +1,4 @@
-import { asset, labelify, push, url, fileType } from "./utils.js";
+import { asset, fileType, labelify, push, url } from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/markdown.js";
 

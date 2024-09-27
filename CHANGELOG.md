@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.6.4] - Unreleased
+### Changed
+- The CMS bar is less invasive:
+  - It's smaller.
+  - Merged "Go to home" and "Edit page" in just one link.
+
 ### Fixed
 - Updated dependencies: `codemirror`, `hono`, `std`.
 - Removed internal code smell.
