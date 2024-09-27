@@ -5,7 +5,7 @@ customElements.define(
   "u-modal",
   class Modal extends Component {
     init() {
-      const { src, name } = this.dataset;
+      const { src } = this.dataset;
 
       const dialog = push(this, "dialog", {
         class: "modal is-aside",
@@ -19,7 +19,7 @@ customElements.define(
       }, "<u-icon name='x'></u-icon>");
 
       if (src) {
-        push(dialog, "iframe", { class: "modal-content", src, name });
+        push(dialog, "iframe", { class: "modal-content", src });
       }
 
       dialog.showModal();

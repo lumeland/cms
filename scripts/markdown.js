@@ -50,7 +50,7 @@ const markdownBinding = [
   },
 ];
 
-export function init(parent, textarea) {
+export function init(parent, textarea, pasteLink = createLink) {
   const state = EditorState.create({
     doc: textarea.value,
     extensions: [
@@ -81,9 +81,7 @@ export function init(parent, textarea) {
             view.state.selection.main.from,
             view.state.selection.main.to,
           );
-          const insert = isUrlLike(text) && selectedText
-            ? `[${selectedText}](${text})`
-            : text;
+          const insert = isUrlLike(text) ? pasteLink(text, selectedText) : text;
 
           view.dispatch({
             changes: {
@@ -137,4 +135,8 @@ function isUrlLike(text) {
   // It's a path
   return text.startsWith("./") || text.startsWith("/") ||
     text.startsWith("#") || text.startsWith("?");
+}
+
+function createLink(url, selectedText) {
+  return selectedText ? `[${selectedText}](${url})` : url;
 }

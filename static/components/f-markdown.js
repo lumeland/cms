@@ -1,4 +1,4 @@
-import { asset, labelify, push, url } from "./utils.js";
+import { asset, labelify, push, url, fileType } from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/markdown.js";
 
@@ -38,17 +38,14 @@ customElements.define(
           type: "button",
           onclick() {
             push(document.body, "u-modal", {
-              data: {
-                src: url("uploads", name),
-                name: `${name}.markdown`,
-              },
+              data: { src: url("uploads", name) },
             });
           },
         }, `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`);
       }
 
       const code = push(shadow, "div", { class: "code" });
-      const md = init(code, textarea);
+      const md = init(code, textarea, pasteLink);
       let tools;
 
       tools = push(helpers, "div", { class: "tools-group" });
@@ -106,3 +103,19 @@ customElements.define(
     }
   },
 );
+
+function pasteLink(url, selectedText = "") {
+  switch (fileType(url)) {
+    case "image":
+      return `![${selectedText || "Image"}](${url})`;
+
+    case "video":
+      return `<video src="${url}" controls>${selectedText}</video>`;
+
+    case "audio":
+      return `<audio src="${url}" controls>${selectedText}</audio>`;
+
+    default:
+      return `[${selectedText || "Link"}](${url})`;
+  }
+}

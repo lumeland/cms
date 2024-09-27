@@ -4,11 +4,11 @@
     "@codemirror/lang-markdown": "^6.2.5",
     "@codemirror/language-data": "^6.5.1",
     "@codemirror/state": "^6.4.1",
-    "@codemirror/view": "^6.32.0",
-    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@codemirror/view": "^6.34.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
     "codemirror": "^6.0.1",
-    "rollup": "^4.20.0",
-    "terser": "^5.31.6"
+    "rollup": "^4.22.4",
+    "terser": "^5.34.0"
   },
   "scripts": {
     "build": "rm -f ../static/libs/* && npm run markdown && npm run code && npm run blocks && npm run normalize && npm run terser",
