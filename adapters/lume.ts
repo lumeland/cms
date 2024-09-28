@@ -124,7 +124,7 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   previewer.get(
     "*",
     serveStatic({
-      root: removePrefix(site.root(), site.dest()),
+      root: site.dest(),
     }),
   );
 
@@ -144,12 +144,4 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   });
 
   return previewer;
-}
-
-function removePrefix(prefix: string, path: string): string {
-  if (path.startsWith(prefix)) {
-    return path.slice(prefix.length);
-  }
-
-  return path;
 }
