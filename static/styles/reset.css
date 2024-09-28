@@ -22,7 +22,7 @@ code {
 }
 
 :not(pre) > code {
-  background: var(--color-line);
+  background: var(--color-line-light);
   padding: 0 .2rem;
   border-radius: 4px;
 }

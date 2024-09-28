@@ -7,6 +7,18 @@ const cms = lumeCMS({
     name: "Site name",
     url: "https://lume.land/cms/",
     description: "This is a demo of Lume CMS.",
+    body: `
+      <h2>Bla bla bla</h2>
+      <p>
+        This is the body of the site.
+      </p>
+      <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+      </ul>
+      <code>foo</code>
+    `,
   },
   auth: {
     method: "basic",

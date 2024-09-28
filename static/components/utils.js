@@ -75,7 +75,7 @@ export function dom(tag, attrs, ...children) {
     }
 
     if (typeof child === "string") {
-      if (child.startsWith("<")) {
+      if (child.includes("<") && child.includes(">")) {
         el.append(
           ...new DOMParser().parseFromString(child, "text/html").body
             .childNodes,

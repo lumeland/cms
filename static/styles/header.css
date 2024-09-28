@@ -108,3 +108,21 @@ dl.header-description {
       color-mix(in hsl, var(--color-primary), transparent 75%);
   }
 }
+
+/* Todo: move to other file? */
+.body {
+  border-bottom: solid 1px var(--color-line);
+  padding: var(--row-gap-small) 0;
+  color: var(--color-dim);
+  font: var(--font-ui);
+
+  :is(h1, h2, h3, h4, h5, h6, strong) {
+    font-weight: 600;
+  }
+  > :first-child {
+    margin-top: 0;
+  }
+  > :last-child {
+    margin-bottom: 0;
+  }
+}

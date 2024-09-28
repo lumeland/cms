@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.6.4] - Unreleased
+## [0.6.4] - 2024-09-28
+### Added
+- New option `site.body` to include random HTML code in the homepage.
+- Allow html code in field descriptions.
+
 ### Changed
 - The CMS bar is less invasive:
   - It's smaller.
@@ -13,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 - Updated dependencies: `codemirror`, `hono`, `std`.
 - Removed internal code smell.
+- Styles tweaks.
 
 ## [0.6.3] - 2024-09-18
 ### Fixed
@@ -394,7 +399,7 @@ First version
 [#22]: https://github.com/lumeland/cms/issues/22
 [#23]: https://github.com/lumeland/cms/issues/23
 
-[0.6.4]: https://github.com/lumeland/cms/compare/v0.6.3...HEAD
+[0.6.4]: https://github.com/lumeland/cms/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/lumeland/cms/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/lumeland/cms/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/lumeland/cms/compare/v0.6.0...v0.6.1

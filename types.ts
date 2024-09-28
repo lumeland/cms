@@ -16,6 +16,7 @@ export interface SiteInfo {
   name: string;
   description?: string;
   url?: string;
+  body?: string;
 }
 
 /** A storage mechanism for data */

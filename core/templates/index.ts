@@ -39,6 +39,8 @@ ${breadcrumb(options, await versioning?.current())}
   </div>
 </header>
 
+${site.body ? `<div class="body">${site.body}</div>` : ""}
+
 <ul class="list">
   ${
     Object.entries(collections).map(([name, collection]) => `
