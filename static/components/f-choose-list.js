@@ -1,4 +1,4 @@
-import { dom, push } from "./utils.js";
+import { dom, push, view } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -7,10 +7,10 @@ customElements.define(
     init() {
       this.classList.add("field");
       const { schema, value, isNew } = this;
-      schema.view && this.setAttribute("data-view", schema.view);
       const namePrefix = `${this.namePrefix}.${schema.name}`;
       let open = true;
 
+      view(this);
       push(this, "label", {
         for: `field_${namePrefix}.0`,
         onclick: () => {

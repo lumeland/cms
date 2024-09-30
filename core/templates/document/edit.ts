@@ -27,10 +27,18 @@ ${breadcrumb(options, version, document.name)}
   <header class="header">
     <h1 class="header-title">Editing ${document.name}</h1>
   </header>
+  ${
+    document.views
+      ? `<u-views data-target="form-edit" data-views="${
+        escape(JSON.stringify(document.views))
+      }"><strong class="field-label">View:</strong></u-views>`
+      : ""
+  }
   <form
     action="${getPath(options.basePath, "document", document.name)}"
     method="post"
     class="form"
+    id="form-edit"
     enctype="multipart/form-data"
   >
     <u-fields data-fields="${escape(JSON.stringify(fields))}" data-value="${

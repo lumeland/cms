@@ -55,9 +55,9 @@ ${
   </header>
   ${
     collection.views
-      ? `<u-views data-target="form-fields" data-views="${
+      ? `<u-views data-target="form-edit" data-views="${
         escape(JSON.stringify(collection.views))
-      }"></u-views>`
+      }"><strong class="field-label">View:</strong></u-views>`
       : ""
   }
   <form
@@ -69,9 +69,9 @@ ${
     enctype="multipart/form-data"
     id="form-edit"
   >
-    <u-fields id="form-fields" data-fields="${
-    escape(JSON.stringify(fields))
-  }" data-value="${escape(JSON.stringify(data))}"></u-fields>
+    <u-fields data-fields="${escape(JSON.stringify(fields))}" data-value="${
+    escape(JSON.stringify(data))
+  }"></u-fields>
 
     <footer class="footer ly-rowStack is-responsive">
       <button class="button is-primary" type="submit">

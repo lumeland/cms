@@ -39,10 +39,19 @@ cms.storage(
   }),
 );
 
-cms.document("Settings", "kv:_data.yml", [
-  "title: text",
-  "description: text",
-]);
+cms.document({
+  name: "Settings",
+  store: "kv:_data.yml",
+  views: ["full"],
+  fields: [
+    "title: text",
+    {
+      name: "description",
+      type: "textarea",
+      view: "full",
+    },
+  ],
+});
 cms.collection({
   name: "Articles",
   store: "src:articles/**/*.md",

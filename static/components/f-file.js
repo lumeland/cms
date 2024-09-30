@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { push, url } from "./utils.js";
+import { push, url, view } from "./utils.js";
 
 customElements.define(
   "f-file",
@@ -7,10 +7,10 @@ customElements.define(
     init() {
       this.classList.add("field");
       const { schema, value, namePrefix, isNew } = this;
-      schema.view && this.setAttribute("data-view", schema.view);
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
+      view(this);
       push(this, "label", { for: id }, schema.label);
 
       if (schema.description) {

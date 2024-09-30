@@ -231,14 +231,13 @@ export default class Cms {
     }
 
     for (
-      const { name, description, store, fields, url } of this.documents.values()
+      const { name, store, fields, ...options } of this.documents.values()
     ) {
       content.documents[name] = new Document({
         entry: this.#getEntry(store),
         fields: this.#resolveFields(fields, content),
         name,
-        description,
-        url,
+        ...options,
       });
     }
 

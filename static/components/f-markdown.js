@@ -1,4 +1,4 @@
-import { asset, fileType, labelify, push, url } from "./utils.js";
+import { asset, fileType, labelify, push, url, view } from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/markdown.js";
 
@@ -7,11 +7,11 @@ customElements.define(
   class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix, isNew } = this;
-      schema.view && this.setAttribute("data-view", schema.view);
+      const { schema, value, isNew, namePrefix } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
+      view(this);
       push(this, "label", { for: `field_${namePrefix}.0` }, schema.label);
 
       if (schema.description) {

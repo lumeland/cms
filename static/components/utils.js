@@ -17,6 +17,18 @@ export function pushOptions(el, options) {
   }
 }
 
+/** Show or hide an element based on the current view */
+const hash = location.hash.slice(1);
+export const initialViews = new Set(hash ? hash.split(",") : []);
+export function view(element) {
+  const { schema } = element;
+
+  if (schema.view) {
+    element.setAttribute("data-view", schema.view);
+    element.hidden = !initialViews.has(schema.view);
+  }
+}
+
 const props = new Set(["namePrefix", "value", "schema", "isNew"]);
 
 /** Create a new DOM element */

@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { push, pushOptions } from "./utils.js";
+import { push, pushOptions, view } from "./utils.js";
 
 export class Input extends Component {
   get inputAttributes() {
@@ -9,10 +9,10 @@ export class Input extends Component {
   init() {
     this.classList.add("field");
     const { schema, value, namePrefix, isNew } = this;
-    schema.view && this.setAttribute("data-view", schema.view);
     const name = `${namePrefix}.${schema.name}`;
     const id = `field_${name}`;
 
+    view(this);
     push(this, "label", { for: id }, schema.label);
 
     if (schema.description) {

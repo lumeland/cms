@@ -9,6 +9,9 @@ u-icon {
 u-icon-file u-icon {
   display: block;
 }
+u-views {
+  border-bottom: solid 1px var(--color-line);
+}
 
 u-icon.is-version {
   color: var(--color-black);

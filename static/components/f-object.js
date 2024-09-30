@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { push } from "./utils.js";
+import { push, view } from "./utils.js";
 
 customElements.define(
   "f-object",
@@ -7,7 +7,7 @@ customElements.define(
     init() {
       this.classList.add("field", "is-group");
       const { schema, value, isNew } = this;
-      schema.view && this.setAttribute("data-view", schema.view);
+      view(this);
       const namePrefix = `${this.namePrefix}.${schema.name}`;
       const details = push(this, "details", {
         class: "accordion",

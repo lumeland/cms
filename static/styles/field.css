@@ -15,6 +15,9 @@
 }
 .field-label {
   font: var(--font-ui-bold);
+  display: flex;
+  column-gap: 0.5em;
+  align-items: center;
 }
 .field-check-list {
   list-style: none;

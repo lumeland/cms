@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { push, pushOptions } from "./utils.js";
+import { push, pushOptions, view } from "./utils.js";
 
 customElements.define(
   "f-list",
@@ -7,9 +7,9 @@ customElements.define(
     init() {
       this.classList.add("field");
       const { schema, value, isNew } = this;
-      schema.view && this.setAttribute("data-view", schema.view);
       const namePrefix = `${this.namePrefix}.${schema.name}`;
 
+      view(this);
       push(this, "label", { for: `field_${namePrefix}.0` }, schema.label);
 
       let datalist;

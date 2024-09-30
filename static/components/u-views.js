@@ -1,4 +1,4 @@
-import { labelify, push } from "./utils.js";
+import { initialViews, labelify, push } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -14,10 +14,6 @@ customElements.define(
       }
 
       const visibleViews = new Set();
-      const hash = location.hash.slice(1);
-      const initialViews = new Set(
-        hash ? hash.split(",") : [],
-      );
 
       for (const view of JSON.parse(views)) {
         const visible = initialViews.has(view);
@@ -37,8 +33,6 @@ customElements.define(
           },
         }, labelify(view));
       }
-
-      this.update(targetElement, initialViews);
     }
 
     update(target, views) {

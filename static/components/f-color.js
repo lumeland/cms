@@ -1,4 +1,4 @@
-import { push } from "./utils.js";
+import { push, view } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -7,10 +7,10 @@ customElements.define(
     init() {
       this.classList.add("field");
       const { schema, value, namePrefix, isNew } = this;
-      schema.view && this.setAttribute("data-view", schema.view);
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
+      view(this);
       push(this, "label", { for: id }, schema.label);
 
       if (schema.description) {
