@@ -52,6 +52,7 @@
 
     &[aria-pressed="false"] {
       color: var(--color-dim);
+      background-color: transparent;
     }
   }
   &.is-tertiary {

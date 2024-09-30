@@ -8,6 +8,7 @@ customElements.define(
     init() {
       this.classList.add("field");
       const { schema, value, namePrefix, isNew } = this;
+      schema.view && this.setAttribute("data-view", schema.view);
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
@@ -30,7 +31,7 @@ customElements.define(
       <slot></slot>
       `;
 
-      const helpers = push(this, "div", { class: "tools" });
+      const helpers = push(this, "div", { class: "tools is-sticky" });
 
       for (const name of Object.keys(schema.cmsContent.uploads || {})) {
         push(helpers, "button", {

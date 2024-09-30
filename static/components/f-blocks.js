@@ -13,6 +13,7 @@ customElements.define(
     init() {
       this.classList.add("field");
       const { schema, value, namePrefix, isNew } = this;
+      schema.view && this.setAttribute("data-view", schema.view);
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 

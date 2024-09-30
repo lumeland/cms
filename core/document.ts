@@ -6,6 +6,7 @@ export interface DocumentOptions {
   entry: Entry;
   fields: ResolvedField[];
   url?: string;
+  views?: string[];
 }
 
 export default class Document {
@@ -14,6 +15,7 @@ export default class Document {
   #entry: Entry;
   #fields: ResolvedField[];
   url?: string;
+  views?: string[];
 
   constructor(options: DocumentOptions) {
     this.#name = options.name;
@@ -21,6 +23,7 @@ export default class Document {
     this.#entry = options.entry;
     this.#fields = options.fields;
     this.url = options.url;
+    this.views = options.views;
   }
 
   get fields() {

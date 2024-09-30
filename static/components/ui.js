@@ -6,6 +6,7 @@ import "./u-icon.js";
 import "./u-modal.js";
 import "./u-popover.js";
 import "./u-preview.js";
+import "./u-views.js";
 import "./u-form.js";
 import "./u-pagepreview.js";
 import "./u-confirm.js";

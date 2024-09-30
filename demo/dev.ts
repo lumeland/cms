@@ -58,6 +58,7 @@ cms.collection({
   description: "List of posts for the blog",
   store: "kv:posts/*",
   nameField: "title",
+  views: ["full"],
   fields: [
     {
       name: "title",
@@ -74,6 +75,7 @@ cms.collection({
     },
     {
       name: "created_at",
+      view: "full",
       type: "datetime",
       init(field) {
         field.value = new Date();
@@ -81,6 +83,7 @@ cms.collection({
     },
     {
       name: "updated_at",
+      view: "full",
       type: "current-datetime",
       attributes: {
         readonly: false,

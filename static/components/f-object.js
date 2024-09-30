@@ -7,6 +7,7 @@ customElements.define(
     init() {
       this.classList.add("field", "is-group");
       const { schema, value, isNew } = this;
+      schema.view && this.setAttribute("data-view", schema.view);
       const namePrefix = `${this.namePrefix}.${schema.name}`;
       const details = push(this, "details", {
         class: "accordion",

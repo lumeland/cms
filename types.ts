@@ -72,6 +72,7 @@ export interface Field {
   options?: Option[];
   uploads?: string;
   publicPath?: string;
+  view?: string;
   attributes?: {
     required?: boolean;
     min?: number;

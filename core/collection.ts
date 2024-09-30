@@ -8,6 +8,7 @@ export interface CollectionOptions {
   storage: Storage;
   fields: ResolvedField[];
   url?: string;
+  views?: string[];
   nameField?: string;
   create?: boolean;
   delete?: boolean;
@@ -24,6 +25,7 @@ export default class Collection {
   #storage: Storage;
   #fields: ResolvedField[];
   url?: string;
+  views?: string[];
   nameField?: string;
   permissions: Permissions;
 
@@ -33,6 +35,7 @@ export default class Collection {
     this.#storage = options.storage;
     this.#fields = options.fields;
     this.url = options.url;
+    this.views = options.views;
     this.nameField = options.nameField;
     this.permissions = {
       create: options.create ?? true,

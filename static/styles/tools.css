@@ -5,12 +5,15 @@
   column-gap: 1rem;
   row-gap: 0.5rem;
   padding: 0.3rem 5px;
-  position: sticky;
   margin-left: -5px;
   margin-right: -5px;
-  top: 0;
-  z-index: 2;
-  background: var(--color-background);
+
+  &.is-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--color-background);
+  }
 }
 .tools-group {
   display: flex;

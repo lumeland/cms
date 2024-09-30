@@ -66,6 +66,7 @@ interface DocumentOptions {
   store: string;
   fields: (Field | string)[];
   url?: string;
+  views?: string[];
 }
 
 interface CollectionOptions {
@@ -74,6 +75,7 @@ interface CollectionOptions {
   store: string;
   fields: (Field | string)[];
   url?: string;
+  views?: string[];
   nameField?: string;
   create?: boolean;
   delete?: boolean;

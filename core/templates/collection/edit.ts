@@ -53,6 +53,13 @@ ${
       >
     </h1>
   </header>
+  ${
+    collection.views
+      ? `<u-views data-target="form-fields" data-views="${
+        escape(JSON.stringify(collection.views))
+      }"></u-views>`
+      : ""
+  }
   <form
     action="${
     getPath(basePath, "collection", collection.name, "edit", document.name)
@@ -62,9 +69,9 @@ ${
     enctype="multipart/form-data"
     id="form-edit"
   >
-    <u-fields data-fields="${escape(JSON.stringify(fields))}" data-value="${
-    escape(JSON.stringify(data))
-  }"></u-fields>
+    <u-fields id="form-fields" data-fields="${
+    escape(JSON.stringify(fields))
+  }" data-value="${escape(JSON.stringify(data))}"></u-fields>
 
     <footer class="footer ly-rowStack is-responsive">
       <button class="button is-primary" type="submit">

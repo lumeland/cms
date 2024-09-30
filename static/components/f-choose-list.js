@@ -6,8 +6,8 @@ customElements.define(
   class extends Component {
     init() {
       this.classList.add("field");
-
       const { schema, value, isNew } = this;
+      schema.view && this.setAttribute("data-view", schema.view);
       const namePrefix = `${this.namePrefix}.${schema.name}`;
       let open = true;
 
