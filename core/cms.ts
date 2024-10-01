@@ -24,6 +24,7 @@ import { dispatch } from "./utils/event.ts";
 import type { Context, Next } from "../deps/hono.ts";
 import type {
   CMSContent,
+  Data,
   Entry,
   Field,
   FieldType,
@@ -76,7 +77,7 @@ interface CollectionOptions {
   fields: (Field | string)[];
   url?: string;
   views?: string[];
-  nameField?: string | ((changedFields: Record<string, string>) => string);
+  nameField?: string | ((changes: Data) => string);
   create?: boolean;
   delete?: boolean;
 }
