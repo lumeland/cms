@@ -154,11 +154,23 @@ export default function (app: Hono) {
       const body = await c.req.parseBody();
       let name = body._id as string;
 
+      const namePrefix = "changes."
       if (!name && collection.nameField) {
-        const autoname = body[`changes.${collection.nameField}`];
+        if (typeof collection.nameField === "string") {
+          const autoname = body[`${namePrefix}${collection.nameField}`];
 
-        if (typeof autoname === "string") {
-          name = autoname.replaceAll("/", "").trim();
+          if (typeof autoname === "string") {
+            name = autoname.replaceAll("/", "").trim();
+          }
+        } else if (typeof collection.nameField === "function") {
+          const changedFields: Record<string, string> = {};
+          for (const key in body) {
+            if (key.startsWith(namePrefix) && typeof body[key] === "string") {
+              changedFields[key.substring(namePrefix.length)] = body[key];
+            }
+          }
+
+          name = collection.nameField(changedFields);
         }
       }
 

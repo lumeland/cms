@@ -9,7 +9,7 @@ export interface CollectionOptions {
   fields: ResolvedField[];
   url?: string;
   views?: string[];
-  nameField?: string;
+  nameField?: string | ((changedFields: Record<string, string>) => string);
   create?: boolean;
   delete?: boolean;
 }
@@ -26,7 +26,7 @@ export default class Collection {
   #fields: ResolvedField[];
   url?: string;
   views?: string[];
-  nameField?: string;
+  nameField?: string | ((changedFields: Record<string, string>) => string);
   permissions: Permissions;
 
   constructor(options: CollectionOptions) {

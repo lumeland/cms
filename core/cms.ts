@@ -76,7 +76,7 @@ interface CollectionOptions {
   fields: (Field | string)[];
   url?: string;
   views?: string[];
-  nameField?: string;
+  nameField?: string | ((changedFields: Record<string, string>) => string);
   create?: boolean;
   delete?: boolean;
 }
