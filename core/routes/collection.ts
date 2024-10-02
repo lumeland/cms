@@ -1,4 +1,3 @@
-import { changesToData } from "../utils/data.ts";
 import collectionList from "../templates/collection/list.ts";
 import collectionEdit from "../templates/collection/edit.ts";
 import collectionCreate from "../templates/collection/create.ts";
@@ -6,7 +5,7 @@ import { getPath } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
-import type { CMSContent } from "../../types.ts";
+import type { CMSContent, Data, FormDataBody } from "../../types.ts";
 
 export default function (app: Hono) {
   app.get("/collection/:collection", async (c: Context) => {
@@ -53,8 +52,8 @@ export default function (app: Hono) {
         throw new Error("Document not found");
       }
 
-      const body = await c.req.parseBody();
-      let newName = body._id as string;
+      const body = await c.req.parseBody({ dot: true }) as FormDataBody;
+      let newName = body._id;
       let document = oldDocument;
 
       if (oldDocument.name !== newName) {
@@ -62,7 +61,7 @@ export default function (app: Hono) {
         document = collection.get(newName);
       }
 
-      await document.write(changesToData(body));
+      await document.write(body.changes);
 
       return c.redirect(
         getPath(
@@ -87,8 +86,8 @@ export default function (app: Hono) {
         throw new Error("Permission denied");
       }
 
-      const body = await c.req.parseBody();
-      let name = body._id as string;
+      const body = await c.req.parseBody({ dot: true }) as FormDataBody;
+      let name = body._id;
 
       if (document.name === name) {
         const ext = name.split(".").pop();
@@ -101,7 +100,7 @@ export default function (app: Hono) {
       }
 
       const duplicate = collection.create(name as string);
-      await duplicate.write(changesToData(body), true);
+      await duplicate.write(body.changes, true);
 
       return c.redirect(
         getPath(
@@ -151,11 +150,11 @@ export default function (app: Hono) {
         throw new Error("Permission denied");
       }
 
-      const body = await c.req.parseBody();
-      let name = body._id as string;
+      const body = await c.req.parseBody({ dot: true }) as FormDataBody;
+      let name = body._id;
 
       if (!name && collection.nameField) {
-        const autoname = body[`changes.${collection.nameField}`];
+        const autoname = body.changes[collection.nameField];
 
         if (typeof autoname === "string") {
           name = autoname.replaceAll("/", "").trim();
@@ -171,7 +170,7 @@ export default function (app: Hono) {
       }
 
       const document = collection.create(name);
-      await document.write(changesToData(body), true);
+      await document.write(body.changes, true);
 
       return c.redirect(
         getPath(

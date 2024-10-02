@@ -7,6 +7,12 @@ import { FieldKeys } from "./fields/core.ts";
 /** Generic data to store */
 export type Data = Record<string, unknown>;
 
+export type FormDataBody = {
+  _id: string;
+  changes: Data;
+  [key: string]: unknown | undefined;
+};
+
 export interface EntryMetadata {
   name: string;
   src: string;

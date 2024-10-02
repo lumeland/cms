@@ -1,9 +1,8 @@
 import { getPath } from "../utils/path.ts";
-import { changesToData } from "../utils/data.ts";
 import documentEdit from "../templates/document/edit.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
-import type { CMSContent } from "../../types.ts";
+import type { CMSContent, FormDataBody } from "../../types.ts";
 
 export default function (app: Hono) {
   app
@@ -24,9 +23,9 @@ export default function (app: Hono) {
     })
     .post(async (c: Context) => {
       const { options, document } = get(c);
-      const body = await c.req.parseBody();
+      const body = await c.req.parseBody({ dot: true }) as FormDataBody;
 
-      await document.write(changesToData(body), true);
+      await document.write(body.changes, true);
       return c.redirect(getPath(options.basePath, "document", document.name));
     });
 }
