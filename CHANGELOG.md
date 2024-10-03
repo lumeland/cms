@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.6.6] - Unreleased
 ### Added
 - New option `view` to show/hide fields under specific views.
+- `nameField` accepts a function to generate the filename dynamically [#26].
 
 ## [0.6.5] - 2024-09-28
 ### Fixed
@@ -406,6 +407,7 @@ First version
 [#20]: https://github.com/lumeland/cms/issues/20
 [#22]: https://github.com/lumeland/cms/issues/22
 [#23]: https://github.com/lumeland/cms/issues/23
+[#26]: https://github.com/lumeland/cms/issues/26
 
 [0.6.6]: https://github.com/lumeland/cms/compare/v0.6.5...HEAD
 [0.6.5]: https://github.com/lumeland/cms/compare/v0.6.4...v0.6.5
