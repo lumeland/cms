@@ -1,6 +1,6 @@
 import Document from "./document.ts";
 
-import type { EntryMetadata, ResolvedField, Storage } from "../types.ts";
+import type { Data, EntryMetadata, ResolvedField, Storage } from "../types.ts";
 
 export interface CollectionOptions {
   name: string;
@@ -9,7 +9,7 @@ export interface CollectionOptions {
   fields: ResolvedField[];
   url?: string;
   views?: string[];
-  nameField?: string;
+  nameField?: string | ((changes: Data) => string);
   create?: boolean;
   delete?: boolean;
 }
@@ -26,7 +26,7 @@ export default class Collection {
   #fields: ResolvedField[];
   url?: string;
   views?: string[];
-  nameField?: string;
+  nameField?: string | ((changes: Data) => string);
   permissions: Permissions;
 
   constructor(options: CollectionOptions) {

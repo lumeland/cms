@@ -154,11 +154,20 @@ export default function (app: Hono) {
       const body = await c.req.parseBody();
       let name = body._id as string;
 
+      const changes = changesToData(body);
       if (!name && collection.nameField) {
-        const autoname = body[`changes.${collection.nameField}`];
-
-        if (typeof autoname === "string") {
-          name = autoname.replaceAll("/", "").trim();
+        switch (typeof collection.nameField) {
+          case "string": {
+            const autoname = body[`changes.${collection.nameField}`];
+            if (typeof autoname === "string") {
+              name = autoname.replaceAll("/", "").trim();
+            }
+            break;
+          }
+          case "function": {
+            name = collection.nameField(changes);
+            break;
+          }
         }
       }
 
@@ -171,7 +180,7 @@ export default function (app: Hono) {
       }
 
       const document = collection.create(name);
-      await document.write(changesToData(body), true);
+      await document.write(changes, true);
 
       return c.redirect(
         getPath(
