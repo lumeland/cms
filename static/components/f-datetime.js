@@ -1,23 +1,46 @@
-import { toLocal } from "./utils.js";
-import { Input } from "./f-text.js";
+import { push, toLocal, view } from "./utils.js";
+import { Component } from "./component.js";
 
-customElements.define(
-  "f-datetime",
-  class extends Input {
-    get inputAttributes() {
-      return { type: "datetime-local", class: "input" };
+export class Input extends Component {
+  get inputAttributes() {
+    return { type: "datetime-local" };
+  }
+
+  // Get the value in the format "YYYY-MM-DDTHH:MM"
+  format(date) {
+    return toLocal(new Date(date)).toISOString().slice(0, 16);
+  }
+
+  init() {
+    this.classList.add("field");
+    const { schema, value, namePrefix, isNew } = this;
+    const name = `${namePrefix}.${schema.name}`;
+    const id = `field_${name}`;
+
+    view(this);
+    push(this, "label", { for: id }, schema.label);
+
+    if (schema.description) {
+      push(this, "div", { class: "field-description" }, schema.description);
     }
 
-    init() {
-      if (this.value) {
-        this.value = format(new Date(this.value));
-      }
+    const input = push(this, "input", {
+      type: "hidden",
+      name,
+      value: isNew ? schema.value : value,
+    });
 
-      super.init();
-    }
-  },
-);
-
-function format(date = new Date()) {
-  return toLocal(date).toISOString().slice(0, 16);
+    push(this, "input", {
+      ...schema.attributes,
+      id,
+      value: input.value ? this.format(input.value) : null,
+      class: "input",
+      ...this.inputAttributes,
+      oninput() {
+        input.value = new Date(this.value).toISOString();
+      },
+    });
+  }
 }
+
+customElements.define("f-datetime", Input);

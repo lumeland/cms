@@ -56,8 +56,15 @@ cms.collection({
   name: "Articles",
   store: "src:articles/**/*.md",
   fields: [
-    "title: text",
+    "title: text!",
     "description: text",
+    {
+      name: "published",
+      type: "datetime",
+      init(field) {
+        field.value = new Date();
+      },
+    },
   ],
   nameField: "title",
 });

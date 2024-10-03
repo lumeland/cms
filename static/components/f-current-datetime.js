@@ -24,11 +24,6 @@ customElements.define(
       this.closest("form").addEventListener("submit", this.submitHandler);
     }
 
-    disconnectedCallback() {
-      this.removeEventListener("input", this.inputHandler);
-      this.closest("form").removeEventListener("submit", this.submitHandler);
-    }
-
     get inputAttributes() {
       return { type: "datetime-local", class: "input" };
     }

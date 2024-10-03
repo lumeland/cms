@@ -40,7 +40,7 @@
   padding: 4px;
 }
 .input[type="datetime-local"] {
-  max-width: 15em;
+  max-width: 16em;
 }
 .input[type="date"] {
   max-width: 11em;
