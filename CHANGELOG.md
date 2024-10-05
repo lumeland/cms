@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.6.6] - Unreleased
+## [0.6.6] - 2024-10-05
 ### Added
 - New option `view` to show/hide fields under specific views.
 - `nameField` accepts a function to generate the filename dynamically [#26].
@@ -412,7 +412,7 @@ First version
 [#23]: https://github.com/lumeland/cms/issues/23
 [#26]: https://github.com/lumeland/cms/issues/26
 
-[0.6.6]: https://github.com/lumeland/cms/compare/v0.6.5...HEAD
+[0.6.6]: https://github.com/lumeland/cms/compare/v0.6.5...v0.6.6
 [0.6.5]: https://github.com/lumeland/cms/compare/v0.6.4...v0.6.5
 [0.6.4]: https://github.com/lumeland/cms/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/lumeland/cms/compare/v0.6.2...v0.6.3
