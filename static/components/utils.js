@@ -26,7 +26,23 @@ export function view(element) {
   if (schema.view) {
     element.setAttribute("data-view", schema.view);
     element.hidden = !initialViews.has(schema.view);
+
+    element.addEventListener("cms:invalid", () => {
+      element.hidden = false;
+    });
   }
+}
+
+/** Dispatch a bubbled event on error */
+export function oninvalid(event) {
+  const input = event.target;
+  input.dispatchEvent(
+    new CustomEvent("cms:invalid", {
+      bubbles: true,
+      cancelable: false,
+      detail: { input },
+    }),
+  );
 }
 
 const props = new Set(["namePrefix", "value", "schema", "isNew"]);

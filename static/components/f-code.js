@@ -1,4 +1,4 @@
-import { asset, push, view } from "./utils.js";
+import { asset, oninvalid, push, view } from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/code.js";
 
@@ -23,6 +23,7 @@ customElements.define(
         name,
         value: isNew ? schema.value : value,
         hidden: true,
+        oninvalid,
       });
 
       const shadow = this.attachShadow({ mode: "open" });

@@ -69,14 +69,12 @@ export async function prepareField(
   return json;
 }
 
-export function getDefaultValue(field: ResolvedField): unknown {
-  if (field.fields && !field.type.endsWith("-list")) {
-    const values = {} as Data;
-    for (const f of field.fields) {
-      values[f.name] = getDefaultValue(f);
-    }
-    return values;
+export function getViews(field: ResolvedField, views = new Set()): unknown {
+  if (field.view) {
+    views.add(field.view);
   }
 
-  return field.value ?? null;
+  field.fields?.forEach((f) => getViews(f, views));
+
+  return views;
 }

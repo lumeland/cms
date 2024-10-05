@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { push, view } from "./utils.js";
+import { oninvalid, push, view } from "./utils.js";
 
 customElements.define(
   "f-textarea",
@@ -24,6 +24,7 @@ customElements.define(
         name,
         value: isNew ? schema.value : value,
         class: "input",
+        oninvalid,
         oninput() {
           this.parentNode.dataset.replicatedValue = this.value;
         },

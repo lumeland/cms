@@ -1,4 +1,12 @@
-import { asset, fileType, labelify, push, url, view } from "./utils.js";
+import {
+  asset,
+  fileType,
+  labelify,
+  oninvalid,
+  push,
+  url,
+  view,
+} from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/markdown.js";
 
@@ -23,6 +31,7 @@ customElements.define(
         name,
         value: isNew ? schema.value : value,
         hidden: true,
+        oninvalid,
       });
 
       const shadow = this.attachShadow({ mode: "open" });

@@ -15,6 +15,10 @@
     border-color: var(--color-primary);
   }
 
+  &:user-invalid {
+    border-color: var(--color-error);
+  }
+
   &:read-only {
     color: var(--color-dim);
     background: none;

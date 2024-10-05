@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { push, pushOptions, view } from "./utils.js";
+import { oninvalid, push, pushOptions, view } from "./utils.js";
 
 export class Input extends Component {
   get inputAttributes() {
@@ -27,9 +27,20 @@ export class Input extends Component {
       ...schema.attributes,
       id,
       name,
+      oninvalid,
       value: isNew ? schema.value : value,
       ...this.inputAttributes,
       style: { "--max-width": maxWidth },
+    });
+
+    input.addEventListener("invalid", () => {
+      input.dispatchEvent(
+        new CustomEvent("cms:invalid", {
+          bubbles: true,
+          cancelable: false,
+          detail: { input },
+        }),
+      );
     });
 
     if (schema.options) {

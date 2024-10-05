@@ -1,6 +1,6 @@
 import { escape } from "../../../deps/std.ts";
 import { getPath } from "../../utils/path.ts";
-import { prepareField } from "../../utils/data.ts";
+import { getViews, prepareField } from "../../utils/data.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type Collection from "../../collection.ts";
@@ -22,6 +22,9 @@ export default async function template(
   const fields = await Promise.all(
     collection.fields.map((field) => prepareField(field)),
   );
+
+  const views = new Set();
+  collection.fields.forEach((field) => getViews(field, views));
 
   return `
 ${
@@ -54,9 +57,11 @@ ${
     </h1>
   </header>
   ${
-    collection.views
-      ? `<u-views data-target="form-edit" data-views="${
-        escape(JSON.stringify(collection.views))
+    views.size
+      ? `<u-views data-target="form-edit" data-state="${
+        escape(JSON.stringify(collection.views || []))
+      }" data-views="${
+        escape(JSON.stringify(Array.from(views)))
       }"><strong class="field-label">View:</strong></u-views>`
       : ""
   }

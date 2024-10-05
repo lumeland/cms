@@ -1,4 +1,4 @@
-import { push, pushOptions, view } from "./utils.js";
+import { oninvalid, push, pushOptions, view } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -22,6 +22,7 @@ customElements.define(
         id,
         name,
         class: "select is-narrow",
+        oninvalid,
       });
 
       pushOptions(select, schema.options);

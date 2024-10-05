@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { push, url, view } from "./utils.js";
+import { oninvalid, push, url, view } from "./utils.js";
 
 customElements.define(
   "f-file",
@@ -56,6 +56,7 @@ customElements.define(
         id,
         name: `${name}.uploaded`,
         class: "inputFile",
+        oninvalid,
       });
     }
   },

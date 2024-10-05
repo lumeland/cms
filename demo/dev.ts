@@ -61,6 +61,7 @@ cms.collection({
     {
       name: "published",
       type: "datetime",
+      view: "merda",
       init(field) {
         field.value = new Date();
       },
@@ -74,7 +75,7 @@ cms.collection({
   description: "List of posts for the blog",
   store: "kv:posts/*",
   nameField: "title",
-  views: ["full"],
+  views: ["full", "time"],
   fields: [
     {
       name: "title",
@@ -84,6 +85,7 @@ cms.collection({
         "Title 2",
         "Title 3",
       ],
+      view: "full",
       attributes: {
         maxlength: 20,
         required: true,
@@ -91,7 +93,7 @@ cms.collection({
     },
     {
       name: "created_at",
-      view: "full",
+      view: "time",
       type: "datetime",
       init(field) {
         field.value = new Date();
@@ -144,7 +146,7 @@ cms.collection({
       name: "author",
       type: "object",
       fields: [
-        "name: text",
+        "name: text!",
         "email: email",
       ],
     },
@@ -152,7 +154,7 @@ cms.collection({
       name: "object-list",
       type: "object-list",
       fields: [
-        "name: text",
+        "name: text!",
         "date: date",
         {
           name: "tags",
@@ -180,6 +182,9 @@ cms.collection({
               name: "text",
               type: "text",
               value: "Hello world!",
+              attributes: {
+                required: true,
+              },
             },
           ],
         },

@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New option `view` to show/hide fields under specific views.
 - `nameField` accepts a function to generate the filename dynamically [#26].
 
+### Fixed
+- Show invalid fields on submit, even if they are hidden.
+
 ## [0.6.5] - 2024-09-28
 ### Fixed
 - Hono static server breaking change introduced in 4.6.3.

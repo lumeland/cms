@@ -4,6 +4,7 @@
   --color-text: hsl(220, 20%, 15%);
   --color-dim: hsl(220, 20%, 40%);
   --color-link: var(--color-primary);
+  --color-error: var(--color-primary);
   --color-link-hover: var(--color-primary-highlight);
   --color-line: hsl(220, 20%, 80%);
   --color-line-light: hsl(220, 20%, 90%);

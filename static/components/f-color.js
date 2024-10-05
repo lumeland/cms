@@ -1,4 +1,4 @@
-import { push, view } from "./utils.js";
+import { oninvalid, push, view } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -24,6 +24,7 @@ customElements.define(
         id,
         name,
         value: isNew ? schema.value : value,
+        oninvalid,
       });
       const text = push(div, "input", {
         class: "input is-narrow",

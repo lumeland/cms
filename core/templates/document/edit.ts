@@ -1,6 +1,6 @@
 import { escape } from "../../../deps/std.ts";
 import { getPath } from "../../utils/path.ts";
-import { prepareField } from "../../utils/data.ts";
+import { getViews, prepareField } from "../../utils/data.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type Document from "../../document.ts";
@@ -20,6 +20,9 @@ export default async function template(
     document.fields.map((field) => prepareField(field)),
   );
 
+  const views = new Set();
+  document.fields.forEach((field) => getViews(field, views));
+
   return `
 ${breadcrumb(options, version, document.name)}
 
@@ -29,8 +32,10 @@ ${breadcrumb(options, version, document.name)}
   </header>
   ${
     document.views
-      ? `<u-views data-target="form-edit" data-views="${
-        escape(JSON.stringify(document.views))
+      ? `<u-views data-target="form-edit" data-state="${
+        escape(JSON.stringify(document.views || []))
+      }" data-views="${
+        escape(JSON.stringify(Array.from(views)))
       }"><strong class="field-label">View:</strong></u-views>`
       : ""
   }

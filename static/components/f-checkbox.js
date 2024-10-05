@@ -1,4 +1,4 @@
-import { push, view } from "./utils.js";
+import { oninvalid, push, view } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -17,6 +17,7 @@ customElements.define(
         id,
         name,
         value: true,
+        oninvalid,
         checked: (isNew ? schema.value : value) ?? undefined,
         type: "checkbox",
         class: "checkbox",

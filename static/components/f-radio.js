@@ -1,4 +1,4 @@
-import { labelify, push, view } from "./utils.js";
+import { labelify, oninvalid, push, view } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -25,6 +25,7 @@ customElements.define(
             name,
             value: option,
             class: "radio",
+            oninvalid,
           });
           push(
             li,
@@ -40,6 +41,7 @@ customElements.define(
             id: optionId,
             name,
             value: option,
+            oninvalid,
           });
           push(
             li,

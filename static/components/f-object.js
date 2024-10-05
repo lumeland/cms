@@ -11,8 +11,10 @@ customElements.define(
       const namePrefix = `${this.namePrefix}.${schema.name}`;
       const details = push(this, "details", {
         class: "accordion",
+        "oncms:invalid": () => details.open = true,
         ...schema.attributes,
       });
+
       const summary = push(details, "summary", { slot: "content" });
 
       const shadow = this.attachShadow({ mode: "open" });

@@ -1,4 +1,4 @@
-import { push, toLocal, view } from "./utils.js";
+import { oninvalid, push, toLocal, view } from "./utils.js";
 import { Component } from "./component.js";
 
 export class Input extends Component {
@@ -36,6 +36,7 @@ export class Input extends Component {
       value: input.value ? this.format(input.value) : null,
       class: "input",
       ...this.inputAttributes,
+      oninvalid,
       oninput() {
         input.value = new Date(this.value).toISOString();
       },
