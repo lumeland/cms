@@ -16,7 +16,7 @@ customElements.define(
       });
 
       form.addEventListener("submit", (e) => {
-        if (e.submitter && e.submitter.formAction !== form.action) {
+        if (e.submitter && !sameAction(e.submitter.formAction, form.action)) {
           return;
         }
 
@@ -65,3 +65,12 @@ customElements.define(
     }
   },
 );
+
+function sameAction(url1, url2) {
+  const u1 = new URL(url1);
+  const u2 = new URL(url2);
+
+  return u1.origin === u2.origin &&
+    u1.pathname === u2.pathname &&
+    u1.search === u2.search;
+}
