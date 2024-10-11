@@ -23,10 +23,9 @@ code {
 
 :not(pre) > code {
   background: var(--color-line-light);
-  padding: 0 .2rem;
+  padding: 0 0.2rem;
   border-radius: 4px;
 }
-
 
 :focus {
   outline: 0;
@@ -34,7 +33,8 @@ code {
 }
 :focus-visible {
   outline: 0;
-  box-shadow: 0 0 0 3px color-mix(in hsl, var(--color-primary), transparent 75%);
+  box-shadow: 0 0 0 3px
+    color-mix(in hsl, var(--color-primary), transparent 75%);
 }
 ::selection {
   background: color-mix(in hsl, var(--color-primary), transparent 85%);
@@ -44,7 +44,8 @@ code {
 [data-theme="dark"] {
   :focus-visible {
     outline: 0;
-    box-shadow: 0 0 0 3px color-mix(in hsl, var(--color-primary), transparent 75%);
+    box-shadow: 0 0 0 3px
+      color-mix(in hsl, var(--color-primary), transparent 75%);
   }
   ::selection {
     background: color-mix(in hsl, var(--color-primary), transparent 85%);
@@ -58,7 +59,7 @@ a {
   color: var(--color-link);
 
   &:hover {
-    var(--color-link-hover);
+    color: var(--color-link-hover);
   }
 }
 

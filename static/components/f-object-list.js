@@ -1,4 +1,4 @@
-import { dom, push, view } from "./utils.js";
+import { dom, labelify, push, view } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -71,7 +71,7 @@ customElements.define(
           class: "button is-secondary",
         },
         '<u-icon name="plus-circle"></u-icon>',
-        `Add ${schema.label}`,
+        `Add ${labelify(schema.label)}`,
       );
     }
   },

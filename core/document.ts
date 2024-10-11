@@ -50,10 +50,22 @@ export default class Document {
   }
 
   async write(data: Data, cms: CMSContent, create = false) {
-    const currentData = await this.read(create);
+    let currentData = await this.read(create);
+    const fields = this.fields || [];
+
+    const isArray = fields.length === 1 && fields[0].name === "[]" &&
+      ("[]" in data);
+
+    if (isArray) {
+      currentData = { "[]": currentData };
+    }
 
     for (const field of this.fields || []) {
       await field.applyChanges(currentData, data, field, cms);
+    }
+
+    if (isArray) {
+      currentData = currentData["[]"] as Data;
     }
 
     await this.#entry.writeData(currentData);

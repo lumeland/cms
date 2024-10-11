@@ -177,6 +177,10 @@ export function randomId() {
 
 /** Convert slugs to labels */
 export function labelify(slug) {
+  if (!slug || slug === "[]") { // Special case for array fields
+    return "";
+  }
+
   // Capitalize first letter
   slug = slug[0].toUpperCase() + slug.slice(1);
 

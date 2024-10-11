@@ -6,9 +6,15 @@ customElements.define(
   class Form extends Component {
     init() {
       const fields = JSON.parse(this.dataset.fields ?? "null");
-      const value = JSON.parse(this.dataset.value ?? "null");
+      let value = JSON.parse(this.dataset.value ?? "null");
       const namePrefix = "changes";
       const isNew = !("value" in this.dataset);
+
+      if (
+        Array.isArray(value) && fields.length === 1 && fields[0].name === "[]"
+      ) {
+        value = { [fields[0].name]: value };
+      }
 
       for (const field of fields) {
         push(this, field.tag, {

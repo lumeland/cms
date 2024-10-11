@@ -2,6 +2,10 @@ import { extname } from "../../deps/std.ts";
 
 /** Convert slugs to labels */
 export function labelify(slug: string) {
+  if (slug === "[]") {
+    return "";
+  }
+
   // Remove extension
   const ext = extname(slug);
   if (ext) {
