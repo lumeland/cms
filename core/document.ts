@@ -1,4 +1,4 @@
-import type { Data, Entry, ResolvedField } from "../types.ts";
+import type { CMSContent, Data, Entry, ResolvedField } from "../types.ts";
 
 export interface DocumentOptions {
   name?: string;
@@ -49,11 +49,11 @@ export default class Document {
     }
   }
 
-  async write(data: Data, create = false) {
+  async write(data: Data, cms: CMSContent, create = false) {
     const currentData = await this.read(create);
 
     for (const field of this.fields || []) {
-      await field.applyChanges(currentData, data, field);
+      await field.applyChanges(currentData, data, field, cms);
     }
 
     await this.#entry.writeData(currentData);

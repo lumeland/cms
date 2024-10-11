@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] - Unreleased
+### Changed
+- Internal changes but potentially breaking (related with [#29]):
+  - Removed `Field.cmsContent` property.
+  - Changed the type of `Field.applyChanges` and `Field.init` functions.
+  - Added `Field.details` property to pass extra data from back to front.
+
 ## [0.6.8] - 2024-10-05
 ### Fixed
 - Form redirect after submit.
@@ -419,7 +426,9 @@ First version
 [#22]: https://github.com/lumeland/cms/issues/22
 [#23]: https://github.com/lumeland/cms/issues/23
 [#26]: https://github.com/lumeland/cms/issues/26
+[#29]: https://github.com/lumeland/cms/issues/29
 
+[0.7.0]: https://github.com/lumeland/cms/compare/v0.6.8...HEAD
 [0.6.8]: https://github.com/lumeland/cms/compare/v0.6.7...v0.6.8
 [0.6.7]: https://github.com/lumeland/cms/compare/v0.6.6...v0.6.7
 [0.6.6]: https://github.com/lumeland/cms/compare/v0.6.5...v0.6.6

@@ -42,7 +42,8 @@ export default function (app: Hono) {
             version: await versioning?.current(),
           }),
         );
-      } catch {
+      } catch (e) {
+        console.error(e);
         return c.notFound();
       }
     })
@@ -62,7 +63,7 @@ export default function (app: Hono) {
         document = collection.get(newName);
       }
 
-      await document.write(changesToData(body));
+      await document.write(changesToData(body), options);
 
       return c.redirect(
         getPath(
@@ -101,7 +102,7 @@ export default function (app: Hono) {
       }
 
       const duplicate = collection.create(name as string);
-      await duplicate.write(changesToData(body), true);
+      await duplicate.write(changesToData(body), options, true);
 
       return c.redirect(
         getPath(
@@ -180,7 +181,7 @@ export default function (app: Hono) {
       }
 
       const document = collection.create(name);
-      await document.write(changes, true);
+      await document.write(changes, options, true);
 
       return c.redirect(
         getPath(

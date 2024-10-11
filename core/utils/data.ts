@@ -1,4 +1,4 @@
-import type { Data, ResolvedField } from "../../types.ts";
+import type { CMSContent, Data, ResolvedField } from "../../types.ts";
 
 /**
  * Converts a list of changes to an object:
@@ -55,15 +55,18 @@ export function changesToData(
 
 export async function prepareField(
   field: ResolvedField,
+  content: CMSContent,
 ): Promise<ResolvedField> {
   const json = { ...field };
 
   if (field.fields) {
-    json.fields = await Promise.all(field.fields.map(prepareField));
+    json.fields = await Promise.all(
+      field.fields.map((f) => prepareField(f, content)),
+    );
   }
 
   if (field.init) {
-    await field.init(json);
+    await field.init(json, content);
   }
 
   return json;

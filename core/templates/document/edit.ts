@@ -17,7 +17,7 @@ export default async function template(
 ) {
   const data = await document.read(true);
   const fields = await Promise.all(
-    document.fields.map((field) => prepareField(field)),
+    document.fields.map((field) => prepareField(field, options)),
   );
 
   const views = new Set();

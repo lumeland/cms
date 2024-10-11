@@ -434,12 +434,11 @@ export default class Cms {
         tag: type.tag,
         label: field.label ?? labelify(field.name),
         applyChanges: type.applyChanges,
-        cmsContent: content,
         ...field,
       } as ResolvedField;
 
       if (type.init) {
-        type.init(resolvedField);
+        type.init(resolvedField, content);
       }
 
       if (resolvedField.fields) {

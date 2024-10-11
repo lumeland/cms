@@ -29,6 +29,7 @@ type SmartFieldKeys =
   | "object"
   | "object-list"
   | "choose-list"
+  | "markdown"
   | "file";
 export type FieldKeys = DumpFieldKeys | SmartFieldKeys;
 
@@ -72,11 +73,16 @@ fields.set("list", {
 fields.set("object", {
   tag: "f-object",
   jsImport: "lume_cms/components/f-object.js",
-  async applyChanges(data, changes, field: ResolvedField) {
+  async applyChanges(data, changes, field, cmsContent) {
     const value = data[field.name] as Data || {};
 
     for (const f of field.fields || []) {
-      await f.applyChanges(value, changes[field.name] as Data || {}, f);
+      await f.applyChanges(
+        value,
+        changes[field.name] as Data || {},
+        f,
+        cmsContent,
+      );
     }
 
     const fn = field.transform;
@@ -87,14 +93,14 @@ fields.set("object", {
 fields.set("object-list", {
   tag: "f-object-list",
   jsImport: "lume_cms/components/f-object-list.js",
-  async applyChanges(data, changes, field: ResolvedField) {
+  async applyChanges(data, changes, field, cmsContent) {
     const value = await Promise.all(
       Object.values(changes[field.name] || {}).map(
         async (subchanges) => {
           const value = {} as Data;
 
           for (const f of field.fields || []) {
-            await f.applyChanges(value, subchanges, f);
+            await f.applyChanges(value, subchanges, f, cmsContent);
           }
 
           return value;
@@ -110,7 +116,7 @@ fields.set("object-list", {
 fields.set("choose-list", {
   tag: "f-choose-list",
   jsImport: "lume_cms/components/f-choose-list.js",
-  async applyChanges(data, changes, field: ResolvedField) {
+  async applyChanges(data, changes, field, cmsContent) {
     const value = await Promise.all(
       Object.values(changes[field.name] || {}).map(
         async (subchanges) => {
@@ -123,7 +129,7 @@ fields.set("choose-list", {
           }
 
           for (const f of chooseField?.fields || []) {
-            await f.applyChanges(value, subchanges, f);
+            await f.applyChanges(value, subchanges, f, cmsContent);
           }
 
           return value;
@@ -139,9 +145,7 @@ fields.set("choose-list", {
 fields.set("file", {
   tag: "f-file",
   jsImport: "lume_cms/components/f-file.js",
-  init: (field: ResolvedField) => {
-    const { cmsContent } = field;
-
+  init: (field: ResolvedField, cmsContent) => {
     if (!field.uploads) {
       field.uploads = Object.keys(cmsContent.uploads)[0];
 
@@ -154,11 +158,11 @@ fields.set("file", {
 
     if (!field.publicPath) {
       const name = field.uploads.split(":")[0];
-      const { publicPath } = field.cmsContent.uploads[name];
+      const { publicPath } = cmsContent.uploads[name];
       field.publicPath = publicPath;
     }
   },
-  async applyChanges(data, changes, field: ResolvedField) {
+  async applyChanges(data, changes, field, cmsContent) {
     const value = changes[field.name] as
       | { current?: string; uploaded?: File }
       | undefined;
@@ -175,7 +179,7 @@ fields.set("file", {
     }
     const uploads = field.uploads || "default";
     const [uploadsKey, uploadsPath = ""] = uploads.split(":");
-    const { storage, publicPath } = field.cmsContent.uploads[uploadsKey];
+    const { storage, publicPath } = cmsContent.uploads[uploadsKey];
 
     if (!storage) {
       throw new Error(
@@ -186,6 +190,26 @@ fields.set("file", {
     const entry = storage.get(normalizePath(uploadsPath, uploaded.name));
     await entry.writeFile(uploaded);
     data[field.name] = normalizePath(publicPath, uploadsPath, uploaded.name);
+  },
+});
+
+fields.set("markdown", {
+  tag: "f-markdown",
+  jsImport: "lume_cms/components/f-markdown.js",
+  init(field, { uploads }) {
+    field.details ??= {};
+    field.details.uploads = Object.keys(uploads);
+  },
+  applyChanges(data, changes, field: ResolvedField) {
+    if (field.name in changes) {
+      const value = changes[field.name];
+
+      if (isEmpty(value) && !field.attributes?.required) {
+        delete data[field.name];
+      } else {
+        data[field.name] = value;
+      }
+    }
   },
 });
 

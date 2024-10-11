@@ -82,7 +82,7 @@ export interface Field {
     pattern?: string;
     [key: string]: unknown;
   };
-  init?: (field: ResolvedField) => void | Promise<void>;
+  init?: (field: ResolvedField, content: CMSContent) => void | Promise<void>;
   transform?(value: any, field: ResolvedField): any;
   [key: string]: unknown;
 }
@@ -91,22 +91,24 @@ export interface ResolvedField extends Field {
   tag: string;
   label: string;
   fields?: ResolvedField[];
-  cmsContent: CMSContent;
+  details?: Record<string, any>;
   applyChanges(
     data: Data,
     changes: Data,
     field: ResolvedField,
+    content: CMSContent,
   ): void | Promise<void>;
 }
 
 export interface FieldType {
   tag: string;
   jsImport: string;
-  init?: (field: ResolvedField) => void;
+  init?: (field: ResolvedField, content: CMSContent) => void;
   applyChanges(
     data: Data,
     changes: Data,
     field: ResolvedField,
+    content: CMSContent,
   ): void | Promise<void>;
 }
 

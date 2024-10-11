@@ -1,4 +1,4 @@
-import { Context, Hono, Next, serveStatic } from "../deps/hono.ts";
+import { type Context, Hono, Next, serveStatic } from "../deps/hono.ts";
 import authRoutes from "../core/routes/auth.ts";
 import { dispatch } from "../core/utils/event.ts";
 import { asset, getPath } from "../core/utils/path.ts";
@@ -58,7 +58,7 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
   cms.storage("src");
   cms.options.basePath = basePath;
   cms.options.root = site.src();
-  const data = options.site.data ?? {};
+  const data = cms.options.data ?? {};
   data.site = site;
   cms.options.data = data;
 

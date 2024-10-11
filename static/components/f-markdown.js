@@ -42,7 +42,7 @@ customElements.define(
 
       const helpers = push(this, "div", { class: "tools is-sticky" });
 
-      for (const name of Object.keys(schema.cmsContent.uploads || {})) {
+      for (const name of schema.details?.uploads || []) {
         push(helpers, "button", {
           class: "button is-secondary",
           type: "button",
