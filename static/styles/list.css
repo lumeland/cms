@@ -56,6 +56,7 @@
   }
 
   &[href]:hover {
+    color: var(--color-text);
     background-color: var(--color-line-light);
   }
 }
