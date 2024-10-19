@@ -1,4 +1,4 @@
-import { asset, fileType, push } from "./utils.js";
+import { fileType, push } from "./utils.js";
 import { Component } from "./component.js";
 
 const cache = new Map();
@@ -15,7 +15,7 @@ customElements.define(
         return cache.get(name);
       }
 
-      const code = fetch(asset("icons", `${name}.svg`))
+      const code = fetch(getIconUrl(name))
         .then((res) => res.text());
 
       cache.set(name, code);
@@ -23,7 +23,10 @@ customElements.define(
     }
 
     async init() {
-      this.innerHTML = await Icon.fetch(this.getAttribute("name"));
+      const name = this.getAttribute("name");
+      if (name) {
+        this.innerHTML = await Icon.fetch(this.getAttribute("name"));
+      }
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -69,3 +72,8 @@ customElements.define(
     }
   },
 );
+
+function getIconUrl(name) {
+  const variant = name.endsWith("-fill") ? "fill" : "regular";
+  return `https://cdn.jsdelivr.net/npm/@phosphor-icons/core@2.1.1/assets/${variant}/${name}.svg`;
+}

@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.7.1] - Unreleased
+### Changed
+- Removed icons folder and fetch them from JsDelivr.
+
 ### Fixed
 - Some style issues.
 

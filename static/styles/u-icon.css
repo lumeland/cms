@@ -4,6 +4,8 @@ u-icon {
   & svg {
     display: block;
     fill: currentColor;
+    width: 32px;
+    height: 32px;
   }
 }
 u-icon-file u-icon {

@@ -52,7 +52,13 @@ ${extraHead ?? ""}
     <p>
       Powered by <a href="https://lume.land/cms/">LumeCMS ${getCurrentVersion()}</a>
     </p>
-    <button class="buttonIcon" id="themeButton" type="button" aria-label="toggle-theme"><u-icon name="theme"></u-icon></button>
+    <button class="buttonIcon" id="themeButton" type="button" aria-label="toggle-theme">
+      <u-icon>
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 26C10.4444 26 6 21.5556 6 16C6 10.4444 10.4444 6 16 6C21.5556 6 26 10.4444 26 16C26 21.5556 21.5556 26 16 26ZM16 24.9394C20.9747 24.9394 24.9394 20.9747 24.9394 16C24.9394 11.0253 20.9747 7.06061 16 7.06061V24.9394Z"/>
+      </svg>
+      </u-icon>
+    </button>
     <button class="button is-tertiary" id="logoutButton" type="button" aria-label="logout">Logout</button>
   </footer>
   <script type="module">

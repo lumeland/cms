@@ -50,9 +50,25 @@
       background: var(--color-line);
     }
 
+    &[aria-pressed] {
+      background-color: transparent;
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        border: solid 1px;
+        border-radius: 2px;
+      }
+    }
     &[aria-pressed="false"] {
       color: var(--color-dim);
-      background-color: transparent;
+    }
+    &[aria-pressed="true"] {
+      &::before {
+        background-color: currentColor;
+        box-shadow: inset 0 0 0 2px var(--color-background);
+      }
     }
   }
   &.is-tertiary {

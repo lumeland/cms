@@ -75,7 +75,7 @@ cms.collection({
   description: "List of posts for the blog",
   store: "kv:posts/*",
   nameField: "title",
-  views: ["full", "time"],
+  // views: ["full", "time"],
   fields: [
     {
       name: "title",
