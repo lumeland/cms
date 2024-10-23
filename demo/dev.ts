@@ -151,6 +151,15 @@ cms.collection({
       ],
     },
     {
+      name: "tags",
+      type: "list",
+      label: "List of tags",
+      description: "These are the of tags",
+      init(field) {
+        field.options = ["tag1", "tag2", "tag3"];
+      },
+    },
+    {
       name: "object-list",
       type: "object-list",
       fields: [

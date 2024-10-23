@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.7.1] - Unreleased
 ### Fixed
 - Some style issues.
+- Description in `list` field is not shown [#30].
 
 ## [0.7.0] - 2024-10-11
 ### Added
@@ -435,6 +436,7 @@ First version
 [#26]: https://github.com/lumeland/cms/issues/26
 [#28]: https://github.com/lumeland/cms/issues/28
 [#29]: https://github.com/lumeland/cms/issues/29
+[#30]: https://github.com/lumeland/cms/issues/30
 
 [0.7.1]: https://github.com/lumeland/cms/compare/v0.7.0...HEAD
 [0.7.0]: https://github.com/lumeland/cms/compare/v0.6.8...v0.7.0
