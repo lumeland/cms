@@ -1,3 +1,5 @@
+import { join } from "std/path/posix/join.js";
+
 /** Create and append a DOM element to another */
 export function push(el, tag, attrs, ...children) {
   const child = dom(tag, attrs, ...children);
@@ -118,24 +120,24 @@ export function dom(tag, attrs, ...children) {
   return el;
 }
 
-const { baseassets, baseurls } = document.documentElement.dataset;
+let { baseassets, baseurls } = document.documentElement.dataset ||
+  { baseassets: "", baseurls: "" };
+
+if (baseurls === "/") {
+  baseurls = "";
+}
+
+if (baseassets === "/") {
+  baseassets = location.origin;
+}
 
 export function url(...parts) {
-  return [
-    baseurls === "/" ? "" : baseurls,
-    ...parts
-      .filter((part) => part && typeof part === "string")
-      .map((part) => encodeURIComponent(part)),
-  ].join("/");
+  return join(baseurls, ...parts.map((part) => encodeURIComponent(part)));
 }
 
 export function asset(...parts) {
-  return [
-    baseassets === "/" ? location.origin : baseassets,
-    ...parts
-      .filter((part) => part && typeof part === "string")
-      .map((part) => encodeURIComponent(part)),
-  ].join("/");
+  return baseassets +
+    join("/", ...parts.map((part) => encodeURIComponent(part)));
 }
 
 export function fileType(path) {

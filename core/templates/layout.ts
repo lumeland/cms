@@ -29,7 +29,8 @@ export default function template(
   <script type="importmap">
     {
       "imports": {
-        "lume_cms/": "${asset(basePath, "/")}"
+        "lume_cms/": "${asset(basePath, "/")}",
+        "std/": "https://cdn.jsdelivr.net/gh/oscarotero/std@1.0.1/"
       }
     }
   </script>
