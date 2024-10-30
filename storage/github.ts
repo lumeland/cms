@@ -1,6 +1,5 @@
 import {
   contentType,
-  decodeBase64,
   encodeBase64,
   extname,
   globToRegExp,
@@ -8,13 +7,9 @@ import {
 } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
 import { slugify } from "../core/utils/string.ts";
-import { Octokit } from "npm:octokit";
 import { normalizePath } from "../core/utils/path.ts";
 
-import type {
-  OctokitResponse,
-  RequestParameters,
-} from "npm:octokit/octokit.d.ts";
+import type { Octokit } from "npm:octokit";
 import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
 
 export interface Options {
@@ -267,8 +262,9 @@ export class GitHubEntry implements Entry {
 
 async function fetchInfo(
   options: Options,
-  params?: RequestParameters,
-): Promise<OctokitResponse | undefined> {
+  params?: Record<string, unknown>,
+  // deno-lint-ignore no-explicit-any
+): Promise<any | undefined> {
   const { client, owner, repo, path, branch } = options;
   try {
     const result = await client.rest.repos.getContent({
@@ -304,13 +300,30 @@ async function readTextContent(
 async function readBinaryContent(
   options: Options,
 ): Promise<Uint8Array | undefined> {
-  const content = await fetchInfo(options, {
+  const { client, owner, repo, path, branch } = options;
+
+  // https://github.com/octokit/rest.js/issues/14#issuecomment-584413497
+  const endpoint = client.rest.repos.getContent.endpoint({
+    owner,
+    repo,
+    path,
+    ref: branch,
     mediaType: {
-      format: "base64",
+      format: "raw",
     },
   });
 
-  return content ? decodeBase64(content.content) : undefined;
+  const auth = await client.auth() as { token: string };
+  const response = await fetch(endpoint.url, {
+    method: endpoint.method,
+    headers: {
+      ...endpoint.headers as Record<string, string>,
+      authorization: `Bearer ${auth.token}`,
+    },
+  });
+
+  const buffer = await response.arrayBuffer();
+  return new Uint8Array(buffer);
 }
 
 async function writeContent(
