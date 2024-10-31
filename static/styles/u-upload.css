@@ -1,0 +1,16 @@
+u-upload {
+  display: flex;
+  gap: 1px;
+
+  &:defined {
+    .buttonIcon {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    input[type="file"],
+    input[type="file"]::file-selector-button {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+}

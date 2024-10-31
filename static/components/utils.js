@@ -4,6 +4,12 @@ export function push(el, tag, attrs, ...children) {
   el.append(child);
   return child;
 }
+/** Create and prepend a DOM element to another */
+export function unshift(el, tag, attrs, ...children) {
+  const child = dom(tag, attrs, ...children);
+  el.prepend(child);
+  return child;
+}
 
 /** Push options to an element like select or datalist */
 export function pushOptions(el, options) {

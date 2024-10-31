@@ -66,8 +66,11 @@
     }
     &[aria-pressed="true"] {
       &::before {
-        background-color: currentColor;
-        box-shadow: inset 0 0 0 2px var(--color-background);
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        background-image: url('data:image/svg+xml;charset=UTF-8,<svg width="12" height="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M13.92 3c.297 0 .552.109.763.326.211.217.317.48.317.786 0 .307-.107.57-.32.79l-7.56 7.777a1.02 1.02 0 0 1-.76.321 1.03 1.03 0 0 1-.768-.321l-4.28-4.394A1.09 1.09 0 0 1 1 7.495c0-.307.106-.57.317-.787.21-.217.466-.325.764-.325s.555.11.77.33l3.51 3.611 6.79-6.994c.213-.22.47-.33.768-.33Z" /></svg>');
+        background-repeat: no-repeat;
+        background-position: center;
       }
     }
   }

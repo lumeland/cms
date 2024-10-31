@@ -6,12 +6,12 @@ customElements.define(
   class Preview extends Component {
     async init() {
       const { api } = this.dataset;
-      let currentPath = window.location.pathname;
+      let currentPath = location.pathname;
       if (currentPath.endsWith("/index.html")) {
         currentPath = currentPath.slice(0, -10);
       }
 
-      const url = new URL(api, window.location.origin);
+      const url = new URL(api, location.origin);
       url.searchParams.set("url", currentPath);
 
       const response = await fetch(url);

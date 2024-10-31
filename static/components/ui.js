@@ -10,3 +10,4 @@ import "./u-views.js";
 import "./u-form.js";
 import "./u-pagepreview.js";
 import "./u-confirm.js";
+import "./u-upload.js";

@@ -32,6 +32,15 @@
   &:hover {
     background-color: var(--color-line-light);
   }
+
+  &.is-secondary {
+    color: var(--color-text);
+    background: var(--color-line-light);
+
+    &:hover {
+      background: var(--color-line);
+    }
+  }
 }
 
 a.buttonIcon {

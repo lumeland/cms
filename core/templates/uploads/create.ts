@@ -49,6 +49,7 @@ ${
   action="${getPath(options.basePath, "uploads", collection, "create")}"
 >
   <div class="field">
+  <u-upload>
     <input
       aria-label="Upload file"
       id="new-file"
@@ -57,6 +58,7 @@ ${
       required
       class="inputFile"
     >
+  </u-upload>
   </div>
   <footer class="footer ly-rowStack">
     <button class="button is-primary" type="submit">

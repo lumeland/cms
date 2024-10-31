@@ -1,6 +1,7 @@
 .inputFile {
   max-width: max-content;
   border-radius: var(--border-radius);
+  font: var(--font-ui);
 }
 /* Like .button.is-secondary */
 .inputFile::file-selector-button {
@@ -15,10 +16,9 @@
   outline: 0;
   text-decoration: none;
   border-radius: var(--border-radius);
-  transition-properties: color, background;
+  transition-property: color, background;
   transition-duration: var(--animation-duration);
-
-  &:hover {
-    background: var(--color-line);
-  }
+}
+.inputFile:hover::file-selector-button {
+  background: var(--color-line);
 }

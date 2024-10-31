@@ -50,7 +50,9 @@ customElements.define(
         },
       }, '<u-icon name="magnifying-glass"></u-icon>');
 
-      push(this, "input", {
+      const upload = push(this, "u-upload");
+
+      push(upload, "input", {
         ...schema.attributes,
         type: "file",
         id,

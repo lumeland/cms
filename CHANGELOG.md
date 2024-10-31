@@ -5,8 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.7.2] - Unreleased
+### Added
+- Input fields allow to paste images or URLs.
+
 ### Changed
 - Removed icons folder and fetch them from JsDelivr.
+- Make the views more clicable.
+- Improved some styles.
 
 ## [0.7.1] - 2024-10-31
 ### Fixed

@@ -27,6 +27,7 @@
 @import "./styles/u-draggable.css";
 @import "./styles/u-preview.css";
 @import "./styles/u-popover.css";
+@import "./styles/u-upload.css";
 
 .is-small {
   font: var(--font-small);
