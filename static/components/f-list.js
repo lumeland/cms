@@ -12,6 +12,10 @@ customElements.define(
       view(this);
       push(this, "label", { for: `field_${namePrefix}.0` }, schema.label);
 
+      if (schema.description) {
+        push(this, "div", { class: "field-description" }, schema.description);
+      }
+
       let datalist;
 
       if (schema.options) {
