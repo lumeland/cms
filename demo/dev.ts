@@ -61,9 +61,18 @@ cms.collection({
     {
       name: "published",
       type: "datetime",
-      view: "merda",
+      view: "published",
       init(field) {
         field.value = new Date();
+      },
+    },
+    {
+      name: "number",
+      type: "number",
+      attributes: {
+        min: 1,
+        max: 10,
+        step: 0.1,
       },
     },
   ],
@@ -110,7 +119,15 @@ cms.collection({
     "datetime: datetime",
     "date: date",
     "hour: time",
-    "number: number",
+    {
+      name: "number",
+      type: "number",
+      attributes: {
+        min: 1,
+        max: 10,
+        step: 0.1,
+      },
+    },
     "code: code",
     "color: color",
     {
