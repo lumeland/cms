@@ -3,6 +3,7 @@ import authRoutes from "../core/routes/auth.ts";
 import { dispatch } from "../core/utils/event.ts";
 import { asset, getPath } from "../core/utils/path.ts";
 import { Git, Options as GitOptions } from "../core/git.ts";
+import { relative } from "../deps/std.ts";
 import type Cms from "../core/cms.ts";
 
 export interface Options {
@@ -121,11 +122,11 @@ export default async function lume(userOptions?: Options): Promise<Hono> {
     }
   });
 
+  const root = relative(Deno.cwd(), site.dest());
+
   previewer.get(
     "*",
-    serveStatic({
-      root: site.dest(),
-    }),
+    serveStatic({ root }),
   );
 
   previewer.notFound(() => {
