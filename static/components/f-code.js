@@ -1,6 +1,7 @@
-import { asset, oninvalid, push, view } from "./utils.js";
+import { asset, oninvalid, view } from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/code.js";
+import dom from "dom";
 
 customElements.define(
   "f-code",
@@ -12,19 +13,25 @@ customElements.define(
       const id = `field_${name}`;
 
       view(this);
-      push(this, "label", { for: `field_${namePrefix}.0` }, schema.label);
+      dom("label", {
+        for: `field_${namePrefix}.0`,
+        html: schema.label,
+      }, this);
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom("div", {
+          class: "field-description",
+          html: schema.description,
+        }, this);
       }
 
-      const textarea = push(this, "textarea", {
+      const textarea = dom("textarea", {
         id,
         name,
         value: isNew ? schema.value : value,
         hidden: true,
         oninvalid,
-      });
+      }, this);
 
       const shadow = this.attachShadow({ mode: "open" });
       shadow.innerHTML = `
@@ -32,7 +39,7 @@ customElements.define(
       <slot></slot>
       `;
 
-      const code = push(shadow, "div", { class: "code" });
+      const code = dom("div", { class: "code" }, shadow);
       this.editor = init(code, textarea).editor;
     }
   },

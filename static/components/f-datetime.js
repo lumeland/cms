@@ -1,5 +1,6 @@
-import { oninvalid, push, toLocal, view } from "./utils.js";
+import { oninvalid, toLocal, view } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 export class Input extends Component {
   get inputAttributes() {
@@ -18,29 +19,35 @@ export class Input extends Component {
     const id = `field_${name}`;
 
     view(this);
-    push(this, "label", { for: id }, schema.label);
+    dom("label", {
+      for: id,
+      html: schema.label,
+    }, this);
 
     if (schema.description) {
-      push(this, "div", { class: "field-description" }, schema.description);
+      dom("div", {
+        class: "field-description",
+        html: schema.description,
+      }, this);
     }
 
-    const input = push(this, "input", {
+    const input = dom("input", {
       type: "hidden",
       name,
       value: isNew ? schema.value : value,
-    });
+    }, this);
 
-    push(this, "input", {
+    dom("input", {
       ...schema.attributes,
       id,
-      value: input.value ? this.format(input.value) : null,
+      value: input.value ? this.format(input.value) : undefined,
       class: "input",
       ...this.inputAttributes,
       oninvalid,
       oninput() {
         input.value = new Date(this.value).toISOString();
       },
-    });
+    }, this);
   }
 }
 

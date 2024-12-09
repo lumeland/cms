@@ -1,14 +1,7 @@
-import {
-  asset,
-  fileType,
-  labelify,
-  oninvalid,
-  push,
-  url,
-  view,
-} from "./utils.js";
+import { asset, fileType, labelify, oninvalid, url, view } from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/markdown.js";
+import dom from "dom";
 
 customElements.define(
   "f-markdown",
@@ -20,19 +13,23 @@ customElements.define(
       const id = `field_${name}`;
 
       view(this);
-      push(this, "label", { for: `field_${namePrefix}.0` }, schema.label);
+      dom("label", { for: `field_${namePrefix}.0`, html: schema.label }, this);
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom(
+          "div",
+          { class: "field-description", html: schema.description },
+          this,
+        );
       }
 
-      const textarea = push(this, "textarea", {
+      const textarea = dom("textarea", {
         id,
         name,
         value: isNew ? schema.value : value,
         hidden: true,
         oninvalid,
-      });
+      }, this);
 
       const shadow = this.attachShadow({ mode: "open" });
       shadow.innerHTML = `
@@ -40,57 +37,60 @@ customElements.define(
       <slot></slot>
       `;
 
-      const helpers = push(this, "div", { class: "tools is-sticky" });
+      const helpers = dom("div", { class: "tools is-sticky" }, this);
 
       for (const name of schema.details?.uploads || []) {
-        push(helpers, "button", {
+        dom("button", {
           class: "button is-secondary",
           type: "button",
           onclick() {
-            push(document.body, "u-modal", {
+            dom("u-modal", {
               data: { src: url("uploads", name) },
-            });
+            }, document.body);
           },
-        }, `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`);
+          html: `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`,
+        }, helpers);
       }
 
-      const code = push(shadow, "div", { class: "code" });
+      const code = dom("div", { class: "code" }, shadow);
       const md = init(code, textarea, pasteLink);
       let tools;
 
-      tools = push(helpers, "div", { class: "tools-group" });
+      tools = dom("div", { class: "tools-group" }, helpers);
       [
         [md.makeBold, "text-b"],
         [md.makeItalic, "text-italic"],
         [md.makeStrikethrough, "text-strikethrough"],
       ].forEach(([fn, icon]) => {
-        push(tools, "button", {
+        dom("button", {
           class: "buttonIcon",
           type: "button",
+          html: `<u-icon name="${icon}"></u-icon>`,
           onclick() {
             fn(md.editor);
           },
-        }, `<u-icon name="${icon}"></u-icon>`);
+        }, tools);
       });
 
-      tools = push(helpers, "div", { class: "tools-group" });
+      tools = dom("div", { class: "tools-group" }, helpers);
       [
         [md.makeH1, "text-h-one"],
         [md.makeH2, "text-h-two"],
         [md.makeH3, "text-h-three"],
         [md.makeH4, "text-h-four"],
       ].forEach(([fn, icon]) => {
-        push(tools, "button", {
+        dom("button", {
           class: "buttonIcon",
           type: "button",
+          html: `<u-icon name="${icon}"></u-icon>`,
           onclick() {
             fn(md.editor);
           },
-        }, `<u-icon name="${icon}"></u-icon>`);
+        }, tools);
       });
 
-      tools = push(helpers, "div", { class: "tools-group" });
-      push(tools, "button", {
+      tools = dom("div", { class: "tools-group" }, helpers);
+      dom("button", {
         class: "buttonIcon",
         type: "button",
         onclick() {
@@ -100,14 +100,16 @@ customElements.define(
             md.insertLink(md.editor, url);
           }
         },
-      }, `<u-icon name="link-simple"></u-icon>`);
+        html: `<u-icon name="link-simple"></u-icon>`,
+      }, tools);
 
       const helpUrl = "https://www.markdownguide.org/basic-syntax/";
-      push(tools, "a", {
+      dom("a", {
         class: "buttonIcon",
         href: helpUrl,
         target: "_blank",
-      }, `<u-icon name="question"></u-icon>`);
+        html: `<u-icon name="question"></u-icon>`,
+      }, tools);
 
       this.editor = md.editor;
     }

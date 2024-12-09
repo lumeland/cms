@@ -1,5 +1,6 @@
-import { dom, labelify, push, view } from "./utils.js";
+import { labelify, view } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "f-object-list",
@@ -11,7 +12,7 @@ customElements.define(
       let open = true;
 
       view(this);
-      push(this, "label", {
+      dom("label", {
         for: `field_${namePrefix}.0`,
         onclick: () => {
           open = !open;
@@ -19,13 +20,18 @@ customElements.define(
             el.open = open
           );
         },
-      }, schema.label);
+        html: schema.label,
+      }, this);
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom(
+          "div",
+          { class: "field-description", html: schema.description },
+          this,
+        );
       }
 
-      const div = push(this, "div", { class: "fieldset" });
+      const div = dom("div", { class: "fieldset" }, this);
       let index = 0;
 
       function addOption(value) {
@@ -35,44 +41,42 @@ customElements.define(
         const attributes = schema.attributes || {};
         attributes.open ??= !value;
 
-        push(
-          div,
-          "f-object",
-          {
-            schema: { ...schema, attributes, name: index++, label },
-            namePrefix,
-            value,
-          },
-          dom("button", {
-            type: "button",
-            class: "buttonIcon",
-            slot: "buttons",
-            onclick() {
-              if (confirm("Are you sure you want to delete this item?")) {
-                this.parentElement.remove();
-              }
-            },
-          }, '<u-icon name="trash"></u-icon>'),
-          dom("u-draggable", { slot: "buttons" }),
-        );
+        dom("f-object", {
+          ".schema": { ...schema, attributes, name: index++, label },
+          ".namePrefix": namePrefix,
+          value,
+          html: [
+            dom("button", {
+              type: "button",
+              class: "buttonIcon",
+              slot: "buttons",
+              html: '<u-icon name="trash"></u-icon>',
+              onclick() {
+                if (confirm("Are you sure you want to delete this item?")) {
+                  this.parentElement.remove();
+                }
+              },
+            }),
+            dom("u-draggable", { slot: "buttons" }),
+          ],
+        }, div);
       }
+
       for (const v of (isNew ? schema.value : value) ?? []) {
         addOption(v);
       }
 
-      const footer = push(this, "footer", { class: "field-footer" });
+      const footer = dom("footer", { class: "field-footer" }, this);
 
-      push(
-        footer,
-        "button",
-        {
-          type: "button",
-          onclick: () => addOption(),
-          class: "button is-secondary",
-        },
-        '<u-icon name="plus-circle"></u-icon>',
-        `Add ${labelify(schema.label)}`,
-      );
+      dom("button", {
+        type: "button",
+        onclick: () => addOption(),
+        class: "button is-secondary",
+        html: [
+          '<u-icon name="plus-circle"></u-icon>',
+          `Add ${labelify(schema.label)}`,
+        ],
+      }, footer);
     }
   },
 );

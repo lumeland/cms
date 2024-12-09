@@ -1,14 +1,15 @@
 import { Component } from "./component.js";
-import { unshift } from "./utils.js";
+import dom from "dom";
 
 customElements.define(
   "u-upload",
   class Preview extends Component {
     init() {
-      unshift(this, "button", {
+      this.prepend(dom("button", {
         class: "buttonIcon is-secondary",
         title: "Paste image from clipboard",
         type: "button",
+        html: "<u-icon name='clipboard'></u-icon>",
         onclick: async () => {
           const fileInput = this.querySelector("input[type=file]");
 
@@ -72,7 +73,7 @@ customElements.define(
             );
           }
         },
-      }, "<u-icon name='clipboard'></u-icon>");
+      }));
     }
   },
 );

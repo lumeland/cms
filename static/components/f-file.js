@@ -1,5 +1,6 @@
 import { Component } from "./component.js";
-import { oninvalid, push, url, view } from "./utils.js";
+import { oninvalid, url, view } from "./utils.js";
+import dom from "dom";
 
 customElements.define(
   "f-file",
@@ -11,23 +12,28 @@ customElements.define(
       const id = `field_${name}`;
 
       view(this);
-      push(this, "label", { for: id }, schema.label);
+      dom("label", { for: id, html: schema.label }, this);
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom(
+          "div",
+          { class: "field-description", html: schema.description },
+          this,
+        );
       }
 
-      const divValue = push(this, "div", { class: "field-value" });
-      const curr = push(divValue, "input", {
+      const divValue = dom("div", { class: "field-value" }, this);
+      const curr = dom("input", {
         name: `${name}.current`,
         type: "text",
         value: isNew ? schema.value : value,
         class: "input is-narrow",
-      });
+      }, divValue);
 
-      push(divValue, "button", {
+      dom("button", {
         class: "buttonIcon",
         type: "button",
+        html: '<u-icon name="magnifying-glass"></u-icon>',
         onclick() {
           const uploads = schema.uploads.split(":").shift();
 
@@ -39,27 +45,27 @@ customElements.define(
               filename = filename.substring(1);
             }
 
-            push(document.body, "u-modal", {
+            dom("u-modal", {
               data: { src: url("uploads", uploads, "file", filename) },
-            });
+            }, document.body);
           } else {
-            push(document.body, "u-modal", {
+            dom("u-modal", {
               data: { src: url("uploads", uploads) },
-            });
+            }, document.body);
           }
         },
-      }, '<u-icon name="magnifying-glass"></u-icon>');
+      }, divValue);
 
-      const upload = push(this, "u-upload");
+      const upload = dom("u-upload", this);
 
-      push(upload, "input", {
+      dom("input", {
         ...schema.attributes,
         type: "file",
         id,
         name: `${name}.uploaded`,
         class: "inputFile",
         oninvalid,
-      });
+      }, upload);
     }
   },
 );

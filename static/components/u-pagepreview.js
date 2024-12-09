@@ -1,5 +1,6 @@
-import { options, push, url } from "./utils.js";
+import { options, url } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "u-pagepreview",
@@ -78,18 +79,18 @@ customElements.define(
     }
 
     initUI(url) {
-      const dialog = push(document.body, "dialog", {
+      const dialog = dom("dialog", {
         class: "modal is-preview",
-      });
-      const iframe = push(dialog, "iframe", {
+      }, document.body);
+      const iframe = dom("iframe", {
         class: "modal-content",
         src: url,
-      });
+      }, dialog);
 
       const mq = matchMedia("(max-width:1100px)");
 
       let icon;
-      const button = push(this, "button", {
+      const button = dom("button", {
         class: "buttonIcon is-secondary",
         type: "button",
         "aria-pressed": "true",
@@ -106,13 +107,13 @@ customElements.define(
             button.setAttribute("aria-pressed", "true");
           }
         },
-      });
+      }, this);
 
       if (options.get("preview") !== false) {
-        icon = push(button, "u-icon", { name: "eye" });
+        icon = dom("u-icon", { name: "eye" }, button);
         button.dispatchEvent(new Event("click"));
       } else {
-        icon = push(button, "u-icon", { name: "eye-slash" });
+        icon = dom("u-icon", { name: "eye-slash" }, button);
         button.setAttribute("aria-pressed", "false");
       }
 

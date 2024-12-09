@@ -1,5 +1,5 @@
-import { dom, push } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "u-copy",
@@ -7,22 +7,24 @@ customElements.define(
     init() {
       const icon = dom("u-icon", { name: "link-simple" });
 
-      push(this, "button", {
+      dom("button", {
         type: "button",
         class: "buttonIcon",
+        html: icon,
         onclick: async () => {
           const text = this.getAttribute("text");
           await navigator.clipboard.writeText(text);
           icon.setAttribute("name", "check");
-          const tooltip = push(this, "div", {
+          const tooltip = dom("div", {
             class: "tooltip",
-          }, "URL copied!");
+            html: "URL copied!",
+          }, this);
           setTimeout(() => {
             icon.setAttribute("name", "link-simple");
             tooltip.remove();
           }, 2000);
         },
-      }, icon);
+      }, this);
     }
   },
 );

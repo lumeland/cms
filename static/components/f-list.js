@@ -1,5 +1,6 @@
 import { Component } from "./component.js";
-import { push, pushOptions, view } from "./utils.js";
+import { pushOptions, view } from "./utils.js";
+import dom from "dom";
 
 customElements.define(
   "f-list",
@@ -10,66 +11,69 @@ customElements.define(
       const namePrefix = `${this.namePrefix}.${schema.name}`;
 
       view(this);
-      push(this, "label", { for: `field_${namePrefix}.0` }, schema.label);
+      dom("label", { for: `field_${namePrefix}.0`, html: schema.label }, this);
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom(
+          "div",
+          { class: "field-description", html: schema.description },
+          this,
+        );
       }
 
       let datalist;
 
       if (schema.options) {
         const dataListId = `${namePrefix}_datalist`;
-        datalist = push(this, "datalist", { id: dataListId });
+        datalist = dom("datalist", { id: dataListId }, this);
         pushOptions(datalist, schema.options);
       }
 
-      const div = push(this, "div", { class: "fieldset" });
+      const div = dom("div", { class: "fieldset" }, this);
       let index = 0;
 
       function addOption(value) {
         const name = `${namePrefix}.${index++}`;
-        const item = push(div, "div", { class: "ly-rowStack is-narrow" });
-        const input = push(item, "input", {
+        const item = dom("div", { class: "ly-rowStack is-narrow" }, div);
+        const input = dom("input", {
           type: "text",
           class: "input is-narrow",
           id: `field_${name}`,
           name,
           value,
-        });
+        }, item);
 
         if (datalist) {
           input.setAttribute("list", datalist.id);
           input.setAttribute("autocomplete", "off");
         }
 
-        push(item, "button", {
+        dom("button", {
           type: "button",
           class: "buttonIcon",
           onclick() {
             item.remove();
           },
-        }, '<u-icon name="trash"></u-icon>');
-        push(item, "u-draggable");
+          html: '<u-icon name="trash"></u-icon>',
+        }, item);
+        dom("u-draggable", item);
       }
 
       for (const v of (isNew ? schema.value : value) ?? []) {
         addOption(v);
       }
 
-      const footer = push(this, "footer", { class: "field-footer" });
+      const footer = dom("footer", { class: "field-footer" }, this);
 
-      push(
-        footer,
-        "button",
-        {
-          type: "button",
-          onclick: () => addOption(),
-          class: "button is-secondary",
-        },
-        '<u-icon name="plus-circle"></u-icon>',
-        `Add ${schema.label}`,
-      );
+      dom("button", {
+        type: "button",
+        onclick: () => addOption(),
+        class: "button is-secondary",
+        html: [
+          '<u-icon name="plus-circle"></u-icon>',
+          `Add ${schema.label}`,
+        ],
+      }, footer);
     }
   },
 );

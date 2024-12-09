@@ -1,24 +1,13 @@
-/** Create and append a DOM element to another */
-export function push(el, tag, attrs, ...children) {
-  const child = dom(tag, attrs, ...children);
-  el.append(child);
-  return child;
-}
-/** Create and prepend a DOM element to another */
-export function unshift(el, tag, attrs, ...children) {
-  const child = dom(tag, attrs, ...children);
-  el.prepend(child);
-  return child;
-}
+import dom from "dom";
 
 /** Push options to an element like select or datalist */
 export function pushOptions(el, options) {
   for (const option of options) {
     if (typeof option === "string") {
-      push(el, "option", null, option);
+      dom("option", { html: option }, el);
     } else {
       const { label, ...attrs } = option;
-      push(el, "option", attrs, label);
+      dom("option", { ...attrs, html: label }, el);
     }
   }
 }
@@ -51,78 +40,7 @@ export function oninvalid(event) {
   );
 }
 
-const props = new Set(["namePrefix", "value", "schema", "isNew"]);
-
-/** Create a new DOM element */
-export function dom(tag, attrs, ...children) {
-  const el = document.createElement(tag);
-
-  for (const [k, v] of Object.entries(attrs ?? {})) {
-    if (k.startsWith("on")) {
-      el.addEventListener(k.slice(2), v);
-      continue;
-    }
-
-    if (props.has(k)) {
-      el[k] = v ?? null;
-      continue;
-    }
-
-    if (k === "data") {
-      for (const [name, value] of Object.entries(v)) {
-        el.dataset[name] = value;
-      }
-      continue;
-    }
-    if (k === "style") {
-      for (const [name, value] of Object.entries(v)) {
-        if (name.startsWith("--")) {
-          el.style.setProperty(name, value);
-        } else {
-          el.style[name] = value;
-        }
-      }
-      continue;
-    }
-
-    if (v !== undefined) {
-      if (v === false && k !== "draggable") {
-        continue;
-      }
-      if (v === true && k !== "draggable") {
-        el.setAttribute(k, "");
-        continue;
-      }
-
-      if (Array.isArray(v)) {
-        el.setAttribute(k, v.filter((v) => v).join(" "));
-        continue;
-      }
-
-      el.setAttribute(k, v);
-    }
-  }
-
-  for (const child of children) {
-    if (child === null || child === undefined) {
-      continue;
-    }
-
-    if (typeof child === "string") {
-      if (child.includes("<") && child.includes(">")) {
-        el.append(
-          ...new DOMParser().parseFromString(child, "text/html").body
-            .childNodes,
-        );
-        continue;
-      }
-      el.append(document.createTextNode(child));
-    } else {
-      el.append(child);
-    }
-  }
-  return el;
-}
+// const props = new Set(["namePrefix", "value", "schema", "isNew"]);
 
 const { baseassets, baseurls } = document.documentElement.dataset;
 

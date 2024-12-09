@@ -1,5 +1,6 @@
-import { initialViews, labelify, push } from "./utils.js";
+import { initialViews, labelify } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "u-views",
@@ -8,7 +9,7 @@ customElements.define(
       const { views, target, state } = this.dataset;
       this.classList.add("tools");
       const targetElement = document.getElementById(target);
-      const group = push(this, "div", { class: "tools-group" });
+      const group = dom("div", { class: "tools-group" }, this);
 
       if (!targetElement || !views) {
         return;
@@ -30,10 +31,11 @@ customElements.define(
 
       for (const view of JSON.parse(views)) {
         const visible = initialViews.has(view);
-        const button = push(group, "button", {
+        const button = dom("button", {
           type: "button",
           class: "button is-secondary",
           "aria-pressed": String(visible),
+          html: labelify(view),
           onclick: () => {
             const pressed = button.getAttribute("aria-pressed") === "true";
             button.setAttribute("aria-pressed", String(!pressed));
@@ -44,7 +46,7 @@ customElements.define(
             }
             this.update(targetElement, visibleViews);
           },
-        }, labelify(view));
+        }, group);
       }
     }
 

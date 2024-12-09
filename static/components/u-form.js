@@ -1,5 +1,5 @@
-import { push } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "u-form",
@@ -22,9 +22,10 @@ customElements.define(
 
         e.preventDefault();
 
-        const tooltip = push(this, "div", {
+        const tooltip = dom("div", {
           class: "tooltip is-toast",
-        }, "Saving...");
+          html: "Saving...",
+        }, this);
 
         setTimeout(async () => {
           await this.sendForm(form);

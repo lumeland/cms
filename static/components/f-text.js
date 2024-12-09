@@ -1,5 +1,6 @@
 import { Component } from "./component.js";
-import { oninvalid, push, pushOptions, view } from "./utils.js";
+import { oninvalid, pushOptions, view } from "./utils.js";
+import dom from "dom";
 
 export class Input extends Component {
   get inputAttributes() {
@@ -13,17 +14,21 @@ export class Input extends Component {
     const id = `field_${name}`;
 
     view(this);
-    push(this, "label", { for: id }, schema.label);
+    dom("label", { for: id, html: schema.label }, this);
 
     if (schema.description) {
-      push(this, "div", { class: "field-description" }, schema.description);
+      dom(
+        "div",
+        { class: "field-description", html: schema.description },
+        this,
+      );
     }
 
     const maxWidth = schema.attributes?.maxlength
       ? `${Math.max(3, schema.attributes.maxlength)}em`
       : "none";
 
-    const input = push(this, "input", {
+    const input = dom("input", {
       ...schema.attributes,
       id,
       name,
@@ -31,7 +36,7 @@ export class Input extends Component {
       value: isNew ? schema.value : value,
       ...this.inputAttributes,
       style: { "--max-width": maxWidth },
-    });
+    }, this);
 
     input.addEventListener("invalid", () => {
       input.dispatchEvent(
@@ -45,7 +50,7 @@ export class Input extends Component {
 
     if (schema.options) {
       const dataListId = `${id}_datalist`;
-      const datalist = push(this, "datalist", { id: dataListId });
+      const datalist = dom("datalist", { id: dataListId }, this);
       pushOptions(datalist, schema.options);
       input.setAttribute("list", dataListId);
       input.setAttribute("autocomplete", "off");

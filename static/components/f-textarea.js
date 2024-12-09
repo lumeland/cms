@@ -1,5 +1,6 @@
 import { Component } from "./component.js";
-import { oninvalid, push, view } from "./utils.js";
+import { oninvalid, view } from "./utils.js";
+import dom from "dom";
 
 customElements.define(
   "f-textarea",
@@ -11,14 +12,18 @@ customElements.define(
       const id = `field_${name}`;
 
       view(this);
-      push(this, "label", { for: id }, schema.label);
+      dom("label", { for: id, html: schema.label }, this);
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom(
+          "div",
+          { class: "field-description", html: schema.description },
+          this,
+        );
       }
 
-      const autogrow = push(this, "div", { class: "input-autogrow" });
-      push(autogrow, "textarea", {
+      const autogrow = dom("div", { class: "input-autogrow" }, this);
+      dom("textarea", {
         ...schema.attributes,
         id,
         name,
@@ -31,7 +36,7 @@ customElements.define(
         onfocus() {
           this.parentNode.dataset.replicatedValue = this.value;
         },
-      });
+      }, autogrow);
     }
   },
 );

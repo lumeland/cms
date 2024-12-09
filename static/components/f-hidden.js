@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { push } from "./utils.js";
+import dom from "dom";
 
 customElements.define(
   "f-hidden",
@@ -8,11 +8,11 @@ customElements.define(
       const { schema, value, namePrefix, isNew } = this;
       const name = `${namePrefix}.${schema.name}`;
 
-      push(this, "input", {
+      dom("input", {
         type: "hidden",
         name,
         value: isNew ? schema.value : value,
-      });
+      }, this);
     }
   },
 );

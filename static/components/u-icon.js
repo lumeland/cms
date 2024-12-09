@@ -1,5 +1,6 @@
-import { fileType, push } from "./utils.js";
+import { fileType } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 const cache = new Map();
 
@@ -50,23 +51,23 @@ customElements.define(
       const path = this.getAttribute("path");
       switch (fileType(path)) {
         case "image":
-          push(this, "u-icon", { name: "image-square-fill" });
+          dom("u-icon", { name: "image-square-fill" }, this);
           break;
 
         case "video":
-          push(this, "u-icon", { name: "video-fill" });
+          dom("u-icon", { name: "video-fill" }, this);
           break;
 
         case "audio":
-          push(this, "u-icon", { name: "headphones-fill" });
+          dom("u-icon", { name: "headphones-fill" }, this);
           break;
 
         case "pdf":
-          push(this, "u-icon", { name: "file-pdf-fill" });
+          dom("u-icon", { name: "file-pdf-fill" }, this);
           break;
 
         default:
-          push(this, "u-icon", { name: "file" });
+          dom("u-icon", { name: "file" }, this);
           break;
       }
     }

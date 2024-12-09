@@ -7,6 +7,9 @@
     "build-libs": "cd scripts && npm run build",
     "build-markdown": "cd scripts && npm run markdown"
   },
+  "imports": {
+    "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@v0.1.0/dom.js"
+  },
   "exclude": [
     "probas",
     "static/libs",

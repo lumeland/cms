@@ -1,5 +1,6 @@
 import { Component } from "./component.js";
-import { push, view } from "./utils.js";
+import { view } from "./utils.js";
+import dom from "dom";
 
 customElements.define(
   "f-object",
@@ -9,13 +10,13 @@ customElements.define(
       const { schema, value, isNew } = this;
       view(this);
       const namePrefix = `${this.namePrefix}.${schema.name}`;
-      const details = push(this, "details", {
+      const details = dom("details", {
         class: "accordion",
         "oncms:invalid": () => details.open = true,
         ...schema.attributes,
-      });
+      }, this);
 
-      const summary = push(details, "summary", { slot: "content" });
+      const summary = dom("summary", { slot: "content" }, details);
 
       const shadow = this.attachShadow({ mode: "open" });
       shadow.innerHTML = `
@@ -37,33 +38,29 @@ customElements.define(
       </div>
       `;
 
-      push(
-        summary,
-        "strong",
-        { class: "accordion-title" },
-        schema.label,
-      );
+      dom("strong", {
+        class: "accordion-title",
+        html: schema.label,
+      }, summary);
 
       if (schema.description) {
-        push(
-          summary,
-          "div",
-          { class: "accordion-description" },
-          schema.description,
-        );
+        dom("div", {
+          class: "accordion-description",
+          html: schema.description,
+        }, summary);
       }
 
-      const div = push(details, "div", {
+      const div = dom("div", {
         class: "accordion-body fieldset is-separated",
-      });
+      }, details);
 
       for (const field of schema.fields) {
-        push(div, field.tag, {
-          schema: field,
-          namePrefix,
+        dom(field.tag, {
+          ".schema": field,
+          ".namePrefix": namePrefix,
+          ".isNew": isNew,
           value: value?.[field.name] ?? null,
-          isNew,
-        });
+        }, div);
       }
     }
   },

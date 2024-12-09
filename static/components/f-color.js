@@ -1,5 +1,6 @@
-import { oninvalid, push, view } from "./utils.js";
+import { oninvalid, view } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "f-color",
@@ -11,26 +12,32 @@ customElements.define(
       const id = `field_${name}`;
 
       view(this);
-      push(this, "label", { for: id }, schema.label);
+      dom("label", {
+        for: id,
+        html: schema.label,
+      }, this);
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom("div", {
+          class: "field-description",
+          html: schema.description,
+        }, this);
       }
 
-      const div = push(this, "div", { class: "ly-rowStack" });
-      const input = push(div, "input", {
+      const div = dom("div", { class: "ly-rowStack" }, this);
+      const input = dom("input", {
         class: "input",
         type: "color",
         id,
         name,
         value: isNew ? schema.value : value,
         oninvalid,
-      });
-      const text = push(div, "input", {
+      }, div);
+      const text = dom("input", {
         class: "input is-narrow",
         type: "text",
         value: input.value,
-      });
+      }, div);
 
       text.addEventListener("input", () => input.value = text.value);
       input.addEventListener("input", () => text.value = input.value);

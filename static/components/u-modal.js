@@ -1,5 +1,5 @@
-import { push } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "u-modal",
@@ -7,19 +7,20 @@ customElements.define(
     init() {
       const { src } = this.dataset;
 
-      const dialog = push(this, "dialog", {
+      const dialog = dom("dialog", {
         class: "modal is-aside",
         onclose: () => this.remove(),
         onclick: closeOnClickOutside,
-      });
+      }, this);
 
-      push(dialog, "button", {
+      dom("button", {
         class: "buttonIcon modal-close",
         onclick: () => dialog.close(),
-      }, "<u-icon name='x'></u-icon>");
+        html: "<u-icon name='x'></u-icon>",
+      }, dialog);
 
       if (src) {
-        push(dialog, "iframe", { class: "modal-content", src });
+        dom("iframe", { class: "modal-content", src }, dialog);
       }
 
       dialog.showModal();
@@ -48,10 +49,11 @@ customElements.define(
         modal.showModal();
       });
 
-      push(modal, "button", {
+      dom("button", {
         class: "buttonIcon modal-close",
         onclick: () => modal.close(),
-      }, "<u-icon name='x'></u-icon>");
+        html: "<u-icon name='x'></u-icon>",
+      }, modal);
     }
   },
 );

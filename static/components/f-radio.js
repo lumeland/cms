@@ -1,5 +1,6 @@
-import { labelify, oninvalid, push, view } from "./utils.js";
+import { labelify, oninvalid, view } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "f-radio",
@@ -11,44 +12,42 @@ customElements.define(
       const id = `field_${name}`;
 
       view(this);
-      push(this, "span", { class: "field-label" }, schema.label);
-      const ul = push(this, "ul", { class: "field-check-list" });
+      dom("span", { class: "field-label", html: schema.label }, this);
+      const ul = dom("ul", { class: "field-check-list" }, this);
 
       for (const [key, option] of schema.options.entries()) {
         const optionId = `${id}_${key}`;
-        const li = push(ul, "li", { class: "field-check" });
+        const li = dom("li", { class: "field-check" }, ul);
 
         if (typeof option === "string") {
-          push(li, "input", {
+          dom("input", {
             type: "radio",
             id: optionId,
             name,
             value: option,
             class: "radio",
             oninvalid,
-          });
-          push(
-            li,
-            "label",
-            { for: optionId, class: "is-secondary" },
-            labelify(option),
-          );
+          }, li);
+          dom("label", {
+            for: optionId,
+            class: "is-secondary",
+            html: labelify(option),
+          }, li);
         } else {
           const { label, ...attrs } = option;
-          push(li, "input", {
+          dom("input", {
             type: "radio",
             ...attrs,
             id: optionId,
             name,
             value: option,
             oninvalid,
-          });
-          push(
-            li,
-            "label",
-            { for: optionId, class: "is-secondary" },
-            labelify(label),
-          );
+          }, li);
+          dom("label", {
+            for: optionId,
+            class: "is-secondary",
+            html: labelify(label),
+          }, li);
         }
       }
 
@@ -56,7 +55,10 @@ customElements.define(
       form[name].value = isNew ? schema.value : value;
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom("div", {
+          class: "field-description",
+          html: schema.description,
+        }, this);
       }
     }
   },

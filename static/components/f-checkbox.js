@@ -1,5 +1,6 @@
-import { oninvalid, push, view } from "./utils.js";
+import { oninvalid, view } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "f-checkbox",
@@ -9,10 +10,10 @@ customElements.define(
       const { schema, value, namePrefix, isNew } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
-      const div = push(this, "div", { class: "field-check" });
+      const div = dom("div", { class: "field-check" }, this);
       view(this);
-      push(div, "input", { name, type: "hidden", value: false });
-      push(div, "input", {
+      dom("input", { name, type: "hidden", value: false }, div);
+      dom("input", {
         ...schema.attributes,
         id,
         name,
@@ -21,11 +22,18 @@ customElements.define(
         checked: (isNew ? schema.value : value) ?? undefined,
         type: "checkbox",
         class: "checkbox",
-      });
-      push(div, "label", { for: id }, schema.label);
+      }, div);
+
+      dom("label", {
+        for: id,
+        html: schema.label,
+      }, div);
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom("div", {
+          class: "field-description",
+          html: schema.description,
+        }, this);
       }
     }
   },

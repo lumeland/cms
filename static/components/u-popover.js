@@ -1,5 +1,6 @@
-import { push, randomId } from "./utils.js";
+import { randomId } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "u-popover",
@@ -11,7 +12,7 @@ customElements.define(
       button.setAttribute("popovertarget", id);
       const template = this.querySelector("template");
 
-      push(this, "div", {
+      dom("div", {
         id,
         class: "popover",
         popover: "auto",
@@ -21,7 +22,7 @@ customElements.define(
             init = true;
           }
         },
-      });
+      }, this);
     }
   },
 );

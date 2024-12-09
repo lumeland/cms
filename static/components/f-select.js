@@ -1,5 +1,6 @@
-import { oninvalid, push, pushOptions, view } from "./utils.js";
+import { oninvalid, pushOptions, view } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "f-select",
@@ -11,19 +12,23 @@ customElements.define(
       const id = `field_${name}`;
 
       view(this);
-      push(this, "label", { for: id }, schema.label);
+      dom("label", { for: id, html: schema.label }, this);
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom(
+          "div",
+          { class: "field-description", html: schema.description },
+          this,
+        );
       }
 
-      const select = push(this, "select", {
+      const select = dom("select", {
         ...schema.attributes,
         id,
         name,
         class: "select is-narrow",
         oninvalid,
-      });
+      }, this);
 
       pushOptions(select, schema.options);
       select.value = (isNew ? schema.value : value) ?? "";

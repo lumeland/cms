@@ -1,5 +1,6 @@
-import { dom, push, view } from "./utils.js";
+import { view } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "f-choose-list",
@@ -11,7 +12,7 @@ customElements.define(
       let open = true;
 
       view(this);
-      push(this, "label", {
+      dom("label", {
         for: `field_${namePrefix}.0`,
         onclick: () => {
           open = !open;
@@ -19,13 +20,17 @@ customElements.define(
             el.open = open
           );
         },
-      }, schema.label);
+        html: schema.label,
+      }, this);
 
       if (schema.description) {
-        push(this, "div", { class: "field-description" }, schema.description);
+        dom("div", {
+          class: "field-description",
+          html: schema.description,
+        }, this);
       }
 
-      const div = push(this, "div", { class: "fieldset" });
+      const div = dom("div", { class: "fieldset" }, this);
       let index = 0;
 
       function addOption(value, isNew = false) {
@@ -37,51 +42,50 @@ customElements.define(
         const open = field.attributes?.open ?? isNew;
         ++index;
 
-        push(
-          div,
-          field.tag,
-          {
-            schema: {
-              ...field,
-              attributes: { ...field.attributes, open },
-              name: index,
-              label: field.label || field.name,
-              fields: [
-                {
-                  name: "type",
-                  tag: "f-hidden",
-                  value: value.type,
-                },
-                ...field.fields,
-              ],
-            },
-            namePrefix,
-            value,
-            isNew,
+        dom(field.tag, {
+          ".schema": {
+            ...field,
+            attributes: { ...field.attributes, open },
+            name: index,
+            label: field.label || field.name,
+            fields: [
+              {
+                name: "type",
+                tag: "f-hidden",
+                value: value.type,
+              },
+              ...field.fields,
+            ],
           },
-          dom("button", {
-            type: "button",
-            class: "buttonIcon",
-            slot: "buttons",
-            onclick() {
-              if (confirm("Are you sure you want to delete this item?")) {
-                this.parentElement.remove();
-              }
-            },
-          }, '<u-icon name="trash"></u-icon>'),
-          dom("u-draggable", { slot: "buttons" }),
-        );
+          ".namePrefix": namePrefix,
+          ".isNew": isNew,
+          value: value,
+          html: [
+            dom("button", {
+              type: "button",
+              class: "buttonIcon",
+              slot: "buttons",
+              html: '<u-icon name="trash"></u-icon>',
+              onclick() {
+                if (confirm("Are you sure you want to delete this item?")) {
+                  this.parentElement.remove();
+                }
+              },
+            }),
+            dom("u-draggable", { slot: "buttons" }),
+          ],
+        }, div);
       }
 
       for (const v of (isNew ? schema.value : value) ?? []) {
         addOption(v);
       }
 
-      const footer = push(this, "footer", {
+      const footer = dom("footer", {
         class: "field-footer ly-rowStack",
-      });
+      }, this);
 
-      const select = push(footer, "select", {
+      const select = dom("select", {
         class: "select",
         onchange: () => {
           if (select.value) {
@@ -89,18 +93,20 @@ customElements.define(
             select.value = "";
           }
         },
-      });
+      }, footer);
 
-      push(select, "option", { value: "" }, "Add new...");
-      push(select, "hr");
+      dom("option", {
+        value: "",
+        text: "Add new...",
+      }, select);
+
+      dom("hr", select);
 
       for (const field of schema.fields) {
-        push(
-          select,
-          "option",
-          { value: field.name },
-          field.label ?? field.name,
-        );
+        dom("option", {
+          value: field.name,
+          html: field.label ?? field.name,
+        }, select);
       }
     }
   },

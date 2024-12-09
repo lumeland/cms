@@ -1,5 +1,5 @@
-import { push } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "u-filter",
@@ -11,7 +11,7 @@ customElements.define(
         "filter",
       );
 
-      const input = push(this, "input", {
+      const input = dom("input", {
         type: "search",
         class: "input",
         placeholder: this.dataset.placeholder,
@@ -31,7 +31,7 @@ customElements.define(
           });
           history.replaceState({}, "", `#filter=${value}`);
         },
-      });
+      }, this);
 
       if (value) {
         input.dispatchEvent(new Event("focus"));

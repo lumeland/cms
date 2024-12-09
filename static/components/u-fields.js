@@ -1,5 +1,5 @@
-import { push } from "./utils.js";
 import { Component } from "./component.js";
+import dom from "dom";
 
 customElements.define(
   "u-fields",
@@ -17,12 +17,12 @@ customElements.define(
       }
 
       for (const field of fields) {
-        push(this, field.tag, {
-          schema: field,
-          namePrefix,
+        dom(field.tag, {
+          ".schema": field,
+          ".namePrefix": namePrefix,
+          ".isNew": isNew,
           value: value?.[field.name] ?? null,
-          isNew,
-        });
+        }, this);
       }
     }
   },
