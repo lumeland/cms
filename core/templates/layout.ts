@@ -30,7 +30,7 @@ export default function template(
     {
       "imports": {
         "lume_cms/": "${asset(basePath, "/")}",
-        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.2/dom.js",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.3/dom.js",
         "std/": "https://cdn.jsdelivr.net/gh/oscarotero/std@1.1.2/"
       }
     }
