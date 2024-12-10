@@ -40,8 +40,6 @@ export function oninvalid(event) {
   );
 }
 
-// const props = new Set(["namePrefix", "value", "schema", "isNew"]);
-
 const { baseassets, baseurls } = document.documentElement.dataset;
 
 export function url(...parts) {
