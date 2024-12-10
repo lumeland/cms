@@ -30,8 +30,8 @@ export default function template(
     {
       "imports": {
         "lume_cms/": "${asset(basePath, "/")}",
-        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@v0.1.1/dom.js",
-        "std/": "https://cdn.jsdelivr.net/gh/oscarotero/std@1.1.1/"
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.2/dom.js",
+        "std/": "https://cdn.jsdelivr.net/gh/oscarotero/std@1.1.2/"
       }
     }
   </script>
