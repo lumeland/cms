@@ -44,5 +44,7 @@ customElements.define(
 function tokenize(text) {
   return text
     .toLowerCase()
+    .normalize("NFKD")
+    .replaceAll(/[\u0300-\u036F]/g, "")
     .replace(/\W/g, "");
 }

@@ -70,6 +70,7 @@ interface FolderProps {
 
 function folder({ options, collection, tree }: FolderProps) {
   const folders: string[] = Array.from(tree.folders?.entries() || [])
+    .sort(([a], [b]) => a.localeCompare(b))
     .map(([name, subTree]) => `
     <li>
       <details open class="accordion">
@@ -110,17 +111,21 @@ function files(
     return "";
   }
 
-  return Array.from(files.entries()).map(([name, file]) => `
+  return Array.from(files.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([name, file]) => `
   <li>
     <a
       href="${
-    getPath(options.basePath, "collection", collection.name, "edit", file)
-  }"
+      getPath(options.basePath, "collection", collection.name, "edit", file)
+    }"
       class="list-item"
       title="${name}"
     >
       <u-icon name="file"></u-icon>
-      ${labelify(name)}
+      <div class="list-item-header">
+        <strong>${labelify(name)}</strong>
+      </div>
     </a>
   </li>`).join("");
 }

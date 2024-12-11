@@ -67,6 +67,7 @@ interface FolderProps {
 
 function folder({ options, collection, publicPath, tree }: FolderProps) {
   const folders: string[] = Array.from(tree.folders?.entries() || [])
+    .sort(([a], [b]) => a.localeCompare(b))
     .map(([name, subTree]) => `
     <li>
       <details open class="accordion">
@@ -110,7 +111,8 @@ function files(
 
   const { basePath } = options;
 
-  return Array.from(files.entries()).map(([name, file]) => `
+  return Array.from(files.entries()).sort(([a], [b]) => a.localeCompare(b)).map(
+    ([name, file]) => `
   <li>
     <a
       href="${getPath(basePath, "uploads", collection, "file", file)}"
@@ -132,5 +134,6 @@ function files(
       </template>
     </u-popover>
     <u-copy text="${normalizePath(publicPath, file)}"></u-copy>
-  </li>`).join("");
+  </li>`,
+  ).join("");
 }

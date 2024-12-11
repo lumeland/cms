@@ -55,7 +55,7 @@ strong, b {
   font-weight: 600;
 }
 
-a {
+:where(a[href]) {
   color: var(--color-link);
 
   &:hover {

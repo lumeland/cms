@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.7.4] - 2024-12-11
+### Changed
+- Home body moved below the menu, and changed styles.
+- Internal: replace `push` with `oscarotero/dom` library.
+- Show the collection items and uploads sorted alphabetically.
+
+### Fixed
+- Improved collection filter with accents.
+
 ## [0.7.3] - 2024-11-22
 ### Added
 - Static server on Windows [#34].
@@ -455,6 +464,7 @@ First version
 [#31]: https://github.com/lumeland/cms/issues/31
 [#34]: https://github.com/lumeland/cms/issues/34
 
+[0.7.4]: https://github.com/lumeland/cms/compare/v0.7.3...v0.7.4
 [0.7.3]: https://github.com/lumeland/cms/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/lumeland/cms/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/lumeland/cms/compare/v0.7.0...v0.7.1

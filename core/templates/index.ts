@@ -39,8 +39,6 @@ ${breadcrumb(options, await versioning?.current())}
   </div>
 </header>
 
-${site.body ? `<div class="body">${site.body}</div>` : ""}
-
 <ul class="list">
   ${
     Object.entries(collections).map(([name, collection]) => `
@@ -86,6 +84,8 @@ ${site.body ? `<div class="body">${site.body}</div>` : ""}
   }
 
 </ul>
+
+${site.body ? `<div class="body">${site.body}</div>` : ""}
 
 ${versioning && await versions(options, versioning) || ""}
 `;

@@ -91,9 +91,11 @@ form.list-item {
 .list-item-header {
   font-weight: normal;
   padding: 0.5em 0;
+  flex: 1;
 
-  & p {
+  > p {
     margin: 0;
     color: var(--color-dim);
+    font: var(--font-small);
   }
 }
