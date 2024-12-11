@@ -3,7 +3,7 @@
   "tasks": {
     "proxy": "deno serve --unstable-kv --check --watch -A demo/proxy.ts",
     "dev": "deno serve --unstable-kv --check --watch -A demo/dev.ts",
-    "update-deps": "deno run -A 'https://deno.land/x/nudd@v0.2.8/cli.ts' update deps/*.ts deno.json core/templates/layout.ts",
+    "update-deps": "deno run -A 'https://deno.land/x/nudd@v0.2.8/cli.ts' update deps/*.ts deno.json core/templates/layout.ts static/components/u-bar.js",
     "build-libs": "cd scripts && npm run build",
     "build-markdown": "cd scripts && npm run markdown"
   },

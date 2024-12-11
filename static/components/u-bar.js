@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import dom from "dom";
+import dom from "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.4/dom.js";
 
 customElements.define(
   "u-bar",

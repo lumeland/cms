@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.7.5] - 2024-12-11
+### Fixed
+- `u-bar` component.
+
 ## [0.7.4] - 2024-12-11
 ### Changed
 - Home body moved below the menu, and changed styles.
@@ -464,6 +468,7 @@ First version
 [#31]: https://github.com/lumeland/cms/issues/31
 [#34]: https://github.com/lumeland/cms/issues/34
 
+[0.7.5]: https://github.com/lumeland/cms/compare/v0.7.4...v0.7.5
 [0.7.4]: https://github.com/lumeland/cms/compare/v0.7.3...v0.7.4
 [0.7.3]: https://github.com/lumeland/cms/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/lumeland/cms/compare/v0.7.1...v0.7.2
