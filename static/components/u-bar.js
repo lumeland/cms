@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import dom from "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.4/dom.js";
+import dom from "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.5/dom.js";
 
 customElements.define(
   "u-bar",
@@ -90,7 +90,9 @@ customElements.define(
         dom("span", {
           class: [
             "version",
-            data.version.isProduction ? "is-production" : "",
+            {
+              "is-production": data.version.isProduction,
+            },
           ],
           html: data.version.name,
         }, home);
