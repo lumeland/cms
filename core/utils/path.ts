@@ -1,6 +1,22 @@
 import { posix, SEPARATOR } from "../../deps/std.ts";
 
 /**
+ * Normalize the name of a file or directory
+ */
+export function normalizeName(name?: string): string | undefined {
+  if (!name) {
+    return;
+  }
+
+  if (SEPARATOR !== "/") {
+    name = name.replaceAll(SEPARATOR, "/");
+  }
+
+  name = posix.join("/", name).substring(1);
+  return name || undefined;
+}
+
+/**
  * Convert the Windows paths (that use the separator "\")
  * to Posix paths (with the separator "/")
  * and ensure it starts with "/".

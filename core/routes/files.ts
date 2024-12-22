@@ -2,7 +2,7 @@ import uploadsList from "../templates/uploads/list.ts";
 import uploadsView from "../templates/uploads/view.ts";
 import uploadsCreate from "../templates/uploads/create.ts";
 import { slugify } from "../utils/string.ts";
-import { getPath, normalizePath } from "../utils/path.ts";
+import { getPath, normalizeName, normalizePath } from "../utils/path.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
@@ -34,7 +34,7 @@ export default function (app: Hono) {
         options,
         collection: uploadId,
         version: await versioning?.current(),
-        folder: c.req.query("folder"),
+        folder: normalizeName(c.req.query("folder")),
       }),
     );
   }).post("/uploads/:upload/create", async (c: Context) => {
@@ -42,7 +42,12 @@ export default function (app: Hono) {
     const upload = uploads[uploadId];
     const body = await c.req.parseBody();
     const file = body.file as File;
-    const fileId = slugify(file.name);
+    const fileId = normalizeName(slugify(file.name));
+
+    if (!fileId) {
+      throw new Error("Invalid file name");
+    }
+
     const entry = upload.get(fileId);
 
     await entry.writeFile(file);
@@ -59,8 +64,13 @@ export default function (app: Hono) {
     }
 
     const upload = uploads[uploadId];
-    const entry = upload.get(fileId);
+    const name = normalizeName(fileId);
 
+    if (!name) {
+      return c.notFound();
+    }
+
+    const entry = upload.get(name);
     const file = await entry.readFile();
     c.header("Content-Type", file.type);
     c.header("Content-Length", file.size.toString());
@@ -76,7 +86,11 @@ export default function (app: Hono) {
     }
 
     try {
-      const entry = storage.get(fileId);
+      const name = normalizeName(fileId);
+      if (!name) {
+        throw new Error("Invalid file name");
+      }
+      const entry = storage.get(name);
       const file = await entry.readFile();
 
       return c.render(
@@ -85,8 +99,8 @@ export default function (app: Hono) {
           type: file.type,
           size: file.size,
           collection: uploadId,
-          publicPath: normalizePath(publicPath, fileId),
-          file: fileId,
+          publicPath: normalizePath(publicPath, name),
+          file: name,
           version: await versioning?.current(),
         }),
       );
@@ -99,29 +113,38 @@ export default function (app: Hono) {
       const upload = uploads[uploadId];
       const body = await c.req.parseBody();
       const prevId = c.req.param("file");
-      const fileId = body._id as string;
+      const name = normalizeName(body._id as string);
 
-      if (prevId !== fileId) {
-        await upload.rename(prevId, fileId);
+      if (!name) {
+        throw new Error("Invalid file name");
+      }
+
+      if (prevId !== name) {
+        await upload.rename(prevId, name);
       }
 
       const file = body.file as File | undefined;
 
       if (file) {
-        const entry = upload.get(fileId);
+        const entry = upload.get(name);
         await entry.writeFile(file);
       }
 
       return c.redirect(
-        getPath(options.basePath, "uploads", uploadId, "file", fileId),
+        getPath(options.basePath, "uploads", uploadId, "file", name),
       );
     });
 
   app.post("/uploads/:upload/delete/:file", async (c: Context) => {
     const { options, fileId, uploadId, uploads } = get(c);
     const upload = uploads[uploadId];
+    const name = normalizeName(fileId);
 
-    await upload.delete(fileId);
+    if (!name) {
+      throw new Error("Invalid file name");
+    }
+
+    await upload.delete(name);
     return c.redirect(getPath(options.basePath, "uploads", uploadId));
   });
 }

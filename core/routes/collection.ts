@@ -2,7 +2,7 @@ import { changesToData } from "../utils/data.ts";
 import collectionList from "../templates/collection/list.ts";
 import collectionEdit from "../templates/collection/edit.ts";
 import collectionCreate from "../templates/collection/create.ts";
-import { getPath } from "../utils/path.ts";
+import { getPath, normalizeName } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
@@ -55,8 +55,12 @@ export default function (app: Hono) {
       }
 
       const body = await c.req.parseBody();
-      let newName = body._id as string;
+      let newName = normalizeName(body._id as string);
       let document = oldDocument;
+
+      if (!newName) {
+        throw new Error("Document name is required");
+      }
 
       if (oldDocument.name !== newName) {
         newName = await collection.rename(oldDocument.name, newName);
@@ -89,7 +93,11 @@ export default function (app: Hono) {
       }
 
       const body = await c.req.parseBody();
-      let name = body._id as string;
+      let name = normalizeName(body._id as string);
+
+      if (!name) {
+        throw new Error("Document name is required");
+      }
 
       if (document.name === name) {
         const ext = name.split(".").pop();
@@ -101,7 +109,7 @@ export default function (app: Hono) {
         }
       }
 
-      const duplicate = collection.create(name as string);
+      const duplicate = collection.create(name);
       await duplicate.write(changesToData(body), options, true);
 
       return c.redirect(
@@ -141,7 +149,7 @@ export default function (app: Hono) {
           options,
           collection,
           version: await versioning?.current(),
-          folder: c.req.query("folder"),
+          folder: normalizeName(c.req.query("folder")),
         }),
       );
     })
@@ -153,7 +161,7 @@ export default function (app: Hono) {
       }
 
       const body = await c.req.parseBody();
-      let name = body._id as string;
+      let name = normalizeName(body._id as string);
 
       const changes = changesToData(body);
       if (!name && collection.nameField) {
@@ -177,7 +185,7 @@ export default function (app: Hono) {
       }
 
       if (body._prefix) {
-        name = posix.join(body._prefix as string, name);
+        name = posix.join(normalizeName(body._prefix as string) || "", name);
       }
 
       const document = collection.create(name);
@@ -200,7 +208,7 @@ function get(c: Context) {
   const { collections, versioning } = options;
   const collectionName = c.req.param("collection");
   const collection = collections[collectionName];
-  const documentName = c.req.param("document");
+  const documentName = normalizeName(c.req.param("document"));
   const document = documentName ? collection?.get(documentName) : undefined;
 
   return {
