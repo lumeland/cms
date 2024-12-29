@@ -27,6 +27,10 @@ customElements.define(
     get inputAttributes() {
       return { type: "datetime-local", class: "input" };
     }
+
+    get currentValue() {
+      return this.querySelector("input[type='datetime-local']").value;
+    }
   },
 );
 

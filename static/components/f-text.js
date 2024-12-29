@@ -56,6 +56,10 @@ export class Input extends Component {
       input.setAttribute("autocomplete", "off");
     }
   }
+
+  get currentValue() {
+    return this.querySelector("input")?.value;
+  }
 }
 
 customElements.define("f-text", Input);

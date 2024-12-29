@@ -10,6 +10,7 @@
   width: 40px;
   height: 40px;
   border-radius: var(--border-radius);
+  color: var(--color-dim);
 
   &:disabled,
   &[aria-disabled="true"] {
@@ -24,13 +25,14 @@
   }
 
   & u-icon {
-    color: var(--color-dim);
+    color: currentColor;
   }
 
   &[aria-pressed="true"],
   &[aria-expanded="true"],
   &:hover {
     background-color: var(--color-line-light);
+    color: var(--color-foreground);
   }
 
   &.is-secondary {

@@ -75,5 +75,11 @@ customElements.define(
         ],
       }, footer);
     }
+
+    get currentValue() {
+      return Array.from(this.querySelectorAll("input")).map((input) =>
+        input.value
+      );
+    }
   },
 );

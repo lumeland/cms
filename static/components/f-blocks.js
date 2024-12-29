@@ -45,5 +45,9 @@ customElements.define(
         asset("styles", "block-editor.css"),
       ], "max(100vh - 10em, 500px)");
     }
+
+    get currentValue() {
+      return this.querySelector("textarea")?.value;
+    }
   },
 );

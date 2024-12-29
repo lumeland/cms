@@ -14,5 +14,9 @@ customElements.define(
         value: isNew ? schema.value : value,
       }, this);
     }
+
+    get currentValue() {
+      return this.querySelector("input")?.value;
+    }
   },
 );

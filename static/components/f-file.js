@@ -67,5 +67,9 @@ customElements.define(
         oninvalid,
       }, upload);
     }
+
+    get currentValue() {
+      return this.querySelector("input[type='text']")?.value;
+    }
   },
 );

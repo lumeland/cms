@@ -33,7 +33,7 @@ customElements.define(
       const div = dom("div", { class: "fieldset" }, this);
       let index = 0;
 
-      function addOption(value, isNew = false) {
+      function createOption(value, isNew = false) {
         const field = schema.fields.find((f) => f.name === value.type);
         if (!field) {
           throw new Error(`Unknown field type: ${value.type}`);
@@ -42,7 +42,7 @@ customElements.define(
         const open = field.attributes?.open ?? isNew;
         ++index;
 
-        dom(field.tag, {
+        const item = dom(field.tag, {
           ".schema": {
             ...field,
             attributes: { ...field.attributes, open },
@@ -66,19 +66,32 @@ customElements.define(
               class: "buttonIcon",
               slot: "buttons",
               html: '<u-icon name="trash"></u-icon>',
+              title: "Delete",
               onclick() {
                 if (confirm("Are you sure you want to delete this item?")) {
                   this.parentElement.remove();
                 }
               },
             }),
+            dom("button", {
+              type: "button",
+              class: "buttonIcon",
+              slot: "buttons",
+              html: '<u-icon name="copy"></u-icon>',
+              title: "Duplicate",
+              onclick() {
+                item.after(createOption(item.currentValue, true));
+              },
+            }),
             dom("u-draggable", { slot: "buttons" }),
           ],
-        }, div);
+        });
+
+        return item;
       }
 
       for (const v of (isNew ? schema.value : value) ?? []) {
-        addOption(v);
+        div.append(createOption(v));
       }
 
       const footer = dom("footer", {
@@ -89,7 +102,7 @@ customElements.define(
         class: "select",
         onchange: () => {
           if (select.value) {
-            addOption({ type: select.value }, true);
+            div.append(createOption({ type: select.value }, true));
             select.value = "";
           }
         },
@@ -108,6 +121,16 @@ customElements.define(
           html: field.label ?? field.name,
         }, select);
       }
+    }
+
+    get currentValue() {
+      const values = [];
+
+      for (const el of this.querySelector(".fieldset").children) {
+        values.push(el.currentValue);
+      }
+
+      return values;
     }
   },
 );

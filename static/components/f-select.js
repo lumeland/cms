@@ -33,5 +33,9 @@ customElements.define(
       pushOptions(select, schema.options);
       select.value = (isNew ? schema.value : value) ?? "";
     }
+
+    get currentValue() {
+      return this.querySelector("select")?.value;
+    }
   },
 );

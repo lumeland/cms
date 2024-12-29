@@ -49,6 +49,10 @@ export class Input extends Component {
       },
     }, this);
   }
+
+  get currentValue() {
+    return this.querySelector("input[type=hidden]")?.value;
+  }
 }
 
 customElements.define("f-datetime", Input);

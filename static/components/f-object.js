@@ -26,7 +26,7 @@ customElements.define(
         }
         .buttons {
           display: flex;
-          column-gap: 0.5em;
+          column-gap: 4px;
           position: absolute;
           right: 0;
           top: 0;
@@ -62,6 +62,14 @@ customElements.define(
           value: value?.[field.name] ?? null,
         }, div);
       }
+    }
+
+    get currentValue() {
+      const values = {};
+      for (const field of this.querySelector(".fieldset").children) {
+        values[field.schema.name] = field.currentValue;
+      }
+      return values;
     }
   },
 );

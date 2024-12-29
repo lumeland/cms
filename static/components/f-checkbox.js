@@ -36,5 +36,9 @@ customElements.define(
         }, this);
       }
     }
+
+    get currentValue() {
+      return this.querySelector("input[type=checkbox]")?.checked;
+    }
   },
 );

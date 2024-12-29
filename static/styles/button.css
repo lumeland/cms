@@ -1,6 +1,6 @@
 .button {
   display: inline-flex;
-  column-gap: 0.5em;
+  column-gap: 4px;
   align-items: center;
   justify-content: center;
   text-align: center;

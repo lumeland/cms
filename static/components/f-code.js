@@ -42,5 +42,9 @@ customElements.define(
       const code = dom("div", { class: "code" }, shadow);
       this.editor = init(code, textarea).editor;
     }
+
+    get currentValue() {
+      return this.editor.state.doc.toString();
+    }
   },
 );

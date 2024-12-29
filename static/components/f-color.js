@@ -42,5 +42,9 @@ customElements.define(
       text.addEventListener("input", () => input.value = text.value);
       input.addEventListener("input", () => text.value = input.value);
     }
+
+    get currentValue() {
+      return this.querySelector("input[type=color]")?.value;
+    }
   },
 );

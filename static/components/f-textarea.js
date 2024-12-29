@@ -38,5 +38,9 @@ customElements.define(
         },
       }, autogrow);
     }
+
+    get currentValue() {
+      return this.querySelector("textarea")?.value;
+    }
   },
 );

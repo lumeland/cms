@@ -113,6 +113,10 @@ customElements.define(
 
       this.editor = md.editor;
     }
+
+    get currentValue() {
+      return this.editor.state.doc.toString();
+    }
   },
 );
 

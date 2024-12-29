@@ -61,5 +61,9 @@ customElements.define(
         }, this);
       }
     }
+
+    get currentValue() {
+      return this.querySelector("input:checked")?.value;
+    }
   },
 );
