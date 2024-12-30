@@ -5,7 +5,7 @@ export {
 } from "jsr:@std/yaml@1.0.5";
 export { test as testFrontMatter } from "jsr:@std/front-matter@1.0.5";
 export { extract as extractFrontMatter } from "jsr:@std/front-matter@1.0.5/yaml";
-export { ensureDir, expandGlob } from "jsr:@std/fs@1.0.8";
+export { emptyDir, ensureDir, expandGlob } from "jsr:@std/fs@1.0.8";
 export * as posix from "jsr:@std/path@1.0.8/posix";
 export {
   basename,
