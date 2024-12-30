@@ -21,7 +21,10 @@ ${
     breadcrumb(options, version, [
       collection,
       getPath(basePath, "uploads", collection),
-    ], "Edit image")
+    ], [
+      "File details",
+      getPath(basePath, "uploads", collection, "file", file),
+    ], "Crop image")
   }
 
 <header class="header">
@@ -43,6 +46,11 @@ ${
   <u-cropper data-src="${src}"></u-cropper>
   
   <footer class="footer ly-rowStack">
+    <a class="button is-secondary" href="${
+    getPath(basePath, "uploads", collection, "file", file)
+  }">
+      Cancel
+    </a>
     <button class="button is-primary" type="submit">
       <u-icon name="check"></u-icon>
       Crop image

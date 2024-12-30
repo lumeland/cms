@@ -1,6 +1,7 @@
 import { getPath } from "../../utils/path.ts";
 import { formatBytes } from "../../../deps/std.ts";
 import breadcrumb from "../breadcrumb.ts";
+import { formatSupported } from "../../../deps/sharp.ts";
 
 import type { CMSContent, Version } from "../../../types.ts";
 
@@ -76,7 +77,7 @@ ${
       Update file
     </button>
     ${
-    isEditable(type)
+    formatSupported(file)
       ? `<a href="${
         getPath(basePath, "uploads", collection, "edit", file)
       }" class="button is-secondary">
@@ -107,8 +108,4 @@ ${
   </figcaption>
 </figure>
   `;
-}
-
-function isEditable(type: string) {
-  return type.startsWith("image/");
 }

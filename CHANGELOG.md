@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Allow to duplicate object-list and choose-list elements.
 - Allow to crop images.
+- Allow to change the formats of images (i.e. `jpeg` => `webp`).
 
 ### Fixed
 - UI tweaks.
@@ -485,7 +486,7 @@ First version
 [#31]: https://github.com/lumeland/cms/issues/31
 [#34]: https://github.com/lumeland/cms/issues/34
 
-[0.7.8]: https://github.com/lumeland/cms/compare/v0.7.7...HEAD
+[0.8.0]: https://github.com/lumeland/cms/compare/v0.7.7...HEAD
 [0.7.7]: https://github.com/lumeland/cms/compare/v0.7.6...v0.7.7
 [0.7.6]: https://github.com/lumeland/cms/compare/v0.7.5...v0.7.6
 [0.7.5]: https://github.com/lumeland/cms/compare/v0.7.4...v0.7.5

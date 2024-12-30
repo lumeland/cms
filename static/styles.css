@@ -28,6 +28,7 @@
 @import "./styles/u-preview.css";
 @import "./styles/u-popover.css";
 @import "./styles/u-upload.css";
+@import "./styles/u-cropper.css";
 
 .is-small {
   font: var(--font-small);

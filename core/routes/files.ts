@@ -4,7 +4,7 @@ import uploadsCreate from "../templates/uploads/create.ts";
 import uploadsEdit from "../templates/uploads/edit.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath, normalizeName, normalizePath } from "../utils/path.ts";
-import { fromFile } from "../../deps/sharp.ts";
+import { formatSupported, fromFile, type sharp } from "../../deps/sharp.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
@@ -126,10 +126,23 @@ export default function (app: Hono) {
       }
 
       const file = body.file as File | undefined;
+      const entry = upload.get(name);
 
       if (file) {
-        const entry = upload.get(name);
         await entry.writeFile(file);
+      }
+
+      // Convert format
+      if (prevId !== name && formatSupported(prevId) && formatSupported(name)) {
+        const extFrom = prevId.split(".").pop();
+        const extTo = name.split(".").pop();
+
+        if (extTo && extFrom !== extTo) {
+          const img = await fromFile(await entry.readFile());
+          const buffer = await img.toFormat(extTo as keyof sharp.FormatEnum)
+            .toBuffer();
+          await entry.writeFile(new File([buffer], name));
+        }
       }
 
       return c.redirect(
