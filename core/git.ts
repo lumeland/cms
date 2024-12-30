@@ -86,7 +86,10 @@ export class Git implements Versioning {
       throw new Error(`Version ${name} does not exist`);
     }
 
+    // Commit changes before changing the branch
     await this.#commit();
+
+    // Checkout to the version branch and pull possible changes
     await this.#runGitCommand("checkout", this.#nameToBranch(name));
     await this.#pull();
   }
@@ -97,15 +100,20 @@ export class Git implements Versioning {
       throw new Error(`Version ${name} does not exist`);
     }
 
+    // Get the branch name
     const branch = this.#nameToBranch(name);
 
+    // Checkout to the production branch and pull possible changes
     await this.change(this.prodBranch);
+    await this.#pull();
 
+    // Merge the version branch into the production branch
     if (branch !== this.prodBranch) {
       await this.#runGitCommand("merge", branch);
       await this.#runGitCommand("branch", "-d", branch);
     }
 
+    // Push changes to the remote
     await this.#runGitCommand("push", this.remote, this.prodBranch);
   }
 
@@ -119,6 +127,8 @@ export class Git implements Versioning {
       throw new Error(`Cannot delete production branch`);
     }
 
+    // If the current branch is the one to be deleted,
+    // change to the production branch
     const current = await this.current();
 
     if (current.name === name) {
