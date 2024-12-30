@@ -1,10 +1,11 @@
 import uploadsList from "../templates/uploads/list.ts";
 import uploadsView from "../templates/uploads/view.ts";
 import uploadsCreate from "../templates/uploads/create.ts";
-import uploadsEdit from "../templates/uploads/edit.ts";
+import uploadsCrop from "../templates/uploads/crop.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath, normalizeName, normalizePath } from "../utils/path.ts";
 import { formatSupported, fromFile, type sharp } from "../../deps/sharp.ts";
+import { posix } from "../../deps/std.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
@@ -44,7 +45,13 @@ export default function (app: Hono) {
     const upload = uploads[uploadId];
     const body = await c.req.parseBody();
     const file = body.file as File;
-    const fileId = normalizeName(slugify(file.name));
+    let fileId = file.name as string | undefined;
+    const folder = body._id as string | undefined;
+    if (folder) {
+      fileId = folder.endsWith("/") ? posix.join(folder, fileId!) : folder;
+    }
+
+    fileId = normalizeName(slugify(fileId!));
 
     if (!fileId) {
       throw new Error("Invalid file name");
@@ -150,11 +157,17 @@ export default function (app: Hono) {
       );
     });
 
-  app.get("/uploads/:upload/edit/:file", async (c: Context) => {
+  app.get("/uploads/:upload/crop/:file", async (c: Context) => {
     const { options, uploadId, fileId, uploads, versioning } = get(c);
 
     if (!uploads[uploadId]) {
       return c.notFound();
+    }
+
+    if (!formatSupported(fileId)) {
+      return c.redirect(
+        getPath(options.basePath, "uploads", uploadId, "file", fileId),
+      );
     }
 
     try {
@@ -164,7 +177,7 @@ export default function (app: Hono) {
       }
 
       return c.render(
-        uploadsEdit({
+        uploadsCrop({
           options,
           collection: uploadId,
           file: name,

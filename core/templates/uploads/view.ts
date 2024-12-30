@@ -79,7 +79,7 @@ ${
     ${
     formatSupported(file)
       ? `<a href="${
-        getPath(basePath, "uploads", collection, "edit", file)
+        getPath(basePath, "uploads", collection, "crop", file)
       }" class="button is-secondary">
       <u-icon name="crop"></u-icon>
       Crop image

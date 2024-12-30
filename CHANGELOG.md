@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - UI tweaks.
+- Upload files in a subfolder.
 - Updated dependencies.
 
 ## [0.7.7] - 2024-12-22

@@ -65,8 +65,6 @@ customElements.define(
             height: cropperImageRect.height,
           };
 
-          event.detail.x = 1000;
-
           if (!inSelection(event.detail, maxSelection)) {
             event.preventDefault();
           }
