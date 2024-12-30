@@ -1,8 +1,10 @@
 import uploadsList from "../templates/uploads/list.ts";
 import uploadsView from "../templates/uploads/view.ts";
 import uploadsCreate from "../templates/uploads/create.ts";
+import uploadsEdit from "../templates/uploads/edit.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath, normalizeName, normalizePath } from "../utils/path.ts";
+import { fromFile } from "../../deps/sharp.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
@@ -134,6 +136,72 @@ export default function (app: Hono) {
         getPath(options.basePath, "uploads", uploadId, "file", name),
       );
     });
+
+  app.get("/uploads/:upload/edit/:file", async (c: Context) => {
+    const { options, uploadId, fileId, uploads, versioning } = get(c);
+
+    if (!uploads[uploadId]) {
+      return c.notFound();
+    }
+
+    try {
+      const name = normalizeName(fileId);
+      if (!name) {
+        throw new Error("Invalid file name");
+      }
+
+      return c.render(
+        uploadsEdit({
+          options,
+          collection: uploadId,
+          file: name,
+          version: await versioning?.current(),
+        }),
+      );
+    } catch {
+      return c.notFound();
+    }
+  }).post(async (c: Context) => {
+    const { uploadId, uploads, fileId, options } = get(c);
+
+    if (!uploads[uploadId]) {
+      return c.notFound();
+    }
+    const upload = uploads[uploadId];
+    const name = normalizeName(fileId);
+
+    if (!name) {
+      return c.notFound();
+    }
+
+    const body = await c.req.parseBody();
+    const x = parseInt(body.x as string);
+    const y = parseInt(body.y as string);
+    const width = parseInt(body.width as string);
+    const height = parseInt(body.height as string);
+
+    if (
+      Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(width) ||
+      Number.isNaN(height)
+    ) {
+      throw new Error("Invalid crop values");
+    }
+    const entry = upload.get(name);
+    const img = await fromFile(await entry.readFile());
+    img.extract({
+      left: x,
+      top: y,
+      width,
+      height,
+    });
+
+    const buffer = await img.toBuffer();
+    const file = new File([buffer], name);
+    await entry.writeFile(file);
+    return c.redirect(
+      getPath(options.basePath, "uploads", uploadId, "file", name),
+    );
+  });
 
   app.post("/uploads/:upload/delete/:file", async (c: Context) => {
     const { options, fileId, uploadId, uploads } = get(c);

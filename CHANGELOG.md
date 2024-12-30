@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.7.8] - Unreleased
+## [0.8.0] - Unreleased
 ### Added
 - Allow to duplicate object-list and choose-list elements.
+- Allow to crop images.
 
 ### Fixed
 - UI tweaks.

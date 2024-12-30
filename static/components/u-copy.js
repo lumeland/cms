@@ -3,7 +3,7 @@ import dom from "dom";
 
 customElements.define(
   "u-copy",
-  class Preview extends Component {
+  class Copy extends Component {
     init() {
       const icon = dom("u-icon", { name: "link-simple" });
 

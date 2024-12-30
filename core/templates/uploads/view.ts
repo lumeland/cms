@@ -75,6 +75,16 @@ ${
       <u-icon name="check"></u-icon>
       Update file
     </button>
+    ${
+    isEditable(type)
+      ? `<a href="${
+        getPath(basePath, "uploads", collection, "edit", file)
+      }" class="button is-secondary">
+      <u-icon name="crop"></u-icon>
+      Crop image
+    </a>`
+      : ""
+  }
     <u-confirm data-message="Are you sure?">
       <button
         class="button is-secondary"
@@ -89,7 +99,7 @@ ${
 
 <figure class="preview">
   <u-preview class="preview-media" data-src="${src}"></u-preview>
-  <figcaption class="preview-caption">
+  <figcaption class="preview-caption ly-rowStack">
     <a href="${src}" download="${file}" class="button is-secondary">
       <u-icon name="download-simple"></u-icon>
       Download file
@@ -97,4 +107,8 @@ ${
   </figcaption>
 </figure>
   `;
+}
+
+function isEditable(type: string) {
+  return type.startsWith("image/");
 }
