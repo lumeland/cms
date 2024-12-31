@@ -11,10 +11,11 @@ interface Props {
   collection: Collection;
   version?: Version;
   folder?: string;
+  defaults: Record<string, unknown>;
 }
 
 export default async function template(
-  { options, collection, version, folder }: Props,
+  { options, collection, version, folder, defaults }: Props,
 ) {
   const { basePath } = options;
   const fields = await Promise.all(
@@ -42,6 +43,7 @@ ${
         id="_id"
         type="text"
         name="_id"
+        value="${defaults._id || ""}"
         placeholder="Name your file…"
         form="form-create"
         aria-label="File name"
@@ -67,7 +69,9 @@ ${
   id="form-create"
 >
   <input type="hidden" name="_prefix" value="${folder || ""}">
-  <u-fields data-fields="${escape(JSON.stringify(fields))}"></u-fields>
+  <u-fields data-fields="${escape(JSON.stringify(fields))}" data-value="${
+    escape(JSON.stringify(defaults))
+  }"></u-fields>
   <footer class="footer ly-rowStack">
     <button class="button is-primary" type="submit">Create</button>
   </footer>

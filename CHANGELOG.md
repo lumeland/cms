@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.8.1] - Unreleased
+### Added
+- You can define default values when creating a new document passing query parameters in the URL. Example: `http://localhost:8000/collection/Articles/create?_id=hello-world.md&title=Hello+world`.
+
 ### Fixed
 - Git publish action: pull changes before push
 

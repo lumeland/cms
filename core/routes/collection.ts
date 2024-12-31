@@ -143,10 +143,12 @@ export default function (app: Hono) {
   app
     .get("/collection/:collection/create", async (c: Context) => {
       const { options, collection, versioning } = get(c);
+      const defaults = c.req.query();
 
       return c.render(
         collectionCreate({
           options,
+          defaults,
           collection,
           version: await versioning?.current(),
           folder: normalizeName(c.req.query("folder")),
