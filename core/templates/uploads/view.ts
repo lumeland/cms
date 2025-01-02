@@ -1,7 +1,7 @@
 import { getPath } from "../../utils/path.ts";
 import { formatBytes } from "../../../deps/std.ts";
 import breadcrumb from "../breadcrumb.ts";
-import { formatSupported } from "../../../deps/sharp.ts";
+import { formatSupported } from "../../../deps/imagick.ts";
 
 import type { CMSContent, Version } from "../../../types.ts";
 

@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - You can define default values when creating a new document passing query parameters in the URL. Example: `http://localhost:8000/collection/Articles/create?_id=hello-world.md&title=Hello+world`.
 
 ### Fixed
-- Git publish action: pull changes before push
+- Git publish action: pull changes before push.
+- Replaced Sharp with Imagick (sharp doesn't work on Deno Deploy).
 
 ## [0.8.0] - 2024-12-30
 ### Added

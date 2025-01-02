@@ -4,7 +4,11 @@ import uploadsCreate from "../templates/uploads/create.ts";
 import uploadsCrop from "../templates/uploads/crop.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath, normalizeName, normalizePath } from "../utils/path.ts";
-import { formatSupported, fromFile, type sharp } from "../../deps/sharp.ts";
+import {
+  formatSupported,
+  MagickGeometry,
+  transform,
+} from "../../deps/imagick.ts";
 import { posix } from "../../deps/std.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
@@ -140,15 +144,16 @@ export default function (app: Hono) {
       }
 
       // Convert format
-      if (prevId !== name && formatSupported(prevId) && formatSupported(name)) {
+      const format = formatSupported(name);
+      if (prevId !== name && formatSupported(prevId) && format) {
         const extFrom = prevId.split(".").pop();
         const extTo = name.split(".").pop();
 
         if (extTo && extFrom !== extTo) {
-          const img = await fromFile(await entry.readFile());
-          const buffer = await img.toFormat(extTo as keyof sharp.FormatEnum)
-            .toBuffer();
-          await entry.writeFile(new File([buffer], name));
+          const img = await transform(await entry.readFile(), (img) => {
+            img.format = format;
+          });
+          await entry.writeFile(new File([img], name));
         }
       }
 
@@ -213,16 +218,14 @@ export default function (app: Hono) {
       throw new Error("Invalid crop values");
     }
     const entry = upload.get(name);
-    const img = await fromFile(await entry.readFile());
-    img.extract({
-      left: x,
-      top: y,
-      width,
-      height,
-    });
+    const img = await transform(
+      await entry.readFile(),
+      (img) => {
+        img.crop(new MagickGeometry(x, y, width, height));
+      },
+    );
 
-    const buffer = await img.toBuffer();
-    const file = new File([buffer], name);
+    const file = new File([img], name);
     await entry.writeFile(file);
     return c.redirect(
       getPath(options.basePath, "uploads", uploadId, "file", name),
