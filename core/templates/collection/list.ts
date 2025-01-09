@@ -74,7 +74,7 @@ function folder({ options, collection, tree }: FolderProps) {
     .map(([name, subTree]) => `
     <li>
       <details open class="accordion">
-        <summary>${labelify(name)}</summary>
+        <summary>${labelify(name, false)}</summary>
         <ul>
           ${folder({ options, collection, tree: subTree })}
         </ul>
@@ -84,7 +84,7 @@ function folder({ options, collection, tree }: FolderProps) {
           href="${
       getPath(options.basePath, "collection", collection.name, "create")
     }?folder=${subTree.path}"
-          title="Create new item inside ${labelify(name)}"
+          title="Create new item inside ${labelify(name, false)}"
           class="buttonIcon"
         >
           <u-icon name="plus-circle"></u-icon>

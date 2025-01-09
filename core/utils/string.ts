@@ -1,15 +1,17 @@
 import { extname } from "../../deps/std.ts";
 
 /** Convert slugs to labels */
-export function labelify(slug: string) {
+export function labelify(slug: string, hasExt = true) {
   if (slug === "[]") {
     return "";
   }
 
   // Remove extension
-  const ext = extname(slug);
-  if (ext) {
-    slug = slug.slice(0, -ext.length);
+  if (hasExt) {
+    const ext = extname(slug);
+    if (ext) {
+      slug = slug.slice(0, -ext.length);
+    }
   }
 
   // Capitalize first letter
@@ -17,6 +19,7 @@ export function labelify(slug: string) {
 
   // Replace dashes with spaces
   slug = slug.replace(/[-_]/g, " ");
+  slug = slug.replace(/^(\d+)\./g, "$1. ");
 
   // Replace camelCase with spaces
   slug = slug.replace(/([a-z])([A-Z])/g, "$1 $2");

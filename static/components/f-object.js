@@ -28,8 +28,8 @@ customElements.define(
           display: flex;
           column-gap: 4px;
           position: absolute;
-          right: 0;
-          top: 0;
+          right: 4px;
+          top: 4px;
         }
       </style>
       <div class="root">
