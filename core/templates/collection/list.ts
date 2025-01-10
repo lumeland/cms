@@ -69,56 +69,59 @@ interface FolderProps {
 }
 
 function folder({ options, collection, tree }: FolderProps) {
-  const folders: string[] = Array.from(tree.folders?.entries() || [])
+  const content: string[] = Array.from([
+    ...tree.folders?.entries() || [],
+    ...tree.files?.entries() || [],
+  ])
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([name, subTree]) => `
-    <li>
+    .map(([name, child]) =>
+      typeof child === "string"
+        ? printFile(name, child, collection, options)
+        : printFolder(name, child, collection, options)
+    );
+
+  return content.join("");
+}
+
+function printFolder(
+  name: string,
+  tree: Tree,
+  collection: Collection,
+  options: CMSContent,
+) {
+  return `<li>
       <details open class="accordion">
         <summary>${labelify(name, false)}</summary>
         <ul>
-          ${folder({ options, collection, tree: subTree })}
+          ${folder({ options, collection, tree })}
         </ul>
       </details>
       <div class="list-actions">
         <a
           href="${
-      getPath(options.basePath, "collection", collection.name, "create")
-    }?folder=${subTree.path}"
-          title="Create new item inside ${labelify(name, false)}"
+    getPath(options.basePath, "collection", collection.name, "create")
+  }?folder=${tree.path}"
+          title="Create new item inside this folder"
           class="buttonIcon"
         >
           <u-icon name="plus-circle"></u-icon>
         </a>
       </div>
-    </li>`);
-
-  return `
-  ${folders.join("")}
-  ${files({ options, collection, files: tree.files })}
-  `;
+    </li>`;
 }
 
-interface FilesProps {
-  options: CMSContent;
-  collection: Collection;
-  files?: Map<string, string>;
-}
-
-function files(
-  { options, collection, files }: FilesProps,
+function printFile(
+  name: string,
+  path: string,
+  collection: Collection,
+  options: CMSContent,
 ) {
-  if (!files) {
-    return "";
-  }
-
-  return Array.from(files.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([name, file]) => `
+  return `
   <li>
     <a
       href="${
-      getPath(options.basePath, "collection", collection.name, "edit", file)
-    }"
+    getPath(options.basePath, "collection", collection.name, "edit", path)
+  }"
       class="list-item"
       title="${name}"
     >
@@ -127,5 +130,5 @@ function files(
         <strong>${labelify(name)}</strong>
       </div>
     </a>
-  </li>`).join("");
+  </li>`;
 }

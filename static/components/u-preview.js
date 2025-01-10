@@ -10,6 +10,7 @@ customElements.define(
 
     init() {
       const { src } = this.dataset;
+      const download = `<a href="${src}" download>Download file</a>`;
 
       switch (fileType(src)) {
         case "image":
@@ -29,8 +30,7 @@ customElements.define(
           break;
 
         default:
-          this.innerHTML =
-            `<p>Cannot preview. <a href="${src}" download>Download</a></p>`;
+          this.innerHTML = `<p>Cannot preview. ${download}</p>`;
           break;
       }
     }

@@ -86,13 +86,17 @@ ${
     </a>`
       : ""
   }
-    <u-confirm data-message="Are you sure?">
+    <a href="${src}" download="${file}" class="buttonIcon is-secondary" aria-label="Download file" title="Download file">
+      <u-icon name="download-simple"></u-icon>
+    </a>
+    <u-confirm data-message="Delete this file?">
       <button
-        class="button is-secondary"
+        aria-label="Delete file"
+        title="Delete file"
+        class="buttonIcon is-secondary"
         formAction="${getPath(basePath, "uploads", collection, "delete", file)}"
       >
         <u-icon name="trash"></u-icon>
-        Delete
       </button>
     </u-confirm>
   </footer>
@@ -100,12 +104,6 @@ ${
 
 <figure class="preview">
   <u-preview class="preview-media" data-src="${src}"></u-preview>
-  <figcaption class="preview-caption ly-rowStack">
-    <a href="${src}" download="${file}" class="button is-secondary">
-      <u-icon name="download-simple"></u-icon>
-      Download file
-    </a>
-  </figcaption>
 </figure>
   `;
 }

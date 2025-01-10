@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.8.2] - Unreleased
+## [0.8.2] - 2025-01-10
+### Changed
+- In collections, folders and files are sorted alphabetically together (instead of folders first and then files).
+- Download button in upload detail.
+
 ### Fixed
 - List of folders containing dots.
 - Better alignment of files and folders.
@@ -501,7 +505,7 @@ First version
 [#31]: https://github.com/lumeland/cms/issues/31
 [#34]: https://github.com/lumeland/cms/issues/34
 
-[0.8.2]: https://github.com/lumeland/cms/compare/v0.8.1...HEAD
+[0.8.2]: https://github.com/lumeland/cms/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/lumeland/cms/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/lumeland/cms/compare/v0.7.7...v0.8.0
 [0.7.7]: https://github.com/lumeland/cms/compare/v0.7.6...v0.7.7

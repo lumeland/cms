@@ -15,11 +15,14 @@ export function labelify(slug: string, hasExt = true) {
   }
 
   // Capitalize first letter
-  slug = slug[0].toUpperCase() + slug.slice(1);
+  slug = capitalize(slug);
 
   // Replace dashes with spaces
   slug = slug.replace(/[-_]/g, " ");
-  slug = slug.replace(/^(\d+)\./g, "$1. ");
+  slug = slug.replace(
+    /^(\d+)\.(.*)$/g,
+    (_, number, rest) => `${number}. ${capitalize(rest)}`,
+  );
 
   // Replace camelCase with spaces
   slug = slug.replace(/([a-z])([A-Z])/g, "$1 $2");
@@ -46,4 +49,8 @@ export function isEmpty(value: unknown) {
   }
 
   return false;
+}
+
+function capitalize(text: string) {
+  return text[0].toUpperCase() + text.slice(1);
 }
