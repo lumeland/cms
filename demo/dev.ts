@@ -30,7 +30,7 @@ const cms = lumeCMS({
 
 cms.use(blocks());
 cms.storage("src", "demo");
-cms.upload("img", "src:img");
+cms.upload("img", "src:img/**/*{.jpg,.png,.gif,.svg}");
 
 cms.storage(
   "kv",

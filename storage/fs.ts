@@ -34,7 +34,11 @@ export default class Fs implements Storage {
 
     this.root = normalizePath(options.root);
     this.path = options.path;
-    this.extension = posix.extname(options.path);
+
+    // Avoid errors for paths like "src:articles/**/*{.jpg,.png,.gif,.svg}"
+    if (options.path.match(/\.\w+^/)) {
+      this.extension = posix.extname(options.path);
+    }
   }
 
   async *[Symbol.asyncIterator]() {
