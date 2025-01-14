@@ -3,7 +3,11 @@ import { basicAuth } from "../../deps/hono.ts";
 import type { Hono } from "../../deps/hono.ts";
 import type { AuthOptions } from "../cms.ts";
 
-export default function (app: Hono, auth?: AuthOptions) {
+export default function (
+  app: Hono,
+  auth?: AuthOptions,
+  excludedPaths?: string[],
+) {
   if (auth?.method !== "basic") {
     return;
   }
@@ -31,8 +35,7 @@ export default function (app: Hono, auth?: AuthOptions) {
   app.use(
     "*",
     (c, next) => {
-      // Skip auth for socket because Safari doesn't keep the auth header
-      if (c.req.url === "/_socket" || c.req.url === "/logout") {
+      if (excludedPaths?.includes(c.req.path)) {
         return next();
       }
 

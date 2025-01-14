@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.8.4] - Unreleased
 ### Fixed
 - Don't show the logout button if no auth is configured.
+- Logout code.
 
 ## [0.8.3] - 2025-01-10
 ### Fixed

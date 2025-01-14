@@ -10,7 +10,7 @@ import Collection from "./collection.ts";
 import Document from "./document.ts";
 import Upload from "./upload.ts";
 import FsStorage from "../storage/fs.ts";
-import { normalizePath } from "./utils/path.ts";
+import { getPath, normalizePath } from "./utils/path.ts";
 import {
   basename,
   dirname,
@@ -306,7 +306,11 @@ export default class Cms {
       return c.text("There was an error. See logs for more info.", 500);
     });
 
-    authRoutes(app, this.options.auth);
+    authRoutes(app, this.options.auth, [
+      // Skip auth for socket because Safari doesn't keep the auth header
+      getPath(this.options.basePath, "_socket"),
+      getPath(this.options.basePath, "logout"),
+    ]);
 
     app.use("*", (c: Context, next: Next) => {
       c.setRenderer(async (content) => {
