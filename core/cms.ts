@@ -196,6 +196,7 @@ export default class Cms {
   initContent(): CMSContent {
     const content: CMSContent = {
       basePath: this.options.basePath,
+      auth: this.options.auth?.method === "basic",
       site: this.options.site!,
       data: this.options.data ?? {},
       collections: {},

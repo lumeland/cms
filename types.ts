@@ -116,6 +116,7 @@ type Option = string | { value: string | number; label: string };
 
 export interface CMSContent {
   basePath: string;
+  auth: boolean;
   site: SiteInfo;
   collections: Record<string, Collection>;
   documents: Record<string, Document>;

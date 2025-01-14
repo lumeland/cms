@@ -12,7 +12,7 @@ interface Props {
 export default function template(
   { options, jsImports, content, extraHead }: Props,
 ) {
-  const { basePath } = options;
+  const { basePath, auth } = options;
   return `
 <!DOCTYPE html>
 <html lang="en" data-baseassets="${asset(basePath)}" data-baseurls="${
@@ -62,7 +62,11 @@ ${extraHead ?? ""}
       </svg>
       </u-icon>
     </button>
-    <button class="button is-tertiary" id="logoutButton" type="button" aria-label="logout">Logout</button>
+    ${
+    auth
+      ? `<button class="button is-tertiary" id="logoutButton" type="button" aria-label="logout">Logout</button>`
+      : ""
+  }
   </footer>
   <script type="module">
     document.querySelector('#themeButton')
@@ -77,8 +81,8 @@ ${extraHead ?? ""}
       }, false);
 
     document.querySelector('#logoutButton')
-      .addEventListener('click', function () {
-        const logoutUrl = '${getPath("logout")}'; 
+      ?.addEventListener('click', function () {
+        const logoutUrl = '${getPath(basePath, "logout")}'; 
         const xmlHttp = new XMLHttpRequest();
         xmlHttp.open('POST', logoutUrl, true, 'logout');
         xmlHttp.send();
