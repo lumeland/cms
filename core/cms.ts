@@ -20,6 +20,7 @@ import {
 } from "../deps/std.ts";
 import { labelify } from "./utils/string.ts";
 import { dispatch } from "./utils/event.ts";
+import { Git, Options as GitOptions } from "./git.ts";
 
 import type { Context, Next } from "../deps/hono.ts";
 import type {
@@ -114,11 +115,32 @@ export default class Cms {
     };
   }
 
+  /** Setup the Git repository */
+  git(options?: GitOptions): this {
+    this.versionManager = new Git({
+      ...options,
+    });
+
+    return this;
+  }
+
+  /** Setup the basic auth */
+  auth(users: Record<string, string>): this {
+    this.options.auth = {
+      method: "basic",
+      users,
+    };
+
+    return this;
+  }
+
+  /** Add a new storage method */
   storage(name: string, storage: Storage | string = ""): this {
     this.storages.set(name, storage);
     return this;
   }
 
+  /** Add a new upload foler */
   upload(name: string, storage: string, publicPath?: string): this {
     if (!publicPath) {
       const path = storage.split(":")[1] ?? "/";
@@ -129,6 +151,7 @@ export default class Cms {
     return this;
   }
 
+  /** Add a new collection */
   collection(options: CollectionOptions): this;
   collection(key: string, store: string, fields: (Field | string)[]): this;
   collection(
@@ -156,6 +179,7 @@ export default class Cms {
     return this;
   }
 
+  /** Add a new document */
   document(options: DocumentOptions): this;
   document(key: string, store: string, fields: (Field | string)[]): this;
   document(
@@ -183,16 +207,19 @@ export default class Cms {
     return this;
   }
 
+  /** Add a new field type */
   field(name: string, field: FieldType): this {
     this.fields.set(name, field);
     return this;
   }
 
+  /** Use a plugin */
   use(plugin: (cms: Cms) => void): this {
     plugin(this);
     return this;
   }
 
+  /** Initialize the CMS */
   initContent(): CMSContent {
     const content: CMSContent = {
       basePath: this.options.basePath,
@@ -246,6 +273,7 @@ export default class Cms {
     return content;
   }
 
+  /** Start the CMS */
   init(): Hono {
     const content = this.initContent();
 

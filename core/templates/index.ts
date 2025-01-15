@@ -109,7 +109,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
         }" name="check-circle"></u-icon> ${labelify(version.name)}
           </span>`
         : `<form class="list-item" method="post" action="${
-          getPath(options.basePath, "_git")
+          getPath(options.basePath, "versions")
         }">
             <input type="hidden" name="action" value="change">
             <input type="hidden" name="name" value="${version.name}">
@@ -123,7 +123,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
     ${
       !version.isProduction &&
         `<u-confirm data-message="Are you sure?">
-      <form method="post" action="${getPath(options.basePath, "_git")}">
+      <form method="post" action="${getPath(options.basePath, "versions")}">
         <input type="hidden" name="action" value="delete">
         <input type="hidden" name="name" value="${version.name}">
         <button class="buttonIcon" aria-label="Delete">
@@ -133,7 +133,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
     </u-confirm>` || ""
     }
 
-    <form method="post" action="${getPath(options.basePath, "_git")}">
+    <form method="post" action="${getPath(options.basePath, "versions")}">
       <input type="hidden" name="action" value="publish">
       <input type="hidden" name="name" value="${version.name}">
       <button class="button is-secondary">
@@ -155,7 +155,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
   <dialog class="modal is-center" id="modal-new-version">
   <form
     method="post"
-    action="${getPath(options.basePath, "_git")}"
+    action="${getPath(options.basePath, "versions")}"
   >
     <input type="hidden" name="action" value="create">
     <div class="field">

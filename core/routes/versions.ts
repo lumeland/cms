@@ -1,73 +1,47 @@
-import { getPath } from "../utils/path.ts";
-
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
+import { getPath } from "../utils/path.ts";
 
-export default function (app: Hono) {
-  app.post("/versions/create", async (c: Context) => {
-    const { options, versioning } = get(c);
-
-    if (!versioning) {
-      throw new Error("No versioning method available");
-    }
-
-    const body = await c.req.parseBody();
-    const name = body.name as string;
-    await versioning.create(name);
-    await versioning.change(name);
-
-    return c.redirect(getPath(options.basePath));
-  });
-
-  app.post("/versions/change", async (c: Context) => {
-    const { options, versioning } = get(c);
-
-    if (!versioning) {
-      throw new Error("No versioning method available");
-    }
-
-    const body = await c.req.parseBody();
-    const name = body.name as string;
-    await versioning.change(name);
-
-    return c.redirect(getPath(options.basePath));
-  });
-
-  app.post("/versions/publish", async (c: Context) => {
-    const { options, versioning } = get(c);
-
-    if (!versioning) {
-      throw new Error("No versioning method available");
-    }
-
-    const body = await c.req.parseBody();
-    const name = body.name as string;
-    await versioning.publish(name);
-
-    return c.redirect(getPath(options.basePath));
-  });
-
-  app.post("/versions/delete", async (c: Context) => {
-    const { options, versioning } = get(c);
-
-    if (!versioning) {
-      throw new Error("No versioning method available");
-    }
-
-    const body = await c.req.parseBody();
-    const name = body.name as string;
-    await versioning.delete(name);
-
-    return c.redirect(getPath(options.basePath));
-  });
+interface Data {
+  name: string;
+  action: string;
 }
 
-function get(c: Context) {
-  const options = c.get("options") as CMSContent;
-  const { versioning } = options;
+export default function (app: Hono) {
+  app.post("/versions", async (c: Context) => {
+    const options = c.get("options") as CMSContent;
+    const { versioning, basePath } = options;
 
-  return {
-    options,
-    versioning,
-  };
+    if (!versioning) {
+      throw new Error("No versioning method available");
+    }
+
+    const body = await c.req.parseBody() as unknown as Data;
+    const { name, action } = body;
+
+    const response = c.redirect(getPath(basePath));
+    // Add a header to trigger a reload in the proxy
+    response.headers.set("X-Lume-CMS", "reload");
+
+    if (action === "create") {
+      await versioning.create(name);
+      await versioning.change(name);
+      return response;
+    }
+
+    if (action === "change") {
+      await versioning.change(name);
+      return response;
+    }
+
+    if (action === "publish") {
+      await versioning.publish(name);
+      return response;
+    }
+
+    if (action === "delete") {
+      await versioning.delete(name);
+      return response;
+    }
+  });
 }
