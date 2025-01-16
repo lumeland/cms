@@ -39,7 +39,7 @@ customElements.define(
 
       const helpers = dom("div", { class: "tools is-sticky" }, this);
 
-      for (const name of schema.details?.uploads || []) {
+      for (const name of schema.details?.upload || []) {
         dom("button", {
           class: "button is-secondary",
           type: "button",

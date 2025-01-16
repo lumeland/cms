@@ -205,7 +205,8 @@ fields.set("markdown", {
   jsImport: "lume_cms/components/f-markdown.js",
   init(field, { uploads }) {
     field.details ??= {};
-    field.details.uploads = Object.keys(uploads);
+    field.details.upload ??= field.uploads ?? field.upload ??
+      Object.keys(uploads);
   },
   applyChanges(data, changes, field: ResolvedField) {
     if (field.name in changes) {

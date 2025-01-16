@@ -72,7 +72,7 @@ export interface Field {
   options?: Option[];
   /** @deprecated. Use `upload` instead */
   uploads?: string;
-  upload?: string;
+  upload?: string | false;
   view?: string;
   attributes?: {
     required?: boolean;

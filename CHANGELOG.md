@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.9.1] - Unreleased
 ### Added
+- In *markdown* set the `upload` property to `false` to disable the upload button.
 - `{document_dirname}` placeholder to `upload` property. This allows to save a file in the same directory of the page. Example:
   ```js
   {
@@ -16,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   ```
 
 ### Deprecated
-- `uploads` property for File field. Use `upload` (in singular).
+- `uploads` property for *file* and *markdown* fields. Use `upload` (in singular).
 
 ### Removed
 - Unused `field.publicPath` option.
