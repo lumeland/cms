@@ -61,7 +61,7 @@ export default class Document {
     }
 
     for (const field of this.fields || []) {
-      await field.applyChanges(currentData, data, field, cms);
+      await field.applyChanges(currentData, data, field, this, cms);
     }
 
     if (isArray) {

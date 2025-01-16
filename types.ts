@@ -70,8 +70,9 @@ export interface Field {
   label?: string;
   description?: string;
   options?: Option[];
+  /** @deprecated. Use `upload` instead */
   uploads?: string;
-  publicPath?: string;
+  upload?: string;
   view?: string;
   attributes?: {
     required?: boolean;
@@ -96,6 +97,7 @@ export interface ResolvedField extends Field {
     data: Data,
     changes: Data,
     field: ResolvedField,
+    document: Document,
     content: CMSContent,
   ): void | Promise<void>;
 }
@@ -108,6 +110,7 @@ export interface FieldType {
     data: Data,
     changes: Data,
     field: ResolvedField,
+    document: Document,
     content: CMSContent,
   ): void | Promise<void>;
 }

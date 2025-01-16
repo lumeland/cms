@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.9.1] - Unreleased
+### Added
+- `{document_dirname}` placeholder to `upload` property. This allows to save a file in the same directory of the page. Example:
+  ```js
+  {
+    name: "image",
+    type: "file",
+    upload: "media:{document_dirname}",
+  }
+  ```
+
+### Deprecated
+- `uploads` property for File field. Use `upload` (in singular).
+
+### Removed
+- Unused `field.publicPath` option.
+
 ## [0.9.0] - 2025-01-15
 ### Added
 - New `git()` function to configure git repository.
@@ -518,6 +535,7 @@ First version
 [#31]: https://github.com/lumeland/cms/issues/31
 [#34]: https://github.com/lumeland/cms/issues/34
 
+[0.9.1]: https://github.com/lumeland/cms/compare/v0.9.0...HEAD
 [0.9.0]: https://github.com/lumeland/cms/compare/v0.8.3...v0.9.0
 [0.8.3]: https://github.com/lumeland/cms/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/lumeland/cms/compare/v0.8.1...v0.8.2

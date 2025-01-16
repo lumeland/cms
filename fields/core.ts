@@ -1,4 +1,5 @@
 import { normalizePath } from "../core/utils/path.ts";
+import { posix } from "../deps/std.ts";
 import { isEmpty } from "../core/utils/string.ts";
 
 import type { Data, FieldType, ResolvedField } from "../types.ts";
@@ -73,7 +74,7 @@ fields.set("list", {
 fields.set("object", {
   tag: "f-object",
   jsImport: "lume_cms/components/f-object.js",
-  async applyChanges(data, changes, field, cmsContent) {
+  async applyChanges(data, changes, field, document, cmsContent) {
     const value = data[field.name] as Data || {};
 
     for (const f of field.fields || []) {
@@ -81,6 +82,7 @@ fields.set("object", {
         value,
         changes[field.name] as Data || {},
         f,
+        document,
         cmsContent,
       );
     }
@@ -93,14 +95,14 @@ fields.set("object", {
 fields.set("object-list", {
   tag: "f-object-list",
   jsImport: "lume_cms/components/f-object-list.js",
-  async applyChanges(data, changes, field, cmsContent) {
+  async applyChanges(data, changes, field, document, cmsContent) {
     const value = await Promise.all(
       Object.values(changes[field.name] || {}).map(
         async (subchanges) => {
           const value = {} as Data;
 
           for (const f of field.fields || []) {
-            await f.applyChanges(value, subchanges, f, cmsContent);
+            await f.applyChanges(value, subchanges, f, document, cmsContent);
           }
 
           return value;
@@ -116,7 +118,7 @@ fields.set("object-list", {
 fields.set("choose-list", {
   tag: "f-choose-list",
   jsImport: "lume_cms/components/f-choose-list.js",
-  async applyChanges(data, changes, field, cmsContent) {
+  async applyChanges(data, changes, field, document, cmsContent) {
     const value = await Promise.all(
       Object.values(changes[field.name] || {}).map(
         async (subchanges) => {
@@ -129,7 +131,7 @@ fields.set("choose-list", {
           }
 
           for (const f of chooseField?.fields || []) {
-            await f.applyChanges(value, subchanges, f, cmsContent);
+            await f.applyChanges(value, subchanges, f, document, cmsContent);
           }
 
           return value;
@@ -162,7 +164,7 @@ fields.set("file", {
       field.publicPath = publicPath;
     }
   },
-  async applyChanges(data, changes, field, cmsContent) {
+  async applyChanges(data, changes, field, document, cmsContent) {
     const value = changes[field.name] as
       | { current?: string; uploaded?: File }
       | undefined;
@@ -177,9 +179,9 @@ fields.set("file", {
       data[field.name] = current;
       return;
     }
-    const uploads = field.uploads || "default";
-    const [uploadsKey, uploadsPath = ""] = uploads.split(":");
-    const { storage, publicPath } = cmsContent.uploads[uploadsKey];
+    const upload = field.upload || field.uploads || "default";
+    let [uploadKey, uploadPath = ""] = upload.split(":");
+    const { storage, publicPath } = cmsContent.uploads[uploadKey];
 
     if (!storage) {
       throw new Error(
@@ -187,9 +189,14 @@ fields.set("file", {
       );
     }
 
-    const entry = storage.get(normalizePath(uploadsPath, uploaded.name));
+    uploadPath = uploadPath.replace(
+      "{document_dirname}",
+      posix.dirname(document.name),
+    );
+
+    const entry = storage.get(normalizePath(uploadPath, uploaded.name));
     await entry.writeFile(uploaded);
-    data[field.name] = normalizePath(publicPath, uploadsPath, uploaded.name);
+    data[field.name] = normalizePath(publicPath, uploadPath, uploaded.name);
   },
 });
 
