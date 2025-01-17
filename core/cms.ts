@@ -78,7 +78,9 @@ interface CollectionOptions {
   fields: (Field | string)[];
   url?: string;
   views?: string[];
+  /** @deprecated. Use `documentName` instead */
   nameField?: string | ((changes: Data) => string);
+  documentName?: string | ((changes: Data) => string | undefined);
   create?: boolean;
   delete?: boolean;
 }

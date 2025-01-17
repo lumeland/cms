@@ -47,7 +47,7 @@ ${
         placeholder="Name your file…"
         form="form-create"
         aria-label="File name"
-        ${collection.nameField ? "" : "required autofocus"}
+        ${collection.documentName ? "" : "required autofocus"}
       >
     </label>
   </h1>

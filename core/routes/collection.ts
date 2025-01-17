@@ -166,17 +166,23 @@ export default function (app: Hono) {
       let name = normalizeName(body._id as string);
 
       const changes = changesToData(body);
-      if (!name && collection.nameField) {
-        switch (typeof collection.nameField) {
+      if (!name && collection.documentName) {
+        switch (typeof collection.documentName) {
           case "string": {
-            const autoname = body[`changes.${collection.nameField}`];
-            if (typeof autoname === "string") {
-              name = autoname.replaceAll("/", "").trim();
-            }
+            name = collection.documentName.replaceAll(
+              /\{([^}\s]+)\}/g,
+              (_, key) => {
+                const value = body[`changes.${key}`];
+                if (typeof value === "string") {
+                  return value.replaceAll("/", "").trim();
+                }
+                return "";
+              },
+            ).trim();
             break;
           }
           case "function": {
-            name = collection.nameField(changes);
+            name = collection.documentName(changes);
             break;
           }
         }

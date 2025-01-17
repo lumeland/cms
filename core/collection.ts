@@ -9,7 +9,9 @@ export interface CollectionOptions {
   fields: ResolvedField[];
   url?: string;
   views?: string[];
+  /** @deprecated. Use `documentName` instead */
   nameField?: string | ((changes: Data) => string);
+  documentName?: string | ((changes: Data) => string | undefined);
   create?: boolean;
   delete?: boolean;
 }
@@ -26,7 +28,7 @@ export default class Collection {
   #fields: ResolvedField[];
   url?: string;
   views?: string[];
-  nameField?: string | ((changes: Data) => string);
+  documentName?: string | ((changes: Data) => string | undefined);
   permissions: Permissions;
 
   constructor(options: CollectionOptions) {
@@ -36,7 +38,10 @@ export default class Collection {
     this.#fields = options.fields;
     this.url = options.url;
     this.views = options.views;
-    this.nameField = options.nameField;
+    this.documentName = options.documentName ||
+      (typeof options.nameField === "string"
+        ? `{${options.nameField}}`
+        : options.nameField);
     this.permissions = {
       create: options.create ?? true,
       delete: options.delete ?? true,

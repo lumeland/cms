@@ -76,14 +76,14 @@ cms.collection({
       },
     },
   ],
-  nameField: "title",
+  documentName: "{title}",
 });
 
 cms.collection({
   name: "Posts",
   description: "List of posts for the blog",
   store: "kv:posts/*",
-  nameField: "title",
+  documentName: "{title}",
   // views: ["full", "time"],
   fields: [
     {
