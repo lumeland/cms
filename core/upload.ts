@@ -2,6 +2,7 @@ import type { Entry, EntryMetadata, Storage } from "../types.ts";
 
 export interface UploadOptions {
   name: string;
+  label?: string;
   description?: string;
   storage: Storage;
   publicPath: string;
@@ -9,12 +10,14 @@ export interface UploadOptions {
 
 export default class Upload {
   name: string;
+  label: string;
   description?: string;
   storage: Storage;
   publicPath: string;
 
   constructor(options: UploadOptions) {
     this.name = options.name;
+    this.label = options.label || options.name;
     this.description = options.description;
     this.storage = options.storage;
     this.publicPath = options.publicPath;

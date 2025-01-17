@@ -1,4 +1,3 @@
-import { labelify } from "../utils/string.ts";
 import { getPath } from "../utils/path.ts";
 
 import type { CMSContent, Version } from "../../types.ts";
@@ -17,9 +16,9 @@ export default function breadcrumb(
     version
       ? `<li class="breadcrumb-version ${
         version.isProduction ? "is-production" : ""
-      }"><a title="${labelify(version.name)}" href="${
+      }"><a title="${version.name}" href="${
         getPath(options.basePath)
-      }#versions">${labelify(version.name)}</a></li>`
+      }#versions">${version.name}</a></li>`
       : ""
   }
     <li><a href="${
@@ -28,8 +27,8 @@ export default function breadcrumb(
     ${
     links.map((link) =>
       typeof link === "string"
-        ? `<li><a>${labelify(link)}</a></li>`
-        : `<li><a href="${link[1]}">${labelify(link[0])}</a></li>`
+        ? `<li><a>${link}</a></li>`
+        : `<li><a href="${link[1]}">${link[0]}</a></li>`
     ).join("")
   }
   </ul>

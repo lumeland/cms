@@ -1,4 +1,3 @@
-import { labelify } from "../utils/string.ts";
 import { getPath } from "../utils/path.ts";
 import breadcrumb from "./breadcrumb.ts";
 
@@ -41,12 +40,14 @@ ${breadcrumb(options, await versioning?.current())}
 
 <ul class="list">
   ${
-    Object.entries(collections).map(([name, collection]) => `
+    Object.values(collections).map((collection) => `
   <li>
-    <a href="${getPath(basePath, "collection", name)}" class="list-item">
+    <a href="${
+      getPath(basePath, "collection", collection.name)
+    }" class="list-item">
       <u-icon name="folder-fill"></u-icon>
       <div class="list-item-header">
-        <strong>${labelify(name)}</strong>
+        <strong>${collection.label}</strong>
         ${collection.description ? `<p>${collection.description}</p>` : ""}
       </div>
     </a>
@@ -54,16 +55,16 @@ ${breadcrumb(options, await versioning?.current())}
   }
 
   ${
-    Object.entries(documents).map(([name, document]) => `
+    Object.values(documents).map((document) => `
   <li>
     <a
-      href="${getPath(basePath, "document", name)}"
+      href="${getPath(basePath, "document", document.name)}"
       class="list-item"
-      title="${name}"
+      title="${document.label}"
     >
       <u-icon name="file"></u-icon>
       <div class="list-item-header">
-        <strong>${labelify(name)}</strong>
+        <strong>${document.label}</strong>
         ${document.description ? `<p>${document.description}</p>` : ""}
       </div>
     </a>
@@ -71,12 +72,12 @@ ${breadcrumb(options, await versioning?.current())}
   }
 
   ${
-    Object.entries(uploads).map(([name, upload]) => `
+    Object.values(uploads).map((upload) => `
   <li>
-    <a href="${getPath(basePath, "uploads", name)}" class="list-item">
+    <a href="${getPath(basePath, "uploads", upload.name)}" class="list-item">
       <u-icon name="image-square-fill"></u-icon>
       <div class="list-item-header">
-        <strong>${labelify(name)}</strong>
+        <strong>${upload.label}</strong>
         ${upload.description ? `<p>${upload.description}</p>` : ""}
       </div>
     </a>
@@ -106,7 +107,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
         ? `<span class="list-item">
             <u-icon class="is-version ${
           version.isProduction ? "is-production" : ""
-        }" name="check-circle"></u-icon> ${labelify(version.name)}
+        }" name="check-circle"></u-icon> ${version.name}
           </span>`
         : `<form class="list-item" method="post" action="${
           getPath(options.basePath, "versions")
@@ -115,7 +116,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
             <input type="hidden" name="name" value="${version.name}">
             <button>
               <u-icon name="circle"></u-icon>
-              ${labelify(version.name)}
+              ${version.name}
             </button>
           </form>`
     }

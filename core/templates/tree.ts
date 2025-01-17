@@ -1,21 +1,19 @@
+import type { EntryMetadata } from "../../types.ts";
+
 export interface Tree {
   path: string;
   folders?: Map<string, Tree>;
   files?: Map<string, string>;
 }
 
-interface File {
-  name: string;
-}
-
-export default function createTree(files: File[]): Tree {
+export default function createTree(files: EntryMetadata[]): Tree {
   const tree: Tree = {
     path: "",
   };
 
   for (const file of files) {
-    const { name } = file;
-    placeFile(tree, name, name.split("/"));
+    const { label } = file;
+    placeFile(tree, label, name.split("/"));
   }
 
   return tree;

@@ -1,4 +1,3 @@
-import { labelify } from "../../utils/string.ts";
 import { getPath } from "../../utils/path.ts";
 import breadcrumb from "../breadcrumb.ts";
 import createTree from "../tree.ts";
@@ -24,7 +23,7 @@ export default async function template(
 ${breadcrumb(options, version, collection.name)}
 
 <header class="header is-sticky">
-  <h1 class="header-title">${labelify(collection.name)}</h1>
+  <h1 class="header-title">${collection.label}</h1>
   ${
     collection.description
       ? `<p class="header-description">${collection.description}</p>`
@@ -74,11 +73,11 @@ function folder({ options, collection, tree }: FolderProps) {
     ...tree.files?.entries() || [],
   ])
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([name, child]) =>
-      typeof child === "string"
+    .map(([name, child]) => {
+      return typeof child === "string"
         ? printFile(name, child, collection, options)
-        : printFolder(name, child, collection, options)
-    );
+        : printFolder(name, child, collection, options);
+    });
 
   return content.join("");
 }
@@ -91,7 +90,7 @@ function printFolder(
 ) {
   return `<li>
       <details open class="accordion">
-        <summary>${labelify(name, false)}</summary>
+        <summary>${name}</summary>
         <ul>
           ${folder({ options, collection, tree })}
         </ul>
@@ -127,7 +126,7 @@ function printFile(
     >
       <u-icon name="file"></u-icon>
       <div class="list-item-header">
-        <strong>${labelify(name)}</strong>
+        <strong>${name}</strong>
       </div>
     </a>
   </li>`;

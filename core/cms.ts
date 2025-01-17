@@ -64,11 +64,20 @@ const defaults: CmsOptions = {
 
 interface DocumentOptions {
   name: string;
+  label?: string;
   description?: string;
   store: string;
   fields: (Field | string)[];
   url?: string;
   views?: string[];
+}
+
+interface UploadOptions {
+  name: string;
+  label?: string;
+  description?: string;
+  store: string;
+  publicPath?: string;
 }
 
 interface CollectionOptions {
@@ -81,6 +90,7 @@ interface CollectionOptions {
   /** @deprecated. Use `documentName` instead */
   nameField?: string | ((changes: Data) => string);
   documentName?: string | ((changes: Data) => string | undefined);
+  documentLabel?: (name: string) => string;
   create?: boolean;
   delete?: boolean;
 }
@@ -91,7 +101,7 @@ export default class Cms {
   fetch: (request: Request) => Response | Promise<Response>;
   options: CmsOptions;
   storages = new Map<string, Storage | string>();
-  uploads = new Map<string, [string, string]>();
+  uploads = new Map<string, UploadOptions>();
   fields = new Map<string, FieldType>();
   collections = new Map<string, CollectionOptions>();
   documents = new Map<string, DocumentOptions>();
@@ -143,13 +153,35 @@ export default class Cms {
   }
 
   /** Add a new upload foler */
-  upload(name: string, storage: string, publicPath?: string): this {
-    if (!publicPath) {
-      const path = storage.split(":")[1] ?? "/";
-      publicPath = normalizePath(path.split("*")[0]);
+  upload(options: UploadOptions): this;
+  upload(name: string, store: string, publicPath?: string): this;
+  upload(
+    name: string | UploadOptions,
+    store?: string,
+    publicPath?: string,
+  ): this {
+    const options: UploadOptions = typeof name === "string"
+      ? {
+        name,
+        store,
+        publicPath,
+      } as UploadOptions
+      : name;
+
+    if (!options.description) {
+      const [name, description] = options.name.split(":").map((part) =>
+        part.trim()
+      );
+      options.name = name;
+      options.description = description;
     }
 
-    this.uploads.set(name, [storage, publicPath]);
+    if (!options.publicPath) {
+      const path = options.store.split(":")[1] ?? "/";
+      options.publicPath = normalizePath(path.split("*")[0]);
+    }
+
+    this.uploads.set(options.name, options);
     return this;
   }
 
@@ -237,14 +269,16 @@ export default class Cms {
       content.versioning = this.versionManager;
     }
 
-    for (const [key, [storage, publicPath]] of this.uploads.entries()) {
-      const [name, description] = key.split(":").map((part) => part.trim());
-
+    for (
+      const { name, label, description, store, publicPath } of this.uploads
+        .values()
+    ) {
       content.uploads[name] = new Upload({
         name,
+        label,
         description,
-        storage: this.#getStorage(storage),
-        publicPath,
+        storage: this.#getStorage(store),
+        publicPath: publicPath ?? "/",
       });
     }
 
@@ -262,12 +296,14 @@ export default class Cms {
     }
 
     for (
-      const { name, store, fields, ...options } of this.documents.values()
+      const { name, label, store, fields, ...options } of this.documents
+        .values()
     ) {
       content.documents[name] = new Document({
         entry: this.#getEntry(store),
         fields: this.#resolveFields(fields, content),
         name,
+        label,
         ...options,
       });
     }

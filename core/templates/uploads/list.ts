@@ -1,4 +1,3 @@
-import { labelify } from "../../utils/string.ts";
 import { getPath, normalizePath } from "../../utils/path.ts";
 import breadcrumb from "../breadcrumb.ts";
 import createTree from "../tree.ts";
@@ -16,7 +15,7 @@ interface Props {
 export default async function template(
   { options, upload, version }: Props,
 ) {
-  const { publicPath, name } = upload;
+  const { publicPath, name, label } = upload;
   const files = await Array.fromAsync(upload);
   const tree = createTree(files);
   const content = folder({ options, collection: name, tree, publicPath })
@@ -26,7 +25,7 @@ export default async function template(
 ${breadcrumb(options, version, name)}
 
 <header class="header is-sticky">
-  <h1 class="header-title">${labelify(name)}</h1>
+  <h1 class="header-title">${label}</h1>
   ${
     upload.description
       ? `<p class="header-description">${upload.description}</p>`
@@ -34,7 +33,7 @@ ${breadcrumb(options, version, name)}
   }
   <u-filter
     class="header-filter"
-    data-placeholder="Search files in ${labelify(name)}"
+    data-placeholder="Search files in ${label}"
     data-selector="#list li"
   >
   </u-filter>
@@ -81,7 +80,7 @@ function folder({ options, collection, publicPath, tree }: FolderProps) {
           href="${
       getPath(options.basePath, "uploads", collection, "create")
     }?folder=${subTree.path}"
-          title="Upload file inside ${labelify(name)}"
+          title="Upload file inside ${name}"
           class="buttonIcon"
         >
           <u-icon name="plus-circle"></u-icon>
