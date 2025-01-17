@@ -4,6 +4,7 @@ import breadcrumb from "../breadcrumb.ts";
 import { formatSupported } from "../../../deps/imagick.ts";
 
 import type { CMSContent, Version } from "../../../types.ts";
+import type Upload from "../../upload.ts";
 
 interface Props {
   options: CMSContent;
@@ -11,21 +12,21 @@ interface Props {
   publicPath: string;
   type: string;
   size: number;
-  collection: string;
+  upload: Upload;
   version?: Version;
 }
 
 export default function template(
-  { options, type, file, collection, size, publicPath, version }: Props,
+  { options, type, file, upload, size, publicPath, version }: Props,
 ) {
   const { basePath } = options;
-  const src = getPath(basePath, "uploads", collection, "raw", file);
+  const src = getPath(basePath, "uploads", upload.name, "raw", file);
 
   return `
 ${
     breadcrumb(options, version, [
-      collection,
-      getPath(basePath, "uploads", collection),
+      upload.label,
+      getPath(basePath, "uploads", upload.name),
     ], "File details")
   }
 
@@ -79,7 +80,7 @@ ${
     ${
     formatSupported(file)
       ? `<a href="${
-        getPath(basePath, "uploads", collection, "crop", file)
+        getPath(basePath, "uploads", upload.name, "crop", file)
       }" class="button is-secondary">
       <u-icon name="crop"></u-icon>
       Crop image
@@ -94,7 +95,9 @@ ${
         aria-label="Delete file"
         title="Delete file"
         class="buttonIcon is-secondary"
-        formAction="${getPath(basePath, "uploads", collection, "delete", file)}"
+        formAction="${
+    getPath(basePath, "uploads", upload.name, "delete", file)
+  }"
       >
         <u-icon name="trash"></u-icon>
       </button>

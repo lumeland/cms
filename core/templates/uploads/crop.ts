@@ -2,28 +2,29 @@ import { getPath } from "../../utils/path.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type { CMSContent, Version } from "../../../types.ts";
+import type Upload from "../../upload.ts";
 
 interface Props {
   options: CMSContent;
   file: string;
-  collection: string;
+  upload: Upload;
   version?: Version;
 }
 
 export default function template(
-  { options, file, collection, version }: Props,
+  { options, file, upload, version }: Props,
 ) {
   const { basePath } = options;
-  const src = getPath(basePath, "uploads", collection, "raw", file);
+  const src = getPath(basePath, "uploads", upload.name, "raw", file);
 
   return `
 ${
     breadcrumb(options, version, [
-      collection,
-      getPath(basePath, "uploads", collection),
+      upload.label,
+      getPath(basePath, "uploads", upload.name),
     ], [
       "File details",
-      getPath(basePath, "uploads", collection, "file", file),
+      getPath(basePath, "uploads", upload.name, "file", file),
     ], "Crop image")
   }
 
@@ -47,7 +48,7 @@ ${
   
   <footer class="footer ly-rowStack">
     <a class="button is-secondary" href="${
-    getPath(basePath, "uploads", collection, "file", file)
+    getPath(basePath, "uploads", upload.name, "file", file)
   }">
       Cancel
     </a>

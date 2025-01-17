@@ -29,7 +29,7 @@ export default async function template(
   return `
 ${
     breadcrumb(options, version, [
-      collection.name,
+      collection.label,
       getPath(basePath, "collection", collection.name),
     ], "Editing file")
   }

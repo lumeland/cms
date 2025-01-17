@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - In *markdown* set the `upload` property to `false` to disable the upload button.
 - `collection.documentName` allows to customize the name of the new documents created in a collection. You can use a pattern (`{title}/index.yml`) or a function.
+- `collection.documentLabel` allows to customize the label (public name) of the documents in a collection.
 - `{document_dirname}` placeholder to `upload` property. This allows to save a file in the same directory of the page. Example:
   ```js
   {
@@ -16,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
     upload: "media:{document_dirname}",
   }
   ```
+- Added `label` option to collections, documents and uploads.
+- Allow to define uploads using an options object.
+
 
 ### Deprecated
 - `uploads` property for *file* and *markdown* fields. Use `upload` (in singular).

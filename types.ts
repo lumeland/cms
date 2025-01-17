@@ -116,6 +116,11 @@ export interface FieldType {
   ): void | Promise<void>;
 }
 
+export type Labelizer = (
+  name: string,
+  prev?: (name: string) => string,
+) => string;
+
 type Option = string | { value: string | number; label: string };
 
 export interface CMSContent {

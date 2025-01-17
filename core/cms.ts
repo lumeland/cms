@@ -29,6 +29,7 @@ import type {
   Entry,
   Field,
   FieldType,
+  Labelizer,
   ResolvedField,
   SiteInfo,
   Storage,
@@ -82,6 +83,7 @@ interface UploadOptions {
 
 interface CollectionOptions {
   name: string;
+  label?: string;
   description?: string;
   store: string;
   fields: (Field | string)[];
@@ -90,7 +92,7 @@ interface CollectionOptions {
   /** @deprecated. Use `documentName` instead */
   nameField?: string | ((changes: Data) => string);
   documentName?: string | ((changes: Data) => string | undefined);
-  documentLabel?: (name: string) => string;
+  documentLabel?: Labelizer;
   create?: boolean;
   delete?: boolean;
 }
@@ -187,19 +189,19 @@ export default class Cms {
 
   /** Add a new collection */
   collection(options: CollectionOptions): this;
-  collection(key: string, store: string, fields: (Field | string)[]): this;
+  collection(name: string, store: string, fields: (Field | string)[]): this;
   collection(
-    key: string | CollectionOptions,
+    name: string | CollectionOptions,
     store?: string,
     fields?: (Field | string)[],
   ): this {
-    const options: CollectionOptions = typeof key === "string"
+    const options: CollectionOptions = typeof name === "string"
       ? {
-        name: key,
-        store: store,
+        name,
+        store,
         fields,
       } as CollectionOptions
-      : key;
+      : name;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>
@@ -215,19 +217,19 @@ export default class Cms {
 
   /** Add a new document */
   document(options: DocumentOptions): this;
-  document(key: string, store: string, fields: (Field | string)[]): this;
+  document(name: string, store: string, fields: (Field | string)[]): this;
   document(
-    key: string | DocumentOptions,
+    name: string | DocumentOptions,
     store?: string,
     fields?: (Field | string)[],
   ): this {
-    const options = typeof key === "string"
+    const options = typeof name === "string"
       ? {
-        name: key,
-        store: store,
+        name,
+        store,
         fields,
       } as DocumentOptions
-      : key;
+      : name;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>
@@ -275,7 +277,7 @@ export default class Cms {
     ) {
       content.uploads[name] = new Upload({
         name,
-        label,
+        label: label ?? labelify(name),
         description,
         storage: this.#getStorage(store),
         publicPath: publicPath ?? "/",
@@ -283,7 +285,7 @@ export default class Cms {
     }
 
     for (
-      const { name, store, fields, ...options } of this
+      const { name, label, store, fields, documentLabel, ...options } of this
         .collections
         .values()
     ) {
@@ -291,6 +293,10 @@ export default class Cms {
         storage: this.#getStorage(store),
         fields: this.#resolveFields(fields, content),
         name,
+        label: label ?? labelify(name),
+        documentLabel: documentLabel
+          ? (name) => documentLabel(name, labelify)
+          : labelify,
         ...options,
       });
     }
@@ -303,7 +309,7 @@ export default class Cms {
         entry: this.#getEntry(store),
         fields: this.#resolveFields(fields, content),
         name,
-        label,
+        label: label ?? labelify(name),
         ...options,
       });
     }

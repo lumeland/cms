@@ -12,26 +12,26 @@ export default function createTree(files: EntryMetadata[]): Tree {
   };
 
   for (const file of files) {
-    const { label } = file;
-    placeFile(tree, label, name.split("/"));
+    const { label, name } = file;
+    placeFile(tree, name, label.split("/"));
   }
 
   return tree;
 }
 
-function placeFile(tree: Tree, path: string, parts: string[]) {
-  const name = parts.shift()!;
+function placeFile(tree: Tree, name: string, parts: string[]) {
+  const part = parts.shift()!;
 
   if (parts.length) {
     tree.folders ??= new Map();
-    const folder: Tree = tree.folders.get(name) ?? {
-      path: `${tree.path}${name}/`,
+    const folder: Tree = tree.folders.get(part) ?? {
+      path: `${tree.path}${part}/`,
     };
-    placeFile(folder, path, parts);
-    tree.folders.set(name, folder);
+    placeFile(folder, name, parts);
+    tree.folders.set(part, folder);
     return;
   }
 
   tree.files ??= new Map();
-  tree.files.set(name, path);
+  tree.files.set(part, name);
 }

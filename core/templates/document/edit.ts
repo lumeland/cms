@@ -24,11 +24,11 @@ export default async function template(
   document.fields.forEach((field) => getViews(field, views));
 
   return `
-${breadcrumb(options, version, document.name)}
+${breadcrumb(options, version, document.label)}
 
 <u-form>
   <header class="header">
-    <h1 class="header-title">Editing ${document.name}</h1>
+    <h1 class="header-title">Editing ${document.label}</h1>
   </header>
   ${
     document.views

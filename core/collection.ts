@@ -1,6 +1,12 @@
 import Document from "./document.ts";
 
-import type { Data, EntryMetadata, ResolvedField, Storage } from "../types.ts";
+import type {
+  Data,
+  EntryMetadata,
+  Labelizer,
+  ResolvedField,
+  Storage,
+} from "../types.ts";
 
 export interface CollectionOptions {
   name: string;
@@ -13,6 +19,7 @@ export interface CollectionOptions {
   /** @deprecated. Use `documentName` instead */
   nameField?: string | ((changes: Data) => string);
   documentName?: string | ((changes: Data) => string | undefined);
+  documentLabel?: Labelizer;
   create?: boolean;
   delete?: boolean;
 }
@@ -31,7 +38,7 @@ export default class Collection {
   url?: string;
   views?: string[];
   documentName?: string | ((changes: Data) => string | undefined);
-  documentLabel?: (name: string) => string;
+  documentLabel?: Labelizer;
   permissions: Permissions;
 
   constructor(options: CollectionOptions) {
@@ -46,6 +53,7 @@ export default class Collection {
       (typeof options.nameField === "string"
         ? `{${options.nameField}}`
         : options.nameField);
+    this.documentLabel = options.documentLabel;
     this.permissions = {
       create: options.create ?? true,
       delete: options.delete ?? true,
@@ -60,9 +68,7 @@ export default class Collection {
     for await (const metadata of this.#storage) {
       yield {
         ...metadata,
-        label: this.documentLabel
-          ? this.documentLabel(metadata.label)
-          : metadata.label,
+        label: this.documentLabel?.(metadata.label) ?? metadata.label,
       };
     }
   }

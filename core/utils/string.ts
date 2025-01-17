@@ -1,31 +1,31 @@
-import { extname } from "../../deps/std.ts";
-
 /** Convert slugs to labels */
-export function labelify(slug: string, hasExt = true) {
+export function labelify(slug: string) {
   if (slug === "[]") {
     return "";
   }
 
   // Remove extension
-  if (hasExt) {
-    const ext = extname(slug);
-    if (ext) {
-      slug = slug.slice(0, -ext.length);
-    }
-  }
+  slug = slug.replace(/\.([a-z]+)$/, "");
 
-  // Capitalize first letter
-  slug = capitalize(slug);
+  // Capitalize
+  slug = slug.replace(/^(.)/, (_, char) => char.toUpperCase());
+  slug = slug.replaceAll(
+    /([/.])(.)/g,
+    (_, start, char) => `${start}${char.toUpperCase()}`,
+  );
 
-  // Replace dashes with spaces
-  slug = slug.replace(/[-_]/g, " ");
-  slug = slug.replace(
-    /^(\d+)\.(.*)$/g,
-    (_, number, rest) => `${number}. ${capitalize(rest)}`,
+  // Format numbers
+  slug = slug.replace(/^(\d+)\.(.)/, (_, number, char) => `${number}. ${char}`);
+  slug = slug.replaceAll(
+    /([\/])(\d+)\.(.)/g,
+    (_, start, number, char) => `${start}${number}. ${char.toUpperCase()}`,
   );
 
   // Replace camelCase with spaces
-  slug = slug.replace(/([a-z])([A-Z])/g, "$1 $2");
+  slug = slug.replaceAll(/([a-z])([A-Z])/g, "$1 $2");
+
+  // Replace dashes with spaces
+  slug = slug.replaceAll(/[-_]/g, " ");
 
   return slug;
 }
@@ -49,8 +49,4 @@ export function isEmpty(value: unknown) {
   }
 
   return false;
-}
-
-function capitalize(text: string) {
-  return text[0].toUpperCase() + text.slice(1);
 }

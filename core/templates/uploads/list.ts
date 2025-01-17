@@ -15,17 +15,21 @@ interface Props {
 export default async function template(
   { options, upload, version }: Props,
 ) {
-  const { publicPath, name, label } = upload;
   const files = await Array.fromAsync(upload);
   const tree = createTree(files);
-  const content = folder({ options, collection: name, tree, publicPath })
+  const content = folder({
+    options,
+    collection: upload.name,
+    tree,
+    publicPath: upload.publicPath,
+  })
     .trim();
 
   return `
-${breadcrumb(options, version, name)}
+${breadcrumb(options, version, upload.label)}
 
 <header class="header is-sticky">
-  <h1 class="header-title">${label}</h1>
+  <h1 class="header-title">${upload.label}</h1>
   ${
     upload.description
       ? `<p class="header-description">${upload.description}</p>`
@@ -33,7 +37,7 @@ ${breadcrumb(options, version, name)}
   }
   <u-filter
     class="header-filter"
-    data-placeholder="Search files in ${label}"
+    data-placeholder="Search files in ${upload.label}"
     data-selector="#list li"
   >
   </u-filter>
@@ -47,7 +51,7 @@ ${
 
 <footer class="ly-rowStack footer is-responsive">
   <a
-    href="${getPath(options.basePath, "uploads", name, "create")}"
+    href="${getPath(options.basePath, "uploads", upload.name, "create")}"
     class="button is-primary"
   >
     <u-icon name="plus-circle"></u-icon>

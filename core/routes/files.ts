@@ -18,11 +18,11 @@ export default function (app: Hono) {
   app.get("/uploads/:upload", async (c: Context) => {
     const { options, uploads, uploadId, versioning } = get(c);
 
-    if (!uploads[uploadId]) {
+    const upload = uploads[uploadId];
+
+    if (!upload) {
       return c.notFound();
     }
-
-    const upload = uploads[uploadId];
 
     return c.render(
       uploadsList({
@@ -34,12 +34,18 @@ export default function (app: Hono) {
   });
 
   app.get("/uploads/:upload/create", async (c: Context) => {
-    const { options, uploadId, versioning } = get(c);
+    const { options, uploads, uploadId, versioning } = get(c);
+
+    const upload = uploads[uploadId];
+
+    if (!upload) {
+      return c.notFound();
+    }
 
     return c.render(
       uploadsCreate({
         options,
-        collection: uploadId,
+        upload,
         version: await versioning?.current(),
         folder: normalizeName(c.req.query("folder")),
       }),
@@ -47,6 +53,11 @@ export default function (app: Hono) {
   }).post("/uploads/:upload/create", async (c: Context) => {
     const { options, uploads, uploadId } = get(c);
     const upload = uploads[uploadId];
+
+    if (!upload) {
+      return c.notFound();
+    }
+
     const body = await c.req.parseBody();
     const file = body.file as File;
     let fileId = file.name as string | undefined;
@@ -65,18 +76,18 @@ export default function (app: Hono) {
 
     await entry.writeFile(file);
     return c.redirect(
-      getPath(options.basePath, "uploads", uploadId, "file", fileId),
+      getPath(options.basePath, "uploads", upload.name, "file", fileId),
     );
   });
 
   app.get("/uploads/:upload/raw/:file", async (c: Context) => {
     const { uploads, uploadId, fileId } = get(c);
 
-    if (!uploads[uploadId]) {
+    const upload = uploads[uploadId];
+    if (!upload) {
       return c.notFound();
     }
 
-    const upload = uploads[uploadId];
     const name = normalizeName(fileId);
 
     if (!name) {
@@ -92,11 +103,13 @@ export default function (app: Hono) {
 
   app.get("/uploads/:upload/file/:file", async (c: Context) => {
     const { options, uploadId, fileId, uploads, versioning } = get(c);
-    const { storage, publicPath } = uploads[uploadId];
+    const upload = uploads[uploadId];
 
-    if (!uploads[uploadId]) {
+    if (!upload) {
       return c.notFound();
     }
+
+    const { storage, publicPath } = upload;
 
     try {
       const name = normalizeName(fileId);
@@ -111,7 +124,7 @@ export default function (app: Hono) {
           options,
           type: file.type,
           size: file.size,
-          collection: uploadId,
+          upload,
           publicPath: normalizePath(publicPath, name),
           file: name,
           version: await versioning?.current(),
@@ -124,6 +137,11 @@ export default function (app: Hono) {
     .post(async (c: Context) => {
       const { options, uploadId, uploads } = get(c);
       const upload = uploads[uploadId];
+
+      if (!upload) {
+        return c.notFound();
+      }
+
       const body = await c.req.parseBody();
       const prevId = c.req.param("file");
       const name = normalizeName(body._id as string);
@@ -158,20 +176,21 @@ export default function (app: Hono) {
       }
 
       return c.redirect(
-        getPath(options.basePath, "uploads", uploadId, "file", name),
+        getPath(options.basePath, "uploads", upload.name, "file", name),
       );
     });
 
   app.get("/uploads/:upload/crop/:file", async (c: Context) => {
     const { options, uploadId, fileId, uploads, versioning } = get(c);
+    const upload = uploads[uploadId];
 
-    if (!uploads[uploadId]) {
+    if (!upload) {
       return c.notFound();
     }
 
     if (!formatSupported(fileId)) {
       return c.redirect(
-        getPath(options.basePath, "uploads", uploadId, "file", fileId),
+        getPath(options.basePath, "uploads", upload.name, "file", fileId),
       );
     }
 
@@ -184,7 +203,7 @@ export default function (app: Hono) {
       return c.render(
         uploadsCrop({
           options,
-          collection: uploadId,
+          upload,
           file: name,
           version: await versioning?.current(),
         }),
@@ -194,11 +213,12 @@ export default function (app: Hono) {
     }
   }).post(async (c: Context) => {
     const { uploadId, uploads, fileId, options } = get(c);
+    const upload = uploads[uploadId];
 
-    if (!uploads[uploadId]) {
+    if (!upload) {
       return c.notFound();
     }
-    const upload = uploads[uploadId];
+
     const name = normalizeName(fileId);
 
     if (!name) {
@@ -228,13 +248,18 @@ export default function (app: Hono) {
     const file = new File([img], name);
     await entry.writeFile(file);
     return c.redirect(
-      getPath(options.basePath, "uploads", uploadId, "file", name),
+      getPath(options.basePath, "uploads", upload.name, "file", name),
     );
   });
 
   app.post("/uploads/:upload/delete/:file", async (c: Context) => {
     const { options, fileId, uploadId, uploads } = get(c);
     const upload = uploads[uploadId];
+
+    if (!upload) {
+      return c.notFound();
+    }
+
     const name = normalizeName(fileId);
 
     if (!name) {
@@ -242,7 +267,7 @@ export default function (app: Hono) {
     }
 
     await upload.delete(name);
-    return c.redirect(getPath(options.basePath, "uploads", uploadId));
+    return c.redirect(getPath(options.basePath, "uploads", upload.name));
   });
 }
 

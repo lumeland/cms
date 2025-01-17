@@ -1,25 +1,26 @@
 import { getPath } from "../../utils/path.ts";
 import breadcrumb from "../breadcrumb.ts";
 
+import type Upload from "../../upload.ts";
 import type { CMSContent, Version } from "../../../types.ts";
 
 interface Props {
   options: CMSContent;
-  collection: string;
+  upload: Upload;
   version?: Version;
   folder?: string;
 }
 
 export default function template(
-  { options, collection, version, folder }: Props,
+  { options, upload, version, folder }: Props,
 ) {
   const { basePath } = options;
 
   return `
 ${
     breadcrumb(options, version, [
-      collection,
-      getPath(basePath, "uploads", collection),
+      upload.label,
+      getPath(basePath, "uploads", upload.name),
     ], "File details")
   }
 
@@ -46,7 +47,7 @@ ${
   class="form"
   enctype="multipart/form-data"
   id="form-create"
-  action="${getPath(options.basePath, "uploads", collection, "create")}"
+  action="${getPath(options.basePath, "uploads", upload.name, "create")}"
 >
   <div class="field">
   <u-upload>

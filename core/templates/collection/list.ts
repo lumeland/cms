@@ -20,7 +20,7 @@ export default async function template(
   const content = folder({ options, collection, tree }).trim();
 
   return `
-${breadcrumb(options, version, collection.name)}
+${breadcrumb(options, version, collection.label)}
 
 <header class="header is-sticky">
   <h1 class="header-title">${collection.label}</h1>
@@ -31,7 +31,7 @@ ${breadcrumb(options, version, collection.name)}
   }
   <u-filter
     class="header-filter"
-    data-placeholder="Filter ${collection.name}"
+    data-placeholder="Filter ${collection.label}"
     data-selector="#list > li"
   >
   </u-filter>
