@@ -16,6 +16,7 @@
     "static/libs",
     "CHANGELOG.md",
     "node_modules",
-    "scripts/block-editor/dist"
+    "scripts",
+    "tests/cypress"
   ]
 }

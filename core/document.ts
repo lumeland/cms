@@ -2,6 +2,7 @@ import type { CMSContent, Data, Entry, ResolvedField } from "../types.ts";
 
 export interface DocumentOptions {
   name?: string;
+  label?: string;
   description?: string;
   entry: Entry;
   fields: ResolvedField[];
@@ -11,6 +12,7 @@ export interface DocumentOptions {
 
 export default class Document {
   #name?: string;
+  #label?: string;
   description?: string;
   #entry: Entry;
   #fields: ResolvedField[];
@@ -19,6 +21,7 @@ export default class Document {
 
   constructor(options: DocumentOptions) {
     this.#name = options.name;
+    this.#label = options.label;
     this.description = options.description;
     this.#entry = options.entry;
     this.#fields = options.fields;
@@ -32,6 +35,10 @@ export default class Document {
 
   get name() {
     return this.#name ?? this.#entry.metadata.name;
+  }
+
+  get label() {
+    return this.#label ?? this.name;
   }
 
   get src() {

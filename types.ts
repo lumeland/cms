@@ -8,6 +8,7 @@ import { FieldKeys } from "./fields/core.ts";
 export type Data = Record<string, unknown>;
 
 export interface EntryMetadata {
+  label: string;
   name: string;
   src: string;
 }

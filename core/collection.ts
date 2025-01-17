@@ -29,6 +29,7 @@ export default class Collection {
   url?: string;
   views?: string[];
   documentName?: string | ((changes: Data) => string | undefined);
+  documentLabel?: (name: string) => string;
   permissions: Permissions;
 
   constructor(options: CollectionOptions) {
@@ -54,34 +55,46 @@ export default class Collection {
 
   async *[Symbol.asyncIterator](): AsyncGenerator<EntryMetadata> {
     for await (const metadata of this.#storage) {
-      yield metadata;
+      yield {
+        ...metadata,
+        label: this.documentLabel
+          ? this.documentLabel(metadata.label)
+          : metadata.label,
+      };
     }
   }
 
   create(id: string): Document {
     const name = this.#storage.name(id);
+    const label = this.documentLabel ? this.documentLabel(name) : name;
     return new Document({
+      name,
+      label,
       entry: this.#storage.get(name),
       fields: this.#fields,
       url: this.url,
     });
   }
 
-  get(id: string): Document {
+  get(name: string): Document {
+    const label = this.documentLabel ? this.documentLabel(name) : name;
+
     return new Document({
-      entry: this.#storage.get(id),
+      name,
+      label,
+      entry: this.#storage.get(name),
       fields: this.#fields,
       url: this.url,
     });
   }
 
-  async delete(id: string): Promise<void> {
-    await this.#storage.delete(id);
+  async delete(name: string): Promise<void> {
+    await this.#storage.delete(name);
   }
 
-  async rename(id: string, newId: string): Promise<string> {
-    const newName = this.#storage.name(newId);
-    await this.#storage.rename(id, newName);
-    return newName;
+  async rename(name: string, newName: string): Promise<string> {
+    const normalizedName = this.#storage.name(newName);
+    await this.#storage.rename(name, normalizedName);
+    return normalizedName;
   }
 }

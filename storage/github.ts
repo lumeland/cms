@@ -92,6 +92,7 @@ export default class GitHub implements Storage {
         }
 
         yield {
+          label: entry.name,
           name: entry.name,
           src: entry.download_url,
         };
@@ -118,24 +119,25 @@ export default class GitHub implements Storage {
     });
   }
 
-  get(id: string): Entry {
-    const path = posix.join(this.root, id);
+  get(name: string): Entry {
+    const path = posix.join(this.root, name);
     return new GitHubEntry({
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: posix.join(this.root, id),
+      path: posix.join(this.root, name),
       branch: this.branch,
       commitMessage: this.commitMessage,
     }, {
-      name: id,
+      label: name,
+      name: name,
       src:
         `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}/${path}`,
     });
   }
 
-  async delete(id: string) {
-    const path = posix.join(this.root, id);
+  async delete(name: string) {
+    const path = posix.join(this.root, name);
     const info = await fetchInfo({
       client: this.client,
       owner: this.owner,
@@ -160,16 +162,16 @@ export default class GitHub implements Storage {
     });
   }
 
-  async rename(id: string, newId: string): Promise<void> {
+  async rename(name: string, newName: string): Promise<void> {
     const content = await readBinaryContent({
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: posix.join(this.root, id),
+      path: posix.join(this.root, name),
       branch: this.branch,
     });
 
-    const path = posix.join(this.root, newId);
+    const path = posix.join(this.root, newName);
     await this.client.rest.repos.createOrUpdateFileContents({
       owner: this.owner,
       repo: this.repo,
@@ -179,7 +181,7 @@ export default class GitHub implements Storage {
       branch: this.branch,
     });
 
-    await this.delete(id);
+    await this.delete(name);
   }
 }
 

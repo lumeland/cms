@@ -18,8 +18,10 @@ export default class Kv implements Storage {
 
   async *[Symbol.asyncIterator]() {
     for await (const entry of this.kv.list({ prefix: this.prefix })) {
+      const name = entry.key.slice(this.prefix.length).join("/");
       yield {
-        name: entry.key.slice(this.prefix.length).join("/"),
+        label: name,
+        name,
         src: entry.key.join("/"),
       };
     }
@@ -77,6 +79,7 @@ export class KvEntry implements Entry {
     this.kv = options.kv;
     this.key = [...options.prefix, ...options.name.split("/")];
     this.metadata = {
+      label: options.name,
       name: options.name,
       src: this.key.join("/"),
     };

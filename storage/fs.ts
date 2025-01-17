@@ -50,11 +50,12 @@ export default class Fs implements Storage {
     });
 
     for await (const entry of iterable) {
-      const path = normalizePath(entry.path);
-
+      const src = normalizePath(entry.path);
+      const name = src.slice(root.length + 1);
       yield {
-        name: path.slice(root.length + 1),
-        src: path,
+        label: name,
+        name,
+        src,
       };
     }
   }
@@ -78,6 +79,7 @@ export default class Fs implements Storage {
     return new FsEntry({
       src: posix.join(this.root, name),
       name,
+      label: name,
     });
   }
 
