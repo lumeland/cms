@@ -79,6 +79,7 @@ interface UploadOptions {
   description?: string;
   store: string;
   publicPath?: string;
+  listed?: boolean;
 }
 
 interface CollectionOptions {
@@ -125,7 +126,7 @@ export default class Cms {
         fetch = this.init().fetch;
       }
 
-      return fetch(request);
+      return fetch!(request);
     };
   }
 
@@ -272,7 +273,8 @@ export default class Cms {
     }
 
     for (
-      const { name, label, description, store, publicPath } of this.uploads
+      const { name, label, description, store, publicPath, listed } of this
+        .uploads
         .values()
     ) {
       content.uploads[name] = new Upload({
@@ -281,6 +283,7 @@ export default class Cms {
         description,
         storage: this.#getStorage(store),
         publicPath: publicPath ?? "/",
+        listed: listed ?? true,
       });
     }
 

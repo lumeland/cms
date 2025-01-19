@@ -6,6 +6,7 @@ export interface UploadOptions {
   description?: string;
   storage: Storage;
   publicPath: string;
+  listed?: boolean;
 }
 
 export default class Upload {
@@ -14,6 +15,7 @@ export default class Upload {
   description?: string;
   storage: Storage;
   publicPath: string;
+  listed: boolean;
 
   constructor(options: UploadOptions) {
     this.name = options.name;
@@ -21,6 +23,7 @@ export default class Upload {
     this.description = options.description;
     this.storage = options.storage;
     this.publicPath = options.publicPath;
+    this.listed = options.listed ?? true;
   }
 
   async *[Symbol.asyncIterator](): AsyncGenerator<EntryMetadata> {

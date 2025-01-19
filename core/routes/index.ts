@@ -16,9 +16,9 @@ export default function (app: Hono) {
       index({
         options,
         site,
-        collections: collections,
-        documents: documents,
-        uploads: uploads,
+        collections,
+        documents,
+        uploads,
         versioning,
       }),
     );

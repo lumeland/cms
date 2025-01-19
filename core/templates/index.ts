@@ -72,7 +72,7 @@ ${breadcrumb(options, await versioning?.current())}
   }
 
   ${
-    Object.values(uploads).map((upload) => `
+    Object.values(uploads).filter((upload) => upload.listed).map((upload) => `
   <li>
     <a href="${getPath(basePath, "uploads", upload.name)}" class="list-item">
       <u-icon name="image-square-fill"></u-icon>
