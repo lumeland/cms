@@ -34,9 +34,7 @@ cms.upload("img", "src:img/**/*{.jpg,.png,.gif,.svg}");
 
 cms.storage(
   "kv",
-  new KvStorage({
-    kv: await Deno.openKv(),
-  }),
+  await KvStorage.create(),
 );
 
 cms.document({

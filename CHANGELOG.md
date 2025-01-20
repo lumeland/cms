@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.9.2] - Unreleased
+### Added
+- New static functions `Fs.create()`, `GitHub.create()` and `Kv.create()` to simplify the storage instantations.
+
 ### Fixed
 - Refactor Github storage to support recursive listing.
 

@@ -8,8 +8,8 @@ import {
 import { fromFilename } from "./transformers/mod.ts";
 import { slugify } from "../core/utils/string.ts";
 import { normalizePath } from "../core/utils/path.ts";
+import { Octokit } from "npm:octokit@4.1.0";
 
-import type { Octokit } from "npm:octokit";
 import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
 
 export interface Options {
@@ -212,6 +212,12 @@ export default class GitHub implements Storage {
   extension?: string;
   branch?: string;
   commitMessage: (options: CommitMessageOptions) => string;
+
+  static create(repository: string, auth: string) {
+    const [owner, repo] = repository.split("/");
+    const client = new Octokit({ auth });
+    return new GitHub({ client, owner, repo });
+  }
 
   constructor(options: Options) {
     this.client = options.client;

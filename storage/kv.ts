@@ -11,6 +11,11 @@ export default class Kv implements Storage {
   prefix: string[];
   kv: Deno.Kv;
 
+  static async create(path?: string) {
+    const kv = await Deno.openKv(path);
+    return new Kv({ kv });
+  }
+
   constructor(options: Options) {
     this.prefix = options.prefix || [];
     this.kv = options.kv;

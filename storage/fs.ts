@@ -20,6 +20,10 @@ export default class Fs implements Storage {
   path: string;
   extension?: string;
 
+  static create(path: string) {
+    return new Fs({ path });
+  }
+
   constructor(userOptions?: Options) {
     const options = { ...defaults, ...userOptions };
     const pos = options.path.indexOf("*");
