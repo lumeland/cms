@@ -26,7 +26,178 @@ interface CommitMessageOptions {
   path: string;
 }
 
+interface GitEntry {
+  name: string;
+  path: string;
+  sha: string;
+  size: number;
+  download_url: string;
+  type: "file" | "dir";
+}
+
+class GitClient {
+  client: Octokit;
+  owner: string;
+  repo: string;
+  branch: string;
+  commitMessage: (options: CommitMessageOptions) => string;
+
+  constructor(options: Options) {
+    this.client = options.client;
+    this.owner = options.owner;
+    this.repo = options.repo;
+    this.commitMessage = options.commitMessage!;
+    this.branch = options.branch || "main";
+  }
+
+  /** List the files of a directory. */
+  async *listFiles(path = "", depth = 0): AsyncGenerator<GitEntry> {
+    try {
+      const result = await this.client.rest.repos.getContent({
+        owner: this.owner,
+        repo: this.repo,
+        ref: this.branch,
+        path,
+      });
+
+      if (result.status !== 200) {
+        return;
+      }
+
+      for (const entry of result.data as GitEntry[]) {
+        if (entry.type === "dir") {
+          if (depth) {
+            yield* this.listFiles(posix.join(path, entry.name), depth - 1);
+          }
+          continue;
+        }
+        yield entry;
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  /** Get the text content of a file. */
+  async getTextContent(path = ""): Promise<string | undefined> {
+    try {
+      const result = await this.client.rest.repos.getContent({
+        owner: this.owner,
+        repo: this.repo,
+        ref: this.branch,
+        path,
+        mediaType: {
+          format: "raw",
+        },
+      });
+
+      if (result.status !== 200) {
+        return;
+      }
+
+      return result.data as unknown as string;
+    } catch {
+      // Ignore
+    }
+  }
+
+  /** Get the binary content of a file. */
+  async getBinaryContent(path = ""): Promise<Uint8Array | undefined> {
+    // https://github.com/octokit/rest.js/issues/14#issuecomment-584413497
+    const endpoint = this.client.rest.repos.getContent.endpoint({
+      owner: this.owner,
+      repo: this.repo,
+      ref: this.branch,
+      path,
+      mediaType: {
+        format: "raw",
+      },
+    });
+
+    const auth = await this.client.auth() as { token: string };
+    const response = await fetch(endpoint.url, {
+      method: endpoint.method,
+      headers: {
+        ...endpoint.headers as Record<string, string>,
+        authorization: `Bearer ${auth.token}`,
+      },
+    });
+
+    const buffer = await response.arrayBuffer();
+    return new Uint8Array(buffer);
+  }
+
+  async setContent(path: string, content: ArrayBuffer | Uint8Array | string) {
+    const exists = await this.client.rest.repos.getContent({
+      owner: this.owner,
+      repo: this.repo,
+      ref: this.branch,
+      path,
+    });
+
+    // @ts-ignore: Property 'sha' does not exist
+    const sha = exists.data.sha;
+
+    await this.client.rest.repos.createOrUpdateFileContents({
+      owner: this.owner,
+      repo: this.repo,
+      branch: this.branch,
+      path,
+      message: this.commitMessage({ action: sha ? "update" : "create", path }),
+      content: encodeBase64(content),
+      sha,
+    });
+  }
+
+  /** Delete a file */
+  async deleteFile(path: string) {
+    const result = await this.client.rest.repos.getContent({
+      owner: this.owner,
+      repo: this.repo,
+      ref: this.branch,
+      path,
+    });
+
+    if (result.status !== 200) {
+      return;
+    }
+
+    // @ts-ignore: Property 'sha' does not exist
+    const sha = exists.data.sha;
+
+    if (!sha) {
+      throw new Error(`File not found: ${path}`);
+    }
+
+    await this.client.rest.repos.deleteFile({
+      owner: this.owner,
+      repo: this.repo,
+      branch: this.branch,
+      path,
+      message: this.commitMessage({ action: "delete", path }),
+      sha,
+    });
+  }
+
+  /** Rename a file */
+  async rename(path: string, newPath: string): Promise<void> {
+    const content = await this.getBinaryContent(path);
+
+    await this.client.rest.repos.createOrUpdateFileContents({
+      owner: this.owner,
+      repo: this.repo,
+      branch: this.branch,
+      path: newPath,
+      message: this.commitMessage({ action: "update", path }),
+      content: encodeBase64(content || ""),
+    });
+
+    await this.deleteFile(path);
+  }
+}
+
 export default class GitHub implements Storage {
+  git: GitClient;
   client: Octokit;
   owner: string;
   repo: string;
@@ -67,33 +238,24 @@ export default class GitHub implements Storage {
       this.path = path;
       this.extension = posix.extname(path);
     }
+    this.git = new GitClient(options);
   }
 
   async *[Symbol.asyncIterator]() {
-    const info = await fetchInfo({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: this.root,
-      branch: this.branch,
-    });
-
-    if (!Array.isArray(info)) {
-      return;
-      // throw new Error(`Invalid directory: ${this.path}`);
-    }
-
     const regexp = globToRegExp(this.path, { extended: true });
+    const depth = getDepth(this.path);
 
-    for (const entry of info) {
+    for await (const entry of this.git.listFiles(this.root, depth)) {
       if (entry.type === "file") {
-        if (!regexp.test(entry.name)) {
+        const name = entry.path.slice(this.root.length + 1);
+
+        if (!regexp.test(name)) {
           continue;
         }
 
         yield {
-          label: entry.name,
-          name: entry.name,
+          label: name,
+          name,
           src: entry.download_url,
         };
       }
@@ -121,98 +283,44 @@ export default class GitHub implements Storage {
 
   get(name: string): Entry {
     const path = posix.join(this.root, name);
-    return new GitHubEntry({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: posix.join(this.root, name),
-      branch: this.branch,
-      commitMessage: this.commitMessage,
-    }, {
-      label: name,
-      name: name,
-      src:
-        `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}/${path}`,
-    });
+    return new GitHubEntry(
+      posix.join(this.root, name),
+      {
+        label: name,
+        name: name,
+        src:
+          `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}/${path}`,
+      },
+      this.git,
+    );
   }
 
   async delete(name: string) {
     const path = posix.join(this.root, name);
-    const info = await fetchInfo({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path,
-      branch: this.branch,
-    });
-
-    const sha = info?.sha;
-
-    if (!sha) {
-      throw new Error(`File not found: ${path}`);
-    }
-
-    await this.client.rest.repos.deleteFile({
-      owner: this.owner,
-      repo: this.repo,
-      path,
-      message: this.commitMessage({ action: "delete", path }),
-      branch: this.branch,
-      sha,
-    });
+    await this.git.deleteFile(path);
   }
 
   async rename(name: string, newName: string): Promise<void> {
-    const content = await readBinaryContent({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: posix.join(this.root, name),
-      branch: this.branch,
-    });
+    name = posix.join(this.root, name);
+    newName = posix.join(this.root, newName);
 
-    const path = posix.join(this.root, newName);
-    await this.client.rest.repos.createOrUpdateFileContents({
-      owner: this.owner,
-      repo: this.repo,
-      path,
-      message: this.commitMessage({ action: "create", path }),
-      content: encodeBase64(content || ""),
-      branch: this.branch,
-    });
-
-    await this.delete(name);
+    await this.git.rename(name, newName);
   }
 }
 
 export class GitHubEntry implements Entry {
   metadata: EntryMetadata;
-  client: Octokit;
-  owner: string;
-  repo: string;
+  git: GitClient;
   path: string;
-  branch?: string;
-  commitMessage: (options: CommitMessageOptions) => string;
 
-  constructor(options: Options, metadata: EntryMetadata) {
-    this.client = options.client;
-    this.owner = options.owner;
-    this.repo = options.repo;
-    this.path = options.path || "";
-    this.branch = options.branch;
-    this.commitMessage = options.commitMessage!;
+  constructor(path: string, metadata: EntryMetadata, git: GitClient) {
+    this.path = path;
     this.metadata = metadata;
+    this.git = git;
   }
 
   async readData(): Promise<Data> {
-    const data = await readTextContent({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: this.path,
-      branch: this.branch,
-    });
-
+    const data = await this.git.getTextContent(this.path);
     const transformer = fromFilename(this.path);
     return transformer.toData(data || "");
   }
@@ -222,24 +330,11 @@ export class GitHubEntry implements Entry {
     const content = (await transformer.fromData(data))
       .replaceAll(/\r\n/g, "\n"); // Unify line endings
 
-    await writeContent({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: this.path,
-      branch: this.branch,
-      commitMessage: this.commitMessage,
-    }, content);
+    await this.git.setContent(this.path, content);
   }
 
   async readFile(): Promise<File> {
-    const data = await readBinaryContent({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: this.path,
-      branch: this.branch,
-    });
+    const data = await this.git.getBinaryContent(this.path);
 
     if (!data) {
       throw new Error(`File not found: ${this.path}`);
@@ -251,104 +346,18 @@ export class GitHubEntry implements Entry {
   }
 
   async writeFile(file: File) {
-    await writeContent({
-      client: this.client,
-      owner: this.owner,
-      repo: this.repo,
-      path: this.path,
-      branch: this.branch,
-      commitMessage: this.commitMessage,
-    }, await file.arrayBuffer());
+    await this.git.setContent(this.path, await file.arrayBuffer());
   }
 }
 
-async function fetchInfo(
-  options: Options,
-  params?: Record<string, unknown>,
-  // deno-lint-ignore no-explicit-any
-): Promise<any | undefined> {
-  const { client, owner, repo, path, branch } = options;
-  try {
-    const result = await client.rest.repos.getContent({
-      owner,
-      repo,
-      path: path || "",
-      ref: branch,
-      ...params,
-    });
-
-    if (result.status !== 200) {
-      return;
-    }
-
-    return result.data;
-  } catch {
-    // Ignore
-  }
-}
-
-async function readTextContent(
-  options: Options,
-): Promise<string | undefined> {
-  const result = await fetchInfo(options, {
-    mediaType: {
-      format: "raw",
-    },
-  });
-
-  return result as string;
-}
-
-async function readBinaryContent(
-  options: Options,
-): Promise<Uint8Array | undefined> {
-  const { client, owner, repo, path, branch } = options;
-
-  // https://github.com/octokit/rest.js/issues/14#issuecomment-584413497
-  const endpoint = client.rest.repos.getContent.endpoint({
-    owner,
-    repo,
-    path,
-    ref: branch,
-    mediaType: {
-      format: "raw",
-    },
-  });
-
-  const auth = await client.auth() as { token: string };
-  const response = await fetch(endpoint.url, {
-    method: endpoint.method,
-    headers: {
-      ...endpoint.headers as Record<string, string>,
-      authorization: `Bearer ${auth.token}`,
-    },
-  });
-
-  const buffer = await response.arrayBuffer();
-  return new Uint8Array(buffer);
-}
-
-async function writeContent(
-  options: Options,
-  content: ArrayBuffer | Uint8Array | string,
-) {
-  const exists = await fetchInfo(options);
-  const { client, owner, repo, path, branch } = options;
-
-  if (!path) {
-    throw new Error("Invalid path");
+function getDepth(path: string): number {
+  if (path.includes("**/")) {
+    return Infinity;
   }
 
-  await client.rest.repos.createOrUpdateFileContents({
-    owner,
-    repo,
-    path,
-    branch,
-    message: options.commitMessage!({
-      action: exists ? "update" : "create",
-      path,
-    }),
-    content: encodeBase64(content),
-    sha: exists?.sha,
-  });
+  if (path.includes("*/")) {
+    return 1;
+  }
+
+  return 0;
 }

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.9.2] - Unreleased
+### Fixed
+- Refactor Github storage to support recursive listing.
+
 ## [0.9.1] - 2025-01-19
 ### Added
 - New option `listed` for uploads to don't show the upload in the homepage.
@@ -542,6 +546,7 @@ First version
 [#31]: https://github.com/lumeland/cms/issues/31
 [#34]: https://github.com/lumeland/cms/issues/34
 
+[0.9.2]: https://github.com/lumeland/cms/compare/v0.9.1...HEAD
 [0.9.1]: https://github.com/lumeland/cms/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/lumeland/cms/compare/v0.8.3...v0.9.0
 [0.8.3]: https://github.com/lumeland/cms/compare/v0.8.2...v0.8.3
