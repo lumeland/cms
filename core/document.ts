@@ -47,7 +47,7 @@ export default class Document {
 
   async read(create = false) {
     try {
-      return await this.#entry.readData();
+      return (await this.#entry.readData()) ?? {};
     } catch (err) {
       if (create) {
         return {};
