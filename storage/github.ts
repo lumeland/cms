@@ -128,15 +128,21 @@ class GitClient {
   }
 
   async setContent(path: string, content: ArrayBuffer | Uint8Array | string) {
-    const exists = await this.client.rest.repos.getContent({
-      owner: this.owner,
-      repo: this.repo,
-      ref: this.branch,
-      path,
-    });
+    let sha: string | undefined;
 
-    // @ts-ignore: Property 'sha' does not exist
-    const sha = exists.data.sha;
+    try {
+      const exists = await this.client.rest.repos.getContent({
+        owner: this.owner,
+        repo: this.repo,
+        ref: this.branch,
+        path,
+      });
+
+      // @ts-ignore: Property 'sha' does not exist
+      sha = exists.data.sha;
+    } catch {
+      // Ignore
+    }
 
     await this.client.rest.repos.createOrUpdateFileContents({
       owner: this.owner,
