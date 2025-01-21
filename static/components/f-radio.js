@@ -52,7 +52,7 @@ customElements.define(
       }
 
       const form = this.closest("form");
-      form[name].value = isNew ? schema.value : value;
+      form[name].value = isNew ? value ?? schema.value : value;
 
       if (schema.description) {
         dom("div", {

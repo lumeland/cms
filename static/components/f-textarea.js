@@ -27,7 +27,7 @@ customElements.define(
         ...schema.attributes,
         id,
         name,
-        value: isNew ? schema.value : value,
+        value: isNew ? value ?? schema.value : value,
         class: "input",
         oninvalid,
         oninput() {

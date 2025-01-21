@@ -11,7 +11,7 @@ customElements.define(
       dom("input", {
         type: "hidden",
         name,
-        value: isNew ? schema.value : value,
+        value: isNew ? value ?? schema.value : value,
       }, this);
     }
 

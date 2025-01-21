@@ -19,7 +19,7 @@ customElements.define(
         name,
         value: true,
         oninvalid,
-        checked: (isNew ? schema.value : value) ?? undefined,
+        checked: (isNew ? value ?? schema.value : value) ?? undefined,
         type: "checkbox",
         class: "checkbox",
       }, div);

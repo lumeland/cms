@@ -26,7 +26,7 @@ customElements.define(
       const curr = dom("input", {
         name: `${name}.current`,
         type: "text",
-        value: isNew ? schema.value : value,
+        value: isNew ? value ?? schema.value : value,
         class: "input is-narrow",
       }, divValue);
 

@@ -59,7 +59,7 @@ customElements.define(
         dom("u-draggable", item);
       }
 
-      for (const v of (isNew ? schema.value : value) ?? []) {
+      for (const v of (isNew ? value ?? schema.value : value) ?? []) {
         addOption(v);
       }
 

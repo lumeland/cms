@@ -78,6 +78,23 @@ cms.collection({
 });
 
 cms.collection({
+  name: "Blog",
+  store: "src:blog/*.md",
+  fields: [
+    "title: text",
+    "date: datetime",
+    "tags: list",
+    "content: markdown",
+    {
+      name: "layout",
+      type: "text",
+      value: "layouts/post.vto",
+    },
+  ],
+  documentName: "{title}.md",
+});
+
+cms.collection({
   name: "Posts",
   description: "List of posts for the blog",
   store: "kv:posts/*",

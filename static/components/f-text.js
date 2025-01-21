@@ -33,7 +33,7 @@ export class Input extends Component {
       id,
       name,
       oninvalid,
-      value: isNew ? schema.value : value,
+      value: isNew ? value ?? schema.value : value,
       ...this.inputAttributes,
       style: { "--max-width": maxWidth },
     }, this);

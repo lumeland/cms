@@ -90,7 +90,7 @@ customElements.define(
         return item;
       }
 
-      for (const v of (isNew ? schema.value : value) ?? []) {
+      for (const v of (isNew ? value ?? schema.value : value) ?? []) {
         div.append(createOption(v));
       }
 

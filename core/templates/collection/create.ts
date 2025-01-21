@@ -69,7 +69,9 @@ ${
   id="form-create"
 >
   <input type="hidden" name="_prefix" value="${folder || ""}">
-  <u-fields data-fields="${escape(JSON.stringify(fields))}" data-value="${
+  <u-fields data-fields="${
+    escape(JSON.stringify(fields))
+  }" data-new="true" data-value="${
     escape(JSON.stringify(defaults))
   }"></u-fields>
   <footer class="footer ly-rowStack">

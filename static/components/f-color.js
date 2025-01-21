@@ -30,7 +30,7 @@ customElements.define(
         type: "color",
         id,
         name,
-        value: isNew ? schema.value : value,
+        value: isNew ? value ?? schema.value : value,
         oninvalid,
       }, div);
       const text = dom("input", {

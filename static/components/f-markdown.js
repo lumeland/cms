@@ -26,7 +26,7 @@ customElements.define(
       const textarea = dom("textarea", {
         id,
         name,
-        value: isNew ? schema.value : value,
+        value: isNew ? value ?? schema.value : value,
         hidden: true,
         oninvalid,
       }, this);

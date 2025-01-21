@@ -34,7 +34,7 @@ export class Input extends Component {
     const input = dom("input", {
       type: "hidden",
       name,
-      value: isNew ? schema.value : value,
+      value: isNew ? value ?? schema.value : value,
     }, this);
 
     dom("input", {
