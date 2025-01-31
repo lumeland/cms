@@ -81,13 +81,37 @@ cms.collection({
   name: "Blog",
   store: "src:blog/*.md",
   fields: [
-    "title: text",
-    "date: datetime",
-    "tags: list",
-    "content: markdown",
+    {
+      label: "Título (Español)",
+      name: "title_es",
+      type: "text",
+      view: "Español",
+    },
+    {
+      label: "Title (English)",
+      name: "title_en",
+      type: "text",
+      view: "English",
+    },
+    {
+      name: "date",
+      type: "datetime",
+    },
+    {
+      label: "Contenido (Español)",
+      name: "content_es",
+      type: "markdown",
+      view: "Español",
+    },
+    {
+      label: "Content (English)",
+      name: "content_en",
+      type: "markdown",
+      view: "English",
+    },
     {
       name: "layout",
-      type: "text",
+      type: "hidden",
       value: "layouts/post.vto",
     },
   ],
