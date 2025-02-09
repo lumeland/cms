@@ -8,9 +8,10 @@ export interface Options {
   prefix?: string;
   command?: string;
   remote?: string;
+  onPublish?: (name: string) => void | Promise<void>;
 }
 
-export const defaults: Required<Omit<Options, "remoteUrl">> = {
+export const defaults: Required<Omit<Options, "onPublish">> = {
   root: Deno.cwd(),
   prodBranch: "main",
   prefix: "lumecms/",
@@ -24,6 +25,7 @@ export class Git implements Versioning {
   command: string;
   prefix: string;
   remote: string;
+  onPublish?: (name: string) => void | Promise<void>;
 
   constructor(userOptions?: Options) {
     const options = { ...defaults, ...userOptions };
@@ -115,9 +117,14 @@ export class Git implements Versioning {
 
     // Push changes to the remote
     await this.#runGitCommand("push", this.remote, this.prodBranch);
+
+    // Call the onPublish callback
+    if (this.onPublish) {
+      await this.onPublish(name);
+    }
   }
 
-  /* Deletes a version */
+  /* Delete a version */
   async delete(name: string): Promise<void> {
     if (!(await this.#exists(name))) {
       return;
