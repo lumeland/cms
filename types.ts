@@ -60,20 +60,75 @@ export interface Transformer<T> {
   fromData(data: Data): T | Promise<T>;
 }
 
-/** The schema for a field */
-export interface Field {
-  type: FieldKeys | (string & Record<never, never>);
-  //                ^ Typescript hack to suggest the correct keys but allow any string
-  //                  https://x.com/diegohaz/status/1524257274012876801
+type Prettify<T> =
+  & {
+    [K in keyof T]: T[K];
+  }
+  & {};
+
+type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends
+  ((x: infer I) => void) ? I : never;
+
+type Option = string | { value: string | number; label: string };
+
+type FieldTypes = FieldKeys | (string & Record<never, never>);
+type FieldString = `${string}:${"" | " "}${FieldTypes}${"" | "!"}`;
+
+type UniqueFieldOptionMap = Prettify<
+  Pick<
+    { [key in FieldKeys]: {} } & {
+      "checkbox": {
+        value?: boolean;
+      };
+      "choose-list": {
+        fields?: Field[];
+      };
+      "file": {
+        /** @deprecated. Use `upload` instead */
+        uploads?: string;
+        upload?: string | false;
+        publicPath?: string;
+      };
+      "list": {
+        options?: Option[];
+      };
+      "markdown": {
+        /** @deprecated. Use `upload` instead */
+        uploads?: string;
+        upload?: string | string[] | false;
+      };
+      "object": {
+        fields?: Field[];
+      };
+      "object-list": {
+        fields?: Field[];
+      };
+      "radio": {
+        options?: Option[];
+      };
+      "select": {
+        options?: Option[];
+      };
+    },
+    FieldKeys
+  >
+>;
+
+type SelectFieldOptionMap = Prettify<
+  {
+    "choose-list": "name" | "label" | "description";
+    "hidden": "name" | "value";
+    "list": "name" | "label" | "description";
+    "object": "name" | "label" | "description";
+    "object-list": "name" | "label" | "description";
+  }
+>;
+
+interface CommonFieldOptions {
   name: string;
-  value?: unknown;
-  fields?: (Field | string)[];
   label?: string;
   description?: string;
-  options?: Option[];
-  /** @deprecated. Use `upload` instead */
-  uploads?: string;
-  upload?: string | false;
+  value?: unknown;
   view?: string;
   attributes?: {
     required?: boolean;
@@ -86,22 +141,58 @@ export interface Field {
   };
   init?: (field: ResolvedField, content: CMSContent) => void | Promise<void>;
   transform?(value: any, field: ResolvedField): any;
-  [key: string]: unknown;
 }
 
-export interface ResolvedField extends Field {
-  tag: string;
-  label: string;
-  fields?: ResolvedField[];
-  details?: Record<string, any>;
-  applyChanges(
-    data: Data,
-    changes: Data,
-    field: ResolvedField,
-    document: Document,
-    content: CMSContent,
-  ): void | Promise<void>;
-}
+type BaseFieldOptions<K extends FieldKeys> = Prettify<
+  & {
+    type: K;
+  }
+  & (K extends keyof SelectFieldOptionMap
+    ? Pick<CommonFieldOptions, SelectFieldOptionMap[K]>
+    : CommonFieldOptions)
+  & UniqueFieldOptionMap[K]
+>;
+
+type CustomFieldOptions = Prettify<
+  & {
+    type: string & Record<never, never>;
+    //                ^ Typescript hack to suggest the correct keys but allow any string
+    //                  https://x.com/diegohaz/status/1524257274012876801
+    [key: string]: unknown;
+  }
+  & CommonFieldOptions
+>;
+
+type UniqueFieldOptions = Prettify<
+  | {
+    [K in keyof UniqueFieldOptionMap]: BaseFieldOptions<K>;
+  }[keyof UniqueFieldOptionMap]
+  | CustomFieldOptions
+>;
+
+export type Field = FieldString | UniqueFieldOptions;
+
+export type MergedField = Prettify<
+  & { type: UniqueFieldOptions["type"] }
+  & CommonFieldOptions
+  & UnionToIntersection<UniqueFieldOptionMap[keyof UniqueFieldOptionMap]>
+>;
+
+export type ResolvedField = Prettify<
+  Omit<MergedField, "fields"> & {
+    tag: string;
+    label: string;
+    fields?: ResolvedField[];
+    details?: Record<string, any>;
+    applyChanges(
+      data: Data,
+      changes: Data,
+      field: ResolvedField,
+      document: Document,
+      content: CMSContent,
+    ): void | Promise<void>;
+  }
+>;
 
 export interface FieldType {
   tag: string;
@@ -120,8 +211,6 @@ export type Labelizer = (
   name: string,
   prev?: (name: string) => string,
 ) => string;
-
-type Option = string | { value: string | number; label: string };
 
 export interface CMSContent {
   basePath: string;

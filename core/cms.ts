@@ -30,6 +30,7 @@ import type {
   Field,
   FieldType,
   Labelizer,
+  MergedField,
   ResolvedField,
   SiteInfo,
   Storage,
@@ -68,7 +69,7 @@ interface DocumentOptions {
   label?: string;
   description?: string;
   store: string;
-  fields: (Field | string)[];
+  fields: Field[];
   url?: string;
   views?: string[];
 }
@@ -87,7 +88,7 @@ interface CollectionOptions {
   label?: string;
   description?: string;
   store: string;
-  fields: (Field | string)[];
+  fields: Field[];
   url?: string;
   views?: string[];
   /** @deprecated. Use `documentName` instead */
@@ -190,11 +191,15 @@ export default class Cms {
 
   /** Add a new collection */
   collection(options: CollectionOptions): this;
-  collection(name: string, store: string, fields: (Field | string)[]): this;
+  collection(
+    name: string,
+    store: string,
+    fields: Field[],
+  ): this;
   collection(
     name: string | CollectionOptions,
     store?: string,
-    fields?: (Field | string)[],
+    fields?: Field[],
   ): this {
     const options: CollectionOptions = typeof name === "string"
       ? {
@@ -218,11 +223,15 @@ export default class Cms {
 
   /** Add a new document */
   document(options: DocumentOptions): this;
-  document(name: string, store: string, fields: (Field | string)[]): this;
+  document(
+    name: string,
+    store: string,
+    fields: Field[],
+  ): this;
   document(
     name: string | DocumentOptions,
     store?: string,
-    fields?: (Field | string)[],
+    fields?: Field[],
   ): this {
     const options = typeof name === "string"
       ? {
@@ -294,7 +303,10 @@ export default class Cms {
     ) {
       content.collections[name] = new Collection({
         storage: this.#getStorage(store),
-        fields: this.#resolveFields(fields, content),
+        fields: this.#resolveFields(
+          fields as (MergedField | string)[],
+          content,
+        ),
         name,
         label: label ?? labelify(name),
         documentLabel: documentLabel
@@ -310,7 +322,10 @@ export default class Cms {
     ) {
       content.documents[name] = new Document({
         entry: this.#getEntry(store),
-        fields: this.#resolveFields(fields, content),
+        fields: this.#resolveFields(
+          fields as (MergedField | string)[],
+          content,
+        ),
         name,
         label: label ?? labelify(name),
         ...options,
@@ -487,7 +502,7 @@ export default class Cms {
   }
 
   #resolveFields(
-    fields: (Field | string)[],
+    fields: (MergedField | string)[],
     content: CMSContent,
   ): ResolvedField[] {
     return fields.map((field): ResolvedField => {
@@ -503,7 +518,6 @@ export default class Cms {
           field.attributes = { required: true };
         }
       }
-
       const type = this.fields.get(field.type);
 
       if (!type) {
@@ -521,9 +535,9 @@ export default class Cms {
         type.init(resolvedField, content);
       }
 
-      if (resolvedField.fields) {
+      if (field.fields) {
         resolvedField.fields = this.#resolveFields(
-          resolvedField.fields,
+          field.fields as (MergedField | string)[],
           content,
         );
       }
