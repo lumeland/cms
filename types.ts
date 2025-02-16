@@ -60,20 +60,52 @@ export interface Transformer<T> {
   fromData(data: Data): T | Promise<T>;
 }
 
+/**
+ * This utility type is useful when you want to see the full expanded type
+ * rather than type references in tooltips/intellisense.
+ *
+ * @typeParam T - The type to prettify
+ *
+ * @example
+ * ```typescript
+ * type Foo = { a: number } & { b: string };
+ * type PrettyFoo = Prettify<Foo>; // { a: number, b: string }
+ * ```
+ */
 type Prettify<T> =
   & {
     [K in keyof T]: T[K];
   }
   & {};
 
+/**
+ * Converts a union type to an intersection type.
+ *
+ * @template U - The union type to convert
+ * @returns An intersection of all types in the union
+ *
+ * @example
+ * type Union = { a: string } | { b: number };
+ * type Result = UnionToIntersection<Union>; // { a: string } & { b: number }
+ *
+ * @remarks
+ * This uses conditional types and function parameter inference to achieve the conversion.
+ * The resulting type will contain all members from each type in the union.
+ */
 type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends
   ((x: infer I) => void) ? I : never;
 
 type Option = string | { value: string | number; label: string };
-
 type FieldTypes = FieldKeys | (string & Record<never, never>);
+
+/**
+ * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
+ */
 type FieldString = `${string}:${"" | " "}${FieldTypes}${"" | "!"}`;
 
+/**
+ * Maps the field type to its unique options
+ */
 type UniqueFieldOptionMap = Prettify<
   Pick<
     { [key in FieldKeys]: {} } & {
@@ -114,16 +146,22 @@ type UniqueFieldOptionMap = Prettify<
   >
 >;
 
-type SelectFieldOptionMap = Prettify<
+/**
+ * Maps the field type to a subset of options if it has one
+ */
+type FieldOptionPropertySelectionMap = Prettify<
   {
-    "choose-list": "name" | "label" | "description";
+    "choose-list": "name" | "label" | "description" | "view";
     "hidden": "name" | "value";
-    "list": "name" | "label" | "description";
-    "object": "name" | "label" | "description";
-    "object-list": "name" | "label" | "description";
+    "list": "name" | "label" | "description" | "view";
+    "object": "name" | "label" | "description" | "view";
+    "object-list": "name" | "label" | "description" | "view";
   }
 >;
 
+/**
+ * Represents common field options shared by all field types.
+ */
 interface CommonFieldOptions {
   name: string;
   label?: string;
@@ -143,16 +181,22 @@ interface CommonFieldOptions {
   transform?(value: any, field: ResolvedField): any;
 }
 
-type BaseFieldOptions<K extends FieldKeys> = Prettify<
+/**
+ * Creates the field options for one of the built-in field types with type `K`.
+ */
+type BuiltInFieldOptions<K extends FieldKeys> = Prettify<
   & {
     type: K;
   }
-  & (K extends keyof SelectFieldOptionMap
-    ? Pick<CommonFieldOptions, SelectFieldOptionMap[K]>
+  & (K extends keyof FieldOptionPropertySelectionMap
+    ? Pick<CommonFieldOptions, FieldOptionPropertySelectionMap[K]>
     : CommonFieldOptions)
   & UniqueFieldOptionMap[K]
 >;
 
+/**
+ * Represents the options for a custom field type.
+ */
 type CustomFieldOptions = Prettify<
   & {
     type: string & Record<never, never>;
@@ -163,17 +207,26 @@ type CustomFieldOptions = Prettify<
   & CommonFieldOptions
 >;
 
-type UniqueFieldOptions = Prettify<
+/**
+ * Represents the options for a field (both built in and custom).
+ */
+type FieldOptions = Prettify<
   | {
-    [K in keyof UniqueFieldOptionMap]: BaseFieldOptions<K>;
+    [K in keyof UniqueFieldOptionMap]: BuiltInFieldOptions<K>;
   }[keyof UniqueFieldOptionMap]
   | CustomFieldOptions
 >;
 
-export type Field = FieldString | UniqueFieldOptions;
+/**
+ * Represents a field in a collection both as an option object and as a string.
+ */
+export type Field = FieldString | FieldOptions;
 
+/**
+ * Combines all possible field options into a single type. (This is equivalent to the previous Field type)
+ */
 export type MergedField = Prettify<
-  & { type: UniqueFieldOptions["type"] }
+  & { type: FieldOptions["type"] }
   & CommonFieldOptions
   & UnionToIntersection<UniqueFieldOptionMap[keyof UniqueFieldOptionMap]>
 >;
