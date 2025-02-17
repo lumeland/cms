@@ -140,7 +140,7 @@ type FieldTypeToPropertySelectionMap = {
 /**
  * Represents common field options shared by all field types.
  */
-export interface FieldProperties {
+interface FieldProperties {
   name: string;
   label?: string;
   description?: string;
