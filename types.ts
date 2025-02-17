@@ -175,11 +175,15 @@ interface FieldProperties {
  * Contains the mapping of field types to the type of their value property.
  */
 type FieldTypeToValueTypeMap = Prettify<
-  {
+  & {
     [K in FieldKeys]:
       Extract<FieldTypeToPropertySelectionMap[K], "value"> extends never ? never
         : unknown;
-  } & {
+  }
+  & {
+    [K in "text" | "textarea" | "email" | "url"]: string;
+  }
+  & {
     "checkbox": boolean;
     "number": number;
   }
