@@ -96,33 +96,40 @@ type CommonFieldProperties =
 /**
  * Maps field types to the common properties to exclude.
  */
-type FieldTypeToPropertyFilterMap = {
-  "choose-list": "value" | "attributes" | "init" | "transform";
-  "hidden":
-    | "label"
-    | "description"
-    | "view"
-    | "attributes"
-    | "init"
-    | "transform";
-  "list": "value" | "attributes" | "init" | "transform";
-  "object": "value" | "attributes" | "init" | "transform";
-  "object-list": "value" | "attributes" | "init" | "transform";
-};
+type FieldTypeToPropertyFilterMap = Prettify<
+  & {
+    [K in "choose-list" | "list" | "object" | "object-list"]:
+      | "value"
+      | "attributes"
+      | "init"
+      | "transform";
+  }
+  & {
+    "hidden":
+      | "label"
+      | "description"
+      | "view"
+      | "attributes"
+      | "init"
+      | "transform";
+  }
+>;
 
 /**
  * Maps field types to any additional properties they may have beyond the common ones.
  */
-type FieldTypeToPropertyAdditionMap = {
-  "choose-list": "fields";
-  "file": "uploads" | "upload" | "publicPath";
-  "list": "options";
-  "markdown": "uploads" | "upload";
-  "object": "fields";
-  "object-list": "fields";
-  "radio": "options";
-  "select": "options";
-};
+type FieldTypeToPropertyAdditionMap = Prettify<
+  & {
+    [K in "choose-list" | "object" | "object-list"]: "fields";
+  }
+  & {
+    [K in "list" | "radio" | "select"]: "options";
+  }
+  & {
+    "file": "uploads" | "upload" | "publicPath";
+    "markdown": "uploads" | "upload";
+  }
+>;
 
 /**
  * Maps the field type to a subset of options if it has one
