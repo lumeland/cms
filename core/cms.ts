@@ -28,6 +28,7 @@ import type {
   Data,
   Entry,
   Field,
+  FieldString,
   FieldType,
   Labelizer,
   MergedField,
@@ -69,7 +70,7 @@ interface DocumentOptions {
   label?: string;
   description?: string;
   store: string;
-  fields: Field[];
+  fields: (Field | FieldString)[];
   url?: string;
   views?: string[];
 }
@@ -88,7 +89,7 @@ interface CollectionOptions {
   label?: string;
   description?: string;
   store: string;
-  fields: Field[];
+  fields: (Field | FieldString)[];
   url?: string;
   views?: string[];
   /** @deprecated. Use `documentName` instead */
@@ -194,12 +195,12 @@ export default class Cms {
   collection(
     name: string,
     store: string,
-    fields: Field[],
+    fields: (Field | FieldString)[],
   ): this;
   collection(
     name: string | CollectionOptions,
     store?: string,
-    fields?: Field[],
+    fields?: (Field | FieldString)[],
   ): this {
     const options: CollectionOptions = typeof name === "string"
       ? {
@@ -226,12 +227,12 @@ export default class Cms {
   document(
     name: string,
     store: string,
-    fields: Field[],
+    fields: (Field | FieldString)[],
   ): this;
   document(
     name: string | DocumentOptions,
     store?: string,
-    fields?: Field[],
+    fields?: (Field | FieldString)[],
   ): this {
     const options = typeof name === "string"
       ? {

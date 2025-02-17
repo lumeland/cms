@@ -79,12 +79,6 @@ type Prettify<T> =
   & {};
 
 type Option = string | { value: string | number; label: string };
-type FieldTypes = FieldKeys | (string & Record<never, never>);
-
-/**
- * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
- */
-type FieldString = `${string}:${"" | " "}${FieldTypes}${"" | "!"}`;
 
 /**
  * The common options for all fields.
@@ -102,7 +96,7 @@ type CommonFieldOptionsProperties =
 /**
  * Maps field types to the common properties to exclude.
  */
-type FieldTypePropertyFilterMap = {
+type FieldTypeToPropertyFilterMap = {
   "choose-list": "value" | "attributes" | "init" | "transform";
   "hidden":
     | "label"
@@ -119,7 +113,7 @@ type FieldTypePropertyFilterMap = {
 /**
  * Maps field types to any additional properties they may have beyond the common ones.
  */
-type FieldTypePropertyAdditionMap = {
+type FieldTypeToPropertyAdditionMap = {
   "choose-list": "fields";
   "file": "uploads" | "upload" | "publicPath";
   "list": "options";
@@ -133,20 +127,20 @@ type FieldTypePropertyAdditionMap = {
 /**
  * Maps the field type to a subset of options if it has one
  */
-type FieldTypePropertySelectionMap = {
+type FieldTypeToPropertySelectionMap = {
   [K in FieldKeys]:
-    | (K extends keyof FieldTypePropertyFilterMap
-      ? Exclude<CommonFieldOptionsProperties, FieldTypePropertyFilterMap[K]>
+    | (K extends keyof FieldTypeToPropertyFilterMap
+      ? Exclude<CommonFieldOptionsProperties, FieldTypeToPropertyFilterMap[K]>
       : CommonFieldOptionsProperties)
-    | (K extends keyof FieldTypePropertyAdditionMap
-      ? FieldTypePropertyAdditionMap[K]
+    | (K extends keyof FieldTypeToPropertyAdditionMap
+      ? FieldTypeToPropertyAdditionMap[K]
       : never);
 };
 
 /**
  * Represents common field options shared by all field types.
  */
-export interface MergedFieldOptions {
+export interface FieldProperties {
   name: string;
   label?: string;
   description?: string;
@@ -173,10 +167,11 @@ export interface MergedFieldOptions {
 /**
  * Contains the mapping of field types to the type of their value property.
  */
-type FieldOptionValueTypeMap = Prettify<
+type FieldTypeToValueTypeMap = Prettify<
   {
-    [K in FieldKeys]: Extract<FieldTypePropertySelectionMap[K], "value"> extends
-      never ? never : unknown;
+    [K in FieldKeys]:
+      Extract<FieldTypeToPropertySelectionMap[K], "value"> extends never ? never
+        : unknown;
   } & {
     "checkbox": boolean;
     "number": number;
@@ -186,52 +181,51 @@ type FieldOptionValueTypeMap = Prettify<
 /**
  * Creates the field options for one of the built-in field types with type `K`.
  */
-type BuiltInFieldOptions<K extends FieldKeys> =
+type BuiltInField<K extends FieldKeys> =
   & {
     type: K;
   }
-  & (FieldOptionValueTypeMap[K] extends never ? {}
+  & (FieldTypeToValueTypeMap[K] extends never ? {}
     : {
-      value?: FieldOptionValueTypeMap[K];
+      value?: FieldTypeToValueTypeMap[K];
     })
-  & Pick<
-    MergedFieldOptions,
-    Exclude<FieldTypePropertySelectionMap[K], "value">
-  >;
+  & Pick<FieldProperties, Exclude<FieldTypeToPropertySelectionMap[K], "value">>;
 
 /**
  * Represents the options for a custom field type.
  */
-type CustomFieldOptions = Prettify<
+type CustomField = Prettify<
   & {
     type: string & Record<never, never>;
     //                ^ Typescript hack to suggest the correct keys but allow any string
     //                  https://x.com/diegohaz/status/1524257274012876801
     [key: string]: unknown;
   }
-  & MergedFieldOptions
+  & FieldProperties
 >;
 
 /**
  * Represents the options for a field (both built in and custom).
  */
-type FieldOptions = Prettify<
+export type Field = Prettify<
   | {
-    [K in FieldKeys]: BuiltInFieldOptions<K>;
+    [K in FieldKeys]: BuiltInField<K>;
   }[FieldKeys]
-  | CustomFieldOptions
+  | CustomField
 >;
 
+type FieldTypes = FieldKeys | (string & Record<never, never>);
+
 /**
- * Represents a field in a collection both as an option object and as a string.
+ * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
  */
-export type Field = FieldString | FieldOptions;
+export type FieldString = `${string}:${"" | " "}${FieldTypes}${"" | "!"}`;
 
 export type MergedField = Prettify<
   & {
-    type: FieldOptions["type"];
+    type: Field["type"];
   }
-  & MergedFieldOptions
+  & FieldProperties
 >;
 
 export type ResolvedField = Prettify<
@@ -247,6 +241,7 @@ export type ResolvedField = Prettify<
       document: Document,
       content: CMSContent,
     ): void | Promise<void>;
+    [key: string]: unknown;
   }
 >;
 
