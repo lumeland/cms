@@ -214,12 +214,10 @@ export type Field = Prettify<
   | CustomField
 >;
 
-type FieldTypes = FieldKeys | (string & Record<never, never>);
-
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
  */
-export type FieldString = `${string}:${"" | " "}${FieldTypes}${"" | "!"}`;
+export type FieldString = `${string}:${"" | " "}${Field["type"]}${"" | "!"}`;
 
 export type MergedField = Prettify<
   & {
