@@ -159,7 +159,7 @@ interface FieldProperties {
   upload?: string | false;
   publicPath?: string;
   options?: Option[];
-  fields?: Field[];
+  fields?: (Field | FieldString)[];
   init?: (field: ResolvedField, content: CMSContent) => void | Promise<void>;
   transform?(value: any, field: ResolvedField): any;
 }
@@ -217,7 +217,7 @@ export type Field = Prettify<
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
  */
-export type FieldString = `${string}:${"" | " "}${string}${"" | "!"}`;
+export type FieldString = `${string}:${"" | " "}${Field["type"]}${"" | "!"}`;
 
 export type MergedField = Prettify<
   & {
