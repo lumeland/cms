@@ -83,7 +83,7 @@ type Option = string | { value: string | number; label: string };
 /**
  * The common options for all fields.
  */
-type CommonFieldOptionsProperties =
+type CommonFieldProperties =
   | "name"
   | "label"
   | "value"
@@ -130,8 +130,8 @@ type FieldTypeToPropertyAdditionMap = {
 type FieldTypeToPropertySelectionMap = {
   [K in FieldKeys]:
     | (K extends keyof FieldTypeToPropertyFilterMap
-      ? Exclude<CommonFieldOptionsProperties, FieldTypeToPropertyFilterMap[K]>
-      : CommonFieldOptionsProperties)
+      ? Exclude<CommonFieldProperties, FieldTypeToPropertyFilterMap[K]>
+      : CommonFieldProperties)
     | (K extends keyof FieldTypeToPropertyAdditionMap
       ? FieldTypeToPropertyAdditionMap[K]
       : never);
