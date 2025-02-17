@@ -199,9 +199,10 @@ type CustomField = Prettify<
     type: string & Record<never, never>;
     //                ^ Typescript hack to suggest the correct keys but allow any string
     //                  https://x.com/diegohaz/status/1524257274012876801
+    value?: unknown;
     [key: string]: unknown;
   }
-  & FieldProperties
+  & Pick<FieldProperties, Exclude<CommonFieldProperties, "value">>
 >;
 
 /**
