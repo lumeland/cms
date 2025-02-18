@@ -28,8 +28,7 @@ import type {
   CMSContent,
   Data,
   Entry,
-  Field,
-  FieldString,
+  FieldArray,
   FieldType,
   Labelizer,
   MergedField,
@@ -71,7 +70,7 @@ interface DocumentOptions<K extends string> {
   label?: string;
   description?: string;
   store: string;
-  fields: (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[];
+  fields: FieldArray<K>;
   url?: string;
   views?: string[];
 }
@@ -90,7 +89,7 @@ interface CollectionOptions<K extends string> {
   label?: string;
   description?: string;
   store: string;
-  fields: (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[];
+  fields: FieldArray<K>;
   url?: string;
   views?: string[];
   /** @deprecated. Use `documentName` instead */
@@ -192,17 +191,18 @@ export default class Cms {
   }
 
   /** Add a new collection */
-  collection<K extends string = never>(options: CollectionOptions<K>): this;
+  collection<K extends string = never>(
+    options: CollectionOptions<BuiltInFieldType | K>,
+  ): this;
   collection<K extends string = never>(
     name: string,
     store: string,
-    fields: (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[],
+    fields: FieldArray<BuiltInFieldType | K>,
   ): this;
   collection<K extends string = never>(
-    name: string | CollectionOptions<K>,
+    name: string | CollectionOptions<BuiltInFieldType | K>,
     store?: string,
-    fields?:
-      (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[],
+    fields?: FieldArray<BuiltInFieldType | K>,
   ): this {
     const options = typeof name === "string"
       ? {
@@ -228,17 +228,18 @@ export default class Cms {
   }
 
   /** Add a new document */
-  document<K extends string = never>(options: DocumentOptions<K>): this;
+  document<K extends string = never>(
+    options: DocumentOptions<BuiltInFieldType | K>,
+  ): this;
   document<K extends string = never>(
     name: string,
     store: string,
-    fields: (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[],
+    fields: FieldArray<BuiltInFieldType | K>,
   ): this;
   document<K extends string = never>(
-    name: string | DocumentOptions<K>,
+    name: string | DocumentOptions<BuiltInFieldType | K>,
     store?: string,
-    fields?:
-      (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[],
+    fields?: FieldArray<BuiltInFieldType | K>,
   ): this {
     const options = typeof name === "string"
       ? {

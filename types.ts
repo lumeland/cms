@@ -166,7 +166,7 @@ interface FieldProperties<K extends string> {
   upload?: string | false;
   publicPath?: string;
   options?: Option[];
-  fields?: (Field<K> | FieldString<K>)[];
+  fields?: FieldArray<K>;
   init?: (field: ResolvedField, content: CMSContent) => void | Promise<void>;
   transform?(value: any, field: ResolvedField): any;
 }
@@ -228,6 +228,7 @@ export type Field<K extends string, U extends string = K> = Prettify<
 >;
 
 export type BuiltInFieldType = FieldKeys;
+export type FieldArray<K extends string> = (Field<K> | FieldString<K>)[];
 
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
