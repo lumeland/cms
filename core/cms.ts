@@ -305,7 +305,7 @@ export default class Cms {
       content.collections[name] = new Collection({
         storage: this.#getStorage(store),
         fields: this.#resolveFields(
-          fields as (MergedField | string)[],
+          fields satisfies (MergedField | string)[],
           content,
         ),
         name,
@@ -324,7 +324,7 @@ export default class Cms {
       content.documents[name] = new Document({
         entry: this.#getEntry(store),
         fields: this.#resolveFields(
-          fields as (MergedField | string)[],
+          fields satisfies (MergedField | string)[],
           content,
         ),
         name,
@@ -538,7 +538,7 @@ export default class Cms {
 
       if (field.fields) {
         resolvedField.fields = this.#resolveFields(
-          field.fields as (MergedField | string)[],
+          field.fields satisfies (MergedField | string)[],
           content,
         );
       }
