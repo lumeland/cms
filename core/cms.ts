@@ -57,14 +57,6 @@ export interface LogOptions {
   filename: string;
 }
 
-const defaults: CmsOptions = {
-  site: {
-    name: "Lume CMS",
-  },
-  root: Deno.cwd(),
-  basePath: "/",
-};
-
 interface DocumentOptions<K extends string> {
   name: string;
   label?: string;
@@ -100,7 +92,15 @@ interface CollectionOptions<K extends string> {
   delete?: boolean;
 }
 
-export default class Cms {
+const defaults = {
+  site: {
+    name: "Lume CMS",
+  },
+  root: Deno.cwd(),
+  basePath: "/",
+} satisfies CmsOptions;
+
+export default class Cms<K extends string = never> {
   #jsImports = new Set<string>();
 
   fetch: (request: Request) => Response | Promise<Response>;
@@ -268,7 +268,7 @@ export default class Cms {
   }
 
   /** Use a plugin */
-  use(plugin: (cms: Cms) => void): this {
+  use(plugin: (cms: Cms<K>) => void): this {
     plugin(this);
     return this;
   }
