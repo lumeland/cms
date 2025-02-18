@@ -506,44 +506,49 @@ export default class Cms {
     fields: (MergedField | string)[],
     content: CMSContent,
   ): ResolvedField[] {
-    return fields.map((field): ResolvedField => {
-      if (typeof field === "string") {
-        const parts = field.split(":").map((part) => part.trim());
-        field = {
-          name: parts[0],
-          type: parts[1] ?? "text",
-        };
-
-        if (field.type.endsWith("!")) {
-          field.type = field.type.slice(0, -1);
-          field.attributes = { required: true };
+    return fields
+      .map((field) => {
+        if (typeof field !== "string") {
+          return field;
         }
-      }
-      const type = this.fields.get(field.type);
+        const [name, type] = field.split(":").map((part) => part.trim());
+        const required = type?.endsWith("!");
+        if (required) {
+          return {
+            name,
+            type: type.slice(0, -1),
+            attributes: { required: true },
+          } satisfies MergedField;
+        } else {
+          return { name, type: type ?? "text" } satisfies MergedField;
+        }
+      })
+      .map((field): ResolvedField => {
+        const type = this.fields.get(field.type);
 
-      if (!type) {
-        throw new Error(`Unknown field of type "${field.type}"`);
-      }
+        if (!type) {
+          throw new Error(`Unknown field of type "${field.type}"`);
+        }
 
-      const resolvedField = {
-        tag: type.tag,
-        label: field.label ?? labelify(field.name),
-        applyChanges: type.applyChanges,
-        ...field,
-      } as ResolvedField;
+        const resolvedField = {
+          tag: type.tag,
+          label: field.label ?? labelify(field.name),
+          applyChanges: type.applyChanges,
+          ...field,
+        } as ResolvedField;
 
-      if (type.init) {
-        type.init(resolvedField, content);
-      }
+        if (type.init) {
+          type.init(resolvedField, content);
+        }
 
-      if (field.fields) {
-        resolvedField.fields = this.#resolveFields(
-          field.fields satisfies (MergedField | string)[],
-          content,
-        );
-      }
+        if (field.fields) {
+          resolvedField.fields = this.#resolveFields(
+            field.fields satisfies (MergedField | string)[],
+            content,
+          );
+        }
 
-      return resolvedField;
-    });
+        return resolvedField;
+      });
   }
 }
