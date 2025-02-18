@@ -24,6 +24,7 @@ import { Git, Options as GitOptions } from "./git.ts";
 
 import type { Context, Next } from "../deps/hono.ts";
 import type {
+  BuiltInFieldType,
   CMSContent,
   Data,
   Entry,
@@ -65,12 +66,12 @@ const defaults: CmsOptions = {
   basePath: "/",
 };
 
-interface DocumentOptions {
+interface DocumentOptions<K extends string> {
   name: string;
   label?: string;
   description?: string;
   store: string;
-  fields: (Field | FieldString)[];
+  fields: (Field<BuiltInFieldType | K> | FieldString)[];
   url?: string;
   views?: string[];
 }
@@ -84,12 +85,12 @@ interface UploadOptions {
   listed?: boolean;
 }
 
-interface CollectionOptions {
+interface CollectionOptions<K extends string> {
   name: string;
   label?: string;
   description?: string;
   store: string;
-  fields: (Field | FieldString)[];
+  fields: (Field<BuiltInFieldType | K> | FieldString)[];
   url?: string;
   views?: string[];
   /** @deprecated. Use `documentName` instead */
@@ -108,8 +109,8 @@ export default class Cms {
   storages = new Map<string, Storage | string>();
   uploads = new Map<string, UploadOptions>();
   fields = new Map<string, FieldType>();
-  collections = new Map<string, CollectionOptions>();
-  documents = new Map<string, DocumentOptions>();
+  collections = new Map<string, CollectionOptions<never>>();
+  documents = new Map<string, DocumentOptions<never>>();
   versionManager: Versioning | undefined;
 
   constructor(options?: Partial<CmsOptions>) {
@@ -191,24 +192,24 @@ export default class Cms {
   }
 
   /** Add a new collection */
-  collection(options: CollectionOptions): this;
-  collection(
+  collection<K extends string = never>(options: CollectionOptions<K>): this;
+  collection<K extends string = never>(
     name: string,
     store: string,
-    fields: (Field | FieldString)[],
+    fields: (Field<BuiltInFieldType | K> | FieldString)[],
   ): this;
-  collection(
-    name: string | CollectionOptions,
+  collection<K extends string = never>(
+    name: string | CollectionOptions<K>,
     store?: string,
-    fields?: (Field | FieldString)[],
+    fields?: (Field<BuiltInFieldType | K> | FieldString)[],
   ): this {
-    const options: CollectionOptions = typeof name === "string"
+    const options = typeof name === "string"
       ? {
         name,
         store,
         fields,
-      } as CollectionOptions
-      : name;
+      } as CollectionOptions<never>
+      : name as CollectionOptions<never>;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>
@@ -218,29 +219,32 @@ export default class Cms {
       options.description = description;
     }
 
-    this.collections.set(options.name, options);
+    this.collections.set(
+      options.name,
+      options,
+    );
     return this;
   }
 
   /** Add a new document */
-  document(options: DocumentOptions): this;
-  document(
+  document<K extends string = never>(options: DocumentOptions<K>): this;
+  document<K extends string = never>(
     name: string,
     store: string,
-    fields: (Field | FieldString)[],
+    fields: (Field<BuiltInFieldType | K> | FieldString)[],
   ): this;
-  document(
-    name: string | DocumentOptions,
+  document<K extends string = never>(
+    name: string | DocumentOptions<K>,
     store?: string,
-    fields?: (Field | FieldString)[],
+    fields?: (Field<BuiltInFieldType | K> | FieldString)[],
   ): this {
     const options = typeof name === "string"
       ? {
         name,
         store,
         fields,
-      } as DocumentOptions
-      : name;
+      } as DocumentOptions<never>
+      : name as DocumentOptions<never>;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>

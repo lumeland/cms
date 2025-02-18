@@ -147,7 +147,7 @@ type FieldTypeToPropertySelectionMap = {
 /**
  * Represents common field options shared by all field types.
  */
-interface FieldProperties {
+interface FieldProperties<K extends string> {
   name: string;
   label?: string;
   description?: string;
@@ -166,7 +166,7 @@ interface FieldProperties {
   upload?: string | false;
   publicPath?: string;
   options?: Option[];
-  fields?: (Field | FieldString)[];
+  fields?: (Field<K> | FieldString)[];
   init?: (field: ResolvedField, content: CMSContent) => void | Promise<void>;
   transform?(value: any, field: ResolvedField): any;
 }
@@ -200,31 +200,34 @@ type BuiltInField<K extends FieldKeys> =
     : {
       value?: FieldTypeToValueTypeMap[K];
     })
-  & Pick<FieldProperties, Exclude<FieldTypeToPropertySelectionMap[K], "value">>;
+  & Pick<
+    FieldProperties<K>,
+    Exclude<FieldTypeToPropertySelectionMap[K], "value">
+  >;
 
 /**
  * Represents the options for a custom field type.
  */
-type CustomField = Prettify<
+type CustomField<K extends string> = Prettify<
   & {
-    type: string & Record<never, never>;
-    //                ^ Typescript hack to suggest the correct keys but allow any string
-    //                  https://x.com/diegohaz/status/1524257274012876801
+    type: K;
     value?: unknown;
     [key: string]: unknown;
   }
-  & Pick<FieldProperties, Exclude<CommonFieldProperties, "value">>
+  & Pick<
+    FieldProperties<K>,
+    Exclude<CommonFieldProperties, "value">
+  >
 >;
 
 /**
  * Represents the options for a field (both built in and custom).
  */
-export type Field = Prettify<
-  | {
-    [K in FieldKeys]: BuiltInField<K>;
-  }[FieldKeys]
-  | CustomField
+export type Field<K extends string> = Prettify<
+  K extends FieldKeys ? BuiltInField<K> : CustomField<K>
 >;
+
+export type BuiltInFieldType = FieldKeys;
 
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
@@ -233,9 +236,9 @@ export type FieldString = `${string}:${"" | " "}${string}${"" | "!"}`;
 
 export type MergedField = Prettify<
   & {
-    type: Field["type"];
+    type: string;
   }
-  & FieldProperties
+  & FieldProperties<FieldKeys | string & Record<never, never>>
 >;
 
 export type ResolvedField = Prettify<
