@@ -192,7 +192,7 @@ type FieldTypeToValueTypeMap = Prettify<
 /**
  * Creates the field options for one of the built-in field types with type `K`.
  */
-type BuiltInField<K extends FieldKeys> =
+type BuiltInField<K extends FieldKeys, U extends string> =
   & {
     type: K;
   }
@@ -201,21 +201,21 @@ type BuiltInField<K extends FieldKeys> =
       value?: FieldTypeToValueTypeMap[K];
     })
   & Pick<
-    FieldProperties<K>,
+    FieldProperties<U>,
     Exclude<FieldTypeToPropertySelectionMap[K], "value">
   >;
 
 /**
  * Represents the options for a custom field type.
  */
-type CustomField<K extends string> = Prettify<
+type CustomField<K extends string, U extends string> = Prettify<
   & {
     type: K;
     value?: unknown;
     [key: string]: unknown;
   }
   & Pick<
-    FieldProperties<K>,
+    FieldProperties<U>,
     Exclude<CommonFieldProperties, "value">
   >
 >;
@@ -223,8 +223,8 @@ type CustomField<K extends string> = Prettify<
 /**
  * Represents the options for a field (both built in and custom).
  */
-export type Field<K extends string> = Prettify<
-  K extends FieldKeys ? BuiltInField<K> : CustomField<K>
+export type Field<K extends string, U extends string = K> = Prettify<
+  K extends FieldKeys ? BuiltInField<K, U> : CustomField<K, U>
 >;
 
 export type BuiltInFieldType = FieldKeys;
