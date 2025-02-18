@@ -71,7 +71,7 @@ interface DocumentOptions<K extends string> {
   label?: string;
   description?: string;
   store: string;
-  fields: (Field<BuiltInFieldType | K> | FieldString)[];
+  fields: (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[];
   url?: string;
   views?: string[];
 }
@@ -90,7 +90,7 @@ interface CollectionOptions<K extends string> {
   label?: string;
   description?: string;
   store: string;
-  fields: (Field<BuiltInFieldType | K> | FieldString)[];
+  fields: (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[];
   url?: string;
   views?: string[];
   /** @deprecated. Use `documentName` instead */
@@ -196,12 +196,13 @@ export default class Cms {
   collection<K extends string = never>(
     name: string,
     store: string,
-    fields: (Field<BuiltInFieldType | K> | FieldString)[],
+    fields: (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[],
   ): this;
   collection<K extends string = never>(
     name: string | CollectionOptions<K>,
     store?: string,
-    fields?: (Field<BuiltInFieldType | K> | FieldString)[],
+    fields?:
+      (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[],
   ): this {
     const options = typeof name === "string"
       ? {
@@ -231,12 +232,13 @@ export default class Cms {
   document<K extends string = never>(
     name: string,
     store: string,
-    fields: (Field<BuiltInFieldType | K> | FieldString)[],
+    fields: (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[],
   ): this;
   document<K extends string = never>(
     name: string | DocumentOptions<K>,
     store?: string,
-    fields?: (Field<BuiltInFieldType | K> | FieldString)[],
+    fields?:
+      (Field<BuiltInFieldType | K> | FieldString<BuiltInFieldType | K>)[],
   ): this {
     const options = typeof name === "string"
       ? {

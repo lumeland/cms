@@ -166,7 +166,7 @@ interface FieldProperties<K extends string> {
   upload?: string | false;
   publicPath?: string;
   options?: Option[];
-  fields?: (Field<K> | FieldString)[];
+  fields?: (Field<K> | FieldString<K>)[];
   init?: (field: ResolvedField, content: CMSContent) => void | Promise<void>;
   transform?(value: any, field: ResolvedField): any;
 }
@@ -232,7 +232,9 @@ export type BuiltInFieldType = FieldKeys;
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
  */
-export type FieldString = `${string}:${"" | " "}${string}${"" | "!"}`;
+export type FieldString<K extends string> = `${string}:${"" | " "}${K}${
+  | ""
+  | "!"}`;
 
 export type MergedField = Prettify<
   & {
