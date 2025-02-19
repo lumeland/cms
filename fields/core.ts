@@ -2,7 +2,7 @@ import { normalizePath } from "../core/utils/path.ts";
 import { posix } from "../deps/std.ts";
 import { isEmpty } from "../core/utils/string.ts";
 
-import type { Data, FieldType, ResolvedField } from "../types.ts";
+import type { Data, FieldDefinition } from "../types.ts";
 
 // Logic-less fields
 const inputs = {
@@ -22,9 +22,10 @@ const inputs = {
   radio: null,
   checkbox: (v: string) => v === "true",
   number: (v: string) => Number(v),
-};
+} as const;
 
-type DumpFieldKeys = keyof typeof inputs;
+type Inputs = typeof inputs;
+type DumbFieldKeys = keyof Inputs;
 type SmartFieldKeys =
   | "list"
   | "object"
@@ -32,15 +33,16 @@ type SmartFieldKeys =
   | "choose-list"
   | "markdown"
   | "file";
-export type FieldKeys = DumpFieldKeys | SmartFieldKeys;
+export type FieldKeys = DumbFieldKeys | SmartFieldKeys;
 
-const fields = new Map<FieldKeys, FieldType>();
+const fields = new Map<FieldKeys, FieldDefinition<FieldKeys>>();
 
-for (const [input, transform] of Object.entries(inputs)) {
-  fields.set(input as DumpFieldKeys, {
+for (const input of Object.keys(inputs) as (keyof Inputs)[]) {
+  const transform = inputs[input];
+  fields.set(input, {
     tag: `f-${input}`,
     jsImport: `lume_cms/components/f-${input}.js`,
-    applyChanges(data, changes, field: ResolvedField) {
+    applyChanges(data, changes, field) {
       if (field.name in changes) {
         const fn = field.transform || transform;
         const value = fn
@@ -61,7 +63,7 @@ for (const [input, transform] of Object.entries(inputs)) {
 fields.set("list", {
   tag: "f-list",
   jsImport: "lume_cms/components/f-list.js",
-  applyChanges(data, changes, field: ResolvedField) {
+  applyChanges(data, changes, field) {
     const value = Object.values(changes[field.name] || {}).filter((v) =>
       !isEmpty(v)
     );
@@ -147,7 +149,7 @@ fields.set("choose-list", {
 fields.set("file", {
   tag: "f-file",
   jsImport: "lume_cms/components/f-file.js",
-  init: (field: ResolvedField, cmsContent) => {
+  init: (field, cmsContent) => {
     if (!field.uploads) {
       field.uploads = Object.keys(cmsContent.uploads)[0];
 
@@ -208,7 +210,7 @@ fields.set("markdown", {
     field.details.upload ??= field.uploads ?? field.upload ??
       Object.keys(uploads);
   },
-  applyChanges(data, changes, field: ResolvedField) {
+  applyChanges(data, changes, field) {
     if (field.name in changes) {
       const value = changes[field.name];
 

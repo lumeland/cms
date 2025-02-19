@@ -4,6 +4,24 @@ import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
 import { FieldKeys } from "./fields/core.ts";
 
+/**
+ * This utility type is useful when you want to see the full expanded type
+ * rather than type references in tooltips/intellisense.
+ *
+ * @typeParam T - The type to prettify
+ *
+ * @example
+ * ```typescript
+ * type Foo = { a: number } & { b: string };
+ * type PrettyFoo = Prettify<Foo>; // { a: number, b: string }
+ * ```
+ */
+type Prettify<T> =
+  & {
+    [K in keyof T]: T[K];
+  }
+  & {};
+
 /** Generic data to store */
 export type Data = Record<string, unknown>;
 
@@ -59,24 +77,6 @@ export interface Transformer<T> {
   toData(content: T): Data | Promise<Data>;
   fromData(data: Data): T | Promise<T>;
 }
-
-/**
- * This utility type is useful when you want to see the full expanded type
- * rather than type references in tooltips/intellisense.
- *
- * @typeParam T - The type to prettify
- *
- * @example
- * ```typescript
- * type Foo = { a: number } & { b: string };
- * type PrettyFoo = Prettify<Foo>; // { a: number, b: string }
- * ```
- */
-type Prettify<T> =
-  & {
-    [K in keyof T]: T[K];
-  }
-  & {};
 
 type Option = string | { value: string | number; label: string };
 
@@ -147,7 +147,7 @@ type FieldTypeToPropertySelectionMap = {
 /**
  * Represents common field options shared by all field types.
  */
-interface FieldProperties<K extends string> {
+interface FieldProperties<FieldType extends string, AllTypes extends string> {
   name: string;
   label?: string;
   description?: string;
@@ -166,9 +166,12 @@ interface FieldProperties<K extends string> {
   upload?: string | false;
   publicPath?: string;
   options?: Option[];
-  fields?: FieldArray<K>;
-  init?: (field: ResolvedField, content: CMSContent) => void | Promise<void>;
-  transform?(value: any, field: ResolvedField): any;
+  fields?: FieldArray<AllTypes>;
+  init?: (
+    field: ResolvedField<FieldType>,
+    content: CMSContent,
+  ) => void | Promise<void>;
+  transform?(value: any, field: ResolvedField<FieldType>): any;
 }
 
 /**
@@ -192,30 +195,30 @@ type FieldTypeToValueTypeMap = Prettify<
 /**
  * Creates the field options for one of the built-in field types with type `K`.
  */
-type BuiltInField<K extends FieldKeys, U extends string> =
+type BuiltInField<FieldType extends FieldKeys, AllTypes extends string> =
   & {
-    type: K;
+    type: FieldType;
   }
-  & (FieldTypeToValueTypeMap[K] extends never ? {}
+  & (FieldTypeToValueTypeMap[FieldType] extends never ? {}
     : {
-      value?: FieldTypeToValueTypeMap[K];
+      value?: FieldTypeToValueTypeMap[FieldType];
     })
   & Pick<
-    FieldProperties<U>,
-    Exclude<FieldTypeToPropertySelectionMap[K], "value">
+    FieldProperties<FieldType, AllTypes>,
+    Exclude<FieldTypeToPropertySelectionMap[FieldType], "value">
   >;
 
 /**
  * Represents the options for a custom field type.
  */
-type CustomField<K extends string, U extends string> = Prettify<
+type CustomField<FieldType extends string, AllTypes extends string> = Prettify<
   & {
-    type: K;
+    type: FieldType;
     value?: unknown;
     [key: string]: unknown;
   }
   & Pick<
-    FieldProperties<U>,
+    FieldProperties<FieldType, AllTypes>,
     Exclude<CommonFieldProperties, "value">
   >
 >;
@@ -223,37 +226,44 @@ type CustomField<K extends string, U extends string> = Prettify<
 /**
  * Represents the options for a field (both built in and custom).
  */
-export type Field<K extends string, U extends string = K> = Prettify<
-  K extends FieldKeys ? BuiltInField<K, U> : CustomField<K, U>
+export type Field<
+  FieldType extends string,
+  AllTypes extends string = FieldType,
+> = Prettify<
+  FieldType extends FieldKeys ? BuiltInField<FieldType, AllTypes>
+    : CustomField<FieldType, AllTypes>
 >;
 
 export type BuiltInFieldType = FieldKeys;
-export type FieldArray<K extends string> = (Field<K> | FieldString<K>)[];
+export type FieldArray<FieldType extends string> =
+  (Field<FieldType> | FieldString<string>)[];
 
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
  */
-export type FieldString<K extends string> = `${string}:${"" | " "}${K}${
+export type FieldString<FieldType extends string> = `${string}:${
+  | ""
+  | " "}${FieldType}${
   | ""
   | "!"}`;
 
-export type MergedField = Prettify<
+export type MergedField<FieldType extends string> = Prettify<
   & {
-    type: string;
+    type: FieldType;
   }
-  & FieldProperties<FieldKeys | string & Record<never, never>>
+  & FieldProperties<FieldType, FieldType>
 >;
 
-export type ResolvedField = Prettify<
-  Omit<MergedField, "fields"> & {
+export type ResolvedField<FieldType extends string> = Prettify<
+  Omit<MergedField<FieldType>, "fields"> & {
     tag: string;
     label: string;
-    fields?: ResolvedField[];
+    fields?: ResolvedField<FieldType>[];
     details?: Record<string, any>;
     applyChanges(
       data: Data,
       changes: Data,
-      field: ResolvedField,
+      field: ResolvedField<FieldType>,
       document: Document,
       content: CMSContent,
     ): void | Promise<void>;
@@ -261,14 +271,14 @@ export type ResolvedField = Prettify<
   }
 >;
 
-export interface FieldType {
+export interface FieldDefinition<FieldType extends string> {
   tag: string;
   jsImport: string;
-  init?: (field: ResolvedField, content: CMSContent) => void;
+  init?: (field: ResolvedField<FieldType>, content: CMSContent) => void;
   applyChanges(
     data: Data,
     changes: Data,
-    field: ResolvedField,
+    field: ResolvedField<FieldType>,
     document: Document,
     content: CMSContent,
   ): void | Promise<void>;
