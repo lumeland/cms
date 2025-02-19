@@ -24,7 +24,6 @@ import { Git, Options as GitOptions } from "./git.ts";
 
 import type { Context, Next } from "../deps/hono.ts";
 import type {
-  BuiltInFieldType,
   CMSContent,
   Data,
   Entry,
@@ -101,10 +100,7 @@ const defaults = {
 } satisfies CmsOptions;
 
 export default class Cms<
-  CustomFieldType extends string = never,
-  FieldType extends BuiltInFieldType | CustomFieldType =
-    | BuiltInFieldType
-    | CustomFieldType,
+  FieldType extends string,
 > {
   #jsImports = new Set<string>();
 
@@ -267,16 +263,16 @@ export default class Cms<
   }
 
   /** Add a new field type */
-  field<T extends FieldType>(
-    name: string,
+  field<T extends string>(
+    name: T,
     field: FieldDefinition<T>,
-  ): this {
+  ): Cms<FieldType | T> {
     this.fields.set(name, field as unknown as FieldDefinition<FieldType>);
-    return this;
+    return this as unknown as Cms<FieldType | T>;
   }
 
   /** Use a plugin */
-  use(plugin: (cms: Cms<CustomFieldType, FieldType>) => void): this {
+  use(plugin: (cms: Cms<FieldType>) => void): this {
     plugin(this);
     return this;
   }

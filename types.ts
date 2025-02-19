@@ -199,7 +199,7 @@ type BuiltInField<FieldType extends FieldKeys, AllTypes extends string> =
   & {
     type: FieldType;
   }
-  & (FieldTypeToValueTypeMap[FieldType] extends never ? {}
+  & (FieldTypeToValueTypeMap[FieldType] extends never ? Record<string, never>
     : {
       value?: FieldTypeToValueTypeMap[FieldType];
     })
