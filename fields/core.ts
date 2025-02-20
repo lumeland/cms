@@ -64,7 +64,7 @@ const getInputFieldDefinition = <T extends keyof Inputs>(
   };
 };
 
-export const addDefaultFields = <T extends string>(cms: Cms<T>) => {
+export const defaultFields = <T extends string>(cms: Cms<T>) => {
   return cms
     .field("text", getInputFieldDefinition("text"))
     .field("textarea", getInputFieldDefinition("textarea"))

@@ -272,9 +272,17 @@ export default class Cms<
   }
 
   /** Use a plugin */
-  use(plugin: (cms: Cms<FieldType>) => void): this {
-    plugin(this);
-    return this;
+  use<K extends string = never>(
+    plugin:
+      | ((cms: Cms<FieldType>) => void)
+      | ((cms: Cms<FieldType>) => Cms<FieldType | K>),
+  ): ReturnType<typeof plugin> extends void ? Cms<FieldType>
+    : Cms<FieldType | K> {
+    const result = plugin(this);
+    if (result) {
+      return result;
+    }
+    return this as unknown as Cms<FieldType | K>;
   }
 
   /** Initialize the CMS */
