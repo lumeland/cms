@@ -143,7 +143,10 @@ type FieldTypeToPropertySelectionMap = {
 /**
  * Represents common field options shared by all field types.
  */
-interface FieldProperties<FieldType extends string, AllTypes extends string> {
+interface BuiltInFieldProperties<
+  FieldType extends string,
+  AllTypes extends string,
+> {
   name: string;
   label?: string;
   description?: string;
@@ -163,10 +166,10 @@ interface FieldProperties<FieldType extends string, AllTypes extends string> {
   publicPath?: string;
   options?: Option[];
   fields?: FieldArray<AllTypes>;
-  init?: (
+  init?(
     field: ResolvedField<FieldType>,
     content: CMSContent<AllTypes>,
-  ) => void | Promise<void>;
+  ): void | Promise<void>;
   transform?(value: any, field: ResolvedField<FieldType>): any;
 }
 
@@ -200,23 +203,23 @@ type BuiltInField<FieldType extends FieldKeys, AllTypes extends string> =
       value?: FieldTypeToValueTypeMap[FieldType];
     })
   & Pick<
-    FieldProperties<FieldType, AllTypes>,
+    BuiltInFieldProperties<FieldType, AllTypes>,
     Exclude<FieldTypeToPropertySelectionMap[FieldType], "value">
   >;
 
 /**
  * Represents the options for a custom field type.
  */
-type CustomField<FieldType extends string, AllTypes extends string> = Prettify<
-  & {
+type CustomField<FieldType extends string> = Prettify<
+  {
     type: FieldType;
+    name: string;
+    label?: string;
+    description?: string;
+    view?: string;
     value?: unknown;
     [key: string]: unknown;
   }
-  & Pick<
-    FieldProperties<FieldType, AllTypes>,
-    Exclude<CommonFieldProperties, "value">
-  >
 >;
 
 /**
@@ -227,7 +230,7 @@ export type Field<
   AllTypes extends string = FieldType,
 > = Prettify<
   FieldType extends FieldKeys ? BuiltInField<FieldType, AllTypes>
-    : CustomField<FieldType, AllTypes>
+    : CustomField<FieldType>
 >;
 
 export type BuiltInFieldType = FieldKeys;
@@ -247,7 +250,7 @@ export type MergedField<FieldType extends string> = Prettify<
   & {
     type: FieldType;
   }
-  & FieldProperties<FieldType, FieldType>
+  & BuiltInFieldProperties<FieldType, FieldType>
 >;
 
 export type ResolvedField<FieldType extends string> = Prettify<
@@ -270,10 +273,10 @@ export type ResolvedField<FieldType extends string> = Prettify<
 export interface FieldDefinition<FieldType extends string> {
   tag: string;
   jsImport: string;
-  init?: <T extends string>(
+  init?<T extends string>(
     field: ResolvedField<FieldType>,
     content: CMSContent<T>,
-  ) => void;
+  ): void;
   applyChanges<T extends string>(
     data: Data,
     changes: Data,
