@@ -7,8 +7,8 @@ import type Collection from "../../collection.ts";
 import type { CMSContent, Version } from "../../../types.ts";
 
 interface Props {
-  options: CMSContent;
-  collection: Collection;
+  options: CMSContent<string>;
+  collection: Collection<string>;
   version?: Version;
   folder?: string;
   defaults: Record<string, unknown>;

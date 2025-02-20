@@ -53,10 +53,10 @@ export function changesToData(
   return data.changes as Data;
 }
 
-export async function prepareField(
-  field: ResolvedField,
-  content: CMSContent,
-): Promise<ResolvedField> {
+export async function prepareField<FieldType extends string>(
+  field: ResolvedField<FieldType>,
+  content: CMSContent<FieldType>,
+): Promise<ResolvedField<FieldType>> {
   const json = { ...field };
 
   if (field.fields) {
@@ -72,7 +72,10 @@ export async function prepareField(
   return json;
 }
 
-export function getViews(field: ResolvedField, views = new Set()): unknown {
+export function getViews<FieldType extends string>(
+  field: ResolvedField<FieldType>,
+  views = new Set(),
+): unknown {
   if (field.view) {
     views.add(field.view);
   }

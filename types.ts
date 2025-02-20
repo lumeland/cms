@@ -169,7 +169,7 @@ interface FieldProperties<FieldType extends string, AllTypes extends string> {
   fields?: FieldArray<AllTypes>;
   init?: (
     field: ResolvedField<FieldType>,
-    content: CMSContent,
+    content: CMSContent<AllTypes>,
   ) => void | Promise<void>;
   transform?(value: any, field: ResolvedField<FieldType>): any;
 }
@@ -260,12 +260,12 @@ export type ResolvedField<FieldType extends string> = Prettify<
     label: string;
     fields?: ResolvedField<FieldType>[];
     details?: Record<string, any>;
-    applyChanges(
+    applyChanges<T extends string>(
       data: Data,
       changes: Data,
       field: ResolvedField<FieldType>,
-      document: Document,
-      content: CMSContent,
+      document: Document<FieldType>,
+      content: CMSContent<T>,
     ): void | Promise<void>;
     [key: string]: unknown;
   }
@@ -274,13 +274,16 @@ export type ResolvedField<FieldType extends string> = Prettify<
 export interface FieldDefinition<FieldType extends string> {
   tag: string;
   jsImport: string;
-  init?: (field: ResolvedField<FieldType>, content: CMSContent) => void;
-  applyChanges(
+  init?: <T extends string>(
+    field: ResolvedField<FieldType>,
+    content: CMSContent<T>,
+  ) => void;
+  applyChanges<T extends string>(
     data: Data,
     changes: Data,
     field: ResolvedField<FieldType>,
-    document: Document,
-    content: CMSContent,
+    document: Document<FieldType>,
+    content: CMSContent<T>,
   ): void | Promise<void>;
 }
 
@@ -289,12 +292,12 @@ export type Labelizer = (
   prev?: (name: string) => string,
 ) => string;
 
-export interface CMSContent {
+export interface CMSContent<FieldType extends string> {
   basePath: string;
   auth: boolean;
   site: SiteInfo;
-  collections: Record<string, Collection>;
-  documents: Record<string, Document>;
+  collections: Record<string, Collection<FieldType>>;
+  documents: Record<string, Document<FieldType>>;
   uploads: Record<string, Upload>;
   versioning?: Versioning;
   data: Record<string, any>;

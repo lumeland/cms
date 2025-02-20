@@ -1,25 +1,25 @@
 import type { CMSContent, Data, Entry, ResolvedField } from "../types.ts";
 
-export interface DocumentOptions {
+export interface DocumentOptions<FieldType extends string> {
   name?: string;
   label?: string;
   description?: string;
   entry: Entry;
-  fields: ResolvedField[];
+  fields: ResolvedField<FieldType>[];
   url?: string;
   views?: string[];
 }
 
-export default class Document {
+export default class Document<FieldType extends string> {
   #name?: string;
   #label?: string;
   description?: string;
   #entry: Entry;
-  #fields: ResolvedField[];
+  #fields: ResolvedField<FieldType>[];
   url?: string;
   views?: string[];
 
-  constructor(options: DocumentOptions) {
+  constructor(options: DocumentOptions<FieldType>) {
     this.#name = options.name;
     this.#label = options.label;
     this.description = options.description;
@@ -56,7 +56,7 @@ export default class Document {
     }
   }
 
-  async write(data: Data, cms: CMSContent, create = false) {
+  async write(data: Data, cms: CMSContent<FieldType>, create = false) {
     let currentData = await this.read(create);
     const fields = this.fields || [];
 

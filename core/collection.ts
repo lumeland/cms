@@ -8,12 +8,12 @@ import type {
   Storage,
 } from "../types.ts";
 
-export interface CollectionOptions {
+export interface CollectionOptions<FieldType extends string> {
   name: string;
   label?: string;
   description?: string;
   storage: Storage;
-  fields: ResolvedField[];
+  fields: ResolvedField<FieldType>[];
   url?: string;
   views?: string[];
   /** @deprecated. Use `documentName` instead */
@@ -29,19 +29,19 @@ interface Permissions {
   delete: boolean;
 }
 
-export default class Collection {
+export default class Collection<FieldType extends string> {
   name: string;
   label: string;
   description?: string;
   #storage: Storage;
-  #fields: ResolvedField[];
+  #fields: ResolvedField<FieldType>[];
   url?: string;
   views?: string[];
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
   permissions: Permissions;
 
-  constructor(options: CollectionOptions) {
+  constructor(options: CollectionOptions<FieldType>) {
     this.name = options.name;
     this.label = options.label || options.name;
     this.description = options.description;
@@ -73,7 +73,7 @@ export default class Collection {
     }
   }
 
-  create(id: string): Document {
+  create(id: string): Document<FieldType> {
     const name = this.#storage.name(id);
     const label = this.documentLabel ? this.documentLabel(name) : name;
     return new Document({
@@ -85,7 +85,7 @@ export default class Collection {
     });
   }
 
-  get(name: string): Document {
+  get(name: string): Document<FieldType> {
     const label = this.documentLabel ? this.documentLabel(name) : name;
 
     return new Document({

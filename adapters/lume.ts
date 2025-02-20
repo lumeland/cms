@@ -6,22 +6,24 @@ import { Git, Options as GitOptions } from "../core/git.ts";
 import { relative } from "../deps/std.ts";
 import type Cms from "../core/cms.ts";
 
-export interface Options {
+export interface Options<FieldType extends string> {
   // deno-lint-ignore no-explicit-any
   site: any;
-  cms: Cms;
+  cms: Cms<FieldType>;
   basePath?: string;
 }
 
-export const defaults: Omit<Options, "site" | "cms"> = {
+export const defaults: Omit<Options<never>, "site" | "cms"> = {
   basePath: "/admin",
 };
 
-export default async function lume(userOptions?: Options): Promise<Hono> {
+export default async function lume<FieldType extends string>(
+  userOptions?: Options<FieldType>,
+): Promise<Hono> {
   const options = {
     ...defaults,
     ...userOptions,
-  } as Required<Options>;
+  } as Required<Options<FieldType>>;
 
   const { site, cms, basePath } = options;
 

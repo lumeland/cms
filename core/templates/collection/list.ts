@@ -7,8 +7,8 @@ import type Collection from "../../collection.ts";
 import type { CMSContent, Version } from "../../../types.ts";
 
 interface Props {
-  options: CMSContent;
-  collection: Collection;
+  options: CMSContent<string>;
+  collection: Collection<string>;
   version?: Version;
 }
 
@@ -62,8 +62,8 @@ ${
 }
 
 interface FolderProps {
-  options: CMSContent;
-  collection: Collection;
+  options: CMSContent<string>;
+  collection: Collection<string>;
   tree: Tree;
 }
 
@@ -85,8 +85,8 @@ function folder({ options, collection, tree }: FolderProps) {
 function printFolder(
   name: string,
   tree: Tree,
-  collection: Collection,
-  options: CMSContent,
+  collection: Collection<string>,
+  options: CMSContent<string>,
 ) {
   return `<li>
       <details open class="accordion">
@@ -112,8 +112,8 @@ function printFolder(
 function printFile(
   name: string,
   path: string,
-  collection: Collection,
-  options: CMSContent,
+  collection: Collection<string>,
+  options: CMSContent<string>,
 ) {
   return `
   <li>

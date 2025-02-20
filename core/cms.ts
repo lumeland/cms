@@ -278,8 +278,8 @@ export default class Cms<
   }
 
   /** Initialize the CMS */
-  initContent(): CMSContent {
-    const content: CMSContent = {
+  initContent(): CMSContent<FieldType> {
+    const content: CMSContent<FieldType> = {
       basePath: this.options.basePath,
       auth: this.options.auth?.method === "basic",
       site: this.options.site!,
@@ -515,7 +515,7 @@ export default class Cms<
 
   #resolveFields(
     fields: (MergedField<FieldType> | string)[],
-    content: CMSContent,
+    content: CMSContent<FieldType>,
   ): ResolvedField<FieldType>[] {
     return fields
       .map((field) => {
