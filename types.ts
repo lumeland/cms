@@ -100,18 +100,14 @@ type FieldTypeToPropertyFilterMap = Prettify<
   & {
     [K in "choose-list" | "list" | "object" | "object-list"]:
       | "value"
-      | "attributes"
-      | "init"
-      | "transform";
+      | "attributes";
   }
   & {
     "hidden":
       | "label"
       | "description"
       | "view"
-      | "attributes"
-      | "init"
-      | "transform";
+      | "attributes";
   }
 >;
 
@@ -199,7 +195,7 @@ type BuiltInField<FieldType extends FieldKeys, AllTypes extends string> =
   & {
     type: FieldType;
   }
-  & (FieldTypeToValueTypeMap[FieldType] extends never ? Record<string, never>
+  & (FieldTypeToValueTypeMap[FieldType] extends never ? {}
     : {
       value?: FieldTypeToValueTypeMap[FieldType];
     })
