@@ -2,5 +2,19 @@ import Cms, { CmsOptions } from "./core/cms.ts";
 
 import { defaultFields } from "./fields/core.ts";
 
-export default <K extends string = never>(options?: Partial<CmsOptions>) =>
-  new Cms<K>(options).use(defaultFields<K>);
+type CmsTypeOptions = {
+  strict: boolean;
+};
+
+type DefaultCmsTypeOptions = {
+  strict: false;
+};
+
+export default <TypeOptions extends CmsTypeOptions = DefaultCmsTypeOptions>(
+  options?: Partial<CmsOptions>,
+) => {
+  type FieldType = TypeOptions["strict"] extends false
+    ? string & Record<never, never>
+    : never;
+  return new Cms<FieldType>(options).use(defaultFields<FieldType>);
+};
