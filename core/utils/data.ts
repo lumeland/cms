@@ -72,10 +72,7 @@ export async function prepareField(
   return json;
 }
 
-export function getViews(
-  field: ResolvedField,
-  views = new Set(),
-): unknown {
+export function getViews(field: ResolvedField, views = new Set()): unknown {
   if (field.view) {
     views.add(field.view);
   }

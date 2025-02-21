@@ -17,9 +17,7 @@ export const defaults: Omit<Options, "site" | "cms"> = {
   basePath: "/admin",
 };
 
-export default async function lume(
-  userOptions?: Options,
-): Promise<Hono> {
+export default async function lume(userOptions?: Options): Promise<Hono> {
   const options = {
     ...defaults,
     ...userOptions,

@@ -3,7 +3,7 @@ import { isEmpty } from "../core/utils/string.ts";
 
 export default function () {
   return (cms: Cms) => {
-    return cms.field("blocks", {
+    cms.field("blocks", {
       tag: "f-blocks",
       jsImport: `lume_cms/components/f-blocks.js`,
       applyChanges(data, changes, field) {
