@@ -210,16 +210,16 @@ type BuiltInField<FieldType extends FieldKeys, AllTypes extends string> =
 /**
  * Represents the options for a custom field type.
  */
-type CustomField<FieldType extends string> = Prettify<
-  {
+type CustomField<FieldType extends string, AllTypes extends string> = Prettify<
+  & {
     type: FieldType;
-    name: string;
-    label?: string;
-    description?: string;
-    view?: string;
     value?: unknown;
     [key: string]: unknown;
   }
+  & Pick<
+    BuiltInFieldProperties<FieldType, AllTypes>,
+    Exclude<CommonFieldProperties, "value">
+  >
 >;
 
 /**
@@ -229,8 +229,11 @@ export type Field<
   FieldType extends string,
   AllTypes extends string = FieldType,
 > = Prettify<
-  FieldType extends FieldKeys ? BuiltInField<FieldType, AllTypes>
-    : CustomField<FieldType>
+  [Extract<FieldType, FieldKeys>] extends [never]
+    ? CustomField<FieldType, AllTypes>
+    : {
+      [K in Extract<FieldType, FieldKeys>]: BuiltInField<K, AllTypes>;
+    }[Extract<FieldType, FieldKeys>]
 >;
 
 export type BuiltInFieldType = FieldKeys;
