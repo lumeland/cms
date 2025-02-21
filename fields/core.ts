@@ -42,7 +42,7 @@ export type FieldKeys = DumbFieldKeys | SmartFieldKeys;
 
 const getInputFieldDefinition = <T extends keyof Inputs>(
   input: T,
-): FieldDefinition<T> => {
+): FieldDefinition => {
   const transform = inputs[input];
   return {
     tag: `f-${input}`,
@@ -64,8 +64,8 @@ const getInputFieldDefinition = <T extends keyof Inputs>(
   };
 };
 
-export const defaultFields = <T extends string>(cms: Cms<T>) => {
-  return cms
+export const defaultFields = (cms: Cms) => {
+  cms
     .field("text", getInputFieldDefinition("text"))
     .field("textarea", getInputFieldDefinition("textarea"))
     .field("markdown", getInputFieldDefinition("markdown"))

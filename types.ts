@@ -143,10 +143,7 @@ type FieldTypeToPropertySelectionMap = {
 /**
  * Represents common field options shared by all field types.
  */
-interface BuiltInFieldProperties<
-  FieldType extends string,
-  AllTypes extends string,
-> {
+interface BuiltInFieldProperties {
   name: string;
   label?: string;
   description?: string;
@@ -165,12 +162,12 @@ interface BuiltInFieldProperties<
   upload?: string | false;
   publicPath?: string;
   options?: Option[];
-  fields?: FieldArray<AllTypes>;
+  fields?: FieldArray;
   init?(
-    field: ResolvedField<FieldType>,
-    content: CMSContent<AllTypes>,
+    field: ResolvedField,
+    content: CMSContent,
   ): void | Promise<void>;
-  transform?(value: any, field: ResolvedField<FieldType>): any;
+  transform?(value: any, field: ResolvedField): any;
 }
 
 /**
@@ -194,7 +191,7 @@ type FieldTypeToValueTypeMap = Prettify<
 /**
  * Creates the field options for one of the built-in field types with type `K`.
  */
-type BuiltInField<FieldType extends FieldKeys, AllTypes extends string> =
+type BuiltInField<FieldType extends FieldKeys> =
   & {
     type: FieldType;
   }
@@ -203,21 +200,21 @@ type BuiltInField<FieldType extends FieldKeys, AllTypes extends string> =
       value?: FieldTypeToValueTypeMap[FieldType];
     })
   & Pick<
-    BuiltInFieldProperties<FieldType, AllTypes>,
+    BuiltInFieldProperties,
     Exclude<FieldTypeToPropertySelectionMap[FieldType], "value">
   >;
 
 /**
  * Represents the options for a custom field type.
  */
-type CustomField<FieldType extends string, AllTypes extends string> = Prettify<
+type CustomField<FieldType extends string> = Prettify<
   & {
     type: FieldType;
     value?: unknown;
     [key: string]: unknown;
   }
   & Pick<
-    BuiltInFieldProperties<FieldType, AllTypes>,
+    BuiltInFieldProperties,
     Exclude<CommonFieldProperties, "value">
   >
 >;
@@ -225,20 +222,15 @@ type CustomField<FieldType extends string, AllTypes extends string> = Prettify<
 /**
  * Represents the options for a field (both built in and custom).
  */
-export type Field<
-  FieldType extends string,
-  AllTypes extends string = FieldType,
-> = Prettify<
-  [Extract<FieldType, FieldKeys>] extends [never]
-    ? CustomField<FieldType, AllTypes>
+export type Field<FieldType extends string> = Prettify<
+  [Extract<FieldType, FieldKeys>] extends [never] ? CustomField<FieldType>
     : {
-      [K in Extract<FieldType, FieldKeys>]: BuiltInField<K, AllTypes>;
+      [K in Extract<FieldType, FieldKeys>]: BuiltInField<K>;
     }[Extract<FieldType, FieldKeys>]
 >;
 
-export type BuiltInFieldType = FieldKeys;
-export type FieldArray<FieldType extends string> =
-  (Field<FieldType> | FieldString<string>)[];
+export type FieldArray =
+  (Field<FieldKeys | string & Record<never, never>> | FieldString<string>)[];
 
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
@@ -249,43 +241,43 @@ export type FieldString<FieldType extends string> = `${string}:${
   | ""
   | "!"}`;
 
-export type MergedField<FieldType extends string> = Prettify<
+export type MergedField = Prettify<
   & {
-    type: FieldType;
+    type: FieldKeys | string & Record<never, never>;
   }
-  & BuiltInFieldProperties<FieldType, FieldType>
+  & BuiltInFieldProperties
 >;
 
-export type ResolvedField<FieldType extends string> = Prettify<
-  Omit<MergedField<FieldType>, "fields"> & {
+export type ResolvedField = Prettify<
+  Omit<MergedField, "fields"> & {
     tag: string;
     label: string;
-    fields?: ResolvedField<FieldType>[];
+    fields?: ResolvedField[];
     details?: Record<string, any>;
-    applyChanges<T extends string>(
+    applyChanges(
       data: Data,
       changes: Data,
-      field: ResolvedField<FieldType>,
-      document: Document<FieldType>,
-      content: CMSContent<T>,
+      field: ResolvedField,
+      document: Document,
+      content: CMSContent,
     ): void | Promise<void>;
     [key: string]: unknown;
   }
 >;
 
-export interface FieldDefinition<FieldType extends string> {
+export interface FieldDefinition {
   tag: string;
   jsImport: string;
-  init?<T extends string>(
-    field: ResolvedField<FieldType>,
-    content: CMSContent<T>,
+  init?(
+    field: ResolvedField,
+    content: CMSContent,
   ): void;
-  applyChanges<T extends string>(
+  applyChanges(
     data: Data,
     changes: Data,
-    field: ResolvedField<FieldType>,
-    document: Document<FieldType>,
-    content: CMSContent<T>,
+    field: ResolvedField,
+    document: Document,
+    content: CMSContent,
   ): void | Promise<void>;
 }
 
@@ -294,12 +286,12 @@ export type Labelizer = (
   prev?: (name: string) => string,
 ) => string;
 
-export interface CMSContent<FieldType extends string> {
+export interface CMSContent {
   basePath: string;
   auth: boolean;
   site: SiteInfo;
-  collections: Record<string, Collection<FieldType>>;
-  documents: Record<string, Document<FieldType>>;
+  collections: Record<string, Collection>;
+  documents: Record<string, Document>;
   uploads: Record<string, Upload>;
   versioning?: Versioning;
   data: Record<string, any>;

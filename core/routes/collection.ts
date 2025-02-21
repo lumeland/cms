@@ -212,7 +212,7 @@ export default function (app: Hono) {
 }
 
 function get(c: Context) {
-  const options = c.get("options") as CMSContent<string>;
+  const options = c.get("options") as CMSContent;
   const { collections, versioning } = options;
   const collectionName = c.req.param("collection");
   const collection = collections[collectionName];

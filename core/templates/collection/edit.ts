@@ -8,9 +8,9 @@ import type Document from "../../document.ts";
 import type { CMSContent, Version } from "../../../types.ts";
 
 interface Props {
-  options: CMSContent<string>;
-  collection: Collection<string>;
-  document: Document<string>;
+  options: CMSContent;
+  collection: Collection;
+  document: Document;
   version?: Version;
 }
 
