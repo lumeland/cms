@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.9.3] - Unreleased
+## [0.9.3] - 2025-02-22
 ### Added
 - New option `onPublish` to git.
+- New core field `file-list`. It's like an `object-list` but allows to upload multiple files at once.
 
 ## [0.9.2] - 2025-01-21
 ### Added
@@ -554,7 +555,7 @@ First version
 [#31]: https://github.com/lumeland/cms/issues/31
 [#34]: https://github.com/lumeland/cms/issues/34
 
-[0.9.3]: https://github.com/lumeland/cms/compare/v0.9.2...HEAD
+[0.9.3]: https://github.com/lumeland/cms/compare/v0.9.2...v0.9.3
 [0.9.2]: https://github.com/lumeland/cms/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/lumeland/cms/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/lumeland/cms/compare/v0.8.3...v0.9.0

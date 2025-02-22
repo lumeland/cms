@@ -98,7 +98,7 @@ export default function (app: Hono) {
     const file = await entry.readFile();
     c.header("Content-Type", file.type);
     c.header("Content-Length", file.size.toString());
-    return c.body(new Uint8Array(await file.arrayBuffer()));
+    return c.body(await file.arrayBuffer());
   });
 
   app.get("/uploads/:upload/file/:file", async (c: Context) => {

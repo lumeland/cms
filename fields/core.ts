@@ -29,6 +29,7 @@ type SmartFieldKeys =
   | "list"
   | "object"
   | "object-list"
+  | "file-list"
   | "choose-list"
   | "markdown"
   | "file";
@@ -115,6 +116,29 @@ fields.set("object-list", {
   },
 });
 
+fields.set("file-list", {
+  tag: "f-file-list",
+  jsImport: "lume_cms/components/f-file-list.js",
+  async applyChanges(data, changes, field, document, cmsContent) {
+    const value = await Promise.all(
+      Object.values(changes[field.name] || {}).map(
+        async (subchanges) => {
+          const value = {} as Data;
+
+          for (const f of field.fields || []) {
+            await f.applyChanges(value, subchanges, f, document, cmsContent);
+          }
+
+          return value;
+        },
+      ),
+    );
+
+    const fn = field.transform;
+    data[field.name] = fn ? fn(value, field) : value;
+  },
+});
+
 fields.set("choose-list", {
   tag: "f-choose-list",
   jsImport: "lume_cms/components/f-choose-list.js",
@@ -181,6 +205,7 @@ fields.set("file", {
     }
     const upload = field.upload || field.uploads || "default";
     let [uploadKey, uploadPath = ""] = upload.split(":");
+
     const { storage, publicPath } = cmsContent.uploads[uploadKey];
 
     if (!storage) {
