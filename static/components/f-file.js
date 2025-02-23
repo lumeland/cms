@@ -23,10 +23,11 @@ customElements.define(
       }
 
       const divValue = dom("div", { class: "field-value" }, this);
+      const currValue = isNew ? value ?? schema.value : value;
       const curr = dom("input", {
         name: `${name}.current`,
         type: "text",
-        value: isNew ? value ?? schema.value : value,
+        value: typeof currValue === "string" ? currValue : null,
         class: "input is-narrow",
       }, divValue);
 
@@ -58,7 +59,7 @@ customElements.define(
 
       const upload = dom("u-upload", this);
 
-      dom("input", {
+      const input = dom("input", {
         ...schema.attributes,
         type: "file",
         id,
@@ -66,6 +67,10 @@ customElements.define(
         class: "inputFile",
         oninvalid,
       }, upload);
+
+      if (currValue instanceof File) {
+        setValue(currValue, input);
+      }
     }
 
     get currentValue() {
@@ -73,3 +78,10 @@ customElements.define(
     }
   },
 );
+
+function setValue(file, input) {
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(file);
+  const fileList = dataTransfer.files;
+  input.files = fileList;
+}

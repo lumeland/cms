@@ -48,6 +48,18 @@ cms.document({
       type: "textarea",
       view: "full",
     },
+    {
+      name: "media",
+      type: "file-list",
+      fields: [
+        "description: text",
+        {
+          "name": "src",
+          "type": "file",
+          upload: "img",
+        },
+      ],
+    },
   ],
 });
 cms.collection({
