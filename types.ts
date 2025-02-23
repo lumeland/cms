@@ -175,7 +175,7 @@ interface BuiltInFieldProperties<AllFields extends string> {
   upload?: string | false;
   publicPath?: string;
   options?: Option[];
-  fields?: FieldArray<AllFields | string & Record<never, never>>;
+  fields?: FieldArray<AllFields>;
   init?(
     field: ResolvedField,
     content: CMSContent,
@@ -237,8 +237,8 @@ export type Field<
   AllFields extends string,
 > = LiteralOnly<FieldType> extends never ? never
   : {
-    [K in FieldType]: FieldInternal<K, AllFields>;
-  }[FieldType];
+    [K in LiteralOnly<FieldType>]: FieldInternal<K, AllFields>;
+  }[LiteralOnly<FieldType>];
 
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.

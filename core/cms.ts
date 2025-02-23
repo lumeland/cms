@@ -99,7 +99,7 @@ const defaults = {
   basePath: "/",
 } satisfies CmsOptions;
 
-export default class Cms {
+export default class Cms<CustomFieldType extends string = never> {
   #jsImports = new Set<string>();
 
   fetch: (request: Request) => Response | Promise<Response>;
@@ -191,25 +191,25 @@ export default class Cms {
 
   /** Add a new collection */
   collection<FieldType extends string>(
-    options: CollectionOptions<FieldType>,
+    options: CollectionOptions<FieldType | CustomFieldType>,
   ): this;
   collection<FieldType extends string>(
     name: string,
     store: string,
-    fields: FieldArray<FieldType>,
+    fields: FieldArray<FieldType | CustomFieldType>,
   ): this;
   collection<FieldType extends string>(
-    name: string | CollectionOptions<FieldType>,
+    name: string | CollectionOptions<FieldType | CustomFieldType>,
     store?: string,
-    fields?: FieldArray<FieldType>,
+    fields?: FieldArray<FieldType | CustomFieldType>,
   ): this {
     const options = typeof name === "string"
       ? {
         name,
         store,
         fields,
-      } as CollectionOptions<FieldType>
-      : name as CollectionOptions<FieldType>;
+      } as CollectionOptions<FieldType | CustomFieldType>
+      : name as CollectionOptions<FieldType | CustomFieldType>;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>
@@ -228,25 +228,25 @@ export default class Cms {
 
   /** Add a new document */
   document<FieldType extends string>(
-    options: DocumentOptions<FieldType>,
+    options: DocumentOptions<FieldType | CustomFieldType>,
   ): this;
   document<FieldType extends string>(
     name: string,
     store: string,
-    fields: FieldArray<FieldType>,
+    fields: FieldArray<FieldType | CustomFieldType>,
   ): this;
   document<FieldType extends string>(
-    name: string | DocumentOptions<FieldType>,
+    name: string | DocumentOptions<FieldType | CustomFieldType>,
     store?: string,
-    fields?: FieldArray<FieldType>,
+    fields?: FieldArray<FieldType | CustomFieldType>,
   ): this {
     const options = typeof name === "string"
       ? {
         name,
         store,
         fields,
-      } as DocumentOptions<FieldType>
-      : name as DocumentOptions<FieldType>;
+      } as DocumentOptions<FieldType | CustomFieldType>
+      : name as DocumentOptions<FieldType | CustomFieldType>;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>
