@@ -22,6 +22,19 @@ type Prettify<T> =
   }
   & {};
 
+/**
+ * Utility type that extracts only literal string types from a given union type.
+ *
+ * @template T - The type to filter, which is typically a union of literal strings and broader string types.
+ *
+ * @example
+ * // Given a union of a literal and a broad string type:
+ * type Test = LiteralOnly<"hello" | string & Record<never, never>>;
+ *
+ * // Test resolves to "hello" because the broad string type is filtered out.
+ */
+type LiteralOnly<T> = T extends string ? (string extends T ? never : T) : never;
+
 /** Generic data to store */
 export type Data = Record<string, unknown>;
 
@@ -143,7 +156,7 @@ type FieldTypeToPropertySelectionMap = {
 /**
  * Represents common field options shared by all field types.
  */
-interface BuiltInFieldProperties {
+interface BuiltInFieldProperties<AllFields extends string> {
   name: string;
   label?: string;
   description?: string;
@@ -162,7 +175,7 @@ interface BuiltInFieldProperties {
   upload?: string | false;
   publicPath?: string;
   options?: Option[];
-  fields?: FieldArray;
+  fields?: FieldArray<AllFields | string & Record<never, never>>;
   init?(
     field: ResolvedField,
     content: CMSContent,
@@ -188,49 +201,44 @@ type FieldTypeToValueTypeMap = Prettify<
   }
 >;
 
-/**
- * Creates the field options for one of the built-in field types with type `K`.
- */
-type BuiltInField<FieldType extends FieldKeys> =
+type FieldInternal<
+  FieldType extends string,
+  AllFields extends string,
+> =
   & {
-    type: FieldType;
+    readonly type: FieldType;
   }
-  & (FieldTypeToValueTypeMap[FieldType] extends never ? {}
-    : {
-      value?: FieldTypeToValueTypeMap[FieldType];
-    })
-  & Pick<
-    BuiltInFieldProperties,
-    Exclude<FieldTypeToPropertySelectionMap[FieldType], "value">
-  >;
-
-/**
- * Represents the options for a custom field type.
- */
-type CustomField<FieldType extends string> = Prettify<
-  & {
-    type: FieldType;
-    value?: unknown;
-    [key: string]: unknown;
-  }
-  & Pick<
-    BuiltInFieldProperties,
-    Exclude<CommonFieldProperties, "value">
-  >
->;
+  & (
+    FieldType extends FieldKeys ?
+        & (FieldTypeToValueTypeMap[FieldType] extends never ? {}
+          : {
+            value?: FieldTypeToValueTypeMap[FieldType];
+          })
+        & Pick<
+          BuiltInFieldProperties<AllFields>,
+          Exclude<FieldTypeToPropertySelectionMap[FieldType], "value">
+        >
+      :
+        & {
+          value?: unknown;
+          [key: string]: unknown;
+        }
+        & Pick<
+          BuiltInFieldProperties<AllFields>,
+          Exclude<CommonFieldProperties, "value">
+        >
+  );
 
 /**
  * Represents the options for a field (both built in and custom).
  */
-export type Field<FieldType extends string> = Prettify<
-  [Extract<FieldType, FieldKeys>] extends [never] ? CustomField<FieldType>
-    : {
-      [K in Extract<FieldType, FieldKeys>]: BuiltInField<K>;
-    }[Extract<FieldType, FieldKeys>]
->;
-
-export type FieldArray =
-  (Field<FieldKeys | string & Record<never, never>> | FieldString<string>)[];
+export type Field<
+  FieldType extends string,
+  AllFields extends string,
+> = LiteralOnly<FieldType> extends never ? never
+  : {
+    [K in FieldType]: FieldInternal<K, AllFields>;
+  }[FieldType];
 
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
@@ -241,11 +249,14 @@ export type FieldString<FieldType extends string> = `${string}:${
   | ""
   | "!"}`;
 
+export type FieldArray<FieldType extends string> =
+  (Field<FieldType, FieldKeys | FieldType> | FieldString<string>)[];
+
 export type MergedField = Prettify<
   & {
     type: FieldKeys | string & Record<never, never>;
   }
-  & BuiltInFieldProperties
+  & BuiltInFieldProperties<string>
 >;
 
 export type ResolvedField = Prettify<

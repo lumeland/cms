@@ -56,14 +56,30 @@ export interface LogOptions {
   filename: string;
 }
 
-interface DocumentOptions {
+interface DocumentOptions<FieldType extends string> {
   name: string;
   label?: string;
   description?: string;
   store: string;
-  fields: FieldArray;
+  fields: FieldArray<FieldType>;
   url?: string;
   views?: string[];
+}
+
+interface CollectionOptions<FieldType extends string> {
+  name: string;
+  label?: string;
+  description?: string;
+  store: string;
+  fields: FieldArray<FieldType>;
+  url?: string;
+  views?: string[];
+  /** @deprecated. Use `documentName` instead */
+  nameField?: string | ((changes: Data) => string);
+  documentName?: string | ((changes: Data) => string | undefined);
+  documentLabel?: Labelizer;
+  create?: boolean;
+  delete?: boolean;
 }
 
 interface UploadOptions {
@@ -73,22 +89,6 @@ interface UploadOptions {
   store: string;
   publicPath?: string;
   listed?: boolean;
-}
-
-interface CollectionOptions {
-  name: string;
-  label?: string;
-  description?: string;
-  store: string;
-  fields: FieldArray;
-  url?: string;
-  views?: string[];
-  /** @deprecated. Use `documentName` instead */
-  nameField?: string | ((changes: Data) => string);
-  documentName?: string | ((changes: Data) => string | undefined);
-  documentLabel?: Labelizer;
-  create?: boolean;
-  delete?: boolean;
 }
 
 const defaults = {
@@ -107,8 +107,8 @@ export default class Cms {
   storages = new Map<string, Storage | string>();
   uploads = new Map<string, UploadOptions>();
   fields = new Map<string, FieldDefinition>();
-  collections = new Map<string, CollectionOptions>();
-  documents = new Map<string, DocumentOptions>();
+  collections = new Map<string, CollectionOptions<string>>();
+  documents = new Map<string, DocumentOptions<string>>();
   versionManager: Versioning | undefined;
 
   constructor(options?: Partial<CmsOptions>) {
@@ -190,24 +190,26 @@ export default class Cms {
   }
 
   /** Add a new collection */
-  collection(options: CollectionOptions): this;
-  collection(
+  collection<FieldType extends string>(
+    options: CollectionOptions<FieldType>,
+  ): this;
+  collection<FieldType extends string>(
     name: string,
     store: string,
-    fields: FieldArray,
+    fields: FieldArray<FieldType>,
   ): this;
-  collection(
-    name: string | CollectionOptions,
+  collection<FieldType extends string>(
+    name: string | CollectionOptions<FieldType>,
     store?: string,
-    fields?: FieldArray,
+    fields?: FieldArray<FieldType>,
   ): this {
     const options = typeof name === "string"
       ? {
         name,
         store,
         fields,
-      } as CollectionOptions
-      : name;
+      } as CollectionOptions<FieldType>
+      : name as CollectionOptions<FieldType>;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>
@@ -219,32 +221,32 @@ export default class Cms {
 
     this.collections.set(
       options.name,
-      options,
+      options as unknown as CollectionOptions<string>,
     );
     return this;
   }
 
   /** Add a new document */
-  document(
-    options: DocumentOptions,
+  document<FieldType extends string>(
+    options: DocumentOptions<FieldType>,
   ): this;
-  document(
+  document<FieldType extends string>(
     name: string,
     store: string,
-    fields: FieldArray,
+    fields: FieldArray<FieldType>,
   ): this;
-  document(
-    name: string | DocumentOptions,
+  document<FieldType extends string>(
+    name: string | DocumentOptions<FieldType>,
     store?: string,
-    fields?: FieldArray,
+    fields?: FieldArray<FieldType>,
   ): this {
     const options = typeof name === "string"
       ? {
         name,
         store,
         fields,
-      } as DocumentOptions
-      : name as DocumentOptions;
+      } as DocumentOptions<FieldType>
+      : name as DocumentOptions<FieldType>;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>
@@ -254,7 +256,10 @@ export default class Cms {
       options.description = description;
     }
 
-    this.documents.set(options.name, options);
+    this.documents.set(
+      options.name,
+      options as unknown as DocumentOptions<string>,
+    );
     return this;
   }
 
