@@ -55,7 +55,7 @@ ${
     class="button is-primary"
   >
     <u-icon name="plus-circle"></u-icon>
-    Add file
+    Add files
   </a>
 </footer>
   `;

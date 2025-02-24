@@ -59,25 +59,33 @@ export default function (app: Hono) {
     }
 
     const body = await c.req.parseBody();
-    const file = body.file as File;
-    let fileId = file.name as string | undefined;
-    const folder = body._id as string | undefined;
-    if (folder) {
-      fileId = folder.endsWith("/") ? posix.join(folder, fileId!) : folder;
+    const files = body["file[]"] as unknown as File[];
+    const filesArray = Array.isArray(files) ? files : [files];
+    for (const file of filesArray) {
+      let fileId = file.name as string | undefined;
+      const folder = body._id as string | undefined;
+
+      if (folder) {
+        fileId = folder.endsWith("/") ? posix.join(folder, fileId!) : folder;
+      }
+
+      fileId = normalizeName(slugify(fileId!));
+
+      if (!fileId) {
+        throw new Error(`Invalid file name: ${file.name}`);
+      }
+
+      const entry = upload.get(fileId);
+      await entry.writeFile(file);
+
+      if (filesArray.length === 1) {
+        return c.redirect(
+          getPath(options.basePath, "uploads", upload.name, "file", fileId),
+        );
+      }
     }
 
-    fileId = normalizeName(slugify(fileId!));
-
-    if (!fileId) {
-      throw new Error("Invalid file name");
-    }
-
-    const entry = upload.get(fileId);
-
-    await entry.writeFile(file);
-    return c.redirect(
-      getPath(options.basePath, "uploads", upload.name, "file", fileId),
-    );
+    return c.redirect(getPath(options.basePath, "uploads", upload.name));
   });
 
   app.get("/uploads/:upload/raw/:file", async (c: Context) => {
