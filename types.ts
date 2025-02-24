@@ -111,7 +111,7 @@ type CommonFieldProperties =
  */
 type FieldTypeToPropertyFilterMap = Prettify<
   & {
-    [K in "choose-list" | "list" | "object" | "object-list"]:
+    [K in "choose-list" | "list" | "object" | "object-list" | "file-list"]:
       | "value"
       | "attributes";
   }
@@ -129,7 +129,7 @@ type FieldTypeToPropertyFilterMap = Prettify<
  */
 type FieldTypeToPropertyAdditionMap = Prettify<
   & {
-    [K in "choose-list" | "object" | "object-list"]: "fields";
+    [K in "choose-list" | "object" | "object-list" | "file-list"]: "fields";
   }
   & {
     [K in "list" | "radio" | "select"]: "options";
