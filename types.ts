@@ -235,10 +235,15 @@ type FieldInternal<
 export type Field<
   FieldType extends string,
   AllFields extends string,
-> = LiteralOnly<FieldType> extends never ? never
-  : {
+> =
+  | {
     [K in LiteralOnly<FieldType>]: FieldInternal<K, AllFields>;
-  }[LiteralOnly<FieldType>];
+  }[LiteralOnly<FieldType>]
+  | ({
+    type: string;
+    name: string;
+    [key: string]: unknown;
+  });
 
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
