@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.9.5] - Unreleased
+### Changed
+- Remove autocomplete keymap in markdown because it prevents to type `[` in some keyboards.
+
 ## [0.9.4] - 2025-02-24
 ### Added
 - Allow to upload multiple files.
@@ -559,6 +563,7 @@ First version
 [#31]: https://github.com/lumeland/cms/issues/31
 [#34]: https://github.com/lumeland/cms/issues/34
 
+[0.9.5]: https://github.com/lumeland/cms/compare/v0.9.4...HEAD
 [0.9.4]: https://github.com/lumeland/cms/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/lumeland/cms/compare/v0.9.2...v0.9.3
 [0.9.2]: https://github.com/lumeland/cms/compare/v0.9.1...v0.9.2
