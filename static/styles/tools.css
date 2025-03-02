@@ -19,8 +19,8 @@
   display: flex;
   gap: 2px;
 
-  + .tools-group {
-    border-left: solid 1px var(--color-line);
-    padding-left: 1rem;
+  &:not(:last-child) {
+    border-right: solid 1px var(--color-line);
+    padding-right: 1rem;
   }
 }

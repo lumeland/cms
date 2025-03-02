@@ -1,1 +1,98 @@
-const spreadsheet={name:"spreadsheet",startState:function(){return{stringType:null,stack:[]}},token:function(stream,state){if(stream){switch(0===state.stack.length&&('"'!=stream.peek()&&"'"!=stream.peek()||(state.stringType=stream.peek(),stream.next(),state.stack.unshift("string"))),state.stack[0]){case"string":for(;"string"===state.stack[0]&&!stream.eol();)stream.peek()===state.stringType?(stream.next(),state.stack.shift()):"\\"===stream.peek()?(stream.next(),stream.next()):stream.match(/^.[^\\\"\']*/);return"string";case"characterClass":for(;"characterClass"===state.stack[0]&&!stream.eol();)stream.match(/^[^\]\\]+/)||stream.match(/^\\./)||state.stack.shift();return"operator"}var peek=stream.peek();switch(peek){case"[":return stream.next(),state.stack.unshift("characterClass"),"bracket";case":":return stream.next(),"operator";case"\\":return stream.match(/\\[a-z]+/)?"string.special":(stream.next(),"atom");case".":case",":case";":case"*":case"-":case"+":case"^":case"<":case"/":case"=":return stream.next(),"atom";case"$":return stream.next(),"builtin"}return stream.match(/\d+/)?stream.match(/^\w+/)?"error":"number":stream.match(/^[a-zA-Z_]\w*/)?stream.match(/(?=[\(.])/,!1)?"keyword":"variable":-1!=["[","]","(",")","{","}"].indexOf(peek)?(stream.next(),"bracket"):(stream.eatSpace()||stream.next(),null)}}};export{spreadsheet};
+const spreadsheet = {
+  name: "spreadsheet",
+
+  startState: function () {
+    return {
+      stringType: null,
+      stack: []
+    };
+  },
+  token: function (stream, state) {
+    if (!stream) return;
+
+    //check for state changes
+    if (state.stack.length === 0) {
+      //strings
+      if ((stream.peek() == '"') || (stream.peek() == "'")) {
+        state.stringType = stream.peek();
+        stream.next(); // Skip quote
+        state.stack.unshift("string");
+      }
+    }
+
+    //return state
+    //stack has
+    switch (state.stack[0]) {
+    case "string":
+      while (state.stack[0] === "string" && !stream.eol()) {
+        if (stream.peek() === state.stringType) {
+          stream.next(); // Skip quote
+          state.stack.shift(); // Clear flag
+        } else if (stream.peek() === "\\") {
+          stream.next();
+          stream.next();
+        } else {
+          stream.match(/^.[^\\\"\']*/);
+        }
+      }
+      return "string";
+
+    case "characterClass":
+      while (state.stack[0] === "characterClass" && !stream.eol()) {
+        if (!(stream.match(/^[^\]\\]+/) || stream.match(/^\\./)))
+          state.stack.shift();
+      }
+      return "operator";
+    }
+
+    var peek = stream.peek();
+
+    //no stack
+    switch (peek) {
+    case "[":
+      stream.next();
+      state.stack.unshift("characterClass");
+      return "bracket";
+    case ":":
+      stream.next();
+      return "operator";
+    case "\\":
+      if (stream.match(/\\[a-z]+/)) return "string.special";
+      else {
+        stream.next();
+        return "atom";
+      }
+    case ".":
+    case ",":
+    case ";":
+    case "*":
+    case "-":
+    case "+":
+    case "^":
+    case "<":
+    case "/":
+    case "=":
+      stream.next();
+      return "atom";
+    case "$":
+      stream.next();
+      return "builtin";
+    }
+
+    if (stream.match(/\d+/)) {
+      if (stream.match(/^\w+/)) return "error";
+      return "number";
+    } else if (stream.match(/^[a-zA-Z_]\w*/)) {
+      if (stream.match(/(?=[\(.])/, false)) return "keyword";
+      return "variable";
+    } else if (["[", "]", "(", ")", "{", "}"].indexOf(peek) != -1) {
+      stream.next();
+      return "bracket";
+    } else if (!stream.eatSpace()) {
+      stream.next();
+    }
+    return null;
+  }
+};
+
+export { spreadsheet };

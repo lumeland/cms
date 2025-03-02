@@ -1,4 +1,12 @@
-import { asset, fileType, labelify, oninvalid, url, view } from "./utils.js";
+import {
+  asset,
+  fileType,
+  labelify,
+  oninvalid,
+  pushOptions,
+  url,
+  view,
+} from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/markdown.js";
 import dom from "dom";
@@ -38,6 +46,7 @@ customElements.define(
       `;
 
       const helpers = dom("div", { class: "tools is-sticky" }, this);
+      const custom = dom("div", { class: "tools-group" }, helpers);
 
       for (const name of schema.details?.upload || []) {
         dom("button", {
@@ -49,7 +58,23 @@ customElements.define(
             }, document.body);
           },
           html: `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`,
-        }, helpers);
+        }, custom);
+      }
+
+      if (schema.snippets) {
+        const select = dom("select", {
+          class: "select is-secondary",
+          style: "width:7em",
+          html: "<option value=''>Insert…</option>",
+          onchange() {
+            if (this.value) {
+              md.insertSnippet(md.editor, this.value);
+              md.editor.focus();
+            }
+            this.value = "";
+          },
+        }, custom);
+        pushOptions(select, schema.snippets);
       }
 
       const code = dom("div", { class: "code" }, shadow);
@@ -68,6 +93,7 @@ customElements.define(
           html: `<u-icon name="${icon}"></u-icon>`,
           onclick() {
             fn(md.editor);
+            md.editor.focus();
           },
         }, tools);
       });
@@ -85,6 +111,7 @@ customElements.define(
           html: `<u-icon name="${icon}"></u-icon>`,
           onclick() {
             fn(md.editor);
+            md.editor.focus();
           },
         }, tools);
       });
@@ -98,15 +125,15 @@ customElements.define(
 
           if (url) {
             md.insertLink(md.editor, url);
+            md.editor.focus();
           }
         },
         html: `<u-icon name="link-simple"></u-icon>`,
       }, tools);
 
-      const helpUrl = "https://www.markdownguide.org/basic-syntax/";
       dom("a", {
         class: "buttonIcon",
-        href: helpUrl,
+        href: "https://www.markdownguide.org/basic-syntax/",
         target: "_blank",
         html: `<u-icon name="question"></u-icon>`,
       }, tools);

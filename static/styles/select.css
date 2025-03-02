@@ -28,6 +28,10 @@
   &.is-narrow {
     max-width: 300px;
   }
+  &.is-secondary {
+    background-color: var(--color-line-light);
+    border: none;
+  }
 }
 [data-theme="dark"] .select {
   --marker-image: url('data:image/svg+xml;charset=UTF-8,<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m8 9.586 5.293-5.293a1 1 0 1 1 1.414 1.414l-6 6a1 1 0 0 1-1.414 0l-6-6a1 1 0 0 1 1.414-1.414L8 9.586Z" fill="white"/></svg>');

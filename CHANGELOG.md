@@ -5,8 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.9.5] - Unreleased
+### Added
+- Snippets option to markdown field.
+
 ### Changed
 - Remove autocomplete keymap in markdown because it prevents to type `[` in some keyboards.
+
+### Fixed
+- Improved buttons in markdown field
+- Updated dependencies.
 
 ## [0.9.4] - 2025-02-24
 ### Added

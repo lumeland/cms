@@ -33,6 +33,7 @@ const makeH4 = ui.toggleHeader(4);
 const makeH5 = ui.toggleHeader(5);
 const makeH6 = ui.toggleHeader(6);
 const insertLink = ui.insertLink();
+const insertSnippet = ui.insertSnippet();
 
 const markdownBinding = [
   {
@@ -119,6 +120,7 @@ export function init(parent, textarea, pasteLink = createLink) {
     makeH5,
     makeH6,
     insertLink,
+    insertSnippet,
     editor,
   };
 }

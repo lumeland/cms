@@ -9,7 +9,7 @@
   },
   "imports": {
     "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.5/dom.js",
-    "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.0.0-rc.2/dist/cropper.esm.js"
+    "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.0.0/dist/cropper.esm.js"
   },
   "exclude": [
     "probas",

@@ -1,6 +1,5 @@
 import lumeCMS from "../mod.ts";
 import KvStorage from "../storage/kv.ts";
-import blocks from "../fields/blocks.ts";
 
 const cms = lumeCMS({
   site: {
@@ -28,9 +27,8 @@ const cms = lumeCMS({
   },
 });
 
-cms.use(blocks());
 cms.storage("src", "demo");
-cms.upload("img", "src:img/**/*{.jpg,.png,.gif,.svg}");
+cms.upload("img", "src:img/**/*{.jpg,.png,.gif,.svg,.webp}");
 
 cms.storage(
   "kv",
@@ -245,7 +243,20 @@ cms.collection({
         },
       ],
     },
-    "markdown: markdown",
+    {
+      type: "markdown",
+      name: "markdown",
+      snippets: [
+        {
+          label: "Snippet 1 with a very long name",
+          value: "<mola>{$}</mola>",
+        },
+        {
+          label: "Snippet 2",
+          value: "<mola2>hello</mola2>",
+        },
+      ],
+    },
     "code: code",
     {
       name: "blocks",
