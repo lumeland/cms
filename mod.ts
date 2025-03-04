@@ -1,13 +1,7 @@
 import Cms, { CmsOptions } from "./core/cms.ts";
 
-import defaultFields from "./fields/core.ts";
+import { defaultFields } from "./fields/core.ts";
 
-export default function (options?: Partial<CmsOptions>): Cms {
-  const cms = new Cms(options);
-
-  for (const [name, field] of defaultFields) {
-    cms.field(name, field);
-  }
-
-  return cms;
-}
+export default <CustomFieldType extends string = never>(
+  options?: Partial<CmsOptions>,
+) => new Cms<CustomFieldType>(options).use(defaultFields);
