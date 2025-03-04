@@ -15,7 +15,7 @@ import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
 
 export default function (app: Hono) {
-  app.get("/uploads/:upload", async (c: Context) => {
+  app.get("/uploads/:upload", (c: Context) => {
     const { options, uploads, uploadId, versioning } = get(c);
 
     const upload = uploads[uploadId];
@@ -28,12 +28,12 @@ export default function (app: Hono) {
       uploadsList({
         options,
         upload,
-        version: await versioning?.current(),
+        version: versioning?.current(),
       }),
     );
   });
 
-  app.get("/uploads/:upload/create", async (c: Context) => {
+  app.get("/uploads/:upload/create", (c: Context) => {
     const { options, uploads, uploadId, versioning } = get(c);
 
     const upload = uploads[uploadId];
@@ -46,7 +46,7 @@ export default function (app: Hono) {
       uploadsCreate({
         options,
         upload,
-        version: await versioning?.current(),
+        version: versioning?.current(),
         folder: normalizeName(c.req.query("folder")),
       }),
     );
@@ -135,7 +135,7 @@ export default function (app: Hono) {
           upload,
           publicPath: normalizePath(publicPath, name),
           file: name,
-          version: await versioning?.current(),
+          version: versioning?.current(),
         }),
       );
     } catch {
@@ -188,7 +188,7 @@ export default function (app: Hono) {
       );
     });
 
-  app.get("/uploads/:upload/crop/:file", async (c: Context) => {
+  app.get("/uploads/:upload/crop/:file", (c: Context) => {
     const { options, uploadId, fileId, uploads, versioning } = get(c);
     const upload = uploads[uploadId];
 
@@ -213,7 +213,7 @@ export default function (app: Hono) {
           options,
           upload,
           file: name,
-          version: await versioning?.current(),
+          version: versioning?.current(),
         }),
       );
     } catch {

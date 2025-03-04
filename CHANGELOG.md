@@ -4,12 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.9.5] - Unreleased
+## [0.10.0] - Unreleased
 ### Added
 - Snippets option to markdown field.
 
 ### Changed
+- Refactor git versioning class and make the commands sync.
 - Remove autocomplete keymap in markdown because it prevents to type `[` in some keyboards.
+
+### Deleted
+- Option `onPublish` to git. It was replaced with `cms:versionPublished` event.
 
 ### Fixed
 - Improved buttons in markdown field

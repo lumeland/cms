@@ -8,10 +8,9 @@ export interface Options {
   prefix?: string;
   command?: string;
   remote?: string;
-  onPublish?: (name: string) => void | Promise<void>;
 }
 
-export const defaults: Required<Omit<Options, "onPublish">> = {
+export const defaults: Required<Options> = {
   root: Deno.cwd(),
   prodBranch: "main",
   prefix: "lumecms/",
@@ -25,7 +24,6 @@ export class Git implements Versioning {
   command: string;
   prefix: string;
   remote: string;
-  onPublish?: (name: string) => void | Promise<void>;
 
   constructor(userOptions?: Options) {
     const options = { ...defaults, ...userOptions };
@@ -37,12 +35,12 @@ export class Git implements Versioning {
     this.remote = options.remote;
   }
 
-  async *[Symbol.asyncIterator]() {
-    const current = await this.current();
-    const allBranches = await this.#runGitCommand("branch", "--list");
+  *[Symbol.iterator](): Generator<Version> {
+    const current = this.#gitCurrentBranch();
+    const allBranches = this.#git("branch", "--list");
 
     for (const item of allBranches.split("\n")) {
-      const branch = item.slice(2).trim();
+      const branch = item.replace("*", "").trim();
 
       if (branch !== this.prodBranch && !branch.startsWith(this.prefix)) {
         continue;
@@ -51,113 +49,118 @@ export class Git implements Versioning {
       const name = this.#branchToName(branch);
       yield {
         name,
-        isCurrent: name === current.name,
-        isProduction: name === this.prodBranch,
+        isCurrent: branch === current,
+        isProduction: branch === this.prodBranch,
       };
     }
   }
 
   /* Returns the current version */
-  async current() {
-    const branch = await this.#runGitCommand("branch", "--show-current");
-    const name = this.#branchToName(branch.trim());
+  current(): Version {
+    const branch = this.#gitCurrentBranch();
+    const name = this.#branchToName(branch);
 
     return {
       name,
       isCurrent: true,
-      isProduction: name === this.prodBranch,
+      isProduction: branch === this.prodBranch,
     };
   }
 
   /* Creates a new version */
-  async create(name: string): Promise<void> {
-    name = slugify(name);
+  create(name: string): void {
+    const branch = this.#nameToBranch(name);
 
-    if (await this.#exists(name)) {
-      throw new Error(`Version ${name} already exists`);
+    // Check if the version already exists
+    if (this.#gitLocalBranchExists(branch)) {
+      throw new Error(`Version ${name} already exists (${branch})`);
     }
 
-    await this.#runGitCommand("checkout", "-b", this.#nameToBranch(name));
+    this.#git("checkout", "-b", branch);
   }
 
   /* Changes the current version */
-  async change(name: string) {
-    name = slugify(name);
+  change(name: string) {
+    const branch = this.#nameToBranch(name);
 
-    if (!(await this.#exists(name))) {
+    // Check if the version exists
+    if (!this.#gitLocalBranchExists(branch)) {
       throw new Error(`Version ${name} does not exist`);
     }
 
-    // Commit changes before changing the branch
-    await this.#commit();
+    // If there are pending changes, commit them before changing the branch
+    if (this.#gitPendingChanges()) {
+      const currentBranch = this.#gitCurrentBranch();
 
-    // Checkout to the version branch and pull possible changes
-    await this.#runGitCommand("checkout", this.#nameToBranch(name));
-    await this.#pull();
+      // If the current branch exists in the remote, pull it before pushing
+      if (this.#gitRemoteBranchExists(currentBranch)) {
+        this.#git("pull", this.remote, currentBranch);
+      }
+
+      // Add and commit changes
+      this.#git("add", ".");
+      this.#git("commit", "-m", "Changes from CMS");
+    }
+
+    // Checkout to the new branch
+    this.#git("checkout", branch);
+
+    // Pull changes from the remote if exists
+    if (this.#gitRemoteBranchExists(branch)) {
+      this.#git("pull", this.remote, branch);
+    }
   }
 
   /* Publishes a version */
-  async publish(name: string): Promise<void> {
-    if (!(await this.#exists(name))) {
+  publish(name: string): void {
+    const branch = this.#nameToBranch(name);
+
+    // Check if the version exists
+    if (!this.#gitLocalBranchExists(branch)) {
       throw new Error(`Version ${name} does not exist`);
     }
 
-    // Get the branch name
-    const branch = this.#nameToBranch(name);
+    // Change to the production branch
+    this.change(this.prodBranch);
 
-    // Checkout to the production branch and pull possible changes
-    await this.change(this.prodBranch);
-    await this.#pull();
-
-    // Merge the version branch into the production branch
+    // If the version to publish is not production,
+    // merge it into the production branch and remove it
     if (branch !== this.prodBranch) {
-      await this.#runGitCommand("merge", branch);
-      await this.#runGitCommand("branch", "-d", branch);
+      this.#git("merge", branch);
+      this.#git("branch", "-d", branch);
     }
 
     // Push changes to the remote
-    await this.#runGitCommand("push", this.remote, this.prodBranch);
-
-    // Call the onPublish callback
-    if (this.onPublish) {
-      await this.onPublish(name);
-    }
+    this.#git("push", this.remote, this.prodBranch);
   }
 
   /* Delete a version */
-  async delete(name: string): Promise<void> {
-    if (!(await this.#exists(name))) {
-      return;
-    }
+  delete(name: string): void {
+    const branch = this.#nameToBranch(name);
 
-    if (name === this.prodBranch) {
+    if (branch === this.prodBranch) {
       throw new Error(`Cannot delete production branch`);
     }
 
     // If the current branch is the one to be deleted,
     // change to the production branch
-    const current = await this.current();
-
-    if (current.name === name) {
-      await this.change(this.prodBranch);
+    if (branch === this.#gitCurrentBranch()) {
+      this.change(this.prodBranch);
     }
 
-    const branch = this.#nameToBranch(name);
-    await this.#runGitCommand("branch", "-D", branch);
+    this.#git("branch", "-D", branch);
   }
 
-  async #exists(name: string): Promise<boolean> {
-    const existing = await Array.fromAsync(this);
-    return existing.some((version) => version.name === name);
-  }
-
+  /** Converts a version name to a branch name */
   #nameToBranch(name: string): string {
+    name = slugify(name);
     if (name !== this.prodBranch && !name.startsWith(this.prefix)) {
       name = this.prefix + name;
     }
     return name;
   }
 
+  /** Converts a branch name to a version name */
   #branchToName(branch: string): string {
     if (branch.startsWith(this.prefix)) {
       return branch.slice(this.prefix.length);
@@ -166,34 +169,8 @@ export class Git implements Versioning {
     return branch;
   }
 
-  async #pull(): Promise<void> {
-    const current = await this.#runGitCommand("branch", "--show-current");
-
-    // Check if the current branch exists in the remote and pull it
-    const branches = await this.#runGitCommand(
-      "ls-remote",
-      "--heads",
-      this.remote,
-      current,
-    );
-
-    if (branches) {
-      await this.#runGitCommand("pull", this.remote, current);
-    }
-  }
-
-  async #commit(message = "Changes from CMS"): Promise<void> {
-    await this.#pull();
-    await this.#runGitCommand("add", ".");
-
-    const changes = await this.#runGitCommand("status", "--porcelain");
-
-    if (changes) {
-      await this.#runGitCommand("commit", "-m", message);
-    }
-  }
-
-  async #runGitCommand(...args: string[]): Promise<string> {
+  /** Runs a git command and returns the stdout as string */
+  #git(...args: string[]): string {
     const command = new Deno.Command(this.command, {
       args,
       cwd: this.root,
@@ -201,7 +178,7 @@ export class Git implements Versioning {
       stderr: "piped",
     });
 
-    const result = await command.output();
+    const result = command.outputSync();
 
     if (result.code !== 0) {
       const decoder = new TextDecoder();
@@ -213,6 +190,26 @@ ${decoder.decode(result.stderr)}
     }
 
     const decoder = new TextDecoder();
-    return decoder.decode(result.stdout);
+    return decoder.decode(result.stdout).trim();
   }
+
+  #gitLocalBranchExists(branch: string): boolean {
+    return this.#git("branch", "--list", branch) !== "";
+  }
+
+  #gitRemoteBranchExists(branch: string): boolean {
+    return this.#git("ls-remote", "--heads", this.remote, branch) !== "";
+  }
+  #gitPendingChanges(): boolean {
+    return this.#git("status", "--porcelain") !== "";
+  }
+  #gitCurrentBranch(): string {
+    return this.#git("branch", "--show-current");
+  }
+}
+
+export interface Version {
+  name: string;
+  isCurrent: boolean;
+  isProduction: boolean;
 }

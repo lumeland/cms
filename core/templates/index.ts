@@ -15,7 +15,7 @@ interface Props {
   site: SiteInfo;
 }
 
-export default async function template(
+export default function template(
   { options, collections, documents, uploads, versioning, site }: Props,
 ) {
   const { basePath } = options;
@@ -26,7 +26,7 @@ export default async function template(
     : "";
 
   return `
-${breadcrumb(options, await versioning?.current())}
+${breadcrumb(options, versioning?.current())}
 
 <header class="header">
   <h1 class="header-title">
@@ -88,11 +88,11 @@ ${breadcrumb(options, await versioning?.current())}
 
 ${site.body ? `<div class="body">${site.body}</div>` : ""}
 
-${versioning && await versions(options, versioning) || ""}
+${versioning && versions(options, versioning) || ""}
 `;
 }
 
-async function versions(options: CMSContent, versioning: Versioning) {
+function versions(options: CMSContent, versioning: Versioning) {
   return `
 <header class="subheader" id="versions">
   <h2>Available versions</h2>
@@ -100,7 +100,7 @@ async function versions(options: CMSContent, versioning: Versioning) {
 
 <ul class="list">
   ${
-    (await Array.fromAsync(versioning)).map((version) => `
+    (Array.from(versioning)).map((version) => `
   <li>
     ${
       version.isCurrent

@@ -39,7 +39,7 @@ export default function (app: Hono) {
 
     const response = {
       homeURL: getPath(options.basePath),
-      version: await versioning?.current(),
+      version: versioning?.current(),
     };
 
     for (const document of Object.values(documents)) {
