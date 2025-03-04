@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.10.0] - Unreleased
 ### Added
 - Snippets option to markdown field.
+- New `cms:versionCreated`, `cms:versionChanged`, `cms:versionPublished` and `cms:versionDeleted` events.
 
 ### Changed
 - Refactor git versioning class and make the commands sync.

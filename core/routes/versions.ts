@@ -27,11 +27,13 @@ export default function (app: Hono) {
     if (action === "create") {
       versioning.create(name);
       versioning.change(name);
+      dispatch("versionCreated", { name });
       return response;
     }
 
     if (action === "change") {
       versioning.change(name);
+      dispatch("versionChanged", { name });
       return response;
     }
 
@@ -43,6 +45,7 @@ export default function (app: Hono) {
 
     if (action === "delete") {
       versioning.delete(name);
+      dispatch("versionDeleted", { name });
       return response;
     }
   });
