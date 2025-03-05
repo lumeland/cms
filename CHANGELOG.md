@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.10.0] - Unreleased
+## [0.10.0] - 2025-03-05
 ### Added
 - Snippets option to markdown field.
 - New `cms:versionCreated`, `cms:versionChanged`, `cms:versionPublished` and `cms:versionDeleted` events.
@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Refactor git versioning class and make the commands sync.
 - Remove autocomplete keymap in markdown because it prevents to type `[` in some keyboards.
 
-### Deleted
+### Removed
 - Option `onPublish` to git. It was replaced with `cms:versionPublished` event.
 
 ### Fixed
@@ -575,7 +575,7 @@ First version
 [#31]: https://github.com/lumeland/cms/issues/31
 [#34]: https://github.com/lumeland/cms/issues/34
 
-[0.9.5]: https://github.com/lumeland/cms/compare/v0.9.4...HEAD
+[0.10.0]: https://github.com/lumeland/cms/compare/v0.9.4...v0.10.0
 [0.9.4]: https://github.com/lumeland/cms/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/lumeland/cms/compare/v0.9.2...v0.9.3
 [0.9.2]: https://github.com/lumeland/cms/compare/v0.9.1...v0.9.2
