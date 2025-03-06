@@ -100,7 +100,12 @@ type FieldTypeToPropertiesMap =
     "file": UploadableFieldProperties & {
       publicPath?: string;
     };
-    "markdown": UploadableFieldProperties;
+    "markdown": UploadableFieldProperties & {
+      snippets?: {
+        label: string;
+        value: string;
+      }[];
+    };
     "hidden": BaseFieldProperties & {
       value?: string;
     };
