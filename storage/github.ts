@@ -8,7 +8,7 @@ import {
 import { fromFilename } from "./transformers/mod.ts";
 import { slugify } from "../core/utils/string.ts";
 import { normalizePath } from "../core/utils/path.ts";
-import { Octokit } from "npm:octokit@4.1.0";
+import { Octokit } from "npm:octokit@4.1.2";
 
 import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
 

@@ -7,7 +7,7 @@ import type { CMSContent } from "../../types.ts";
 
 export default function (app: Hono) {
   app
-    .get("/document/:document", async (c: Context) => {
+    .get("/document/:document", (c: Context) => {
       const { options, document, versioning } = get(c);
 
       if (!document) {
@@ -18,7 +18,7 @@ export default function (app: Hono) {
         documentEdit({
           options,
           document,
-          version: await versioning?.current(),
+          version: versioning?.current(),
         }),
       );
     })

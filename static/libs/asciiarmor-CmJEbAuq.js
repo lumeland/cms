@@ -1,1 +1,56 @@
-function errorIfNotEmpty(stream){var nonWS=stream.match(/^\s*\S/);return stream.skipToEnd(),nonWS?"error":null}const asciiArmor={name:"asciiarmor",token:function(stream,state){var m;if("top"==state.state)return stream.sol()&&(m=stream.match(/^-----BEGIN (.*)?-----\s*$/))?(state.state="headers",state.type=m[1],"tag"):errorIfNotEmpty(stream);if("headers"==state.state){if(stream.sol()&&stream.match(/^\w+:/))return state.state="header","atom";var result=errorIfNotEmpty(stream);return result&&(state.state="body"),result}return"header"==state.state?(stream.skipToEnd(),state.state="headers","string"):"body"==state.state?stream.sol()&&(m=stream.match(/^-----END (.*)?-----\s*$/))?m[1]!=state.type?"error":(state.state="end","tag"):stream.eatWhile(/[A-Za-z0-9+\/=]/)?null:(stream.next(),"error"):"end"==state.state?errorIfNotEmpty(stream):void 0},blankLine:function(state){"headers"==state.state&&(state.state="body")},startState:function(){return{state:"top",type:null}}};export{asciiArmor};
+function errorIfNotEmpty(stream) {
+  var nonWS = stream.match(/^\s*\S/);
+  stream.skipToEnd();
+  return nonWS ? "error" : null;
+}
+
+const asciiArmor = {
+  name: "asciiarmor",
+  token: function(stream, state) {
+    var m;
+    if (state.state == "top") {
+      if (stream.sol() && (m = stream.match(/^-----BEGIN (.*)?-----\s*$/))) {
+        state.state = "headers";
+        state.type = m[1];
+        return "tag";
+      }
+      return errorIfNotEmpty(stream);
+    } else if (state.state == "headers") {
+      if (stream.sol() && stream.match(/^\w+:/)) {
+        state.state = "header";
+        return "atom";
+      } else {
+        var result = errorIfNotEmpty(stream);
+        if (result) state.state = "body";
+        return result;
+      }
+    } else if (state.state == "header") {
+      stream.skipToEnd();
+      state.state = "headers";
+      return "string";
+    } else if (state.state == "body") {
+      if (stream.sol() && (m = stream.match(/^-----END (.*)?-----\s*$/))) {
+        if (m[1] != state.type) return "error";
+        state.state = "end";
+        return "tag";
+      } else {
+        if (stream.eatWhile(/[A-Za-z0-9+\/=]/)) {
+          return null;
+        } else {
+          stream.next();
+          return "error";
+        }
+      }
+    } else if (state.state == "end") {
+      return errorIfNotEmpty(stream);
+    }
+  },
+  blankLine: function(state) {
+    if (state.state == "headers") state.state = "body";
+  },
+  startState: function() {
+    return {state: "top", type: null};
+  }
+};
+
+export { asciiArmor };

@@ -18,11 +18,10 @@ import {
   autocompletion,
   closeBrackets,
   closeBracketsKeymap,
-  completionKeymap,
 } from "@codemirror/autocomplete";
 import { languages } from "@codemirror/language-data";
 
-import * as ui from "./markdown_ui";
+import * as ui from "./markdown_ui.js";
 
 const makeBold = ui.toggleTag("**", "**");
 const makeItalic = ui.toggleTag("*", "*");
@@ -34,6 +33,7 @@ const makeH4 = ui.toggleHeader(4);
 const makeH5 = ui.toggleHeader(5);
 const makeH6 = ui.toggleHeader(6);
 const insertLink = ui.insertLink();
+const insertSnippet = ui.insertSnippet();
 
 const markdownBinding = [
   {
@@ -61,14 +61,15 @@ export function init(parent, textarea, pasteLink = createLink) {
       syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
       bracketMatching(),
       closeBrackets(),
-      autocompletion(),
+      autocompletion({
+        defaultKeymap: false,
+      }),
       rectangularSelection(),
       keymap.of([
         ...markdownBinding,
         ...closeBracketsKeymap,
         ...defaultKeymap,
         ...historyKeymap,
-        ...completionKeymap,
       ]),
       markdown({
         codeLanguages: languages,
@@ -119,6 +120,7 @@ export function init(parent, textarea, pasteLink = createLink) {
     makeH5,
     makeH6,
     insertLink,
+    insertSnippet,
     editor,
   };
 }

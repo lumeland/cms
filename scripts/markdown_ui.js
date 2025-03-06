@@ -5,10 +5,21 @@ export function toggleTag(start, end) {
   const endLength = end.length;
 
   return function ({ state, dispatch }) {
-    if (state.selection.ranges.every((range) => range.from === range.to)) {
-      return false;
-    }
     const changes = state.changeByRange((range) => {
+      if (range.from === range.to) {
+        return {
+          changes: [
+            {
+              from: range.from,
+              insert: `${start}text${end}`,
+            }
+          ],
+          range: EditorSelection.range(
+            range.from + startLength,
+            range.from + startLength + 4,
+          ),
+        };
+      }
       const existsBefore =
         state.sliceDoc(range.from - startLength, range.from) === start;
       const existsAfter =
@@ -139,6 +150,84 @@ export function insertLink() {
         range: EditorSelection.range(
           range.from + 1,
           range.to + 1,
+        ),
+      };
+    });
+
+    dispatch(
+      state.update(changes, {
+        scrollIntoView: true,
+        annotations: Transaction.userEvent.of("input"),
+      }),
+    );
+
+    return true;
+  };
+}
+
+export function insertSnippet() {
+  return function ({ state, dispatch }, code) {
+    const changes = state.changeByRange((range) => {
+      const [start, end] = code.split("{$}");
+
+      if (range.from === range.to) {
+        if (end === undefined) {
+          return {
+            changes: [
+              {
+                from: range.from,
+                insert: start,
+              }
+            ],
+            range: EditorSelection.range(
+              range.from + start.length,
+              range.from + start.length,
+            ),
+          };
+        }
+
+        return {
+          changes: [
+            {
+              from: range.from,
+              insert: `${start}text${end}`,
+            }
+          ],
+          range: EditorSelection.range(
+            range.from + start.length,
+            range.from + start.length + 4,
+          ),
+        };
+      }
+
+      if (end === undefined) {
+        return {
+          changes: [{
+            from: range.from,
+            to: range.to,
+            insert: start,
+          }],
+          range: EditorSelection.range(
+            range.from + start.length,
+            range.from + start.length,
+          ),
+        };
+      }
+
+      return {
+        changes: [
+          {
+            from: range.from,
+            insert: start,
+          },
+          {
+            from: range.to,
+            insert: end,
+          },
+        ],
+        range: EditorSelection.range(
+          range.to + start.length + end.length,
+          range.to + start.length + end.length,
         ),
       };
     });

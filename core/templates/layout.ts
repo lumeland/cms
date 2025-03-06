@@ -31,8 +31,8 @@ export default function template(
       "imports": {
         "lume_cms/": "${asset(basePath, "/")}",
         "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.5/dom.js",
-        "std/": "https://cdn.jsdelivr.net/gh/oscarotero/std@1.1.4/",
-        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.0.0-rc.2/dist/cropper.esm.js"
+        "std/": "https://cdn.jsdelivr.net/gh/oscarotero/std@1.1.7/",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.0.0/dist/cropper.esm.js"
       }
     }
   </script>

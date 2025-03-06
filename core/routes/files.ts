@@ -15,7 +15,7 @@ import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
 
 export default function (app: Hono) {
-  app.get("/uploads/:upload", async (c: Context) => {
+  app.get("/uploads/:upload", (c: Context) => {
     const { options, uploads, uploadId, versioning } = get(c);
 
     const upload = uploads[uploadId];
@@ -28,12 +28,12 @@ export default function (app: Hono) {
       uploadsList({
         options,
         upload,
-        version: await versioning?.current(),
+        version: versioning?.current(),
       }),
     );
   });
 
-  app.get("/uploads/:upload/create", async (c: Context) => {
+  app.get("/uploads/:upload/create", (c: Context) => {
     const { options, uploads, uploadId, versioning } = get(c);
 
     const upload = uploads[uploadId];
@@ -46,7 +46,7 @@ export default function (app: Hono) {
       uploadsCreate({
         options,
         upload,
-        version: await versioning?.current(),
+        version: versioning?.current(),
         folder: normalizeName(c.req.query("folder")),
       }),
     );
@@ -59,25 +59,33 @@ export default function (app: Hono) {
     }
 
     const body = await c.req.parseBody();
-    const file = body.file as File;
-    let fileId = file.name as string | undefined;
-    const folder = body._id as string | undefined;
-    if (folder) {
-      fileId = folder.endsWith("/") ? posix.join(folder, fileId!) : folder;
+    const files = body["file[]"] as unknown as File[];
+    const filesArray = Array.isArray(files) ? files : [files];
+    for (const file of filesArray) {
+      let fileId = file.name as string | undefined;
+      const folder = body._id as string | undefined;
+
+      if (folder) {
+        fileId = folder.endsWith("/") ? posix.join(folder, fileId!) : folder;
+      }
+
+      fileId = normalizeName(slugify(fileId!));
+
+      if (!fileId) {
+        throw new Error(`Invalid file name: ${file.name}`);
+      }
+
+      const entry = upload.get(fileId);
+      await entry.writeFile(file);
+
+      if (filesArray.length === 1) {
+        return c.redirect(
+          getPath(options.basePath, "uploads", upload.name, "file", fileId),
+        );
+      }
     }
 
-    fileId = normalizeName(slugify(fileId!));
-
-    if (!fileId) {
-      throw new Error("Invalid file name");
-    }
-
-    const entry = upload.get(fileId);
-
-    await entry.writeFile(file);
-    return c.redirect(
-      getPath(options.basePath, "uploads", upload.name, "file", fileId),
-    );
+    return c.redirect(getPath(options.basePath, "uploads", upload.name));
   });
 
   app.get("/uploads/:upload/raw/:file", async (c: Context) => {
@@ -127,7 +135,7 @@ export default function (app: Hono) {
           upload,
           publicPath: normalizePath(publicPath, name),
           file: name,
-          version: await versioning?.current(),
+          version: versioning?.current(),
         }),
       );
     } catch {
@@ -180,7 +188,7 @@ export default function (app: Hono) {
       );
     });
 
-  app.get("/uploads/:upload/crop/:file", async (c: Context) => {
+  app.get("/uploads/:upload/crop/:file", (c: Context) => {
     const { options, uploadId, fileId, uploads, versioning } = get(c);
     const upload = uploads[uploadId];
 
@@ -205,7 +213,7 @@ export default function (app: Hono) {
           options,
           upload,
           file: name,
-          version: await versioning?.current(),
+          version: versioning?.current(),
         }),
       );
     } catch {

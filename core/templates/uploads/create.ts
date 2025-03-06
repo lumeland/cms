@@ -26,7 +26,7 @@ ${
 
 <header class="header">
   <h1 class="header-title">
-    Upload file
+    Upload files
     <label class="header-file">
       <input
         class="input is-inline"
@@ -55,16 +55,17 @@ ${
       aria-label="Upload file"
       id="new-file"
       type="file"
-      name="file"
+      name="file[]"
       required
       class="inputFile"
+      multiple
     >
   </u-upload>
   </div>
   <footer class="footer ly-rowStack">
     <button class="button is-primary" type="submit">
       <u-icon name="upload-simple"></u-icon>
-      Upload file
+      Upload files
     </button>
   </footer>
 </form>

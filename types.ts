@@ -59,12 +59,12 @@ export interface Version {
   isProduction: boolean;
 }
 
-export interface Versioning extends AsyncIterable<Version> {
-  current(): Promise<Version>;
-  create(id: string): Promise<void>;
-  change(id: string): Promise<void>;
-  publish(id: string): Promise<void>;
-  delete(id: string): Promise<void>;
+export interface Versioning extends Iterable<Version> {
+  current(): Version;
+  create(id: string): void;
+  change(id: string): void;
+  publish(id: string): void;
+  delete(id: string): void;
 }
 
 /** A transformer to convert from/to Data */

@@ -20,7 +20,7 @@ export default function (app: Hono) {
       await collectionList({
         options,
         collection,
-        version: await versioning?.current(),
+        version: versioning?.current(),
       }),
     );
   });
@@ -39,7 +39,7 @@ export default function (app: Hono) {
             options,
             collection,
             document,
-            version: await versioning?.current(),
+            version: versioning?.current(),
           }),
         );
       } catch (e) {
@@ -141,7 +141,7 @@ export default function (app: Hono) {
   });
 
   app
-    .get("/collection/:collection/create", async (c: Context) => {
+    .get("/collection/:collection/create", (c: Context) => {
       const { options, collection, versioning } = get(c);
       const defaults = c.req.query();
 
@@ -150,7 +150,7 @@ export default function (app: Hono) {
           options,
           defaults,
           collection,
-          version: await versioning?.current(),
+          version: versioning?.current(),
           folder: normalizeName(c.req.query("folder")),
         }),
       );
