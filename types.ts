@@ -157,12 +157,28 @@ export type FieldArray<
 
 export type ResolvedField<
   Field extends BaseField<string, { name: string }>,
+  AllTypes extends string = string,
+  AllProperties extends FieldPropertyMap<AllTypes> = {
+    [K in AllTypes]: {
+      name: string;
+      [x: string]: unknown;
+    };
+  },
 > =
   & Omit<Field, "fields">
   & {
     tag: string;
     label: string;
-    fields?: ResolvedField<Field>[];
+    fields?: {
+      [K in AllTypes]: ResolvedField<
+        BaseField<
+          K,
+          AllProperties[K]
+        >,
+        AllTypes,
+        AllProperties
+      >;
+    }[AllTypes][];
     details?: Record<string, any>;
     applyChanges(
       data: Data,

@@ -662,7 +662,9 @@ export default class Cms<
     fields: FieldArray<FieldTypes, FieldProperties>,
     content: CMSContent,
   ): ResolvedField<
-    Field<FieldTypes, FieldProperties[FieldTypes], FieldTypes, FieldProperties>
+    Field<FieldTypes, FieldProperties[FieldTypes], FieldTypes, FieldProperties>,
+    FieldTypes,
+    FieldProperties
   >[] {
     return fields
       .map((field) => {
@@ -690,7 +692,9 @@ export default class Cms<
           FieldProperties[FieldTypes],
           FieldTypes,
           FieldProperties
-        >
+        >,
+        FieldTypes,
+        FieldProperties
       > => {
         const type = this.fields.get(field.type);
 
@@ -719,7 +723,9 @@ export default class Cms<
             FieldProperties[FieldTypes],
             FieldTypes,
             FieldProperties
-          >
+          >,
+          FieldTypes,
+          FieldProperties
         >;
 
         if (type.init) {
