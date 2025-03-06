@@ -5,25 +5,34 @@ import { asset, getPath } from "../core/utils/path.ts";
 import { Git, Options as GitOptions } from "../core/git.ts";
 import { relative } from "../deps/std.ts";
 import type Cms from "../core/cms.ts";
+import type { FieldPropertyMap } from "../types.ts";
 
-export interface Options {
+export interface Options<
+  FieldTypes extends string,
+  FieldProperties extends FieldPropertyMap<FieldTypes>,
+> {
   // deno-lint-ignore no-explicit-any
   site: any;
-  cms: Cms;
+  cms: Cms<FieldTypes, FieldProperties>;
   basePath?: string;
 }
 
-export const defaults: Omit<Options, "site" | "cms"> = {
+export const defaults = {
   basePath: "/admin",
-};
+} satisfies Partial<Options<never, never>>;
 
-export default async function lume(userOptions?: Options): Promise<Hono> {
-  const options = {
+export default async function lume<
+  FieldTypes extends string,
+  FieldProperties extends FieldPropertyMap<FieldTypes>,
+>(userOptions?: Options<FieldTypes, FieldProperties>): Promise<Hono> {
+  const { site, cms, basePath } = {
     ...defaults,
     ...userOptions,
-  } as Required<Options>;
+  };
 
-  const { site, cms, basePath } = options;
+  if (!cms) {
+    throw new TypeError("CMS instance is required.");
+  }
 
   // Enable drafts previews in the CMS
   Deno.env.set("LUME_DRAFTS", "true");
