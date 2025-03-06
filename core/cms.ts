@@ -24,12 +24,16 @@ import { Git, Options as GitOptions } from "./git.ts";
 
 import type { Context, Next } from "../deps/hono.ts";
 import type {
+  BaseField,
   CMSContent,
   Data,
   Entry,
   Field,
-  FieldType,
+  FieldArray,
+  FieldDefinition,
+  FieldPropertyMap,
   Labelizer,
+  LiteralOnly,
   ResolvedField,
   SiteInfo,
   Storage,
@@ -55,22 +59,36 @@ export interface LogOptions {
   filename: string;
 }
 
-const defaults: CmsOptions = {
-  site: {
-    name: "Lume CMS",
-  },
-  root: Deno.cwd(),
-  basePath: "/",
-};
-
-interface DocumentOptions {
+interface DocumentOptions<
+  FieldType extends string,
+  FieldProperties extends FieldPropertyMap<FieldType>,
+> {
   name: string;
   label?: string;
   description?: string;
   store: string;
-  fields: (Field | string)[];
+  fields: FieldArray<FieldType, FieldProperties>;
   url?: string;
   views?: string[];
+}
+
+interface CollectionOptions<
+  FieldType extends string,
+  FieldProperties extends FieldPropertyMap<FieldType>,
+> {
+  name: string;
+  label?: string;
+  description?: string;
+  store: string;
+  fields: FieldArray<FieldType, FieldProperties>;
+  url?: string;
+  views?: string[];
+  /** @deprecated. Use `documentName` instead */
+  nameField?: string | ((changes: Data) => string);
+  documentName?: string | ((changes: Data) => string | undefined);
+  documentLabel?: Labelizer;
+  create?: boolean;
+  delete?: boolean;
 }
 
 interface UploadOptions {
@@ -82,32 +100,50 @@ interface UploadOptions {
   listed?: boolean;
 }
 
-interface CollectionOptions {
-  name: string;
-  label?: string;
-  description?: string;
-  store: string;
-  fields: (Field | string)[];
-  url?: string;
-  views?: string[];
-  /** @deprecated. Use `documentName` instead */
-  nameField?: string | ((changes: Data) => string);
-  documentName?: string | ((changes: Data) => string | undefined);
-  documentLabel?: Labelizer;
-  create?: boolean;
-  delete?: boolean;
-}
+type UnknownFieldPropertyMap<
+  FieldTypes extends string,
+  FieldProperties extends FieldPropertyMap<FieldTypes>,
+  UnknownFieldTypes extends string,
+> = {
+  [K in FieldTypes | UnknownFieldTypes]: K extends FieldTypes
+    ? FieldProperties[K]
+    : { name: string; [x: string]: unknown };
+};
 
-export default class Cms {
+const defaults = {
+  site: {
+    name: "Lume CMS",
+  },
+  root: Deno.cwd(),
+  basePath: "/",
+} satisfies CmsOptions;
+
+export default class Cms<
+  FieldTypes extends string,
+  FieldProperties extends FieldPropertyMap<FieldTypes>,
+> {
   #jsImports = new Set<string>();
 
   fetch: (request: Request) => Response | Promise<Response>;
   options: CmsOptions;
   storages = new Map<string, Storage | string>();
   uploads = new Map<string, UploadOptions>();
-  fields = new Map<string, FieldType>();
-  collections = new Map<string, CollectionOptions>();
-  documents = new Map<string, DocumentOptions>();
+  fields = new Map<
+    string,
+    FieldDefinition<
+      Field<
+        FieldTypes,
+        FieldProperties[FieldTypes],
+        FieldTypes,
+        FieldProperties
+      >
+    >
+  >();
+  collections = new Map<
+    string,
+    CollectionOptions<FieldTypes, FieldProperties>
+  >();
+  documents = new Map<string, DocumentOptions<FieldTypes, FieldProperties>>();
   versionManager: Versioning | undefined;
 
   constructor(options?: Partial<CmsOptions>) {
@@ -189,48 +225,44 @@ export default class Cms {
   }
 
   /** Add a new collection */
-  collection(options: CollectionOptions): this;
-  collection(name: string, store: string, fields: (Field | string)[]): this;
-  collection(
-    name: string | CollectionOptions,
+  collection<UnknownFieldTypes extends string>(
+    options: CollectionOptions<
+      UnknownFieldTypes | FieldTypes,
+      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
+    >,
+  ): this;
+  collection<UnknownFieldTypes extends string>(
+    name: string,
+    store: string,
+    fields: FieldArray<
+      UnknownFieldTypes | FieldTypes,
+      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
+    >,
+  ): this;
+  collection<UnknownFieldTypes extends string>(
+    name:
+      | string
+      | CollectionOptions<
+        UnknownFieldTypes | FieldTypes,
+        UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
+      >,
     store?: string,
-    fields?: (Field | string)[],
+    fields?: FieldArray<
+      UnknownFieldTypes | FieldTypes,
+      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
+    >,
   ): this {
-    const options: CollectionOptions = typeof name === "string"
-      ? {
-        name,
-        store,
-        fields,
-      } as CollectionOptions
-      : name;
-
-    if (!options.description) {
-      const [name, description] = options.name.split(":").map((part) =>
-        part.trim()
-      );
-      options.name = name;
-      options.description = description;
-    }
-
-    this.collections.set(options.name, options);
-    return this;
-  }
-
-  /** Add a new document */
-  document(options: DocumentOptions): this;
-  document(name: string, store: string, fields: (Field | string)[]): this;
-  document(
-    name: string | DocumentOptions,
-    store?: string,
-    fields?: (Field | string)[],
-  ): this {
+    type Options = CollectionOptions<
+      UnknownFieldTypes | FieldTypes,
+      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
+    >;
     const options = typeof name === "string"
       ? {
         name,
         store,
         fields,
-      } as DocumentOptions
-      : name;
+      } as Options
+      : name as Options;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>
@@ -240,19 +272,159 @@ export default class Cms {
       options.description = description;
     }
 
-    this.documents.set(options.name, options);
+    this.collections.set(
+      options.name,
+      options as unknown as CollectionOptions<FieldTypes, FieldProperties>,
+    );
     return this;
   }
 
-  /** Add a new field type */
-  field(name: string, field: FieldType): this {
-    this.fields.set(name, field);
+  /** Add a new document */
+  document<UnknownFieldTypes extends string>(
+    options: DocumentOptions<
+      UnknownFieldTypes | FieldTypes,
+      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
+    >,
+  ): this;
+  document<UnknownFieldTypes extends string>(
+    name: string,
+    store: string,
+    fields: FieldArray<
+      UnknownFieldTypes | FieldTypes,
+      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
+    >,
+  ): this;
+  document<UnknownFieldTypes extends string>(
+    name:
+      | string
+      | DocumentOptions<
+        UnknownFieldTypes | FieldTypes,
+        UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
+      >,
+    store?: string,
+    fields?: FieldArray<
+      UnknownFieldTypes | FieldTypes,
+      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
+    >,
+  ): this {
+    type Options = DocumentOptions<
+      UnknownFieldTypes | FieldTypes,
+      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
+    >;
+    const options = typeof name === "string"
+      ? {
+        name,
+        store,
+        fields,
+      } as Options
+      : name as Options;
+
+    if (!options.description) {
+      const [name, description] = options.name.split(":").map((part) =>
+        part.trim()
+      );
+      options.name = name;
+      options.description = description;
+    }
+
+    this.documents.set(
+      options.name,
+      options as unknown as DocumentOptions<FieldTypes, FieldProperties>,
+    );
     return this;
+  }
+
+  field<
+    AdditionalField extends BaseField<string, { name: string }>,
+  >(
+    name: LiteralOnly<AdditionalField["type"]>,
+    field: FieldDefinition<AdditionalField>,
+  ): Cms<
+    FieldTypes | LiteralOnly<AdditionalField["type"]>,
+    & FieldProperties
+    & {
+      [K in LiteralOnly<AdditionalField["type"]>]: AdditionalField;
+    }
+  >;
+  field<
+    AdditionalField extends BaseField<AdditionalFieldTypes, { name: string }>,
+    AdditionalFieldTypes extends string,
+  >(
+    name: AdditionalFieldTypes,
+    field: FieldDefinition<AdditionalField>,
+  ): Cms<
+    FieldTypes | LiteralOnly<AdditionalField["type"]>,
+    & FieldProperties
+    & {
+      [K in LiteralOnly<AdditionalField["type"]>]: AdditionalField;
+    }
+  >;
+  field<
+    AdditionalField extends BaseField<string, { name: string }>,
+  >(
+    name: LiteralOnly<AdditionalField["type"]>,
+    field: FieldDefinition<AdditionalField>,
+  ): Cms<
+    FieldTypes | LiteralOnly<AdditionalField["type"]>,
+    & FieldProperties
+    & {
+      [K in LiteralOnly<AdditionalField["type"]>]: AdditionalField;
+    }
+  > {
+    this.fields.set(
+      name,
+      field as unknown as FieldDefinition<
+        Field<
+          FieldTypes,
+          FieldProperties[FieldTypes],
+          FieldTypes,
+          FieldProperties
+        >
+      >,
+    );
+    return this as unknown as Cms<
+      FieldTypes | LiteralOnly<AdditionalField["type"]>,
+      & FieldProperties
+      & {
+        [K in LiteralOnly<AdditionalField["type"]>]: AdditionalField;
+      }
+    >;
   }
 
   /** Use a plugin */
-  use(plugin: (cms: Cms) => void): this {
-    plugin(this);
+  use<
+    AdditionalFieldTypes extends string,
+    AdditionalFieldProperties extends FieldPropertyMap<AdditionalFieldTypes>,
+  >(
+    plugin: (c: Cms<FieldTypes, FieldProperties>) => Cms<
+      FieldTypes | AdditionalFieldTypes,
+      FieldProperties & AdditionalFieldProperties
+    >,
+  ): Cms<
+    FieldTypes | AdditionalFieldTypes,
+    FieldProperties & AdditionalFieldProperties
+  >;
+  use(plugin: (c: Cms<FieldTypes, FieldProperties>) => void): this;
+  use<
+    AdditionalFieldTypes extends string,
+    AdditionalFieldProperties extends FieldPropertyMap<AdditionalFieldTypes>,
+  >(
+    plugin: (c: Cms<FieldTypes, FieldProperties>) =>
+      | Cms<
+        FieldTypes | AdditionalFieldTypes,
+        FieldProperties & AdditionalFieldProperties
+      >
+      | void,
+  ):
+    | Cms<
+      FieldTypes | AdditionalFieldTypes,
+      FieldProperties & AdditionalFieldProperties
+    >
+    | this {
+    const result = plugin(this);
+    if (result instanceof Cms) {
+      return result;
+    }
     return this;
   }
 
@@ -487,48 +659,86 @@ export default class Cms {
   }
 
   #resolveFields(
-    fields: (Field | string)[],
+    fields: FieldArray<FieldTypes, FieldProperties>,
     content: CMSContent,
-  ): ResolvedField[] {
-    return fields.map((field): ResolvedField => {
-      if (typeof field === "string") {
-        const parts = field.split(":").map((part) => part.trim());
-        field = {
-          name: parts[0],
-          type: parts[1] ?? "text",
+  ): ResolvedField<
+    Field<FieldTypes, FieldProperties[FieldTypes], FieldTypes, FieldProperties>,
+    FieldTypes,
+    FieldProperties
+  >[] {
+    return fields
+      .map((field) => {
+        if (typeof field !== "string") {
+          return field;
+        }
+        const [name, type] = field.split(":").map((part) => part.trim());
+        const required = type?.endsWith("!");
+        if (required) {
+          return {
+            name,
+            type: type.slice(0, -1) as LiteralOnly<FieldTypes>,
+            attributes: { required: true },
+          };
+        } else {
+          return {
+            name,
+            type: (type ?? "text") as LiteralOnly<FieldTypes>,
+          };
+        }
+      })
+      .map((field): ResolvedField<
+        Field<
+          FieldTypes,
+          FieldProperties[FieldTypes],
+          FieldTypes,
+          FieldProperties
+        >,
+        FieldTypes,
+        FieldProperties
+      > => {
+        const type = this.fields.get(field.type);
+
+        if (!type) {
+          throw new Error(`Unknown field of type "${field.type}"`);
+        }
+
+        const {
+          label = labelify(field.name),
+          fields: nestedFields,
+          ...remainingProperties
+        } = field as {
+          label?: string;
+          fields?: FieldArray<FieldTypes, FieldProperties>;
         };
 
-        if (field.type.endsWith("!")) {
-          field.type = field.type.slice(0, -1);
-          field.attributes = { required: true };
+        const resolvedField = {
+          tag: type.tag,
+          label,
+          applyChanges: type.applyChanges,
+          fields: nestedFields,
+          ...remainingProperties,
+        } as ResolvedField<
+          Field<
+            FieldTypes,
+            FieldProperties[FieldTypes],
+            FieldTypes,
+            FieldProperties
+          >,
+          FieldTypes,
+          FieldProperties
+        >;
+
+        if (type.init) {
+          type.init(resolvedField, content);
         }
-      }
+        if (nestedFields) {
+          resolvedField.fields = this.#resolveFields(
+            nestedFields,
+            content,
+          ) as typeof resolvedField.fields;
+        }
 
-      const type = this.fields.get(field.type);
-
-      if (!type) {
-        throw new Error(`Unknown field of type "${field.type}"`);
-      }
-
-      const resolvedField = {
-        tag: type.tag,
-        label: field.label ?? labelify(field.name),
-        applyChanges: type.applyChanges,
-        ...field,
-      } as ResolvedField;
-
-      if (type.init) {
-        type.init(resolvedField, content);
-      }
-
-      if (resolvedField.fields) {
-        resolvedField.fields = this.#resolveFields(
-          resolvedField.fields,
-          content,
-        );
-      }
-
-      return resolvedField;
-    });
+        return resolvedField;
+      });
   }
 }

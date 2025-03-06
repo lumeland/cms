@@ -5,7 +5,7 @@ export interface DocumentOptions {
   label?: string;
   description?: string;
   entry: Entry;
-  fields: ResolvedField[];
+  fields: ResolvedField<{ type: string; name: string; [x: string]: unknown }>[];
   url?: string;
   views?: string[];
 }
@@ -15,7 +15,9 @@ export default class Document {
   #label?: string;
   description?: string;
   #entry: Entry;
-  #fields: ResolvedField[];
+  #fields: ResolvedField<
+    { type: string; name: string; [x: string]: unknown }
+  >[];
   url?: string;
   views?: string[];
 

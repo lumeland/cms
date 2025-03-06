@@ -2,7 +2,20 @@
 import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
-import { FieldKeys } from "./fields/core.ts";
+
+/**
+ * Utility type that extracts only literal string types from a given union type.
+ *
+ * @template T - The type to filter, which is typically a union of literal strings and broader string types.
+ *
+ * @example
+ * // Given a union of a literal and a broad string type:
+ * type Test = LiteralOnly<"hello" | string & Record<never, never>>;
+ *
+ * // Test resolves to "hello" because the broad string type is filtered out.
+ */
+export type LiteralOnly<T> = T extends string ? (string extends T ? never : T)
+  : never;
 
 /** Generic data to store */
 export type Data = Record<string, unknown>;
@@ -60,68 +73,144 @@ export interface Transformer<T> {
   fromData(data: Data): T | Promise<T>;
 }
 
-/** The schema for a field */
-export interface Field {
-  type: FieldKeys | (string & Record<never, never>);
-  //                ^ Typescript hack to suggest the correct keys but allow any string
-  //                  https://x.com/diegohaz/status/1524257274012876801
-  name: string;
-  value?: unknown;
-  fields?: (Field | string)[];
-  label?: string;
-  description?: string;
-  options?: Option[];
-  /** @deprecated. Use `upload` instead */
-  uploads?: string;
-  upload?: string | false;
-  view?: string;
-  attributes?: {
-    required?: boolean;
-    min?: number;
-    max?: number;
-    step?: number;
-    maxlength?: number;
-    pattern?: string;
-    [key: string]: unknown;
+export type FieldPropertyMap<FieldTypes extends string> = {
+  [K in FieldTypes]: {
+    name: string;
   };
-  init?: (field: ResolvedField, content: CMSContent) => void | Promise<void>;
-  transform?(value: any, field: ResolvedField): any;
-  [key: string]: unknown;
-}
+};
 
-export interface ResolvedField extends Field {
-  tag: string;
-  label: string;
-  fields?: ResolvedField[];
-  details?: Record<string, any>;
-  applyChanges(
-    data: Data,
-    changes: Data,
-    field: ResolvedField,
-    document: Document,
-    content: CMSContent,
-  ): void | Promise<void>;
-}
+export type BaseField<
+  FieldType extends string,
+  FieldProperties extends { name: string },
+> =
+  & { type: FieldType; name: string }
+  & {
+    init?(
+      field: ResolvedField<
+        BaseField<
+          FieldType,
+          FieldProperties
+        >
+      >,
+      content: CMSContent,
+    ): void | Promise<void>;
+    transform?(
+      value: any,
+      field: ResolvedField<
+        BaseField<
+          FieldType,
+          FieldProperties
+        >
+      >,
+    ): any;
+  }
+  & FieldProperties;
 
-export interface FieldType {
+export type Field<
+  FieldType extends string,
+  FieldProperties extends { name: string },
+  AllFieldTypes extends string,
+  AllFieldProperties extends FieldPropertyMap<AllFieldTypes>,
+> =
+  & {
+    type: FieldType;
+  }
+  & BaseField<
+    FieldType,
+    & Omit<FieldProperties, "fields">
+    & ("fields" extends keyof FieldProperties
+      ? FieldProperties["fields"] extends boolean ? {
+          fields?: FieldArray<AllFieldTypes, AllFieldProperties>;
+        }
+      : {}
+      : {})
+  >;
+
+/**
+ * Represents the options for a field (both built in and custom).
+ */
+export type FieldUnion<
+  FieldTypes extends string,
+  FieldProperties extends FieldPropertyMap<FieldTypes>,
+> = {
+  [K in LiteralOnly<FieldTypes>]: Field<
+    K,
+    FieldProperties[K],
+    LiteralOnly<FieldTypes>,
+    FieldProperties
+  >;
+}[LiteralOnly<FieldTypes>];
+
+/**
+ * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
+ */
+export type FieldString<FieldType extends string> = `${string}:${
+  | ""
+  | " "}${FieldType}${
+  | ""
+  | "!"}`;
+
+export type FieldArray<
+  FieldType extends string,
+  FieldProperties extends FieldPropertyMap<FieldType>,
+> = (FieldUnion<FieldType, FieldProperties> | FieldString<string>)[];
+
+export type ResolvedField<
+  Field extends BaseField<string, { name: string }>,
+  AllTypes extends string = string,
+  AllProperties extends FieldPropertyMap<AllTypes> = {
+    [K in AllTypes]: {
+      name: string;
+      [x: string]: unknown;
+    };
+  },
+> =
+  & Omit<Field, "fields">
+  & {
+    tag: string;
+    label: string;
+    fields?: {
+      [K in AllTypes]: ResolvedField<
+        BaseField<
+          K,
+          AllProperties[K]
+        >,
+        AllTypes,
+        AllProperties
+      >;
+    }[AllTypes][];
+    details?: Record<string, any>;
+    applyChanges(
+      data: Data,
+      changes: Data,
+      field: ResolvedField<Field>,
+      document: Document,
+      content: CMSContent,
+    ): void | Promise<void>;
+  };
+
+export type FieldDefinition<
+  Field extends BaseField<string, { name: string }>,
+> = {
   tag: string;
   jsImport: string;
-  init?: (field: ResolvedField, content: CMSContent) => void;
+  init?(
+    field: ResolvedField<Field>,
+    content: CMSContent,
+  ): void;
   applyChanges(
     data: Data,
     changes: Data,
-    field: ResolvedField,
+    field: ResolvedField<Field>,
     document: Document,
     content: CMSContent,
   ): void | Promise<void>;
-}
+};
 
 export type Labelizer = (
   name: string,
   prev?: (name: string) => string,
 ) => string;
-
-type Option = string | { value: string | number; label: string };
 
 export interface CMSContent {
   basePath: string;
