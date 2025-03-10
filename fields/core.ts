@@ -80,7 +80,7 @@ type InputFieldTypeToValueTypeOverrideMap = {
   "current-datetime": Date | null;
 };
 
-type FieldTypeToPropertiesMap =
+type CoreFieldProperties =
   & {
     [K in BaseInputFieldType]: K extends
       keyof InputFieldTypeToValueTypeOverrideMap ?
@@ -111,10 +111,16 @@ type FieldTypeToPropertiesMap =
     };
   };
 
-type CoreField<T extends keyof FieldTypeToPropertiesMap> = BaseField<
+type CoreField<T extends keyof CoreFieldProperties> = BaseField<
   T,
-  FieldTypeToPropertiesMap[T]
+  CoreFieldProperties[T]
 >;
+
+declare global {
+  namespace Lume {
+    interface FieldProperties extends CoreFieldProperties {}
+  }
+}
 
 // Logic-less fields
 const inputs = {
@@ -131,8 +137,6 @@ const inputs = {
     ? InputFieldTypeToValueTypeOverrideMap[K]
     : string;
 };
-
-export type FieldKeys = keyof FieldTypeToPropertiesMap;
 
 const getInputFieldDefinition = <
   T extends BaseInputFieldType | SelectInputFieldType,
@@ -166,11 +170,8 @@ const getInputFieldDefinition = <
   };
 };
 
-export const defaultFields = <
-  FieldTypes extends string,
-  FieldProperties extends FieldPropertyMap<FieldTypes>,
->(cms: Cms<FieldTypes, FieldProperties>) => {
-  return cms
+export const defaultFields = (cms: Cms): void => {
+  cms
     .field("text", getInputFieldDefinition("text"))
     .field("textarea", getInputFieldDefinition("textarea"))
     .field("markdown", getInputFieldDefinition("markdown"))
@@ -184,7 +185,7 @@ export const defaultFields = <
     .field("url", getInputFieldDefinition("url"))
     .field("checkbox", getInputFieldDefinition("checkbox"))
     .field("number", getInputFieldDefinition("number"))
-    .field<CoreField<"hidden">>(
+    .field(
       "hidden",
       {
         tag: `f-hidden`,
@@ -209,7 +210,7 @@ export const defaultFields = <
         },
       },
     )
-    .field<CoreField<"list">>(
+    .field(
       "list",
       {
         tag: "f-list",
@@ -226,7 +227,7 @@ export const defaultFields = <
     )
     .field("select", getInputFieldDefinition("select"))
     .field("radio", getInputFieldDefinition("radio"))
-    .field<CoreField<"object">>(
+    .field(
       "object",
       {
         tag: "f-object",
@@ -249,7 +250,7 @@ export const defaultFields = <
         },
       },
     )
-    .field<CoreField<"object-list">>(
+    .field(
       "object-list",
       {
         tag: "f-object-list",
@@ -280,7 +281,7 @@ export const defaultFields = <
         },
       },
     )
-    .field<CoreField<"file-list">>(
+    .field(
       "file-list",
       {
         tag: "f-file-list",
@@ -311,7 +312,7 @@ export const defaultFields = <
         },
       },
     )
-    .field<CoreField<"choose-list">>(
+    .field(
       "choose-list",
       {
         tag: "f-choose-list",
@@ -348,7 +349,7 @@ export const defaultFields = <
         },
       },
     )
-    .field<CoreField<"file">>(
+    .field(
       "file",
       {
         tag: "f-file",
@@ -410,7 +411,7 @@ export const defaultFields = <
         },
       },
     )
-    .field<CoreField<"markdown">>(
+    .field(
       "markdown",
       {
         tag: "f-markdown",

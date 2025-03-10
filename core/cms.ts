@@ -118,10 +118,10 @@ const defaults = {
   basePath: "/",
 } satisfies CmsOptions;
 
-export default class Cms<
-  FieldTypes extends string,
-  FieldProperties extends FieldPropertyMap<FieldTypes>,
-> {
+type FieldTypes = keyof Lume.FieldProperties;
+type FieldProperties = Lume.FieldProperties;
+
+export default class Cms {
   #jsImports = new Set<string>();
 
   fetch: (request: Request) => Response | Promise<Response>;
@@ -334,43 +334,10 @@ export default class Cms<
     return this;
   }
 
-  field<
-    AdditionalField extends BaseField<string, { name: string }>,
-  >(
-    name: LiteralOnly<AdditionalField["type"]>,
-    field: FieldDefinition<AdditionalField>,
-  ): Cms<
-    FieldTypes | LiteralOnly<AdditionalField["type"]>,
-    & FieldProperties
-    & {
-      [K in LiteralOnly<AdditionalField["type"]>]: AdditionalField;
-    }
-  >;
-  field<
-    AdditionalField extends BaseField<AdditionalFieldTypes, { name: string }>,
-    AdditionalFieldTypes extends string,
-  >(
-    name: AdditionalFieldTypes,
-    field: FieldDefinition<AdditionalField>,
-  ): Cms<
-    FieldTypes | LiteralOnly<AdditionalField["type"]>,
-    & FieldProperties
-    & {
-      [K in LiteralOnly<AdditionalField["type"]>]: AdditionalField;
-    }
-  >;
-  field<
-    AdditionalField extends BaseField<string, { name: string }>,
-  >(
-    name: LiteralOnly<AdditionalField["type"]>,
-    field: FieldDefinition<AdditionalField>,
-  ): Cms<
-    FieldTypes | LiteralOnly<AdditionalField["type"]>,
-    & FieldProperties
-    & {
-      [K in LiteralOnly<AdditionalField["type"]>]: AdditionalField;
-    }
-  > {
+  field<T extends FieldTypes>(
+    name: T,
+    field: FieldDefinition<BaseField<T, FieldProperties[T]>>,
+  ): this {
     this.fields.set(
       name,
       field as unknown as FieldDefinition<
@@ -382,49 +349,12 @@ export default class Cms<
         >
       >,
     );
-    return this as unknown as Cms<
-      FieldTypes | LiteralOnly<AdditionalField["type"]>,
-      & FieldProperties
-      & {
-        [K in LiteralOnly<AdditionalField["type"]>]: AdditionalField;
-      }
-    >;
+    return this;
   }
 
   /** Use a plugin */
-  use<
-    AdditionalFieldTypes extends string,
-    AdditionalFieldProperties extends FieldPropertyMap<AdditionalFieldTypes>,
-  >(
-    plugin: (c: Cms<FieldTypes, FieldProperties>) => Cms<
-      FieldTypes | AdditionalFieldTypes,
-      FieldProperties & AdditionalFieldProperties
-    >,
-  ): Cms<
-    FieldTypes | AdditionalFieldTypes,
-    FieldProperties & AdditionalFieldProperties
-  >;
-  use(plugin: (c: Cms<FieldTypes, FieldProperties>) => void): this;
-  use<
-    AdditionalFieldTypes extends string,
-    AdditionalFieldProperties extends FieldPropertyMap<AdditionalFieldTypes>,
-  >(
-    plugin: (c: Cms<FieldTypes, FieldProperties>) =>
-      | Cms<
-        FieldTypes | AdditionalFieldTypes,
-        FieldProperties & AdditionalFieldProperties
-      >
-      | void,
-  ):
-    | Cms<
-      FieldTypes | AdditionalFieldTypes,
-      FieldProperties & AdditionalFieldProperties
-    >
-    | this {
-    const result = plugin(this);
-    if (result instanceof Cms) {
-      return result;
-    }
+  use(plugin: (c: Cms) => void): this {
+    plugin(this);
     return this;
   }
 

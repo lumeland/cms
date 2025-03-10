@@ -5,26 +5,19 @@ import { asset, getPath } from "../core/utils/path.ts";
 import { Git, Options as GitOptions } from "../core/git.ts";
 import { relative } from "../deps/std.ts";
 import type Cms from "../core/cms.ts";
-import type { FieldPropertyMap } from "../types.ts";
 
-export interface Options<
-  FieldTypes extends string,
-  FieldProperties extends FieldPropertyMap<FieldTypes>,
-> {
+export interface Options {
   // deno-lint-ignore no-explicit-any
   site: any;
-  cms: Cms<FieldTypes, FieldProperties>;
+  cms: Cms;
   basePath?: string;
 }
 
 export const defaults = {
   basePath: "/admin",
-} satisfies Partial<Options<never, never>>;
+} satisfies Partial<Options>;
 
-export default async function lume<
-  FieldTypes extends string,
-  FieldProperties extends FieldPropertyMap<FieldTypes>,
->(userOptions?: Options<FieldTypes, FieldProperties>): Promise<Hono> {
+export default async function lume(userOptions?: Options): Promise<Hono> {
   const { site, cms, basePath } = {
     ...defaults,
     ...userOptions,
