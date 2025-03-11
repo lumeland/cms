@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.10.1] - 2025-03-11
+### Fixed
+- Preview AVIF images [#45].
+
 ## [0.10.0] - 2025-03-05
 ### Added
 - Snippets option to markdown field.
@@ -574,7 +578,9 @@ First version
 [#30]: https://github.com/lumeland/cms/issues/30
 [#31]: https://github.com/lumeland/cms/issues/31
 [#34]: https://github.com/lumeland/cms/issues/34
+[#45]: https://github.com/lumeland/cms/issues/45
 
+[0.10.1]: https://github.com/lumeland/cms/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/lumeland/cms/compare/v0.9.4...v0.10.0
 [0.9.4]: https://github.com/lumeland/cms/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/lumeland/cms/compare/v0.9.2...v0.9.3
