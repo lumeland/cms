@@ -70,6 +70,7 @@ export function fileType(path) {
     case "svg":
     case "gif":
     case "webp":
+    case "avif":
     case "ico":
       return "image";
 
