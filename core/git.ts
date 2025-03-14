@@ -94,7 +94,11 @@ export class Git implements Versioning {
 
       // If the current branch exists in the remote, pull it before pushing
       if (this.#gitRemoteBranchExists(currentBranch)) {
-        this.#git("pull", this.remote, currentBranch);
+        try {
+          this.#git("pull", this.remote, currentBranch);
+        } catch {
+          // Ignore. If the pull fails, we will push the changes anyway
+        }
       }
 
       // Add and commit changes
