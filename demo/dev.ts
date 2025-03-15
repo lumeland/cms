@@ -26,7 +26,6 @@ const cms = lumeCMS({
     },
   },
 });
-
 cms.storage("src", "demo");
 cms.upload("img", "src:img/**/*{.jpg,.png,.gif,.svg,.webp}");
 
@@ -57,6 +56,10 @@ cms.document({
           upload: "img",
         },
       ],
+    },
+    {
+      name: "hi",
+      type: "hello",
     },
   ],
 });
@@ -282,6 +285,15 @@ cms.collection({
           fields: [
             "body: markdown",
           ],
+        },
+        {
+          name: "layout",
+          type: "hidden",
+          value: "/posts.vto",
+        },
+        {
+          type: "hi",
+          name: "hello",
         },
       ],
     },

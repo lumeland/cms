@@ -1,4 +1,9 @@
-import type { CMSContent, Data, ResolvedField } from "../../types.ts";
+import type {
+  BaseField,
+  CMSContent,
+  Data,
+  ResolvedField,
+} from "../../types.ts";
 
 /**
  * Converts a list of changes to an object:
@@ -53,10 +58,12 @@ export function changesToData(
   return data.changes as Data;
 }
 
-export async function prepareField(
-  field: ResolvedField,
+export async function prepareField<
+  Field extends BaseField<string, { name: string }>,
+>(
+  field: ResolvedField<Field>,
   content: CMSContent,
-): Promise<ResolvedField> {
+): Promise<ResolvedField<Field>> {
   const json = { ...field };
 
   if (field.fields) {
@@ -72,12 +79,20 @@ export async function prepareField(
   return json;
 }
 
-export function getViews(field: ResolvedField, views = new Set()): unknown {
-  if (field.view) {
-    views.add(field.view);
+export function getViews<Field extends BaseField<string, { name: string }>>(
+  field: ResolvedField<Field>,
+  views = new Set(),
+): unknown {
+  const { view, fields } = field as ResolvedField<
+    Field & {
+      view?: string;
+    }
+  >;
+  if (view) {
+    views.add(view);
   }
 
-  field.fields?.forEach((f) => getViews(f, views));
+  fields?.forEach((f) => getViews(f, views));
 
   return views;
 }
