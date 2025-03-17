@@ -258,10 +258,11 @@ export default class GitHub implements Storage {
   async *[Symbol.asyncIterator]() {
     const regexp = globToRegExp(this.path, { extended: true });
     const depth = getDepth(this.path);
+    const offsetPath = this.root.length ? this.root.length + 1 : 0;
 
     for await (const entry of this.git.listFiles(this.root, depth)) {
       if (entry.type === "file") {
-        const name = entry.path.slice(this.root.length + 1);
+        const name = offsetPath ? entry.path.slice(offsetPath) : entry.path;
 
         if (!regexp.test(name)) {
           continue;

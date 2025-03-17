@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.10.4] - 2025-03-17
+### Fixed
+- GitHub storage when the root folder is empty.
+
 ## [0.10.3] - 2025-03-17
 ### Fixed
 - GitHub storage bugs [#46].
@@ -590,6 +594,7 @@ First version
 [#45]: https://github.com/lumeland/cms/issues/45
 [#46]: https://github.com/lumeland/cms/issues/46
 
+[0.10.4]: https://github.com/lumeland/cms/compare/v0.10.3...v0.10.4
 [0.10.3]: https://github.com/lumeland/cms/compare/v0.10.2...v0.10.3
 [0.10.2]: https://github.com/lumeland/cms/compare/v0.10.1...v0.10.2
 [0.10.1]: https://github.com/lumeland/cms/compare/v0.10.0...v0.10.1
