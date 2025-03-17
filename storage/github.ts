@@ -169,7 +169,7 @@ class GitClient {
     }
 
     // @ts-ignore: Property 'sha' does not exist
-    const sha = exists.data.sha;
+    const sha = result.data.sha;
 
     if (!sha) {
       throw new Error(`File not found: ${path}`);
@@ -220,11 +220,7 @@ export default class GitHub implements Storage {
   }
 
   constructor(options: Options) {
-    this.client = options.client;
-    this.owner = options.owner;
-    this.repo = options.repo;
-    this.branch = options.branch;
-    this.commitMessage = options.commitMessage || function ({ action, path }) {
+    options.commitMessage ??= function ({ action, path }) {
       switch (action) {
         case "create":
           return `Create file ${path}`;
@@ -234,6 +230,12 @@ export default class GitHub implements Storage {
           return `Delete file ${path}`;
       }
     };
+
+    this.client = options.client;
+    this.owner = options.owner;
+    this.repo = options.repo;
+    this.branch = options.branch;
+    this.commitMessage = options.commitMessage;
 
     const path = options.path || "";
     const pos = path.indexOf("*");
