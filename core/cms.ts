@@ -503,7 +503,7 @@ export default class Cms {
     content: CMSContent,
   ): ResolvedField<keyof Lume.FieldProperties>[] {
     return fields
-      .map((field) => {
+      .map((field): Lume.Field<keyof Lume.FieldProperties> => {
         if (typeof field !== "string") {
           return field;
         }
@@ -514,15 +514,15 @@ export default class Cms {
             name,
             type: type.slice(0, -1) as keyof Lume.FieldProperties,
             attributes: { required: true },
-          };
+          } as Lume.Field<keyof Lume.FieldProperties>;
         } else {
           return {
             name,
             type: (type ?? "text") as keyof Lume.FieldProperties,
-          };
+          } as Lume.Field<keyof Lume.FieldProperties>;
         }
       })
-      .map((field): ResolvedField<keyof Lume.FieldProperties> => {
+      .map((field) => {
         const type = this.fields.get(field.type);
 
         if (!type) {
@@ -533,28 +533,27 @@ export default class Cms {
           label = labelify(field.name),
           fields: nestedFields,
           ...remainingProperties
-        } = field as {
+        } = field as typeof field & {
           label?: string;
           fields?:
             (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[];
         };
 
-        const resolvedField = {
+        const resolvedField: ResolvedField<keyof Lume.FieldProperties> = {
           tag: type.tag,
           label,
           applyChanges: type.applyChanges,
-          fields: nestedFields,
+          fields: nestedFields
+            ? this.#resolveFields(
+              nestedFields,
+              content,
+            )
+            : undefined,
           ...remainingProperties,
-        } as ResolvedField<keyof Lume.FieldProperties>;
+        };
 
         if (type.init) {
           type.init(resolvedField, content);
-        }
-        if (nestedFields) {
-          resolvedField.fields = this.#resolveFields(
-            nestedFields,
-            content,
-          ) as typeof resolvedField.fields;
         }
 
         return resolvedField;

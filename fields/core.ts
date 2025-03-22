@@ -9,6 +9,12 @@ function normalizeLineBreaks(value: string) {
   return value.replaceAll("\r\n", "\n");
 }
 
+type Prettify<T> =
+  & {
+    [K in keyof T]: T[K];
+  }
+  & {};
+
 type Option = string | { value: string | number; label: string };
 
 type BaseFieldProperties = {
@@ -77,7 +83,7 @@ type InputFieldTypeToValueTypeOverrideMap = {
 
 type CoreFieldProperties =
   & {
-    [K in BaseInputFieldType]:
+    [K in BaseInputFieldType]: Prettify<
       & { type: K }
       & (
         K extends keyof InputFieldTypeToValueTypeOverrideMap ?
@@ -86,27 +92,36 @@ type CoreFieldProperties =
               value?: InputFieldTypeToValueTypeOverrideMap[K];
             }
           : BaseInputFieldProperties
-      );
+      )
+    >;
   }
   & {
-    [K in ContainerFieldType]: { type: K } & ContainerFieldProperties;
+    [K in ContainerFieldType]: Prettify<{ type: K } & ContainerFieldProperties>;
   }
   & {
-    [K in SelectInputFieldType]: { type: K } & SelectInputFieldProperties;
+    [K in SelectInputFieldType]: Prettify<
+      { type: K } & SelectInputFieldProperties
+    >;
   }
   & {
-    "file": { type: "file" } & UploadableFieldProperties & {
-      publicPath?: string;
-    };
-    "markdown": { type: "markdown" } & UploadableFieldProperties & {
-      snippets?: {
-        label: string;
-        value: string;
-      }[];
-    };
-    "hidden": { type: "hidden" } & BaseFieldProperties & {
-      value?: string;
-    };
+    "file": Prettify<
+      { type: "file" } & UploadableFieldProperties & {
+        publicPath?: string;
+      }
+    >;
+    "markdown": Prettify<
+      { type: "markdown" } & UploadableFieldProperties & {
+        snippets?: {
+          label: string;
+          value: string;
+        }[];
+      }
+    >;
+    "hidden": Prettify<
+      { type: "hidden" } & BaseFieldProperties & {
+        value?: string;
+      }
+    >;
   };
 
 declare global {
