@@ -57,10 +57,6 @@ cms.document({
         },
       ],
     },
-    {
-      name: "hi",
-      type: "hello",
-    },
   ],
 });
 cms.collection({
@@ -285,15 +281,6 @@ cms.collection({
           fields: [
             "body: markdown",
           ],
-        },
-        {
-          name: "layout",
-          type: "hidden",
-          value: "/posts.vto",
-        },
-        {
-          type: "hi",
-          name: "hello",
         },
       ],
     },
