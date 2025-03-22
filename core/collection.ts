@@ -13,7 +13,7 @@ export interface CollectionOptions {
   label?: string;
   description?: string;
   storage: Storage;
-  fields: ResolvedField<{ type: string; name: string; [x: string]: unknown }>[];
+  fields: ResolvedField<keyof Lume.FieldProperties>[];
   url?: string;
   views?: string[];
   /** @deprecated. Use `documentName` instead */
@@ -34,9 +34,7 @@ export default class Collection {
   label: string;
   description?: string;
   #storage: Storage;
-  #fields: ResolvedField<
-    { type: string; name: string; [x: string]: unknown }
-  >[];
+  #fields: ResolvedField<keyof Lume.FieldProperties>[];
   url?: string;
   views?: string[];
   documentName?: string | ((changes: Data) => string | undefined);

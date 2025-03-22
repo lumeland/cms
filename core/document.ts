@@ -5,7 +5,7 @@ export interface DocumentOptions {
   label?: string;
   description?: string;
   entry: Entry;
-  fields: ResolvedField<{ type: string; name: string; [x: string]: unknown }>[];
+  fields: ResolvedField<keyof Lume.FieldProperties>[];
   url?: string;
   views?: string[];
 }
@@ -15,9 +15,7 @@ export default class Document {
   #label?: string;
   description?: string;
   #entry: Entry;
-  #fields: ResolvedField<
-    { type: string; name: string; [x: string]: unknown }
-  >[];
+  #fields: ResolvedField<keyof Lume.FieldProperties>[];
   url?: string;
   views?: string[];
 

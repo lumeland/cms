@@ -2,12 +2,7 @@ import { normalizePath } from "../core/utils/path.ts";
 import { posix } from "../deps/std.ts";
 import { isEmpty } from "../core/utils/string.ts";
 
-import type {
-  BaseField,
-  Data,
-  FieldDefinition,
-  FieldPropertyMap,
-} from "../types.ts";
+import type { Data, FieldDefinition } from "../types.ts";
 import type Cms from "../core/cms.ts";
 
 function normalizeLineBreaks(value: string) {
@@ -70,7 +65,7 @@ type ContainerFieldType =
   | "file-list"
   | "choose-list";
 type ContainerFieldProperties = VisibleFieldProperties & {
-  fields: true;
+  fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[];
 };
 
 type InputFieldTypeToValueTypeOverrideMap = {
@@ -82,39 +77,37 @@ type InputFieldTypeToValueTypeOverrideMap = {
 
 type CoreFieldProperties =
   & {
-    [K in BaseInputFieldType]: K extends
-      keyof InputFieldTypeToValueTypeOverrideMap ?
-        & Omit<BaseInputFieldProperties, "value">
-        & {
-          value?: InputFieldTypeToValueTypeOverrideMap[K];
-        }
-      : BaseInputFieldProperties;
+    [K in BaseInputFieldType]:
+      & { type: K }
+      & (
+        K extends keyof InputFieldTypeToValueTypeOverrideMap ?
+            & Omit<BaseInputFieldProperties, "value">
+            & {
+              value?: InputFieldTypeToValueTypeOverrideMap[K];
+            }
+          : BaseInputFieldProperties
+      );
   }
   & {
-    [K in ContainerFieldType]: ContainerFieldProperties;
+    [K in ContainerFieldType]: { type: K } & ContainerFieldProperties;
   }
   & {
-    [K in SelectInputFieldType]: SelectInputFieldProperties;
+    [K in SelectInputFieldType]: { type: K } & SelectInputFieldProperties;
   }
   & {
-    "file": UploadableFieldProperties & {
+    "file": { type: "file" } & UploadableFieldProperties & {
       publicPath?: string;
     };
-    "markdown": UploadableFieldProperties & {
+    "markdown": { type: "markdown" } & UploadableFieldProperties & {
       snippets?: {
         label: string;
         value: string;
       }[];
     };
-    "hidden": BaseFieldProperties & {
+    "hidden": { type: "hidden" } & BaseFieldProperties & {
       value?: string;
     };
   };
-
-type CoreField<T extends keyof CoreFieldProperties> = BaseField<
-  T,
-  CoreFieldProperties[T]
->;
 
 declare global {
   namespace Lume {
@@ -142,7 +135,7 @@ const getInputFieldDefinition = <
   T extends BaseInputFieldType | SelectInputFieldType,
 >(
   input: T,
-): FieldDefinition<CoreField<T>> => {
+): FieldDefinition<T> => {
   const transform = input in inputs
     ? inputs[input as keyof typeof inputs]
     : undefined;

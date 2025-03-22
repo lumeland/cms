@@ -3,20 +3,6 @@ import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
 
-/**
- * Utility type that extracts only literal string types from a given union type.
- *
- * @template T - The type to filter, which is typically a union of literal strings and broader string types.
- *
- * @example
- * // Given a union of a literal and a broad string type:
- * type Test = LiteralOnly<"hello" | string & Record<never, never>>;
- *
- * // Test resolves to "hello" because the broad string type is filtered out.
- */
-export type LiteralOnly<T> = T extends string ? (string extends T ? never : T)
-  : never;
-
 /** Generic data to store */
 export type Data = Record<string, unknown>;
 
@@ -73,73 +59,25 @@ export interface Transformer<T> {
   fromData(data: Data): T | Promise<T>;
 }
 
-export type FieldPropertyMap<FieldTypes extends string> = {
-  [K in FieldTypes]: {
-    name: string;
-  };
-};
-
-export type BaseField<
-  FieldType extends string,
-  FieldProperties extends { name: string },
-> =
-  & { type: FieldType; name: string }
-  & {
-    init?(
-      field: ResolvedField<
-        BaseField<
-          FieldType,
-          FieldProperties
-        >
-      >,
-      content: CMSContent,
-    ): void | Promise<void>;
-    transform?(
-      value: any,
-      field: ResolvedField<
-        BaseField<
-          FieldType,
-          FieldProperties
-        >
-      >,
-    ): any;
+declare global {
+  namespace Lume {
+    export type StringField = `${string}:${" " | ""}${keyof FieldProperties}${
+      | "!"
+      | ""}`;
+    export type Field<T extends keyof FieldProperties> = {
+      [K in keyof FieldProperties]: FieldProperties[K] & {
+        init?(
+          field: ResolvedField<K>,
+          content: CMSContent,
+        ): void | Promise<void>;
+        transform?(
+          value: any,
+          field: ResolvedField<K>,
+        ): any;
+      };
+    }[T];
   }
-  & FieldProperties;
-
-export type Field<
-  FieldType extends string,
-  FieldProperties extends { name: string },
-  AllFieldTypes extends string,
-  AllFieldProperties extends FieldPropertyMap<AllFieldTypes>,
-> =
-  & {
-    type: FieldType;
-  }
-  & BaseField<
-    FieldType,
-    & Omit<FieldProperties, "fields">
-    & ("fields" extends keyof FieldProperties
-      ? FieldProperties["fields"] extends boolean ? {
-          fields?: FieldArray<AllFieldTypes, AllFieldProperties>;
-        }
-      : {}
-      : {})
-  >;
-
-/**
- * Represents the options for a field (both built in and custom).
- */
-export type FieldUnion<
-  FieldTypes extends string,
-  FieldProperties extends FieldPropertyMap<FieldTypes>,
-> = {
-  [K in LiteralOnly<FieldTypes>]: Field<
-    K,
-    FieldProperties[K],
-    LiteralOnly<FieldTypes>,
-    FieldProperties
-  >;
-}[LiteralOnly<FieldTypes>];
+}
 
 /**
  * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
@@ -150,58 +88,33 @@ export type FieldString<FieldType extends string> = `${string}:${
   | ""
   | "!"}`;
 
-export type FieldArray<
-  FieldType extends string,
-  FieldProperties extends FieldPropertyMap<FieldType>,
-> = (FieldUnion<FieldType, FieldProperties> | FieldString<string>)[];
-
-export type ResolvedField<
-  Field extends BaseField<string, { name: string }>,
-  AllTypes extends string = string,
-  AllProperties extends FieldPropertyMap<AllTypes> = {
-    [K in AllTypes]: {
-      name: string;
-      [x: string]: unknown;
-    };
-  },
-> =
-  & Omit<Field, "fields">
+export type ResolvedField<T extends keyof Lume.FieldProperties> =
+  & Omit<Lume.Field<T>, "fields">
   & {
     tag: string;
     label: string;
-    fields?: {
-      [K in AllTypes]: ResolvedField<
-        BaseField<
-          K,
-          AllProperties[K]
-        >,
-        AllTypes,
-        AllProperties
-      >;
-    }[AllTypes][];
+    fields?: ResolvedField<keyof Lume.FieldProperties>[];
     details?: Record<string, any>;
     applyChanges(
       data: Data,
       changes: Data,
-      field: ResolvedField<Field>,
+      field: ResolvedField<T>,
       document: Document,
       content: CMSContent,
     ): void | Promise<void>;
   };
 
-export type FieldDefinition<
-  Field extends BaseField<string, { name: string }>,
-> = {
+export type FieldDefinition<T extends keyof Lume.FieldProperties> = {
   tag: string;
   jsImport: string;
   init?(
-    field: ResolvedField<Field>,
+    field: ResolvedField<T>,
     content: CMSContent,
   ): void;
   applyChanges(
     data: Data,
     changes: Data,
-    field: ResolvedField<Field>,
+    field: ResolvedField<T>,
     document: Document,
     content: CMSContent,
   ): void | Promise<void>;

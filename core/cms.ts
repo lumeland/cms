@@ -24,16 +24,11 @@ import { Git, Options as GitOptions } from "./git.ts";
 
 import type { Context, Next } from "../deps/hono.ts";
 import type {
-  BaseField,
   CMSContent,
   Data,
   Entry,
-  Field,
-  FieldArray,
   FieldDefinition,
-  FieldPropertyMap,
   Labelizer,
-  LiteralOnly,
   ResolvedField,
   SiteInfo,
   Storage,
@@ -59,28 +54,22 @@ export interface LogOptions {
   filename: string;
 }
 
-interface DocumentOptions<
-  FieldType extends string,
-  FieldProperties extends FieldPropertyMap<FieldType>,
-> {
+interface DocumentOptions {
   name: string;
   label?: string;
   description?: string;
   store: string;
-  fields: FieldArray<FieldType, FieldProperties>;
+  fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[];
   url?: string;
   views?: string[];
 }
 
-interface CollectionOptions<
-  FieldType extends string,
-  FieldProperties extends FieldPropertyMap<FieldType>,
-> {
+interface CollectionOptions {
   name: string;
   label?: string;
   description?: string;
   store: string;
-  fields: FieldArray<FieldType, FieldProperties>;
+  fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[];
   url?: string;
   views?: string[];
   /** @deprecated. Use `documentName` instead */
@@ -100,16 +89,6 @@ interface UploadOptions {
   listed?: boolean;
 }
 
-type UnknownFieldPropertyMap<
-  FieldTypes extends string,
-  FieldProperties extends FieldPropertyMap<FieldTypes>,
-  UnknownFieldTypes extends string,
-> = {
-  [K in FieldTypes | UnknownFieldTypes]: K extends FieldTypes
-    ? FieldProperties[K]
-    : { name: string; [x: string]: unknown };
-};
-
 const defaults = {
   site: {
     name: "Lume CMS",
@@ -117,9 +96,6 @@ const defaults = {
   root: Deno.cwd(),
   basePath: "/",
 } satisfies CmsOptions;
-
-type FieldTypes = keyof Lume.FieldProperties;
-type FieldProperties = Lume.FieldProperties;
 
 export default class Cms {
   #jsImports = new Set<string>();
@@ -130,20 +106,10 @@ export default class Cms {
   uploads = new Map<string, UploadOptions>();
   fields = new Map<
     string,
-    FieldDefinition<
-      Field<
-        FieldTypes,
-        FieldProperties[FieldTypes],
-        FieldTypes,
-        FieldProperties
-      >
-    >
+    FieldDefinition<keyof Lume.FieldProperties>
   >();
-  collections = new Map<
-    string,
-    CollectionOptions<FieldTypes, FieldProperties>
-  >();
-  documents = new Map<string, DocumentOptions<FieldTypes, FieldProperties>>();
+  collections = new Map<string, CollectionOptions>();
+  documents = new Map<string, DocumentOptions>();
   versionManager: Versioning | undefined;
 
   constructor(options?: Partial<CmsOptions>) {
@@ -225,44 +191,24 @@ export default class Cms {
   }
 
   /** Add a new collection */
-  collection<UnknownFieldTypes extends string>(
-    options: CollectionOptions<
-      UnknownFieldTypes | FieldTypes,
-      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
-    >,
-  ): this;
-  collection<UnknownFieldTypes extends string>(
+  collection(options: CollectionOptions): this;
+  collection(
     name: string,
     store: string,
-    fields: FieldArray<
-      UnknownFieldTypes | FieldTypes,
-      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
-    >,
+    fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[],
   ): this;
-  collection<UnknownFieldTypes extends string>(
-    name:
-      | string
-      | CollectionOptions<
-        UnknownFieldTypes | FieldTypes,
-        UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
-      >,
+  collection(
+    name: string | CollectionOptions,
     store?: string,
-    fields?: FieldArray<
-      UnknownFieldTypes | FieldTypes,
-      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
-    >,
+    fields?: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[],
   ): this {
-    type Options = CollectionOptions<
-      UnknownFieldTypes | FieldTypes,
-      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
-    >;
     const options = typeof name === "string"
       ? {
         name,
         store,
         fields,
-      } as Options
-      : name as Options;
+      } as CollectionOptions
+      : name as CollectionOptions;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>
@@ -272,52 +218,29 @@ export default class Cms {
       options.description = description;
     }
 
-    this.collections.set(
-      options.name,
-      options as unknown as CollectionOptions<FieldTypes, FieldProperties>,
-    );
+    this.collections.set(options.name, options);
     return this;
   }
 
   /** Add a new document */
-  document<UnknownFieldTypes extends string>(
-    options: DocumentOptions<
-      UnknownFieldTypes | FieldTypes,
-      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
-    >,
-  ): this;
-  document<UnknownFieldTypes extends string>(
+  document(options: DocumentOptions): this;
+  document(
     name: string,
     store: string,
-    fields: FieldArray<
-      UnknownFieldTypes | FieldTypes,
-      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
-    >,
+    fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[],
   ): this;
-  document<UnknownFieldTypes extends string>(
-    name:
-      | string
-      | DocumentOptions<
-        UnknownFieldTypes | FieldTypes,
-        UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
-      >,
+  document(
+    name: string | DocumentOptions,
     store?: string,
-    fields?: FieldArray<
-      UnknownFieldTypes | FieldTypes,
-      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
-    >,
+    fields?: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[],
   ): this {
-    type Options = DocumentOptions<
-      UnknownFieldTypes | FieldTypes,
-      UnknownFieldPropertyMap<FieldTypes, FieldProperties, UnknownFieldTypes>
-    >;
     const options = typeof name === "string"
       ? {
         name,
         store,
         fields,
-      } as Options
-      : name as Options;
+      } as DocumentOptions
+      : name as DocumentOptions;
 
     if (!options.description) {
       const [name, description] = options.name.split(":").map((part) =>
@@ -327,28 +250,15 @@ export default class Cms {
       options.description = description;
     }
 
-    this.documents.set(
-      options.name,
-      options as unknown as DocumentOptions<FieldTypes, FieldProperties>,
-    );
+    this.documents.set(options.name, options);
     return this;
   }
 
-  field<T extends FieldTypes>(
+  field<T extends keyof Lume.FieldProperties>(
     name: T,
-    field: FieldDefinition<BaseField<T, FieldProperties[T]>>,
+    field: FieldDefinition<T>,
   ): this {
-    this.fields.set(
-      name,
-      field as unknown as FieldDefinition<
-        Field<
-          FieldTypes,
-          FieldProperties[FieldTypes],
-          FieldTypes,
-          FieldProperties
-        >
-      >,
-    );
+    this.fields.set(name, field);
     return this;
   }
 
@@ -589,13 +499,9 @@ export default class Cms {
   }
 
   #resolveFields(
-    fields: FieldArray<FieldTypes, FieldProperties>,
+    fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[],
     content: CMSContent,
-  ): ResolvedField<
-    Field<FieldTypes, FieldProperties[FieldTypes], FieldTypes, FieldProperties>,
-    FieldTypes,
-    FieldProperties
-  >[] {
+  ): ResolvedField<keyof Lume.FieldProperties>[] {
     return fields
       .map((field) => {
         if (typeof field !== "string") {
@@ -606,26 +512,17 @@ export default class Cms {
         if (required) {
           return {
             name,
-            type: type.slice(0, -1) as LiteralOnly<FieldTypes>,
+            type: type.slice(0, -1) as keyof Lume.FieldProperties,
             attributes: { required: true },
           };
         } else {
           return {
             name,
-            type: (type ?? "text") as LiteralOnly<FieldTypes>,
+            type: (type ?? "text") as keyof Lume.FieldProperties,
           };
         }
       })
-      .map((field): ResolvedField<
-        Field<
-          FieldTypes,
-          FieldProperties[FieldTypes],
-          FieldTypes,
-          FieldProperties
-        >,
-        FieldTypes,
-        FieldProperties
-      > => {
+      .map((field): ResolvedField<keyof Lume.FieldProperties> => {
         const type = this.fields.get(field.type);
 
         if (!type) {
@@ -638,7 +535,8 @@ export default class Cms {
           ...remainingProperties
         } = field as {
           label?: string;
-          fields?: FieldArray<FieldTypes, FieldProperties>;
+          fields?:
+            (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[];
         };
 
         const resolvedField = {
@@ -647,16 +545,7 @@ export default class Cms {
           applyChanges: type.applyChanges,
           fields: nestedFields,
           ...remainingProperties,
-        } as ResolvedField<
-          Field<
-            FieldTypes,
-            FieldProperties[FieldTypes],
-            FieldTypes,
-            FieldProperties
-          >,
-          FieldTypes,
-          FieldProperties
-        >;
+        } as ResolvedField<keyof Lume.FieldProperties>;
 
         if (type.init) {
           type.init(resolvedField, content);

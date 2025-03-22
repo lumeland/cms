@@ -1,9 +1,4 @@
-import type {
-  BaseField,
-  CMSContent,
-  Data,
-  ResolvedField,
-} from "../../types.ts";
+import type { CMSContent, Data, ResolvedField } from "../../types.ts";
 
 /**
  * Converts a list of changes to an object:
@@ -58,12 +53,10 @@ export function changesToData(
   return data.changes as Data;
 }
 
-export async function prepareField<
-  Field extends BaseField<string, { name: string }>,
->(
-  field: ResolvedField<Field>,
+export async function prepareField<T extends keyof Lume.FieldProperties>(
+  field: ResolvedField<T>,
   content: CMSContent,
-): Promise<ResolvedField<Field>> {
+): Promise<ResolvedField<T>> {
   const json = { ...field };
 
   if (field.fields) {
@@ -79,15 +72,13 @@ export async function prepareField<
   return json;
 }
 
-export function getViews<Field extends BaseField<string, { name: string }>>(
-  field: ResolvedField<Field>,
+export function getViews<T extends keyof Lume.FieldProperties>(
+  field: ResolvedField<T>,
   views = new Set(),
 ): unknown {
-  const { view, fields } = field as ResolvedField<
-    Field & {
-      view?: string;
-    }
-  >;
+  const { view, fields } = field as ResolvedField<T> & {
+    view?: string;
+  };
   if (view) {
     views.add(view);
   }
