@@ -79,15 +79,6 @@ declare global {
   }
 }
 
-/**
- * Matches a string of form `/^.*:\s?.*!?$/` where the first part is the field name and the second part is the field type.
- */
-export type FieldString<FieldType extends string> = `${string}:${
-  | ""
-  | " "}${FieldType}${
-  | ""
-  | "!"}`;
-
 export type ResolvedField<T extends keyof Lume.FieldProperties> =
   & Omit<Lume.Field<T>, "fields">
   & {
