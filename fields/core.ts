@@ -13,35 +13,36 @@ type Prettify<T> =
   & {
     [K in keyof T]: T[K];
   }
+  // deno-lint-ignore ban-types
   & {};
 
 type Option = string | { value: string | number; label: string };
 
-type BaseFieldProperties = {
+interface BaseFieldProperties {
   name: string;
-};
+}
 
-type VisibleFieldProperties = BaseFieldProperties & {
+interface VisibleFieldProperties extends BaseFieldProperties {
   label?: string;
   description?: string;
   view?: string;
-};
+}
 
-type BaseInputFieldType =
-  | "text"
-  | "textarea"
-  | "markdown"
-  | "code"
-  | "datetime"
-  | "current-datetime"
-  | "date"
-  | "time"
-  | "color"
-  | "email"
-  | "url"
-  | "checkbox"
-  | "number";
-type BaseInputFieldProperties = VisibleFieldProperties & {
+interface BaseInputFieldProperties extends VisibleFieldProperties {
+  type:
+    | "text"
+    | "textarea"
+    | "markdown"
+    | "code"
+    | "datetime"
+    | "current-datetime"
+    | "date"
+    | "time"
+    | "color"
+    | "email"
+    | "url"
+    | "checkbox"
+    | "number";
   value?: string;
   attributes?: {
     required?: boolean;
@@ -52,73 +53,93 @@ type BaseInputFieldProperties = VisibleFieldProperties & {
     pattern?: string;
     [key: string]: unknown;
   };
-};
+}
 
-type SelectInputFieldType = "list" | "radio" | "select";
-type SelectInputFieldProperties = BaseInputFieldProperties & {
+interface SelectInputFieldProperties
+  extends Omit<BaseInputFieldProperties, "type"> {
+  type: "list" | "radio" | "select";
   options?: Option[];
-};
+}
 
-type UploadableFieldProperties = VisibleFieldProperties & {
+interface ContainerFieldProperties extends VisibleFieldProperties {
+  type:
+    | "object"
+    | "object-list"
+    | "file-list"
+    | "choose-list";
+  fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[];
+}
+
+interface UploadableFieldProperties extends VisibleFieldProperties {
+  type: "file" | "markdown";
   /** @deprecated. Use `upload` instead */
   uploads?: string;
   upload?: string | false;
-};
+}
 
-type ContainerFieldType =
-  | "object"
-  | "object-list"
-  | "file-list"
-  | "choose-list";
-type ContainerFieldProperties = VisibleFieldProperties & {
-  fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[];
-};
-
-type InputFieldTypeToValueTypeOverrideMap = {
+type ValueTypeOverrideMap = {
   "number": number;
   "checkbox": boolean;
   "datetime": Date | null;
   "current-datetime": Date | null;
 };
 
+type FieldProperties<
+  T extends string,
+  FieldProperties extends BaseFieldProperties,
+> = Prettify<{ type: T } & FieldProperties>;
+
 type CoreFieldProperties =
   & {
-    [K in BaseInputFieldType]: Prettify<
-      & { type: K }
-      & (
-        K extends keyof InputFieldTypeToValueTypeOverrideMap ?
-            & Omit<BaseInputFieldProperties, "value">
-            & {
-              value?: InputFieldTypeToValueTypeOverrideMap[K];
-            }
-          : BaseInputFieldProperties
-      )
+    [K in BaseInputFieldProperties["type"]]: FieldProperties<
+      K,
+      K extends keyof ValueTypeOverrideMap ?
+          & Omit<BaseInputFieldProperties, "value">
+          & {
+            value?: ValueTypeOverrideMap[K];
+          }
+        : BaseInputFieldProperties
     >;
   }
   & {
-    [K in ContainerFieldType]: Prettify<{ type: K } & ContainerFieldProperties>;
-  }
-  & {
-    [K in SelectInputFieldType]: Prettify<
-      { type: K } & SelectInputFieldProperties
+    [K in SelectInputFieldProperties["type"]]: FieldProperties<
+      K,
+      K extends keyof ValueTypeOverrideMap ?
+          & Omit<
+            SelectInputFieldProperties,
+            "value"
+          >
+          & {
+            value?: ValueTypeOverrideMap[K];
+          }
+        : SelectInputFieldProperties
     >;
   }
   & {
-    "file": Prettify<
-      { type: "file" } & UploadableFieldProperties & {
+    [K in ContainerFieldProperties["type"]]: FieldProperties<
+      K,
+      ContainerFieldProperties
+    >;
+  }
+  & {
+    "file": FieldProperties<
+      "file",
+      UploadableFieldProperties & {
         publicPath?: string;
       }
     >;
-    "markdown": Prettify<
-      { type: "markdown" } & UploadableFieldProperties & {
+    "markdown": FieldProperties<
+      "markdown",
+      UploadableFieldProperties & {
         snippets?: {
           label: string;
           value: string;
         }[];
       }
     >;
-    "hidden": Prettify<
-      { type: "hidden" } & BaseFieldProperties & {
+    "hidden": FieldProperties<
+      "hidden",
+      BaseFieldProperties & {
         value?: string;
       }
     >;
@@ -130,6 +151,9 @@ declare global {
   }
 }
 
+type InputFieldType =
+  | BaseInputFieldProperties["type"]
+  | SelectInputFieldProperties["type"];
 // Logic-less fields
 const inputs = {
   "textarea": normalizeLineBreaks,
@@ -139,15 +163,13 @@ const inputs = {
   "checkbox": (v: string) => v === "true",
   "number": (v: string) => Number(v),
 } satisfies {
-  [K in BaseInputFieldType | SelectInputFieldType]?: (
+  [K in InputFieldType]?: (
     v: string,
-  ) => K extends keyof InputFieldTypeToValueTypeOverrideMap
-    ? InputFieldTypeToValueTypeOverrideMap[K]
-    : string;
+  ) => K extends keyof ValueTypeOverrideMap ? ValueTypeOverrideMap[K] : string;
 };
 
 const getInputFieldDefinition = <
-  T extends BaseInputFieldType | SelectInputFieldType,
+  T extends InputFieldType,
 >(
   input: T,
 ): FieldDefinition<T> => {
