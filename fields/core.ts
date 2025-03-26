@@ -83,6 +83,16 @@ type ValueTypeOverrideMap = {
   "current-datetime": Date | null;
 };
 
+type OverrideValueType<
+  T extends string,
+  Properties extends Omit<BaseInputFieldProperties, "type">,
+> = T extends keyof ValueTypeOverrideMap ?
+    & Omit<Properties, "value">
+    & {
+      value?: ValueTypeOverrideMap[T];
+    }
+  : Properties;
+
 type FieldProperties<
   T extends string,
   FieldProperties extends BaseFieldProperties,
@@ -92,26 +102,13 @@ type CoreFieldProperties =
   & {
     [K in BaseInputFieldProperties["type"]]: FieldProperties<
       K,
-      K extends keyof ValueTypeOverrideMap ?
-          & Omit<BaseInputFieldProperties, "value">
-          & {
-            value?: ValueTypeOverrideMap[K];
-          }
-        : BaseInputFieldProperties
+      OverrideValueType<K, BaseInputFieldProperties>
     >;
   }
   & {
     [K in SelectInputFieldProperties["type"]]: FieldProperties<
       K,
-      K extends keyof ValueTypeOverrideMap ?
-          & Omit<
-            SelectInputFieldProperties,
-            "value"
-          >
-          & {
-            value?: ValueTypeOverrideMap[K];
-          }
-        : SelectInputFieldProperties
+      OverrideValueType<K, SelectInputFieldProperties>
     >;
   }
   & {
