@@ -30,7 +30,6 @@ interface VisibleFieldProperties extends BaseFieldProperties {
 
 interface BaseInputFieldProperties extends VisibleFieldProperties {
   type:
-    | "text"
     | "textarea"
     | "markdown"
     | "code"
@@ -57,7 +56,7 @@ interface BaseInputFieldProperties extends VisibleFieldProperties {
 
 interface SelectInputFieldProperties
   extends Omit<BaseInputFieldProperties, "type"> {
-  type: "list" | "radio" | "select";
+  type: "text" | "list" | "radio" | "select";
   options?: Option[];
 }
 
