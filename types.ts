@@ -99,8 +99,9 @@ export type ResolvedField<
   T extends keyof Lume.FieldProperties = keyof Lume.FieldProperties,
 > =
   & Omit<Lume.FieldProperties[T], "fields">
-  & Omit<FieldDefinition<T>, "jsImport" | "init">
+  & Pick<FieldDefinition<T>, "applyChanges">
   & {
+    tag: string;
     label: string;
     fields?: ResolvedField[];
     details?: Record<string, any>;
