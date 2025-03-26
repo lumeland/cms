@@ -76,7 +76,7 @@ export function getViews<T extends keyof Lume.FieldProperties>(
   field: ResolvedField<T>,
   views = new Set(),
 ): unknown {
-  const { view, fields } = field as ResolvedField<T> & {
+  const { view, fields } = field as typeof field & {
     view?: string;
   };
   if (view) {

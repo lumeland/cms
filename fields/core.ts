@@ -2,7 +2,7 @@ import { normalizePath } from "../core/utils/path.ts";
 import { posix } from "../deps/std.ts";
 import { isEmpty } from "../core/utils/string.ts";
 
-import type { Data, FieldDefinition } from "../types.ts";
+import type { Data, ResolvedField } from "../types.ts";
 import type Cms from "../core/cms.ts";
 
 function normalizeLineBreaks(value: string) {
@@ -145,17 +145,42 @@ type CoreFieldProperties =
     >;
   };
 
+type CoreFieldTransform<T extends keyof CoreFieldProperties> = "value" extends
+  keyof CoreFieldProperties[T] ? (
+    v: string,
+    field: ResolvedField<T>,
+  ) => Required<CoreFieldProperties[T]>["value"]
+  : never;
+
 declare global {
   namespace Lume {
     interface FieldProperties extends CoreFieldProperties {}
   }
 }
 
-type InputFieldType =
+const inputFields = [
+  "text",
+  "textarea",
+  "markdown",
+  "code",
+  "datetime",
+  "current-datetime",
+  "date",
+  "time",
+  "color",
+  "email",
+  "url",
+  "checkbox",
+  "number",
+  "select",
+  "radio",
+] as const satisfies (
   | BaseInputFieldProperties["type"]
-  | SelectInputFieldProperties["type"];
+  | SelectInputFieldProperties["type"]
+)[];
+
 // Logic-less fields
-const inputs = {
+const defaultTransforms = {
   "textarea": normalizeLineBreaks,
   "markdown": normalizeLineBreaks,
   "datetime": (v: string) => v ? new Date(v) : null,
@@ -163,58 +188,45 @@ const inputs = {
   "checkbox": (v: string) => v === "true",
   "number": (v: string) => Number(v),
 } satisfies {
-  [K in InputFieldType]?: (
-    v: string,
-  ) => K extends keyof ValueTypeOverrideMap ? ValueTypeOverrideMap[K] : string;
+  [K in typeof inputFields[number]]?: CoreFieldTransform<K>;
 };
 
-const getInputFieldDefinition = <
-  T extends InputFieldType,
->(
-  input: T,
-): FieldDefinition<T> => {
-  const transform = input in inputs
-    ? inputs[input as keyof typeof inputs]
-    : undefined;
-  return {
-    tag: `f-${input}`,
-    jsImport: `lume_cms/components/f-${input}.js`,
-    applyChanges(data, changes, field) {
-      if (!(field.name in changes)) {
-        return;
-      }
-      const { transform: fn = transform } = field;
-      const value = fn
-        ? fn(changes[field.name] as string, field)
-        : changes[field.name];
-
-      const { attributes: { required } = {} } = field as {
-        attributes?: { required?: boolean };
-      };
-      if (isEmpty(value) && !required) {
-        delete data[field.name];
-      } else {
-        data[field.name] = value;
-      }
-    },
-  };
+const hasDefaultTransform = (
+  input: typeof inputFields[number],
+): input is keyof typeof defaultTransforms => {
+  return Object.hasOwn(defaultTransforms, input);
 };
 
 export const defaultFields = (cms: Cms): void => {
+  for (const input of inputFields) {
+    const defaultTransform = hasDefaultTransform(input)
+      ? defaultTransforms[input]
+      : undefined;
+
+    cms.field(input, {
+      tag: `f-${input}`,
+      jsImport: `lume_cms/components/f-${input}.js`,
+      applyChanges(data, changes, field) {
+        if (!(field.name in changes)) {
+          return;
+        }
+        const { transform = defaultTransform } = field;
+        const value = transform
+          ? transform(changes[field.name], field)
+          : changes[field.name];
+
+        const { attributes: { required } = {} } = field as typeof field & {
+          attributes?: { required?: boolean };
+        };
+        if (isEmpty(value) && !required) {
+          delete data[field.name];
+        } else {
+          data[field.name] = value;
+        }
+      },
+    });
+  }
   cms
-    .field("text", getInputFieldDefinition("text"))
-    .field("textarea", getInputFieldDefinition("textarea"))
-    .field("markdown", getInputFieldDefinition("markdown"))
-    .field("code", getInputFieldDefinition("code"))
-    .field("datetime", getInputFieldDefinition("datetime"))
-    .field("current-datetime", getInputFieldDefinition("current-datetime"))
-    .field("date", getInputFieldDefinition("date"))
-    .field("time", getInputFieldDefinition("time"))
-    .field("color", getInputFieldDefinition("color"))
-    .field("email", getInputFieldDefinition("email"))
-    .field("url", getInputFieldDefinition("url"))
-    .field("checkbox", getInputFieldDefinition("checkbox"))
-    .field("number", getInputFieldDefinition("number"))
     .field(
       "hidden",
       {
@@ -255,8 +267,6 @@ export const defaultFields = (cms: Cms): void => {
         },
       },
     )
-    .field("select", getInputFieldDefinition("select"))
-    .field("radio", getInputFieldDefinition("radio"))
     .field(
       "object",
       {

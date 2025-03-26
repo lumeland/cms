@@ -79,12 +79,14 @@ declare global {
   }
 }
 
-export type ResolvedField<T extends keyof Lume.FieldProperties> =
-  & Omit<Lume.Field<T>, "fields">
+export type ResolvedField<
+  T extends keyof Lume.FieldProperties = keyof Lume.FieldProperties,
+> =
+  & Omit<Lume.FieldProperties[T], "fields">
   & {
     tag: string;
     label: string;
-    fields?: ResolvedField<keyof Lume.FieldProperties>[];
+    fields?: ResolvedField[];
     details?: Record<string, any>;
     applyChanges(
       data: Data,
@@ -93,6 +95,14 @@ export type ResolvedField<T extends keyof Lume.FieldProperties> =
       document: Document,
       content: CMSContent,
     ): void | Promise<void>;
+    init?(
+      field: ResolvedField<T>,
+      content: CMSContent,
+    ): void | Promise<void>;
+    transform?(
+      value: any,
+      field: ResolvedField<T>,
+    ): any;
   };
 
 export type FieldDefinition<T extends keyof Lume.FieldProperties> = {
