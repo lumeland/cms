@@ -53,10 +53,10 @@ export function changesToData(
   return data.changes as Data;
 }
 
-export async function prepareField(
-  field: ResolvedField,
+export async function prepareField<T extends keyof Lume.FieldProperties>(
+  field: ResolvedField<T>,
   content: CMSContent,
-): Promise<ResolvedField> {
+): Promise<ResolvedField<T>> {
   const json = { ...field };
 
   if (field.fields) {
@@ -72,12 +72,18 @@ export async function prepareField(
   return json;
 }
 
-export function getViews(field: ResolvedField, views = new Set()): unknown {
-  if (field.view) {
-    views.add(field.view);
+export function getViews<T extends keyof Lume.FieldProperties>(
+  field: ResolvedField<T>,
+  views = new Set(),
+): unknown {
+  const { view, fields } = field as typeof field & {
+    view?: string;
+  };
+  if (view) {
+    views.add(view);
   }
 
-  field.fields?.forEach((f) => getViews(f, views));
+  fields?.forEach((f) => getViews(f, views));
 
   return views;
 }

@@ -13,17 +13,19 @@ export interface Options {
   basePath?: string;
 }
 
-export const defaults: Omit<Options, "site" | "cms"> = {
+export const defaults = {
   basePath: "/admin",
-};
+} satisfies Partial<Options>;
 
 export default async function lume(userOptions?: Options): Promise<Hono> {
-  const options = {
+  const { site, cms, basePath } = {
     ...defaults,
     ...userOptions,
-  } as Required<Options>;
+  };
 
-  const { site, cms, basePath } = options;
+  if (!cms) {
+    throw new TypeError("CMS instance is required.");
+  }
 
   // Enable drafts previews in the CMS
   Deno.env.set("LUME_DRAFTS", "true");

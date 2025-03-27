@@ -2,7 +2,6 @@
 import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
-import { FieldKeys } from "./fields/core.ts";
 
 /** Generic data to store */
 export type Data = Record<string, unknown>;
@@ -60,68 +59,66 @@ export interface Transformer<T> {
   fromData(data: Data): T | Promise<T>;
 }
 
-/** The schema for a field */
-export interface Field {
-  type: FieldKeys | (string & Record<never, never>);
-  //                ^ Typescript hack to suggest the correct keys but allow any string
-  //                  https://x.com/diegohaz/status/1524257274012876801
-  name: string;
-  value?: unknown;
-  fields?: (Field | string)[];
-  label?: string;
-  description?: string;
-  options?: Option[];
-  /** @deprecated. Use `upload` instead */
-  uploads?: string;
-  upload?: string | false;
-  view?: string;
-  attributes?: {
-    required?: boolean;
-    min?: number;
-    max?: number;
-    step?: number;
-    maxlength?: number;
-    pattern?: string;
-    [key: string]: unknown;
-  };
-  init?: (field: ResolvedField, content: CMSContent) => void | Promise<void>;
-  transform?(value: any, field: ResolvedField): any;
-  [key: string]: unknown;
+declare global {
+  namespace Lume {
+    export type StringField = `${string}:${" " | ""}${keyof FieldProperties}${
+      | "!"
+      | ""}`;
+    export type Field<T extends keyof FieldProperties> = {
+      [K in keyof FieldProperties]: FieldProperties[K] & {
+        init?(
+          field: ResolvedField<K>,
+          content: CMSContent,
+        ): void | Promise<void>;
+        transform?(
+          value: any,
+          field: ResolvedField<K>,
+        ): any;
+      };
+    }[T];
+  }
 }
 
-export interface ResolvedField extends Field {
-  tag: string;
-  label: string;
-  fields?: ResolvedField[];
-  details?: Record<string, any>;
-  applyChanges(
-    data: Data,
-    changes: Data,
-    field: ResolvedField,
-    document: Document,
-    content: CMSContent,
-  ): void | Promise<void>;
-}
-
-export interface FieldType {
+export type FieldDefinition<T extends keyof Lume.FieldProperties> = {
   tag: string;
   jsImport: string;
-  init?: (field: ResolvedField, content: CMSContent) => void;
+  init?(
+    field: ResolvedField<T>,
+    content: CMSContent,
+  ): void;
   applyChanges(
     data: Data,
     changes: Data,
-    field: ResolvedField,
+    field: ResolvedField<T>,
     document: Document,
     content: CMSContent,
   ): void | Promise<void>;
-}
+};
+
+export type ResolvedField<
+  T extends keyof Lume.FieldProperties = keyof Lume.FieldProperties,
+> =
+  & Omit<Lume.FieldProperties[T], "fields">
+  & Pick<FieldDefinition<T>, "applyChanges">
+  & {
+    tag: string;
+    label: string;
+    fields?: ResolvedField[];
+    details?: Record<string, any>;
+    init?(
+      field: ResolvedField<T>,
+      content: CMSContent,
+    ): void | Promise<void>;
+    transform?(
+      value: any,
+      field: ResolvedField<T>,
+    ): any;
+  };
 
 export type Labelizer = (
   name: string,
   prev?: (name: string) => string,
 ) => string;
-
-type Option = string | { value: string | number; label: string };
 
 export interface CMSContent {
   basePath: string;

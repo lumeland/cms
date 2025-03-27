@@ -26,7 +26,6 @@ const cms = lumeCMS({
     },
   },
 });
-
 cms.storage("src", "demo");
 cms.upload("img", "src:img/**/*{.jpg,.png,.gif,.svg,.webp}");
 
