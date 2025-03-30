@@ -59,61 +59,62 @@ export interface Transformer<T> {
   fromData(data: Data): T | Promise<T>;
 }
 
-declare global {
-  namespace Lume {
-    export type StringField = `${string}:${" " | ""}${keyof FieldProperties}${
-      | "!"
-      | ""}`;
-    export type Field<T extends keyof FieldProperties> = {
-      [K in keyof FieldProperties]: FieldProperties[K] & {
-        init?(
-          field: ResolvedField<K>,
-          content: CMSContent,
-        ): void | Promise<void>;
-        transform?(
-          value: any,
-          field: ResolvedField<K>,
-        ): any;
-      };
-    }[T];
-  }
-}
+export interface Field<T extends FieldResolved = FieldResolved> {
+  /** The name of the field */
+  name: string;
 
-export type FieldDefinition<T extends keyof Lume.FieldProperties> = {
-  tag: string;
-  jsImport: string;
+  /** The type of the field */
+  type: string;
+
+  /** Default value when a new document is created */
+  value?: unknown;
+
+  /** Function to execute on init the field  */
   init?(
-    field: ResolvedField<T>,
+    field: T,
     content: CMSContent,
   ): void;
+}
+
+export interface FieldResolved {
+  /** Details object to pass random data to the web component */
+  details?: Record<string, unknown>;
+
+  /** Function to apply the changes in the data object */
+  applyChanges<T = this>(
+    data: Data,
+    changes: Data,
+    field: T,
+    document: Document,
+    content: CMSContent,
+  ): void | Promise<void>;
+}
+
+/** A field definition to be used by the CMS */
+export type FieldDefinition<
+  T extends FieldResolved & Field = FieldResolved & Field,
+> = {
+  /** The tagName used in the HTML for the custom element */
+  tag: string;
+
+  /** The JavaScript import path for the custom element */
+  jsImport: string;
+
+  /** Function to execute on init the field  */
+  init?(
+    field: T,
+    content: CMSContent,
+  ): void;
+
+  /** Function to apply the changes in the data object */
   applyChanges(
     data: Data,
     changes: Data,
-    field: ResolvedField<T>,
+    field: T,
     document: Document,
     content: CMSContent,
   ): void | Promise<void>;
 };
-
-export type ResolvedField<
-  T extends keyof Lume.FieldProperties = keyof Lume.FieldProperties,
-> =
-  & Omit<Lume.FieldProperties[T], "fields">
-  & Pick<FieldDefinition<T>, "applyChanges">
-  & {
-    tag: string;
-    label: string;
-    fields?: ResolvedField[];
-    details?: Record<string, any>;
-    init?(
-      field: ResolvedField<T>,
-      content: CMSContent,
-    ): void | Promise<void>;
-    transform?(
-      value: any,
-      field: ResolvedField<T>,
-    ): any;
-  };
 
 export type Labelizer = (
   name: string,
@@ -129,4 +130,17 @@ export interface CMSContent {
   uploads: Record<string, Upload>;
   versioning?: Versioning;
   data: Record<string, any>;
+}
+
+declare global {
+  namespace Lume {
+    type CMSFieldStrings = `${string}:${" " | ""}${keyof CMSFields}${
+      | "!"
+      | ""}`;
+    export type CMSField =
+      | CMSFields[keyof CMSFields]
+      | CMSParentFields[keyof CMSParentFields]
+      | CMSFieldStrings;
+    export type CMSResolvedField = CMSResolvedFields[keyof CMSResolvedFields];
+  }
 }

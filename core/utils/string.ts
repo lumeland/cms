@@ -39,7 +39,7 @@ export function slugify(text: string) {
 }
 
 /** Check if a value is empty */
-export function isEmpty(value: unknown) {
+export function isEmpty(value: unknown): value is Exclude<unknown, string> {
   if (value === null || value === undefined) {
     return true;
   }
