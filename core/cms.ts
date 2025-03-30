@@ -28,7 +28,6 @@ import type {
   Data,
   Entry,
   FieldDefinition,
-  FieldResolved,
   Labelizer,
   SiteInfo,
   Storage,
@@ -498,14 +497,14 @@ export default class Cms {
   #resolveFields(
     fields: Lume.CMSField[],
     content: CMSContent,
-  ): FieldResolved[] {
+  ): Lume.CMSResolvedField[] {
     return fields.map((field) => this.#resolveField(field, content));
   }
 
   #resolveField(
     field: Lume.CMSField,
     content: CMSContent,
-  ): FieldResolved {
+  ): Lume.CMSResolvedField {
     // deno-lint-ignore no-explicit-any
     let resolvedField: any;
 
@@ -548,6 +547,6 @@ export default class Cms {
       );
     }
 
-    return resolvedField as FieldResolved;
+    return resolvedField as Lume.CMSResolvedField;
   }
 }

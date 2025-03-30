@@ -73,12 +73,15 @@ export interface Field<T extends FieldResolved = FieldResolved> {
   init?(
     field: T,
     content: CMSContent,
-  ): void;
+  ): void | Promise<void>;
 }
 
 export interface FieldResolved {
   /** Details object to pass random data to the web component */
   details?: Record<string, unknown>;
+
+  /** View name in which this field is visible */
+  view?: string;
 
   /** Function to apply the changes in the data object */
   applyChanges<T = this>(
@@ -104,7 +107,7 @@ export type FieldDefinition<
   init?(
     field: T,
     content: CMSContent,
-  ): void;
+  ): void | Promise<void>;
 
   /** Function to apply the changes in the data object */
   applyChanges(

@@ -1,11 +1,11 @@
-import type { CMSContent, Data, Entry, ResolvedField } from "../types.ts";
+import type { CMSContent, Data, Entry } from "../types.ts";
 
 export interface DocumentOptions {
   name?: string;
   label?: string;
   description?: string;
   entry: Entry;
-  fields: ResolvedField[];
+  fields: Lume.CMSResolvedField[];
   url?: string;
   views?: string[];
 }
@@ -15,7 +15,7 @@ export default class Document {
   #label?: string;
   description?: string;
   #entry: Entry;
-  #fields: ResolvedField[];
+  #fields: Lume.CMSResolvedField[];
   url?: string;
   views?: string[];
 

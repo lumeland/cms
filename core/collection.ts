@@ -1,19 +1,13 @@
 import Document from "./document.ts";
 
-import type {
-  Data,
-  EntryMetadata,
-  Labelizer,
-  ResolvedField,
-  Storage,
-} from "../types.ts";
+import type { Data, EntryMetadata, Labelizer, Storage } from "../types.ts";
 
 export interface CollectionOptions {
   name: string;
   label?: string;
   description?: string;
   storage: Storage;
-  fields: ResolvedField[];
+  fields: Lume.CMSResolvedField[];
   url?: string;
   views?: string[];
   /** @deprecated. Use `documentName` instead */
@@ -34,7 +28,7 @@ export default class Collection {
   label: string;
   description?: string;
   #storage: Storage;
-  #fields: ResolvedField[];
+  #fields: Lume.CMSResolvedField[];
   url?: string;
   views?: string[];
   documentName?: string | ((changes: Data) => string | undefined);
