@@ -71,8 +71,6 @@ interface CollectionOptions {
   fields: Lume.CMSField[];
   url?: string;
   views?: string[];
-  /** @deprecated. Use `documentName` instead */
-  nameField?: string | ((changes: Data) => string);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
   create?: boolean;

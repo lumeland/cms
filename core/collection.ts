@@ -10,8 +10,6 @@ export interface CollectionOptions {
   fields: Lume.CMSResolvedField[];
   url?: string;
   views?: string[];
-  /** @deprecated. Use `documentName` instead */
-  nameField?: string | ((changes: Data) => string);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
   create?: boolean;
@@ -43,10 +41,7 @@ export default class Collection {
     this.#fields = options.fields;
     this.url = options.url;
     this.views = options.views;
-    this.documentName = options.documentName ||
-      (typeof options.nameField === "string"
-        ? `{${options.nameField}}`
-        : options.nameField);
+    this.documentName = options.documentName;
     this.documentLabel = options.documentLabel;
     this.permissions = {
       create: options.create ?? true,
