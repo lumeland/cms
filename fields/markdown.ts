@@ -12,11 +12,10 @@ interface MarkdownField extends InputField<ResolvedMarkdownField> {
   value?: string;
 
   /*
-   * Names of the upload entities used to upload files or get files from.
-   * If it's not defined, all uploads are used.
+   * Name of the upload entity used to upload files or get files from.
    * If it's false, no uploads are used.
    */
-  upload?: string | string[] | false;
+  upload?: string | false;
 
   /**
    * Custom snippets to insert in the code.
@@ -31,9 +30,10 @@ interface ResolvedMarkdownField extends MarkdownField, ResolvedField {
 export default {
   tag: "f-markdown",
   jsImport: "lume_cms/components/f-markdown.js",
-  init(field, { uploads }) {
-    field.details ??= {};
-    field.details.upload ??= field.upload ?? Object.keys(uploads);
+  init(field, cmsContent) {
+    if (field.upload !== false) {
+      field.upload ??= Object.keys(cmsContent.uploads)[0];
+    }
   },
   applyChanges: applyTextChanges,
 } as FieldDefinition<ResolvedMarkdownField>;

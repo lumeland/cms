@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
 import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
@@ -73,13 +72,11 @@ export interface Field<T extends ResolvedField = ResolvedField> {
   init?(
     field: T,
     content: CMSContent,
+    data?: Data,
   ): void | Promise<void>;
 }
 
 export interface ResolvedField {
-  /** Details object to pass random data to the web component */
-  details?: Record<string, unknown>;
-
   /** View name in which this field is visible */
   view?: string;
 
@@ -103,7 +100,7 @@ export type FieldDefinition<
   /** The JavaScript import path for the custom element */
   jsImport: string;
 
-  /** Function to execute on init the field  */
+  /** Function to execute on init the field definition  */
   init?(
     field: T,
     content: CMSContent,
@@ -190,7 +187,7 @@ export interface CMSContent {
   documents: Record<string, Document>;
   uploads: Record<string, Upload>;
   versioning?: Versioning;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 declare global {

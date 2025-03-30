@@ -19,6 +19,10 @@
   display: flex;
   gap: 2px;
 
+  &:empty {
+    display: none;
+  }
+
   &:not(:last-child) {
     border-right: solid 1px var(--color-line);
     padding-right: 1rem;

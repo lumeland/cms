@@ -117,6 +117,7 @@ cms.collection({
       name: "content_en",
       type: "markdown",
       view: "English",
+      upload: false,
     },
     {
       name: "layout",

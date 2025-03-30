@@ -48,7 +48,9 @@ customElements.define(
       const helpers = dom("div", { class: "tools is-sticky" }, this);
       const custom = dom("div", { class: "tools-group" }, helpers);
 
-      for (const name of schema.details?.upload || []) {
+      if (schema.upload) {
+        const name = schema.upload;
+
         dom("button", {
           class: "button is-secondary",
           type: "button",

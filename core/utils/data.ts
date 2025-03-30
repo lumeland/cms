@@ -56,18 +56,19 @@ export function changesToData(
 export async function prepareField(
   field: Lume.CMS.ResolvedField,
   content: CMSContent,
+  data?: Data,
 ): Promise<Lume.CMS.ResolvedField> {
   const json = { ...field } as Lume.CMS.ResolvedFields[typeof field.type];
 
   if ("fields" in json) {
     json.fields = await Promise.all(
-      json.fields.map((f) => prepareField(f, content)),
+      json.fields.map((f) => prepareField(f, content, data)),
     );
   }
 
   if (json.init) {
     // deno-lint-ignore no-explicit-any
-    await json.init(json as any, content);
+    await json.init(json as any, content, data);
   }
 
   return json;

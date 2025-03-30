@@ -20,14 +20,16 @@ customElements.define(
           initialViews.add(view);
         }
 
-        history.replaceState(
-          null,
-          "",
-          `#${Array.from(initialViews).join(",")}`,
-        );
+        if (initialViews.size > 0) {
+          history.replaceState(
+            null,
+            "",
+            `#${Array.from(initialViews).join(",")}`,
+          );
+        }
       }
 
-      const visibleViews = new Set();
+      const visibleViews = new Set(initialViews);
 
       for (const view of JSON.parse(views)) {
         const visible = initialViews.has(view);
@@ -44,6 +46,7 @@ customElements.define(
             } else {
               visibleViews.add(view);
             }
+
             this.update(targetElement, visibleViews);
           },
         }, group);

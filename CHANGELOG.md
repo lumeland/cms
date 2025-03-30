@@ -5,15 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.11.0] - Unreleased
+### Added
+- 3rd argument to `field.init()` with the data to edit or undefined for new creations.
+
 ### Changed
 - Refactored fields. Now every field is in an individual file.
 
 ### Removed
-- Deprecated `uploads` property for *file* and *markdown* fields. Use `upload` (in singular).
+- `uploads` property for *file* and *markdown*. Use `upload` (in singular).
 - `nameField` property for collections. Use `documentName`.
+- `field.details` property.
 
 ### Fixed
-- Field refactor to improve types
+- Fields have been refactored to improve types
+- Initial field views
 
 ## [0.10.5] - 2025-03-27
 ### Fixed

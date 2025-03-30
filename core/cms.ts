@@ -534,15 +534,15 @@ export default class Cms {
       ...resolvedField,
     };
 
-    if (type.init) {
-      type.init(resolvedField, content);
-    }
-
     if (resolvedField.fields) {
       resolvedField.fields = this.#resolveFields(
         resolvedField.fields,
         content,
       );
+    }
+
+    if (type.init) {
+      type.init(resolvedField, content);
     }
 
     return resolvedField as Lume.CMS.ResolvedField;
