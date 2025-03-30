@@ -36,7 +36,7 @@ customElements.define(
         type: "button",
         html: '<u-icon name="magnifying-glass"></u-icon>',
         onclick() {
-          const uploads = schema.uploads.split(":").shift();
+          const upload = schema.upload.split(":").shift();
 
           if (curr.value && !curr.value.match(/^https?:\/\//)) {
             let filename = curr.value.startsWith(schema.publicPath || "")
@@ -47,11 +47,11 @@ customElements.define(
             }
 
             dom("u-modal", {
-              data: { src: url("uploads", uploads, "file", filename) },
+              data: { src: url("uploads", upload, "file", filename) },
             }, document.body);
           } else {
             dom("u-modal", {
-              data: { src: url("uploads", uploads) },
+              data: { src: url("uploads", upload) },
             }, document.body);
           }
         },

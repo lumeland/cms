@@ -1,4 +1,4 @@
-import type { CMSContent, Data, ResolvedField } from "../../types.ts";
+import type { CMSContent, Data } from "../../types.ts";
 
 /**
  * Converts a list of changes to an object:
@@ -53,37 +53,37 @@ export function changesToData(
   return data.changes as Data;
 }
 
-export async function prepareField<T extends keyof Lume.FieldProperties>(
-  field: ResolvedField<T>,
+export async function prepareField(
+  field: Lume.CMS.ResolvedField,
   content: CMSContent,
-): Promise<ResolvedField<T>> {
-  const json = { ...field };
+): Promise<Lume.CMS.ResolvedField> {
+  const json = { ...field } as Lume.CMS.ResolvedFields[typeof field.type];
 
-  if (field.fields) {
+  if ("fields" in json) {
     json.fields = await Promise.all(
-      field.fields.map((f) => prepareField(f, content)),
+      json.fields.map((f) => prepareField(f, content)),
     );
   }
 
-  if (field.init) {
-    await field.init(json, content);
+  if (json.init) {
+    // deno-lint-ignore no-explicit-any
+    await json.init(json as any, content);
   }
 
   return json;
 }
 
-export function getViews<T extends keyof Lume.FieldProperties>(
-  field: ResolvedField<T>,
+export function getViews(
+  field: Lume.CMS.ResolvedField,
   views = new Set(),
 ): unknown {
-  const { view, fields } = field as typeof field & {
-    view?: string;
-  };
-  if (view) {
-    views.add(view);
+  if (typeof field.view === "string") {
+    views.add(field.view);
   }
 
-  fields?.forEach((f) => getViews(f, views));
+  if ("fields" in field) {
+    field.fields.forEach((f) => getViews(f, views));
+  }
 
   return views;
 }

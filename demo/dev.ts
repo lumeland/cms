@@ -135,6 +135,14 @@ cms.collection({
   // views: ["full", "time"],
   fields: [
     {
+      type: "select",
+      name: "radio",
+      options: ["one", "two"],
+      init(field) {
+        field.options = [...field.options, "three", "four"];
+      },
+    },
+    {
       name: "title",
       type: "text",
       options: [
@@ -181,7 +189,7 @@ cms.collection({
     {
       name: "cover",
       type: "file",
-      uploads: "img:images",
+      upload: "img:images",
     },
     {
       name: "url",
@@ -194,7 +202,7 @@ cms.collection({
       options: ["one", "two"],
       value: "three",
       init(field) {
-        field.options = [...field.options!, "three", "four"];
+        field.options = [...field.options, "three", "four"];
       },
     },
     {

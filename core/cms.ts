@@ -29,7 +29,6 @@ import type {
   Entry,
   FieldDefinition,
   Labelizer,
-  ResolvedField,
   SiteInfo,
   Storage,
   Versioning,
@@ -59,7 +58,7 @@ interface DocumentOptions {
   label?: string;
   description?: string;
   store: string;
-  fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[];
+  fields: Lume.CMS.Field[];
   url?: string;
   views?: string[];
 }
@@ -69,11 +68,9 @@ interface CollectionOptions {
   label?: string;
   description?: string;
   store: string;
-  fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[];
+  fields: Lume.CMS.Field[];
   url?: string;
   views?: string[];
-  /** @deprecated. Use `documentName` instead */
-  nameField?: string | ((changes: Data) => string);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
   create?: boolean;
@@ -104,10 +101,7 @@ export default class Cms {
   options: CmsOptions;
   storages = new Map<string, Storage | string>();
   uploads = new Map<string, UploadOptions>();
-  fields = new Map<
-    string,
-    FieldDefinition<keyof Lume.FieldProperties>
-  >();
+  fields = new Map<string, FieldDefinition>();
   collections = new Map<string, CollectionOptions>();
   documents = new Map<string, DocumentOptions>();
   versionManager: Versioning | undefined;
@@ -195,12 +189,12 @@ export default class Cms {
   collection(
     name: string,
     store: string,
-    fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[],
+    fields: Lume.CMS.Field[],
   ): this;
   collection(
     name: string | CollectionOptions,
     store?: string,
-    fields?: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[],
+    fields?: Lume.CMS.Field[],
   ): this {
     const options = typeof name === "string"
       ? {
@@ -227,12 +221,12 @@ export default class Cms {
   document(
     name: string,
     store: string,
-    fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[],
+    fields: Lume.CMS.Field[],
   ): this;
   document(
     name: string | DocumentOptions,
     store?: string,
-    fields?: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[],
+    fields?: Lume.CMS.Field[],
   ): this {
     const options = typeof name === "string"
       ? {
@@ -254,9 +248,9 @@ export default class Cms {
     return this;
   }
 
-  field<T extends keyof Lume.FieldProperties>(
-    name: T,
-    field: FieldDefinition<T>,
+  field(
+    name: string,
+    field: FieldDefinition,
   ): this {
     this.fields.set(name, field);
     return this;
@@ -499,64 +493,58 @@ export default class Cms {
   }
 
   #resolveFields(
-    fields: (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[],
+    fields: Lume.CMS.Field[],
     content: CMSContent,
-  ): ResolvedField<keyof Lume.FieldProperties>[] {
-    return fields
-      .map((field): Lume.Field<keyof Lume.FieldProperties> => {
-        if (typeof field !== "string") {
-          return field;
-        }
-        const [name, type] = field.split(":").map((part) => part.trim());
-        const required = type?.endsWith("!");
-        if (required) {
-          return {
-            name,
-            type: type.slice(0, -1) as keyof Lume.FieldProperties,
-            attributes: { required: true },
-          } as Lume.Field<keyof Lume.FieldProperties>;
-        } else {
-          return {
-            name,
-            type: (type ?? "text") as keyof Lume.FieldProperties,
-          } as Lume.Field<keyof Lume.FieldProperties>;
-        }
-      })
-      .map((field) => {
-        const type = this.fields.get(field.type);
+  ): Lume.CMS.ResolvedField[] {
+    return fields.map((field) => this.#resolveField(field, content));
+  }
 
-        if (!type) {
-          throw new Error(`Unknown field of type "${field.type}"`);
-        }
+  #resolveField(
+    field: Lume.CMS.Field,
+    content: CMSContent,
+  ): Lume.CMS.ResolvedField {
+    // deno-lint-ignore no-explicit-any
+    let resolvedField: any;
 
-        const {
-          label = labelify(field.name),
-          fields: nestedFields,
-          ...remainingProperties
-        } = field as typeof field & {
-          label?: string;
-          fields?:
-            (Lume.Field<keyof Lume.FieldProperties> | Lume.StringField)[];
-        };
+    if (typeof field === "string") {
+      const parts = field.split(":").map((part) => part.trim());
+      resolvedField = {
+        name: parts[0],
+        type: parts[1] as keyof Lume.CMS.Fields,
+      };
 
-        const resolvedField: ResolvedField<keyof Lume.FieldProperties> = {
-          tag: type.tag,
-          label,
-          applyChanges: type.applyChanges,
-          fields: nestedFields
-            ? this.#resolveFields(
-              nestedFields,
-              content,
-            )
-            : undefined,
-          ...remainingProperties,
-        };
+      if (resolvedField.type.endsWith("!")) {
+        resolvedField.type = resolvedField.type.slice(0, -1);
+        resolvedField.attributes = { required: true };
+      }
+    } else {
+      resolvedField = field;
+    }
 
-        if (type.init) {
-          type.init(resolvedField, content);
-        }
+    const type = this.fields.get(resolvedField.type);
 
-        return resolvedField;
-      });
+    if (!type) {
+      throw new Error(`Unknown field of type "${resolvedField.type}"`);
+    }
+
+    resolvedField = {
+      tag: type.tag,
+      label: resolvedField.label ?? labelify(resolvedField.name),
+      applyChanges: type.applyChanges,
+      ...resolvedField,
+    };
+
+    if (type.init) {
+      type.init(resolvedField, content);
+    }
+
+    if (resolvedField.fields) {
+      resolvedField.fields = this.#resolveFields(
+        resolvedField.fields,
+        content,
+      );
+    }
+
+    return resolvedField as Lume.CMS.ResolvedField;
   }
 }

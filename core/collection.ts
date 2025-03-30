@@ -1,23 +1,15 @@
 import Document from "./document.ts";
 
-import type {
-  Data,
-  EntryMetadata,
-  Labelizer,
-  ResolvedField,
-  Storage,
-} from "../types.ts";
+import type { Data, EntryMetadata, Labelizer, Storage } from "../types.ts";
 
 export interface CollectionOptions {
   name: string;
   label?: string;
   description?: string;
   storage: Storage;
-  fields: ResolvedField[];
+  fields: Lume.CMS.ResolvedField[];
   url?: string;
   views?: string[];
-  /** @deprecated. Use `documentName` instead */
-  nameField?: string | ((changes: Data) => string);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
   create?: boolean;
@@ -34,7 +26,7 @@ export default class Collection {
   label: string;
   description?: string;
   #storage: Storage;
-  #fields: ResolvedField[];
+  #fields: Lume.CMS.ResolvedField[];
   url?: string;
   views?: string[];
   documentName?: string | ((changes: Data) => string | undefined);
@@ -49,10 +41,7 @@ export default class Collection {
     this.#fields = options.fields;
     this.url = options.url;
     this.views = options.views;
-    this.documentName = options.documentName ||
-      (typeof options.nameField === "string"
-        ? `{${options.nameField}}`
-        : options.nameField);
+    this.documentName = options.documentName;
     this.documentLabel = options.documentLabel;
     this.permissions = {
       create: options.create ?? true,
