@@ -1,9 +1,8 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField } from "./types.ts";
+import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for date values */
-interface DateField extends InputField<DateFieldResolved, Attributes> {
+interface DateField extends InputField<ResolvedDateField, Attributes> {
   type: "date";
   value?: string;
 }
@@ -19,22 +18,22 @@ interface Attributes {
   step?: number;
 }
 
-interface DateFieldResolved extends DateField, FieldResolved {
+interface ResolvedDateField extends DateField, ResolvedField {
 }
 
 export default {
   tag: "f-date",
   jsImport: "lume_cms/components/f-date.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<DateFieldResolved>;
+} as FieldDefinition<ResolvedDateField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       date: DateField;
     }
-    export interface CMSResolvedFields {
-      date: DateFieldResolved;
+    export interface ResolvedFields {
+      date: ResolvedDateField;
     }
   }
 }

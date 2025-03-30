@@ -1,9 +1,13 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField, Option } from "./types.ts";
+import type {
+  FieldDefinition,
+  InputField,
+  Option,
+  ResolvedField,
+} from "../types.ts";
 
 /** Field for markdown values */
-interface MarkdownField extends InputField<MarkdownFieldResolved> {
+interface MarkdownField extends InputField<ResolvedMarkdownField> {
   type: "markdown";
   value?: string;
 
@@ -21,7 +25,7 @@ interface MarkdownField extends InputField<MarkdownFieldResolved> {
   snippets?: Option[];
 }
 
-interface MarkdownFieldResolved extends MarkdownField, FieldResolved {
+interface ResolvedMarkdownField extends MarkdownField, ResolvedField {
 }
 
 export default {
@@ -32,16 +36,16 @@ export default {
     field.details.upload ??= field.upload ?? Object.keys(uploads);
   },
   applyChanges: applyTextChanges,
-} as FieldDefinition<MarkdownFieldResolved>;
+} as FieldDefinition<ResolvedMarkdownField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       markdown: MarkdownField;
     }
 
-    export interface CMSResolvedFields {
-      markdown: MarkdownFieldResolved;
+    export interface ResolvedFields {
+      markdown: ResolvedMarkdownField;
     }
   }
 }

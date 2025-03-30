@@ -5,7 +5,7 @@ export interface DocumentOptions {
   label?: string;
   description?: string;
   entry: Entry;
-  fields: Lume.CMSResolvedField[];
+  fields: Lume.CMS.ResolvedField[];
   url?: string;
   views?: string[];
 }
@@ -15,7 +15,7 @@ export default class Document {
   #label?: string;
   description?: string;
   #entry: Entry;
-  #fields: Lume.CMSResolvedField[];
+  #fields: Lume.CMS.ResolvedField[];
   url?: string;
   views?: string[];
 

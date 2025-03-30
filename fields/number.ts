@@ -1,8 +1,12 @@
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField, Option } from "./types.ts";
+import type {
+  FieldDefinition,
+  InputField,
+  Option,
+  ResolvedField,
+} from "../types.ts";
 
 /** Field for numeric values */
-interface NumberField extends InputField<NumberFieldResolved, Attributes> {
+interface NumberField extends InputField<ResolvedNumberField, Attributes> {
   type: "number";
   value?: string;
 }
@@ -21,7 +25,7 @@ interface Attributes {
   step?: number;
 }
 
-interface NumberFieldResolved extends NumberField, FieldResolved {
+interface ResolvedNumberField extends NumberField, ResolvedField {
 }
 
 export default {
@@ -41,16 +45,16 @@ export default {
 
     delete data[field.name];
   },
-} as FieldDefinition<NumberFieldResolved>;
+} as FieldDefinition<ResolvedNumberField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       number: NumberField;
     }
 
-    export interface CMSResolvedFields {
-      number: NumberFieldResolved;
+    export interface ResolvedFields {
+      number: ResolvedNumberField;
     }
   }
 }

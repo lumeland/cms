@@ -58,7 +58,7 @@ interface DocumentOptions {
   label?: string;
   description?: string;
   store: string;
-  fields: Lume.CMSField[];
+  fields: Lume.CMS.Field[];
   url?: string;
   views?: string[];
 }
@@ -68,7 +68,7 @@ interface CollectionOptions {
   label?: string;
   description?: string;
   store: string;
-  fields: Lume.CMSField[];
+  fields: Lume.CMS.Field[];
   url?: string;
   views?: string[];
   documentName?: string | ((changes: Data) => string | undefined);
@@ -189,12 +189,12 @@ export default class Cms {
   collection(
     name: string,
     store: string,
-    fields: Lume.CMSField[],
+    fields: Lume.CMS.Field[],
   ): this;
   collection(
     name: string | CollectionOptions,
     store?: string,
-    fields?: Lume.CMSField[],
+    fields?: Lume.CMS.Field[],
   ): this {
     const options = typeof name === "string"
       ? {
@@ -221,12 +221,12 @@ export default class Cms {
   document(
     name: string,
     store: string,
-    fields: Lume.CMSField[],
+    fields: Lume.CMS.Field[],
   ): this;
   document(
     name: string | DocumentOptions,
     store?: string,
-    fields?: Lume.CMSField[],
+    fields?: Lume.CMS.Field[],
   ): this {
     const options = typeof name === "string"
       ? {
@@ -493,16 +493,16 @@ export default class Cms {
   }
 
   #resolveFields(
-    fields: Lume.CMSField[],
+    fields: Lume.CMS.Field[],
     content: CMSContent,
-  ): Lume.CMSResolvedField[] {
+  ): Lume.CMS.ResolvedField[] {
     return fields.map((field) => this.#resolveField(field, content));
   }
 
   #resolveField(
-    field: Lume.CMSField,
+    field: Lume.CMS.Field,
     content: CMSContent,
-  ): Lume.CMSResolvedField {
+  ): Lume.CMS.ResolvedField {
     // deno-lint-ignore no-explicit-any
     let resolvedField: any;
 
@@ -510,7 +510,7 @@ export default class Cms {
       const parts = field.split(":").map((part) => part.trim());
       resolvedField = {
         name: parts[0],
-        type: parts[1] as keyof Lume.CMSFields,
+        type: parts[1] as keyof Lume.CMS.Fields,
       };
 
       if (resolvedField.type.endsWith("!")) {
@@ -545,6 +545,6 @@ export default class Cms {
       );
     }
 
-    return resolvedField as Lume.CMSResolvedField;
+    return resolvedField as Lume.CMS.ResolvedField;
   }
 }

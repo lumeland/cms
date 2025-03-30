@@ -1,9 +1,13 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField, Option } from "./types.ts";
+import type {
+  FieldDefinition,
+  InputField,
+  Option,
+  ResolvedField,
+} from "../types.ts";
 
 /** Field for radio values */
-interface RadioField extends InputField<RadioFieldResolved> {
+interface RadioField extends InputField<ResolvedRadioField> {
   type: "radio";
   value?: string;
 
@@ -11,23 +15,23 @@ interface RadioField extends InputField<RadioFieldResolved> {
   options: Option[];
 }
 
-interface RadioFieldResolved extends RadioField, FieldResolved {
+interface ResolvedRadioField extends RadioField, ResolvedField {
 }
 
 export default {
   tag: "f-radio",
   jsImport: "lume_cms/components/f-radio.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<RadioFieldResolved>;
+} as FieldDefinition<ResolvedRadioField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       radio: RadioField;
     }
 
-    export interface CMSResolvedFields {
-      radio: RadioFieldResolved;
+    export interface ResolvedFields {
+      radio: ResolvedRadioField;
     }
   }
 }

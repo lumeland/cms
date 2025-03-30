@@ -1,5 +1,4 @@
-import type { InputField } from "./types.ts";
-import type { Data } from "../types.ts";
+import type { Data, InputField } from "../types.ts";
 
 export function applyTextChanges<T extends InputField>(
   data: Data,

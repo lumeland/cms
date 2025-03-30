@@ -1,9 +1,13 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField, Option } from "./types.ts";
+import type {
+  FieldDefinition,
+  InputField,
+  Option,
+  ResolvedField,
+} from "../types.ts";
 
 /** Field for email values */
-interface EmailField extends InputField<EmailFieldResolved> {
+interface EmailField extends InputField<ResolvedEmailField> {
   type: "email";
   value?: string;
 
@@ -11,22 +15,22 @@ interface EmailField extends InputField<EmailFieldResolved> {
   options?: Option[];
 }
 
-interface EmailFieldResolved extends EmailField, FieldResolved {
+interface ResolvedEmailField extends EmailField, ResolvedField {
 }
 
 export default {
   tag: "f-email",
   jsImport: "lume_cms/components/f-email.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<EmailFieldResolved>;
+} as FieldDefinition<ResolvedEmailField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       email: EmailField;
     }
-    export interface CMSResolvedFields {
-      email: EmailFieldResolved;
+    export interface ResolvedFields {
+      email: ResolvedEmailField;
     }
   }
 }

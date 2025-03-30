@@ -1,28 +1,27 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField } from "./types.ts";
+import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for code values */
-interface CodeField extends InputField<CodeFieldResolved> {
+interface CodeField extends InputField<ResolvedCodeField> {
   type: "code";
   value?: string;
 }
-interface CodeFieldResolved extends CodeField, FieldResolved {
+interface ResolvedCodeField extends CodeField, ResolvedField {
 }
 
 export default {
   tag: "f-code",
   jsImport: "lume_cms/components/f-code.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<CodeFieldResolved>;
+} as FieldDefinition<ResolvedCodeField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       code: CodeField;
     }
-    export interface CMSResolvedFields {
-      code: CodeFieldResolved;
+    export interface ResolvedFields {
+      code: ResolvedCodeField;
     }
   }
 }

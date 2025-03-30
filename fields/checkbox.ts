@@ -1,12 +1,11 @@
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField } from "./types.ts";
+import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for checkbox values */
-interface CheckboxField extends InputField<CheckboxFieldResolved> {
+interface CheckboxField extends InputField<ResolvedCheckboxField> {
   type: "checkbox";
   value?: boolean;
 }
-interface CheckboxFieldResolved extends CheckboxField, FieldResolved {
+interface ResolvedCheckboxField extends CheckboxField, ResolvedField {
 }
 
 export default {
@@ -17,15 +16,15 @@ export default {
 
     data[field.name] = value;
   },
-} as FieldDefinition<CheckboxFieldResolved>;
+} as FieldDefinition<ResolvedCheckboxField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       checkbox: CheckboxField;
     }
-    export interface CMSResolvedFields {
-      checkbox: CheckboxFieldResolved;
+    export interface ResolvedFields {
+      checkbox: ResolvedCheckboxField;
     }
   }
 }

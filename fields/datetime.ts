@@ -1,8 +1,7 @@
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField } from "./types.ts";
+import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for datetime values */
-interface DatetimeField extends InputField<DatetimeFieldResolved, Attributes> {
+interface DatetimeField extends InputField<ResolvedDatetimeField, Attributes> {
   type: "datetime";
   value?: Date;
 }
@@ -18,7 +17,7 @@ interface Attributes {
   step?: number;
 }
 
-interface DatetimeFieldResolved extends DatetimeField, FieldResolved {
+interface ResolvedDatetimeField extends DatetimeField, ResolvedField {
 }
 
 export default {
@@ -35,16 +34,16 @@ export default {
 
     delete data[field.name];
   },
-} as FieldDefinition<DatetimeFieldResolved>;
+} as FieldDefinition<ResolvedDatetimeField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       datetime: DatetimeField;
     }
 
-    export interface CMSResolvedFields {
-      datetime: DatetimeFieldResolved;
+    export interface ResolvedFields {
+      datetime: ResolvedDatetimeField;
     }
   }
 }

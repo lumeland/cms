@@ -1,9 +1,13 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField, Option } from "./types.ts";
+import type {
+  FieldDefinition,
+  InputField,
+  Option,
+  ResolvedField,
+} from "../types.ts";
 
 /** Field for select values */
-interface SelectField extends InputField<SelectFieldResolved> {
+interface SelectField extends InputField<ResolvedSelectField> {
   type: "select";
   value?: string;
 
@@ -11,18 +15,18 @@ interface SelectField extends InputField<SelectFieldResolved> {
   options: Option[];
 }
 
-interface SelectFieldResolved extends SelectField, FieldResolved {
+interface ResolvedSelectField extends SelectField, ResolvedField {
 }
 
 export default {
   tag: "f-select",
   jsImport: "lume_cms/components/f-select.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<SelectFieldResolved>;
+} as FieldDefinition<ResolvedSelectField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       select: SelectField;
     }
   }

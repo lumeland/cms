@@ -1,15 +1,14 @@
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField } from "./types.ts";
+import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for datetime values */
 interface CurrentDatetimeField
-  extends InputField<CurrentDatetimeFieldResolved> {
+  extends InputField<ResolvedCurrentDatetimeField> {
   type: "current-datetime";
   value?: Date;
 }
 
-interface CurrentDatetimeFieldResolved
-  extends CurrentDatetimeField, FieldResolved {
+interface ResolvedCurrentDatetimeField
+  extends CurrentDatetimeField, ResolvedField {
 }
 
 export default {
@@ -26,16 +25,16 @@ export default {
 
     delete data[field.name];
   },
-} as FieldDefinition<CurrentDatetimeFieldResolved>;
+} as FieldDefinition<ResolvedCurrentDatetimeField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       "current-datetime": CurrentDatetimeField;
     }
 
-    export interface CMSResolvedFields {
-      "current-datetime": CurrentDatetimeFieldResolved;
+    export interface ResolvedFields {
+      "current-datetime": ResolvedCurrentDatetimeField;
     }
   }
 }

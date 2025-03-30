@@ -1,9 +1,13 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField, Option } from "./types.ts";
+import type {
+  FieldDefinition,
+  InputField,
+  Option,
+  ResolvedField,
+} from "../types.ts";
 
 /** Field for url values */
-interface UrlField extends InputField<UrlFieldResolved> {
+interface UrlField extends InputField<ResolvedUrlField> {
   type: "url";
   value?: string;
 
@@ -11,18 +15,18 @@ interface UrlField extends InputField<UrlFieldResolved> {
   options?: Option[];
 }
 
-interface UrlFieldResolved extends UrlField, FieldResolved {
+interface ResolvedUrlField extends UrlField, ResolvedField {
 }
 
 export default {
   tag: "f-url",
   jsImport: "lume_cms/components/f-url.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<UrlFieldResolved>;
+} as FieldDefinition<ResolvedUrlField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       url: UrlField;
     }
   }

@@ -1,28 +1,27 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField } from "./types.ts";
+import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for color values */
-interface ColorField extends InputField<ColorFieldResolved> {
+interface ColorField extends InputField<ResolvedColorField> {
   type: "color";
   value?: string;
 }
-interface ColorFieldResolved extends ColorField, FieldResolved {
+interface ResolvedColorField extends ColorField, ResolvedField {
 }
 
 export default {
   tag: "f-color",
   jsImport: "lume_cms/components/f-color.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<ColorFieldResolved>;
+} as FieldDefinition<ResolvedColorField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       color: ColorField;
     }
-    export interface CMSResolvedFields {
-      color: ColorFieldResolved;
+    export interface ResolvedFields {
+      color: ResolvedColorField;
     }
   }
 }

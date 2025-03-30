@@ -54,10 +54,10 @@ export function changesToData(
 }
 
 export async function prepareField(
-  field: Lume.CMSResolvedField,
+  field: Lume.CMS.ResolvedField,
   content: CMSContent,
-): Promise<Lume.CMSResolvedField> {
-  const json = { ...field } as Lume.CMSResolvedFields[typeof field.type];
+): Promise<Lume.CMS.ResolvedField> {
+  const json = { ...field } as Lume.CMS.ResolvedFields[typeof field.type];
 
   if ("fields" in json) {
     json.fields = await Promise.all(
@@ -74,7 +74,7 @@ export async function prepareField(
 }
 
 export function getViews(
-  field: Lume.CMSResolvedField,
+  field: Lume.CMS.ResolvedField,
   views = new Set(),
 ): unknown {
   if (typeof field.view === "string") {

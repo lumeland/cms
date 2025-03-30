@@ -1,9 +1,8 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField } from "./types.ts";
+import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for textarea values */
-interface TextareaField extends InputField<TextareaFieldResolved, Attributes> {
+interface TextareaField extends InputField<ResolvedTextareaField, Attributes> {
   type: "textarea";
   value?: string;
 }
@@ -16,22 +15,22 @@ interface Attributes {
   minlength?: number;
 }
 
-interface TextareaFieldResolved extends TextareaField, FieldResolved {
+interface ResolvedTextareaField extends TextareaField, ResolvedField {
 }
 
 export default {
   tag: "f-textarea",
   jsImport: "lume_cms/components/f-textarea.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<TextareaFieldResolved>;
+} as FieldDefinition<ResolvedTextareaField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       textarea: TextareaField;
     }
-    export interface CMSResolvedFields {
-      textarea: TextareaFieldResolved;
+    export interface ResolvedFields {
+      textarea: ResolvedTextareaField;
     }
   }
 }

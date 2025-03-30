@@ -1,10 +1,9 @@
 import { normalizePath } from "../core/utils/path.ts";
 import { posix } from "../deps/std.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField } from "./types.ts";
+import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for file values */
-interface FileField extends InputField<FileFieldResolved> {
+interface FileField extends InputField<ResolvedFileField> {
   type: "file";
   value?: string;
 
@@ -15,7 +14,7 @@ interface FileField extends InputField<FileFieldResolved> {
   publicPath?: string;
 }
 
-interface FileFieldResolved extends FileField, FieldResolved {
+interface ResolvedFileField extends FileField, ResolvedField {
 }
 
 export default {
@@ -76,15 +75,15 @@ export default {
       uploaded.name,
     );
   },
-} as FieldDefinition<FileFieldResolved>;
+} as FieldDefinition<ResolvedFileField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       file: FileField;
     }
-    export interface CMSResolvedFields {
-      file: FileFieldResolved;
+    export interface ResolvedFields {
+      file: ResolvedFileField;
     }
   }
 }

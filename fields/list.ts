@@ -1,9 +1,13 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { Option, VisibleField } from "./types.ts";
+import type {
+  FieldDefinition,
+  Option,
+  ResolvedField,
+  UIField,
+} from "../types.ts";
 
 /** Field for list values */
-interface ListField extends VisibleField<ListFieldResolved> {
+interface ListField extends UIField<ResolvedListField> {
   type: "list";
   value?: string;
 
@@ -11,22 +15,22 @@ interface ListField extends VisibleField<ListFieldResolved> {
   options?: Option[];
 }
 
-interface ListFieldResolved extends ListField, FieldResolved {
+interface ResolvedListField extends ListField, ResolvedField {
 }
 
 export default {
   tag: "f-list",
   jsImport: "lume_cms/components/f-list.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<ListFieldResolved>;
+} as FieldDefinition<ResolvedListField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       list: ListField;
     }
-    export interface CMSResolvedFields {
-      list: ListFieldResolved;
+    export interface ResolvedFields {
+      list: ResolvedListField;
     }
   }
 }

@@ -1,9 +1,13 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField, Option } from "./types.ts";
+import type {
+  FieldDefinition,
+  InputField,
+  Option,
+  ResolvedField,
+} from "../types.ts";
 
 /** Field for text values */
-interface TextField extends InputField<TextFieldResolved, Attributes> {
+interface TextField extends InputField<ResolvedTextField, Attributes> {
   type: "text";
   value?: string;
 
@@ -25,22 +29,22 @@ interface Attributes {
   title?: string;
 }
 
-interface TextFieldResolved extends TextField, FieldResolved {
+interface ResolvedTextField extends TextField, ResolvedField {
 }
 
 export default {
   tag: "f-text",
   jsImport: "lume_cms/components/f-text.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<TextFieldResolved>;
+} as FieldDefinition<ResolvedTextField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       text: TextField;
     }
-    export interface CMSResolvedFields {
-      text: TextFieldResolved;
+    export interface ResolvedFields {
+      text: ResolvedTextField;
     }
   }
 }

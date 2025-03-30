@@ -7,7 +7,7 @@ export interface CollectionOptions {
   label?: string;
   description?: string;
   storage: Storage;
-  fields: Lume.CMSResolvedField[];
+  fields: Lume.CMS.ResolvedField[];
   url?: string;
   views?: string[];
   documentName?: string | ((changes: Data) => string | undefined);
@@ -26,7 +26,7 @@ export default class Collection {
   label: string;
   description?: string;
   #storage: Storage;
-  #fields: Lume.CMSResolvedField[];
+  #fields: Lume.CMS.ResolvedField[];
   url?: string;
   views?: string[];
   documentName?: string | ((changes: Data) => string | undefined);

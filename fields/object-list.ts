@@ -1,15 +1,18 @@
-import type { FieldDefinition } from "../types.ts";
-import type { GroupField, GroupFieldResolved } from "./types.ts";
-import type { Data } from "../types.ts";
+import type {
+  Data,
+  FieldDefinition,
+  GroupField,
+  ResolvedGroupField,
+} from "../types.ts";
 
 /** Field for object list values */
-interface ObjectListField extends GroupField<ObjectListFieldResolved> {
+interface ObjectListField extends GroupField<ResolvedObjectListField> {
   type: "object-list";
   value?: Record<string, unknown>[];
 }
 
-interface ObjectListFieldResolved
-  extends Omit<ObjectListField, "fields">, GroupFieldResolved {
+interface ResolvedObjectListField
+  extends Omit<ObjectListField, "fields">, ResolvedGroupField {
 }
 
 export default {
@@ -32,15 +35,15 @@ export default {
     // data[field.name] = fn ? fn(value, field) : value;
     data[field.name] = value;
   },
-} as FieldDefinition<ObjectListFieldResolved>;
+} as FieldDefinition<ResolvedObjectListField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSParentFields {
+  namespace Lume.CMS {
+    export interface ParentFields {
       "object-list": ObjectListField;
     }
-    export interface CMSResolvedFields {
-      "object-list": ObjectListFieldResolved;
+    export interface ResolvedFields {
+      "object-list": ResolvedObjectListField;
     }
   }
 }

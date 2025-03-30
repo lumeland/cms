@@ -1,15 +1,18 @@
-import type { FieldDefinition } from "../types.ts";
-import type { GroupField, GroupFieldResolved } from "./types.ts";
-import type { Data } from "../types.ts";
+import type {
+  Data,
+  FieldDefinition,
+  GroupField,
+  ResolvedGroupField,
+} from "../types.ts";
 
 /** Field for choose list values */
-interface ChooseListField extends GroupField<ChooseListFieldResolved> {
+interface ChooseListField extends GroupField<ResolvedChooseListField> {
   type: "choose-list";
   value?: Record<string, unknown>[];
 }
 
-interface ChooseListFieldResolved
-  extends Omit<ChooseListField, "fields">, GroupFieldResolved {
+interface ResolvedChooseListField
+  extends Omit<ChooseListField, "fields">, ResolvedGroupField {
 }
 
 export default {
@@ -22,7 +25,7 @@ export default {
           const type = subchanges.type as string;
           const value = { type } as Data;
           const chooseField = field.fields?.find((f) => f.name === type) as
-            | GroupFieldResolved
+            | ResolvedGroupField
             | undefined;
 
           if (!chooseField) {
@@ -48,15 +51,15 @@ export default {
     // data[field.name] = fn ? fn(value, field) : value;
     data[field.name] = value;
   },
-} as FieldDefinition<ChooseListFieldResolved>;
+} as FieldDefinition<ResolvedChooseListField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSParentFields {
+  namespace Lume.CMS {
+    export interface ParentFields {
       "choose-list": ChooseListField;
     }
-    export interface CMSResolvedFields {
-      "choose-list": ChooseListFieldResolved;
+    export interface ResolvedFields {
+      "choose-list": ResolvedChooseListField;
     }
   }
 }

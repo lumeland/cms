@@ -1,12 +1,12 @@
-import type { Field, FieldDefinition, FieldResolved } from "../types.ts";
+import type { Field, FieldDefinition, ResolvedField } from "../types.ts";
 
 /** Field for values not visible in the UI */
-interface HiddenField extends Field<HiddenFieldResolved> {
+interface HiddenField extends Field<ResolvedHiddenField> {
   type: "hidden";
   value?: string | number | boolean;
 }
 
-interface HiddenFieldResolved extends HiddenField, FieldResolved {
+interface ResolvedHiddenField extends HiddenField, ResolvedField {
 }
 
 export default {
@@ -16,15 +16,15 @@ export default {
     const value = field.name in changes ? changes[field.name] : null;
     data[field.name] = value ?? null;
   },
-} as FieldDefinition<HiddenFieldResolved>;
+} as FieldDefinition<ResolvedHiddenField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       hidden: HiddenField;
     }
-    export interface CMSResolvedFields {
-      hidden: HiddenFieldResolved;
+    export interface ResolvedFields {
+      hidden: ResolvedHiddenField;
     }
   }
 }

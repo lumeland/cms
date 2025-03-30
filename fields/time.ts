@@ -1,9 +1,13 @@
 import { applyTextChanges } from "./utils.ts";
-import type { FieldDefinition, FieldResolved } from "../types.ts";
-import type { InputField, Option } from "./types.ts";
+import type {
+  FieldDefinition,
+  InputField,
+  Option,
+  ResolvedField,
+} from "../types.ts";
 
 /** Field for time values */
-interface TimeField extends InputField<TimeFieldResolved, Attributes> {
+interface TimeField extends InputField<ResolvedTimeField, Attributes> {
   type: "time";
   value?: string;
 }
@@ -22,22 +26,22 @@ interface Attributes {
   step?: number;
 }
 
-interface TimeFieldResolved extends TimeField, FieldResolved {
+interface ResolvedTimeField extends TimeField, ResolvedField {
 }
 
 export default {
   tag: "f-time",
   jsImport: "lume_cms/components/f-time.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<TimeFieldResolved>;
+} as FieldDefinition<ResolvedTimeField>;
 
 declare global {
-  namespace Lume {
-    export interface CMSFields {
+  namespace Lume.CMS {
+    export interface Fields {
       time: TimeField;
     }
-    export interface CMSResolvedFields {
-      time: TimeFieldResolved;
+    export interface ResolvedFields {
+      time: ResolvedTimeField;
     }
   }
 }
