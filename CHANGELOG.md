@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.11.0] - Unreleased
+### Changed
+- Refactored fields. Now every field is in an individual file.
+
 ### Removed
 - Deprecated `uploads` property for *file* and *markdown* fields. Use `upload` (in singular).
 - `nameField` property for collections. Use `documentName`.
