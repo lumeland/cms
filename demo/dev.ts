@@ -139,8 +139,12 @@ cms.collection({
       type: "select",
       name: "radio",
       options: ["one", "two"],
-      init(field) {
-        field.options = [...field.options, "three", "four"];
+      init(field, _, data) {
+        if (data) {
+          field.options = [...field.options, "three", "four"];
+        } else {
+          field.options = [...field.options, "five", "six"];
+        }
       },
     },
     {

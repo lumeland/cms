@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.11.0] - Unreleased
+## [0.11.0] - 2025-04-03
 ### Added
 - 3rd argument to `field.init()` with the data to edit or undefined for new creations.
 
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 - Fields have been refactored to improve types
 - Initial field views
+- Updated dependencies (hono and std)
 
 ## [0.10.5] - 2025-03-27
 ### Fixed
@@ -615,7 +616,7 @@ First version
 [#45]: https://github.com/lumeland/cms/issues/45
 [#46]: https://github.com/lumeland/cms/issues/46
 
-[0.11.0]: https://github.com/lumeland/cms/compare/v0.10.5...HEAD
+[0.11.0]: https://github.com/lumeland/cms/compare/v0.10.5...v0.11.0
 [0.10.5]: https://github.com/lumeland/cms/compare/v0.10.4...v0.10.5
 [0.10.4]: https://github.com/lumeland/cms/compare/v0.10.3...v0.10.4
 [0.10.3]: https://github.com/lumeland/cms/compare/v0.10.2...v0.10.3
