@@ -1,3 +1,4 @@
+import { transform } from "./utils.ts";
 import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for checkbox values */
@@ -14,7 +15,7 @@ export default {
   applyChanges(data, changes, field) {
     const value = field.name in changes ? changes[field.name] === "true" : null;
 
-    data[field.name] = value;
+    data[field.name] = transform(field, value);
   },
 } as FieldDefinition<ResolvedCheckboxField>;
 

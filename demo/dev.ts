@@ -160,6 +160,12 @@ cms.collection({
         maxlength: 20,
         required: true,
       },
+      transform(value) {
+        return value?.toUpperCase();
+      },
+      init(field) {
+        field.value = "Hello world!";
+      },
     },
     {
       name: "created_at",
@@ -235,6 +241,9 @@ cms.collection({
       description: "These are the of tags",
       init(field) {
         field.options = ["tag1", "tag2", "tag3"];
+      },
+      transform(value) {
+        return value?.map((f: string) => f.toUpperCase());
       },
     },
     {

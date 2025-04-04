@@ -1,3 +1,4 @@
+import { transform } from "./utils.ts";
 import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for datetime values */
@@ -20,7 +21,8 @@ export default {
       : null;
 
     if (value && !isNaN(value.getTime())) {
-      data[field.name] = value;
+      data[field.name] = transform(field, value);
+      return;
     }
 
     delete data[field.name];

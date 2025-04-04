@@ -1,4 +1,4 @@
-import type { Data, InputField } from "../types.ts";
+import type { Data, Field, InputField } from "../types.ts";
 
 export function applyTextChanges<T extends InputField>(
   data: Data,
@@ -12,7 +12,7 @@ export function applyTextChanges<T extends InputField>(
   const value = changes[field.name];
 
   if (typeof value === "string" && value.trim().length > 0) {
-    data[field.name] = value.replaceAll("\r\n", "\n");
+    data[field.name] = transform(field, value.replaceAll("\r\n", "\n"));
     return;
   }
 
@@ -22,4 +22,12 @@ export function applyTextChanges<T extends InputField>(
   }
 
   delete data[field.name];
+}
+
+export function transform<V, T extends Field = Field>(
+  field: T,
+  value?: V | null,
+): V | undefined | null {
+  const transform = field.transform;
+  return transform ? transform(value) : value;
 }

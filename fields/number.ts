@@ -1,3 +1,4 @@
+import { transform } from "./utils.ts";
 import type {
   FieldDefinition,
   InputField,
@@ -35,7 +36,7 @@ export default {
     const value = Number(field.name in changes ? changes[field.name] : null);
 
     if (!isNaN(value)) {
-      data[field.name] = value;
+      data[field.name] = transform(field, value);
     }
 
     if (field.attributes?.required) {

@@ -1,3 +1,4 @@
+import { transform } from "./utils.ts";
 import type { Field, FieldDefinition, ResolvedField } from "../types.ts";
 
 /** Field for values not visible in the UI */
@@ -14,7 +15,7 @@ export default {
   jsImport: "lume_cms/components/f-hidden.js",
   applyChanges(data, changes, field) {
     const value = field.name in changes ? changes[field.name] : null;
-    data[field.name] = value ?? null;
+    data[field.name] = transform(field, value ?? null);
   },
 } as FieldDefinition<ResolvedHiddenField>;
 

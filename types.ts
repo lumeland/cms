@@ -58,7 +58,7 @@ export interface Transformer<T> {
   fromData(data: Data): T | Promise<T>;
 }
 
-export interface Field<T extends ResolvedField = ResolvedField> {
+export interface Field<T extends ResolvedField = ResolvedField, V = unknown> {
   /** The name of the field */
   name: string;
 
@@ -66,7 +66,7 @@ export interface Field<T extends ResolvedField = ResolvedField> {
   type: string;
 
   /** Default value when a new document is created */
-  value?: unknown;
+  value?: V;
 
   /** Function to execute on init the field  */
   init?(
@@ -74,6 +74,10 @@ export interface Field<T extends ResolvedField = ResolvedField> {
     content: CMSContent,
     data?: Data,
   ): void | Promise<void>;
+
+  /** Function to transform the value before saved */
+  // deno-lint-ignore no-explicit-any
+  transform?(value: any): any;
 }
 
 export interface ResolvedField {
@@ -114,6 +118,8 @@ export type FieldDefinition<
     document: Document,
     content: CMSContent,
   ): void | Promise<void>;
+
+  transform?(value: T["value"]): T["value"] | unknown;
 };
 
 /** Option item for a select or datalist */

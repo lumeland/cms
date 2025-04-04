@@ -1,3 +1,4 @@
+import { transform } from "./utils.ts";
 import { normalizePath } from "../core/utils/path.ts";
 import { posix } from "../deps/std.ts";
 import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
@@ -49,7 +50,7 @@ export default {
     const { current, uploaded } = value;
 
     if (!uploaded) {
-      data[field.name] = current;
+      data[field.name] = transform(field, current);
       return;
     }
     const upload = field.upload || "default";
@@ -69,10 +70,13 @@ export default {
 
     const entry = storage.get(normalizePath(uploadPath, uploaded.name));
     await entry.writeFile(uploaded);
-    data[field.name] = normalizePath(
-      publicPath,
-      uploadPath,
-      uploaded.name,
+    data[field.name] = transform(
+      field,
+      normalizePath(
+        publicPath,
+        uploadPath,
+        uploaded.name,
+      ),
     );
   },
 } as FieldDefinition<ResolvedFileField>;

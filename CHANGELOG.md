@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.11.1] - 2025-04-04
+### Fixed
+- Restored `transform` function.
+- Some fields don't save the value.
+
 ## [0.11.0] - 2025-04-03
 ### Added
 - 3rd argument to `field.init()` with the data to edit or undefined for new creations.
@@ -616,6 +621,7 @@ First version
 [#45]: https://github.com/lumeland/cms/issues/45
 [#46]: https://github.com/lumeland/cms/issues/46
 
+[0.11.1]: https://github.com/lumeland/cms/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/lumeland/cms/compare/v0.10.5...v0.11.0
 [0.10.5]: https://github.com/lumeland/cms/compare/v0.10.4...v0.10.5
 [0.10.4]: https://github.com/lumeland/cms/compare/v0.10.3...v0.10.4

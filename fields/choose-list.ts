@@ -1,3 +1,4 @@
+import { transform } from "./utils.ts";
 import type {
   Data,
   FieldDefinition,
@@ -47,9 +48,7 @@ export default {
       ),
     );
 
-    // const fn = field.transform;
-    // data[field.name] = fn ? fn(value, field) : value;
-    data[field.name] = value;
+    data[field.name] = transform(field, value);
   },
 } as FieldDefinition<ResolvedChooseListField>;
 
