@@ -20,6 +20,11 @@ export default async function template(
     document.fields.map((field) => prepareField(field, options, data)),
   );
 
+  const documentViews = document.views;
+  const initViews = typeof documentViews === "function"
+    ? documentViews()
+    : documentViews;
+
   const views = new Set();
   document.fields.forEach((field) => getViews(field, views));
 
@@ -33,7 +38,7 @@ ${breadcrumb(options, version, document.label)}
   ${
     document.views
       ? `<u-views data-target="form-edit" data-state="${
-        escape(JSON.stringify(document.views || []))
+        escape(JSON.stringify(initViews || []))
       }" data-views="${
         escape(JSON.stringify(Array.from(views)))
       }"><strong class="field-label">View:</strong></u-views>`

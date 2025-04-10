@@ -60,7 +60,7 @@ interface DocumentOptions {
   store: string;
   fields: Lume.CMS.Field[];
   url?: string;
-  views?: string[];
+  views?: string[] | ((data?: Data) => string[] | undefined);
 }
 
 interface CollectionOptions {
@@ -70,7 +70,7 @@ interface CollectionOptions {
   store: string;
   fields: Lume.CMS.Field[];
   url?: string;
-  views?: string[];
+  views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
   create?: boolean;

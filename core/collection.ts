@@ -9,7 +9,7 @@ export interface CollectionOptions {
   storage: Storage;
   fields: Lume.CMS.ResolvedField[];
   url?: string;
-  views?: string[];
+  views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
   create?: boolean;
@@ -28,7 +28,7 @@ export default class Collection {
   #storage: Storage;
   #fields: Lume.CMS.ResolvedField[];
   url?: string;
-  views?: string[];
+  views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
   permissions: Permissions;

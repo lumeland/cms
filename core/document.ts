@@ -7,7 +7,7 @@ export interface DocumentOptions {
   entry: Entry;
   fields: Lume.CMS.ResolvedField[];
   url?: string;
-  views?: string[];
+  views?: string[] | ((data?: Data) => string[] | undefined);
 }
 
 export default class Document {
@@ -17,7 +17,7 @@ export default class Document {
   #entry: Entry;
   #fields: Lume.CMS.ResolvedField[];
   url?: string;
-  views?: string[];
+  views?: string[] | ((data?: Data) => string[] | undefined);
 
   constructor(options: DocumentOptions) {
     this.#name = options.name;

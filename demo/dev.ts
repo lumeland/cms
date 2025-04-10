@@ -62,13 +62,16 @@ cms.document({
 cms.collection({
   name: "Articles",
   store: "src:articles/**/*.md",
+  views(data) {
+    return data ? ["full"] : undefined;
+  },
   fields: [
     "title: text!",
     "description: text",
     {
       name: "published",
       type: "datetime",
-      view: "published",
+      view: "full",
       init(field) {
         field.value = new Date();
       },
@@ -76,6 +79,7 @@ cms.collection({
     {
       name: "number",
       type: "number",
+      view: "full",
       attributes: {
         min: 1,
         max: 10,

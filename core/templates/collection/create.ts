@@ -22,6 +22,11 @@ export default async function template(
     collection.fields.map((field) => prepareField(field, options)),
   );
 
+  const collectionViews = collection.views;
+  const initViews = typeof collectionViews === "function"
+    ? collectionViews()
+    : collectionViews;
+
   const views = new Set();
   collection.fields.forEach((field) => getViews(field, views));
 
@@ -55,7 +60,7 @@ ${
 ${
     views.size
       ? `<u-views data-target="form-create" data-state="${
-        escape(JSON.stringify(collection.views || []))
+        escape(JSON.stringify(initViews || []))
       }" data-views="${
         escape(JSON.stringify(Array.from(views)))
       }"><strong class="field-label">View:</strong></u-views>`
