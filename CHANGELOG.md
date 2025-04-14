@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.11.3] - 2025-04-14
+### Fixed
+- `object-list` fields [#52].
+- Updated dependencies.
+
 ## [0.11.2] - 2025-04-10
 ### Added
 - `collection.views` and `document.views` accepts a function to return the initial views depending on the data [#51].
@@ -625,7 +630,9 @@ First version
 [#45]: https://github.com/lumeland/cms/issues/45
 [#46]: https://github.com/lumeland/cms/issues/46
 [#51]: https://github.com/lumeland/cms/issues/51
+[#52]: https://github.com/lumeland/cms/issues/52
 
+[0.11.3]: https://github.com/lumeland/cms/compare/v0.11.2...v0.11.3
 [0.11.2]: https://github.com/lumeland/cms/compare/v0.11.1...v0.11.2
 [0.11.1]: https://github.com/lumeland/cms/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/lumeland/cms/compare/v0.10.5...v0.11.0

@@ -75,7 +75,7 @@ customElements.define(
         return item;
       }
 
-      for (const v of (isNew ? value ?? schema.value : value) ?? []) {
+      for (const v of toArray(isNew ? value ?? schema.value : value)) {
         div.append(createOption(v));
       }
 
@@ -103,3 +103,11 @@ customElements.define(
     }
   },
 );
+
+function toArray(value) {
+  value = value ?? [];
+  if (Array.isArray(value)) {
+    return value;
+  }
+  return [value];
+}

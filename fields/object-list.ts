@@ -20,17 +20,25 @@ export default {
   tag: "f-object-list",
   jsImport: "lume_cms/components/f-object-list.js",
   async applyChanges(data, changes, field, document, cmsContent) {
-    const value = data[field.name] as Data || {};
+    const value = await Promise.all(
+      Object.values(changes[field.name] || {}).map(
+        async (subchanges) => {
+          const value = {} as Data;
 
-    for (const f of field.fields) {
-      await f.applyChanges(
-        value,
-        changes[field.name] as Data || {},
-        f,
-        document,
-        cmsContent,
-      );
-    }
+          for (const f of field.fields || []) {
+            await f.applyChanges(
+              value,
+              subchanges,
+              f,
+              document,
+              cmsContent,
+            );
+          }
+
+          return value;
+        },
+      ),
+    );
 
     data[field.name] = transform(field, value);
   },
