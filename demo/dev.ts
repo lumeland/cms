@@ -257,6 +257,16 @@ cms.collection({
         "name: text!",
         "date: date",
         {
+          name: "cpu",
+          type: "number",
+          label: "Cores",
+          value: 10,
+          attributes: {
+            required: true,
+            min: 1,
+          },
+        },
+        {
           name: "tags",
           type: "select",
           value: "tag2",
@@ -283,6 +293,38 @@ cms.collection({
       ],
     },
     "code: code",
+    {
+      name: "main-block",
+      type: "choose",
+      fields: [
+        {
+          name: "title",
+          type: "object",
+          fields: [
+            {
+              name: "text",
+              type: "text",
+              value: "Hello world!",
+              attributes: {
+                required: true,
+              },
+            },
+          ],
+        },
+        {
+          name: "content",
+          type: "object",
+          fields: [
+            "title: text",
+            "description: text",
+            {
+              name: "text",
+              type: "textarea",
+            },
+          ],
+        },
+      ],
+    },
     {
       name: "blocks",
       type: "choose-list",

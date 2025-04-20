@@ -9,7 +9,7 @@ import type {
 /** Field for numeric values */
 interface NumberField extends InputField<ResolvedNumberField, Attributes> {
   type: "number";
-  value?: string;
+  value?: number;
 }
 
 interface Attributes {
@@ -37,6 +37,7 @@ export default {
 
     if (!isNaN(value)) {
       data[field.name] = transform(field, value);
+      return;
     }
 
     if (field.attributes?.required) {

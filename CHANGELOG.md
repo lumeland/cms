@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.11.4] - 2025-04-20
+### Added
+- New `choose` field, similar to `choose-list` but for only one element.
+
+### Fixed
+- `number` field [#53].
+
 ## [0.11.3] - 2025-04-14
 ### Fixed
 - `object-list` fields [#52].
@@ -631,7 +638,9 @@ First version
 [#46]: https://github.com/lumeland/cms/issues/46
 [#51]: https://github.com/lumeland/cms/issues/51
 [#52]: https://github.com/lumeland/cms/issues/52
+[#53]: https://github.com/lumeland/cms/issues/53
 
+[0.11.4]: https://github.com/lumeland/cms/compare/v0.11.3...v0.11.4
 [0.11.3]: https://github.com/lumeland/cms/compare/v0.11.2...v0.11.3
 [0.11.2]: https://github.com/lumeland/cms/compare/v0.11.1...v0.11.2
 [0.11.1]: https://github.com/lumeland/cms/compare/v0.11.0...v0.11.1

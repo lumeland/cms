@@ -2,6 +2,7 @@ import Cms, { CmsOptions } from "./core/cms.ts";
 
 import checkbox from "./fields/checkbox.ts";
 import chooseList from "./fields/choose-list.ts";
+import choose from "./fields/choose.ts";
 import code from "./fields/code.ts";
 import color from "./fields/color.ts";
 import currentDatetime from "./fields/current-datetime.ts";
@@ -29,6 +30,7 @@ export default function (options?: Partial<CmsOptions>): Cms {
   // Register default fields
   cms.field("checkbox", checkbox);
   cms.field("choose-list", chooseList);
+  cms.field("choose", choose);
   cms.field("code", code);
   cms.field("color", color);
   cms.field("current-datetime", currentDatetime);

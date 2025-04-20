@@ -44,6 +44,7 @@ customElements.define(
         const item = dom("f-object", {
           ".schema": { ...schema, attributes, name: index++, label },
           ".namePrefix": namePrefix,
+          ".isNew": value === undefined,
           value,
           html: [
             dom("button", {
