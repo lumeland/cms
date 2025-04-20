@@ -66,7 +66,8 @@ describe("Lume CMS", () => {
     cy.get(".list > li:nth-child(1) > a").should("contain", fileName).click();
 
     // Delete the file
-    cy.get("form > footer .button.is-secondary").should("exist").click();
+    cy.get("form > footer u-confirm > .buttonIcon").should("exist").click();
+    cy.on("window:confirm", () => true);
     cy.get(".emptyState").should("exist");
   });
 });

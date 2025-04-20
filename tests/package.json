@@ -1,9 +1,9 @@
 {
   "scripts": {
     "cms": "deno serve --unstable-kv --node-modules-dir=none -A cms.ts",
-    "open": "npm run cms & cypress open"
+    "test": "npm run cms & cypress open"
   },
   "devDependencies": {
-    "cypress": "^14.0.0"
+    "cypress": "^14.3.1"
   }
 }
