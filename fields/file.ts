@@ -32,9 +32,17 @@ export default {
       }
     }
 
+    const name = field.upload.split(":")[0];
+    const upload = cmsContent.uploads[name];
+
+    if (!upload) {
+      throw new Error(
+        `No upload found for file field '${field.name}'`,
+      );
+    }
+
     if (!field.publicPath) {
-      const name = field.upload.split(":")[0];
-      const { publicPath } = cmsContent.uploads[name];
+      const { publicPath } = upload;
       field.publicPath = publicPath;
     }
   },
