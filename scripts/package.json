@@ -8,7 +8,8 @@
     "@rollup/plugin-node-resolve": "^15.3.1",
     "codemirror": "^6.0.1",
     "rollup": "^4.40.1",
-    "terser": "^5.39.0"
+    "terser": "^5.39.0",
+    "terser-glob": "^1.1.0"
   },
   "scripts": {
     "build": "rm -f ../static/libs/* && npm run markdown && npm run code && npm run normalize && npm run terser",
@@ -16,6 +17,6 @@
     "blocks": "cd block-editor && npm run build && cp dist/block-editor.js ../../static/libs/gutenberg.js && cp dist/style.css ../../static/libs/gutenberg.css",
     "code": "rollup code.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
     "normalize": "wget -O ../static/libs/modern-normalize.css https://unpkg.com/modern-normalize/modern-normalize.css",
-    "terser": "echo ../static/libs/*.js | xargs sh -c 'terser --output ${1} --compress -- $1' argv0"
+    "terser": "terser-glob ../static/libs/*.js"
   }
 }
