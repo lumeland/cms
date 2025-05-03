@@ -1,10 +1,10 @@
-import { initializeImageMagick } from "npm:@imagemagick/magick-wasm@0.0.34";
+import { initializeImageMagick } from "npm:@imagemagick/magick-wasm@0.0.35";
 import {
   ImageMagick,
   type IMagickImage,
   MagickFormat,
   MagickGeometry,
-} from "npm:@imagemagick/magick-wasm@0.0.34";
+} from "npm:@imagemagick/magick-wasm@0.0.35";
 
 await initialize();
 
@@ -50,7 +50,7 @@ export function formatSupported(file: string): MagickFormat | undefined {
 
 async function initialize() {
   const wasmUrl = new URL(
-    "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.34/dist/magick.wasm",
+    "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.35/dist/magick.wasm",
   );
 
   if (typeof caches === "undefined") {
