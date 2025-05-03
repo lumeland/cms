@@ -14,7 +14,6 @@
   "scripts": {
     "build": "rm -f ../static/libs/* && npm run markdown && npm run code && npm run normalize && npm run terser",
     "markdown": "rollup markdown.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
-    "blocks": "cd block-editor && npm run build && cp dist/block-editor.js ../../static/libs/gutenberg.js && cp dist/style.css ../../static/libs/gutenberg.css",
     "code": "rollup code.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
     "normalize": "wget -O ../static/libs/modern-normalize.css https://unpkg.com/modern-normalize/modern-normalize.css",
     "terser": "terser-glob ../static/libs/*.js"
