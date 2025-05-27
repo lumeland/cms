@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.11.6] - Unreleased
 ### Fixed
 - Updated dependencies and vendor libs.
+- Apply a min-height to code and markdown fields.
 
 ## [0.11.5] - 2025-04-25
 ### Fixed

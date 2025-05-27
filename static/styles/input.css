@@ -59,6 +59,7 @@
 textarea.input {
   resize: vertical;
   height: auto;
+  min-height: 70px;
 }
 
 .input-autogrow {

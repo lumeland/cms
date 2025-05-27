@@ -18,8 +18,10 @@
   }
 
   .cm-content {
-    padding: 0.5rem;
-    caret-color: var(--color-input-text) !important; /* Avoid override */
+    padding: 0.5rem !important; /* Override codemirror styles */
+    caret-color: var(--color-input-text)
+      !important; /* Override codemirror styles */
+    min-height: 70px !important; /* Override codemirror styles */
   }
 
   .ͼ4 {
