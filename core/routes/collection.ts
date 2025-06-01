@@ -1,6 +1,7 @@
 import { changesToData } from "../utils/data.ts";
 import collectionList from "../templates/collection/list.ts";
 import collectionEdit from "../templates/collection/edit.ts";
+import collectionCode from "../templates/collection/code.ts";
 import collectionCreate from "../templates/collection/create.ts";
 import { getPath, normalizeName } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
@@ -79,6 +80,63 @@ export default function (app: Hono) {
         ),
       );
     });
+
+  app
+    .get("/collection/:collection/code/:document", async (c: Context) => {
+      const { options, collection, versioning, document } = get(c);
+
+      if (!document) {
+        return c.notFound();
+      }
+
+      try {
+        return c.render(
+          await collectionCode({
+            options,
+            collection,
+            document,
+            version: versioning?.current(),
+          }),
+        );
+      } catch (e) {
+        console.error(e);
+        return c.notFound();
+      }
+    })
+    .post(async (c: Context) => {
+      const { options, collection, document: oldDocument } = get(c);
+
+      if (!oldDocument) {
+        throw new Error("Document not found");
+      }
+
+      const body = await c.req.parseBody();
+      let newName = normalizeName(body._id as string);
+      let document = oldDocument;
+
+      if (!newName) {
+        throw new Error("Document name is required");
+      }
+
+      if (oldDocument.name !== newName) {
+        newName = await collection.rename(oldDocument.name, newName);
+        document = collection.get(newName);
+      }
+
+      const code = body["changes.code"] as string | undefined;
+      document.writeText(code ?? "");
+
+      return c.redirect(
+        getPath(
+          options.basePath,
+          "collection",
+          collection.name,
+          "code",
+          document.name,
+        ),
+      );
+    });
+
   app.post(
     "/collection/:collection/duplicate/:document",
     async (c: Context) => {

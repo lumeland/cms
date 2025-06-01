@@ -1,9 +1,7 @@
 .button {
   display: inline-flex;
-  column-gap: 4px;
+  column-gap: 0.5em;
   align-items: center;
-  justify-content: center;
-  text-align: center;
   border: none;
   padding: 0 0.75em;
   min-height: 40px;
@@ -30,6 +28,7 @@
   & svg {
     width: 24px;
     height: 24px;
+    opacity: 0.75;
   }
 
   &.is-primary {

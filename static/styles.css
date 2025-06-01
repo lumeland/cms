@@ -33,3 +33,7 @@
 .is-small {
   font: var(--font-small);
 }
+
+.ly-none {
+  display: contents;
+}

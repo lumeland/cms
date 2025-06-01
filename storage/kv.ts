@@ -90,6 +90,16 @@ export class KvEntry implements Entry {
     };
   }
 
+  async readText(): Promise<string> {
+    const data = await this.readData();
+    return JSON.stringify(data, null, 2);
+  }
+
+  async writeText(content: string): Promise<void> {
+    const data = JSON.parse(content) as Data;
+    await this.writeData(data);
+  }
+
   async readData(): Promise<Data> {
     const item = await this.kv.get<Data>(this.key);
 

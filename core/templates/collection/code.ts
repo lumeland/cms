@@ -1,6 +1,5 @@
 import { escape } from "../../../deps/std.ts";
 import { getPath } from "../../utils/path.ts";
-import { getViews, prepareField } from "../../utils/data.ts";
 import breadcrumb from "../breadcrumb.ts";
 
 import type Collection from "../../collection.ts";
@@ -18,18 +17,16 @@ export default async function template(
   { options, collection, document, version }: Props,
 ) {
   const { basePath } = options;
-  const data = await document.read();
-  const fields = await Promise.all(
-    collection.fields.map((field) => prepareField(field, options, data)),
-  );
-
-  const collectionViews = collection.views;
-  const initViews = typeof collectionViews === "function"
-    ? collectionViews(data)
-    : collectionViews;
-
-  const views = new Set();
-  collection.fields.forEach((field) => getViews(field, views));
+  const code = await document.readText();
+  const fields = [{
+    tag: "f-code",
+    name: "code",
+    label: "Code",
+    type: "code",
+  }];
+  const data = {
+    code,
+  };
 
   return `
 ${
@@ -61,22 +58,12 @@ ${
       >
     </h1>
   </header>
-  ${
-    views.size
-      ? `<u-views data-target="form-edit" data-state="${
-        escape(JSON.stringify(initViews || []))
-      }" data-views="${
-        escape(JSON.stringify(Array.from(views)))
-      }"><strong class="field-label">View:</strong></u-views>`
-      : ""
-  }
   <form
     action="${
-    getPath(basePath, "collection", collection.name, "edit", document.name)
+    getPath(basePath, "collection", collection.name, "code", document.name)
   }"
     method="post"
     class="form"
-    enctype="multipart/form-data"
     id="form-edit"
   >
     <u-fields data-fields="${escape(JSON.stringify(fields))}" data-value="${
@@ -95,12 +82,12 @@ ${
       options.basePath,
       "collection",
       collection.name,
-      "code",
+      "edit",
       document.name,
     )
   }">
-          <u-icon name="code"></u-icon>
-          Edit code
+          <u-icon name="textbox"></u-icon>
+          Edit form
         </a>
       ${
     collection.permissions.create

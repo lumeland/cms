@@ -334,10 +334,18 @@ export class GitHubEntry implements Entry {
     this.git = git;
   }
 
+  async readText(): Promise<string> {
+    return await this.git.getTextContent(this.path) || "";
+  }
+
+  async writeText(content: string): Promise<void> {
+    await this.git.setContent(this.path, content);
+  }
+
   async readData(): Promise<Data> {
-    const data = await this.git.getTextContent(this.path);
+    const data = await this.readText();
     const transformer = fromFilename(this.path);
-    return transformer.toData(data || "");
+    return transformer.toData(data);
   }
 
   async writeData(data: Data) {
@@ -345,7 +353,7 @@ export class GitHubEntry implements Entry {
     const content = (await transformer.fromData(data))
       .replaceAll(/\r\n/g, "\n"); // Unify line endings
 
-    await this.git.setContent(this.path, content);
+    await this.writeText(content);
   }
 
   async readFile(): Promise<File> {

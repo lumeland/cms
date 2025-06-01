@@ -109,9 +109,20 @@ export class FsEntry implements Entry {
     return this.metadata.src;
   }
 
+  async readText(): Promise<string> {
+    const { src } = this.metadata;
+    return await Deno.readTextFile(src);
+  }
+
+  async writeText(content: string): Promise<void> {
+    const { src } = this.metadata;
+    await ensureDir(posix.dirname(src));
+    await Deno.writeTextFile(src, content);
+  }
+
   async readData(): Promise<Data> {
     const { src } = this.metadata;
-    const content = await Deno.readTextFile(src);
+    const content = await this.readText();
     const transformer = fromFilename(src);
 
     return transformer.toData(content);
@@ -123,8 +134,7 @@ export class FsEntry implements Entry {
     const content = (await transformer.fromData(data))
       .replaceAll(/\r\n/g, "\n"); // Unify line endings
 
-    await ensureDir(posix.dirname(src));
-    await Deno.writeTextFile(src, content);
+    await this.writeText(content);
   }
 
   async readFile(): Promise<File> {

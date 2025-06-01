@@ -34,6 +34,9 @@ export interface Entry {
   readData(): Promise<Data>;
   writeData(content: Data): Promise<void>;
 
+  readText(): Promise<string>;
+  writeText(content: string): Promise<void>;
+
   readFile(): Promise<File>;
   writeFile(content: File): Promise<void>;
 }

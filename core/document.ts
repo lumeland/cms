@@ -45,6 +45,14 @@ export default class Document {
     return this.#entry.metadata.src;
   }
 
+  async readText(): Promise<string> {
+    return await this.#entry.readText();
+  }
+
+  async writeText(content: string) {
+    await this.#entry.writeText(content);
+  }
+
   async read(create = false) {
     try {
       return (await this.#entry.readData()) ?? {};
