@@ -2,6 +2,7 @@ import index from "../templates/index.ts";
 import notFound from "../templates/notfound.ts";
 import { dispatch } from "../utils/event.ts";
 import { getPath } from "../utils/path.ts";
+import { render } from "../../deps/vento.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
@@ -11,6 +12,15 @@ export default function (app: Hono) {
     const { options, collections, documents, uploads, versioning, site } = get(
       c,
     );
+
+    return c.render(render("home.vto", {
+      options,
+      site,
+      collections,
+      documents,
+      uploads,
+      versioning,
+    }));
 
     return c.render(
       index({

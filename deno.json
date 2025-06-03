@@ -8,6 +8,9 @@
     "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.5/dom.js",
     "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.0.0/dist/cropper.esm.js"
   },
+  "unstable": [
+    "fmt-component"
+  ],
   "exclude": [
     "probas",
     "static/libs",

@@ -18,6 +18,7 @@ import {
   logger,
   relative,
 } from "../deps/std.ts";
+import { filter } from "../deps/vento.ts";
 import { labelify } from "./utils/string.ts";
 import { dispatch } from "./utils/event.ts";
 import { Git, Options as GitOptions } from "./git.ts";
@@ -392,6 +393,8 @@ export default class Cms {
       getPath(this.options.basePath, "_socket"),
       getPath(this.options.basePath, "logout"),
     ]);
+
+    filter("path", (args: string[]) => getPath(this.options.basePath, ...args));
 
     app.use("*", (c: Context, next: Next) => {
       c.setRenderer(async (content) => {
