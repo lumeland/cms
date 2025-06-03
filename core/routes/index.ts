@@ -1,5 +1,3 @@
-import index from "../templates/index.ts";
-import notFound from "../templates/notfound.ts";
 import { dispatch } from "../utils/event.ts";
 import { getPath } from "../utils/path.ts";
 import { render } from "../../deps/vento.ts";
@@ -21,17 +19,6 @@ export default function (app: Hono) {
       uploads,
       versioning,
     }));
-
-    return c.render(
-      index({
-        options,
-        site,
-        collections,
-        documents,
-        uploads,
-        versioning,
-      }),
-    );
   });
 
   app.get("/status", async (c: Context) => {
@@ -82,8 +69,7 @@ export default function (app: Hono) {
   });
 
   app.notFound((c: Context) => {
-    const { options } = get(c);
-    return c.render(notFound({ options }));
+    return c.render(render("notfound.vto"));
   });
 }
 

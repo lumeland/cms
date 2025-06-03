@@ -1,23 +1,40 @@
 import { getPath } from "../utils/path.ts";
-import { changesToData } from "../utils/data.ts";
-import documentEdit from "../templates/document/edit.ts";
+import { changesToData, getViews, prepareField } from "../utils/data.ts";
+import { render } from "../../deps/vento.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
 
 export default function (app: Hono) {
   app
-    .get("/document/:document", (c: Context) => {
+    .get("/document/:document", async (c: Context) => {
       const { options, document, versioning } = get(c);
 
       if (!document) {
         return c.notFound();
       }
 
+      const data = await document.read(true);
+      const fields = await Promise.all(
+        document.fields.map((field) => prepareField(field, options, data)),
+      );
+
+      const documentViews = document.views;
+      const initViews = typeof documentViews === "function"
+        ? documentViews() || []
+        : documentViews || [];
+
+      const views = new Set();
+      document.fields.forEach((field) => getViews(field, views));
+
       return c.render(
-        documentEdit({
+        render("document/edit.vto", {
           options,
           document,
+          fields,
+          views: Array.from(views),
+          initViews,
+          data,
           version: versioning?.current(),
         }),
       );

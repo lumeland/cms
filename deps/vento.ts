@@ -40,9 +40,15 @@ env.filters.path = (basePath: string, ...args: string[]) =>
   getPath(basePath, ...args);
 
 export async function render(file: string, data: Record<string, unknown> = {}) {
-  return (await env.run(file, data)).content;
+  try {
+    return (await env.run(file, data)).content;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 }
 
+// deno-lint-ignore no-explicit-any
 export function filter(name: string, filter: (...args: any[]) => any) {
   env.filters[name] = filter;
 }

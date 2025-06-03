@@ -1,0 +1,37 @@
+{{ include "breadcrumb.vto" { options, version, links: [document.label] } }}
+
+<u-form>
+  <header class="header">
+    <h1 class="header-title">Editing {{ document.label }}</h1>
+  </header>
+
+  {{ if document.view }}
+    <u-views
+      data-target="form-edit"
+      data-state="{{ initViews |> JSON.stringify |> escape }}"
+      data-views="{{ views |> JSON.stringify |> escape }}"
+    ><strong class="field-label">View:</strong></u-views>
+  {{ /if }}
+
+  <form
+    action='{{ ["document", document.name] |> path }}'
+    method="post"
+    class="form"
+    id="form-edit"
+    enctype="multipart/form-data"
+  >
+    <u-fields
+      data-fields="{{ fields |> JSON.stringify |> escape }}"
+      data-value="{{ data |> JSON.stringify |> escape }}"
+    ></u-fields>
+
+    <footer class="footer ly-rowStack is-responsive">
+      <button class="button is-primary" type="submit">Save changes</button>
+      <u-pagepreview
+        class="ly-rowStack"
+        data-url="{{ document.url }}"
+        data-src="{{document.src}}"
+      ></u-pagepreview>
+    </footer>
+  </form>
+</u-form>
