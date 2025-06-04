@@ -1,10 +1,8 @@
-import { changesToData } from "../utils/data.ts";
+import { changesToData, getViews, prepareField } from "../utils/data.ts";
 import collectionList from "../templates/collection/list.ts";
-import collectionEdit from "../templates/collection/edit.ts";
-import collectionCode from "../templates/collection/code.ts";
-import collectionCreate from "../templates/collection/create.ts";
 import { getPath, normalizeName } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
+import { render } from "../../deps/vento.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
@@ -34,11 +32,28 @@ export default function (app: Hono) {
         return c.notFound();
       }
 
+      const data = await document.read();
+      const fields = await Promise.all(
+        collection.fields.map((field) => prepareField(field, options)),
+      );
+
+      const collectionViews = collection.views;
+      const initViews = typeof collectionViews === "function"
+        ? collectionViews() || []
+        : collectionViews || [];
+
+      const views = new Set();
+      collection.fields.forEach((field) => getViews(field, views));
+
       try {
         return c.render(
-          await collectionEdit({
+          await render("collection/edit.vto", {
             options,
             collection,
+            fields,
+            data,
+            initViews,
+            views: Array.from(views),
             document,
             version: versioning?.current(),
           }),
@@ -89,11 +104,22 @@ export default function (app: Hono) {
         return c.notFound();
       }
 
+      const code = await document.readText();
+      const fields = [{
+        tag: "f-code",
+        name: "code",
+        label: "Code",
+        type: "code",
+      }];
+      const data = { code };
+
       try {
         return c.render(
-          await collectionCode({
+          await render("collection/code.vto", {
             options,
             collection,
+            fields,
+            data,
             document,
             version: versioning?.current(),
           }),
@@ -199,15 +225,30 @@ export default function (app: Hono) {
   });
 
   app
-    .get("/collection/:collection/create", (c: Context) => {
+    .get("/collection/:collection/create", async (c: Context) => {
       const { options, collection, versioning } = get(c);
       const defaults = c.req.query();
 
+      const fields = await Promise.all(
+        collection.fields.map((field) => prepareField(field, options)),
+      );
+
+      const collectionViews = collection.views;
+      const initViews = typeof collectionViews === "function"
+        ? collectionViews() || []
+        : collectionViews || [];
+
+      const views = new Set();
+      collection.fields.forEach((field) => getViews(field, views));
+
       return c.render(
-        collectionCreate({
+        render("collection/create.vto", {
           options,
           defaults,
           collection,
+          fields,
+          initViews,
+          views: Array.from(views),
           version: versioning?.current(),
           folder: normalizeName(c.req.query("folder")),
         }),

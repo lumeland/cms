@@ -5,12 +5,14 @@
     <h1 class="header-title">Editing {{ document.label }}</h1>
   </header>
 
-  {{ if document.view }}
+  {{ if views.length }}
     <u-views
       data-target="form-edit"
       data-state="{{ initViews |> JSON.stringify |> escape }}"
       data-views="{{ views |> JSON.stringify |> escape }}"
-    ><strong class="field-label">View:</strong></u-views>
+    >
+      <strong class="field-label">View:</strong>
+    </u-views>
   {{ /if }}
 
   <form

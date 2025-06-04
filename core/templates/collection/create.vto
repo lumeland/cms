@@ -1,0 +1,58 @@
+{{
+  include "breadcrumb.vto" {
+    options,
+    version,
+    links: [
+      [collection.label, ["collection", collection.name]],
+      "New file",
+    ],
+  }
+}}
+
+<header class="header">
+  <h1 class="header-title">
+    Creating new file
+    <label class="header-file">
+      {{ folder }}
+      <input
+        class="input is-inline"
+        id="_id"
+        type="text"
+        name="_id"
+        value="{{ defaults._id }}"
+        placeholder="Name your file…"
+        form="form-create"
+        aria-label="File name"
+        {{ if collection.documentName }}required autofocus{{ /if }}
+      >
+    </label>
+  </h1>
+</header>
+
+{{ if views.length }}
+  <u-views
+    data-target="form-create"
+    data-state="{{ initViews |> JSON.stringify |> escape }}"
+    data-views="{{ views |> JSON.stringify |> escape }}"
+  >
+    <strong class="field-label">View:</strong>
+  </u-views>
+{{ /if }}
+
+<form
+  action='{{ ["collection", collection.name, "create"] |> path }}'
+  method="post"
+  class="form"
+  enctype="multipart/form-data"
+  id="form-create"
+>
+  <input type="hidden" name="_prefix" value="{{ folder }}">
+  <u-fields
+    data-fields="{{ fields |> JSON.stringify |> escape }}"
+    data-new="true"
+    data-value="{{ defaults |> JSON.stringify |> escape }}"
+  ></u-fields>
+  <footer class="footer ly-rowStack">
+    <button class="button is-primary" type="submit">Create</button>
+  </footer>
+</form>
