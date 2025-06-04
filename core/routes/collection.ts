@@ -1,11 +1,11 @@
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
-import collectionList from "../templates/collection/list.ts";
 import { getPath, normalizeName } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
 import { render } from "../../deps/vento.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
+import createTree from "../templates/tree.ts";
 
 export default function (app: Hono) {
   app.get("/collection/:collection", async (c: Context) => {
@@ -15,10 +15,14 @@ export default function (app: Hono) {
       return c.notFound();
     }
 
+    const documents = await Array.fromAsync(collection);
+    const tree = createTree(documents);
+
     return c.render(
-      await collectionList({
+      await render("collection/list.vto", {
         options,
         collection,
+        tree,
         version: versioning?.current(),
       }),
     );

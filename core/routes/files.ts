@@ -1,4 +1,3 @@
-import uploadsList from "../templates/uploads/list.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath, normalizeName, normalizePath } from "../utils/path.ts";
 import { render } from "../../deps/vento.ts";
@@ -8,12 +7,13 @@ import {
   transform,
 } from "../../deps/imagick.ts";
 import { posix } from "../../deps/std.ts";
+import createTree from "../templates/tree.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
 import type { CMSContent } from "../../types.ts";
 
 export default function (app: Hono) {
-  app.get("/uploads/:upload", (c: Context) => {
+  app.get("/uploads/:upload", async (c: Context) => {
     const { options, uploads, uploadId, versioning } = get(c);
 
     const upload = uploads[uploadId];
@@ -22,10 +22,15 @@ export default function (app: Hono) {
       return c.notFound();
     }
 
+    const files = await Array.fromAsync(upload);
+    const tree = createTree(files);
+
     return c.render(
-      uploadsList({
+      render("uploads/list.vto", {
         options,
         upload,
+        tree,
+        publicPath: upload.publicPath,
         version: versioning?.current(),
       }),
     );

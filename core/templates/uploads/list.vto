@@ -1,0 +1,94 @@
+{{ function folder(options, upload, publicPath, tree) }}
+  {{
+    set content = Array.from([
+      ...tree.folders?.entries() || [],
+      ...tree.files?.entries() || [],
+    ]).sort(([a], [b]) => a.localeCompare(b))
+  }}
+
+  {{ for entry of content }}
+    {{> const [name, child] = entry }}
+
+    {{ if typeof child === "string" }}
+      <li>
+        <a
+          href='{{ ["uploads", upload.name, "file", child] |> path }}'
+          class="list-item"
+        >
+          <u-icon-file path="{{child}}"></u-icon-file> {{ name }}
+        </a>
+        <u-popover>
+          <button class="buttonIcon" type="button">
+            <u-icon name="eye"></u-icon>
+          </button>
+          <template>
+            <u-preview
+              id="preview_{{child}}"
+              data-src='{{ ["uploads", upload.name, "raw", child] |> path }}'
+            >
+            </u-preview>
+          </template>
+        </u-popover>
+        <u-copy text="{{ [publicPath, child] |> normalizePath }}"></u-copy>
+      </li>
+    {{ else }}
+      <li>
+        <details open class="accordion">
+          <summary>{{ name }}</summary>
+          <ul>
+            {{ folder(options, upload, publicPath, child) }}
+          </ul>
+        </details>
+        <div class="list-actions">
+          <a
+            href='{{ ["uploads", upload.name, "create"] |> path }}?folder={{child.path}}'
+            title="Upload file inside ${name}"
+            class="buttonIcon"
+          >
+            <u-icon name="plus-circle"></u-icon>
+          </a>
+        </div>
+      </li>
+    {{ /if }}
+  {{ /for }}
+{{ /function }}
+
+{{
+  include "breadcrumb.vto" {
+    options,
+    version,
+    links: [upload.label],
+  }
+}}
+
+<header class="header is-sticky">
+  <h1 class="header-title">{{ upload.label }}</h1>
+
+  {{ if upload.description }}
+    <p class="header-description">{{ upload.description }}</p>
+  {{ /if }}
+
+  <u-filter
+    class="header-filter"
+    data-placeholder="Search files in {{upload.label}}"
+    data-selector="#list li"
+  >
+  </u-filter>
+</header>
+
+{{ set content = folder(options, upload, publicPath, tree) }}
+{{ if content }}
+  <ul id="list" class="list">{{ content }}</ul>
+{{ else }}
+  <p class="emptyState">No results</p>
+{{ /if }}
+
+<footer class="ly-rowStack footer is-responsive">
+  <a
+    href='{{ ["uploads", upload.name, "create"] |> path }}'
+    class="button is-primary"
+  >
+    <u-icon name="plus-circle"></u-icon>
+    Add files
+  </a>
+</footer>
