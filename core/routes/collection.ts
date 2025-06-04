@@ -9,7 +9,7 @@ import createTree from "../templates/tree.ts";
 
 export default function (app: Hono) {
   app.get("/collection/:collection", async (c: Context) => {
-    const { options, collection, versioning } = get(c);
+    const { collection, versioning } = get(c);
 
     if (!collection) {
       return c.notFound();
@@ -20,7 +20,6 @@ export default function (app: Hono) {
 
     return c.render(
       await render("collection/list.vto", {
-        options,
         collection,
         tree,
         version: versioning?.current(),
@@ -52,7 +51,6 @@ export default function (app: Hono) {
       try {
         return c.render(
           await render("collection/edit.vto", {
-            options,
             collection,
             fields,
             data,
@@ -102,7 +100,7 @@ export default function (app: Hono) {
 
   app
     .get("/collection/:collection/code/:document", async (c: Context) => {
-      const { options, collection, versioning, document } = get(c);
+      const { collection, versioning, document } = get(c);
 
       if (!document) {
         return c.notFound();
@@ -120,7 +118,6 @@ export default function (app: Hono) {
       try {
         return c.render(
           await render("collection/code.vto", {
-            options,
             collection,
             fields,
             data,
@@ -247,7 +244,6 @@ export default function (app: Hono) {
 
       return c.render(
         render("collection/create.vto", {
-          options,
           defaults,
           collection,
           fields,

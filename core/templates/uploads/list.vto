@@ -1,4 +1,4 @@
-{{ function folder(options, upload, publicPath, tree) }}
+{{ function folder(upload, tree) }}
   {{
     set content = Array.from([
       ...tree.folders?.entries() || [],
@@ -29,14 +29,16 @@
             </u-preview>
           </template>
         </u-popover>
-        <u-copy text="{{ [publicPath, child] |> normalizePath }}"></u-copy>
+        <u-copy
+          text="{{ [upload.publicPath, child] |> normalizePath }}"
+        ></u-copy>
       </li>
     {{ else }}
       <li>
         <details open class="accordion">
           <summary>{{ name }}</summary>
           <ul>
-            {{ folder(options, upload, publicPath, child) }}
+            {{ folder(upload, child) }}
           </ul>
         </details>
         <div class="list-actions">
@@ -53,13 +55,7 @@
   {{ /for }}
 {{ /function }}
 
-{{
-  include "breadcrumb.vto" {
-    options,
-    version,
-    links: [upload.label],
-  }
-}}
+{{ include "breadcrumb.vto" { version, links: [upload.label] } }}
 
 <header class="header is-sticky">
   <h1 class="header-title">{{ upload.label }}</h1>
@@ -76,7 +72,7 @@
   </u-filter>
 </header>
 
-{{ set content = folder(options, upload, publicPath, tree) }}
+{{ set content = folder(upload, tree) }}
 {{ if content }}
   <ul id="list" class="list">{{ content }}</ul>
 {{ else }}

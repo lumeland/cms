@@ -1,5 +1,5 @@
 import { slugify } from "../utils/string.ts";
-import { getPath, normalizeName, normalizePath } from "../utils/path.ts";
+import { getPath, normalizeName } from "../utils/path.ts";
 import { render } from "../../deps/vento.ts";
 import {
   formatSupported,
@@ -14,7 +14,7 @@ import type { CMSContent } from "../../types.ts";
 
 export default function (app: Hono) {
   app.get("/uploads/:upload", async (c: Context) => {
-    const { options, uploads, uploadId, versioning } = get(c);
+    const { uploads, uploadId, versioning } = get(c);
 
     const upload = uploads[uploadId];
 
@@ -27,17 +27,15 @@ export default function (app: Hono) {
 
     return c.render(
       render("uploads/list.vto", {
-        options,
         upload,
         tree,
-        publicPath: upload.publicPath,
         version: versioning?.current(),
       }),
     );
   });
 
   app.get("/uploads/:upload/create", (c: Context) => {
-    const { options, uploads, uploadId, versioning } = get(c);
+    const { uploads, uploadId, versioning } = get(c);
 
     const upload = uploads[uploadId];
 
@@ -47,7 +45,6 @@ export default function (app: Hono) {
 
     return c.render(
       render("uploads/create.vto", {
-        options,
         upload,
         version: versioning?.current(),
         folder: normalizeName(c.req.query("folder")),
@@ -113,14 +110,14 @@ export default function (app: Hono) {
   });
 
   app.get("/uploads/:upload/file/:file", async (c: Context) => {
-    const { options, uploadId, fileId, uploads, versioning } = get(c);
+    const { uploadId, fileId, uploads, versioning } = get(c);
     const upload = uploads[uploadId];
 
     if (!upload) {
       return c.notFound();
     }
 
-    const { storage, publicPath } = upload;
+    const { storage } = upload;
 
     try {
       const name = normalizeName(fileId);
@@ -132,11 +129,9 @@ export default function (app: Hono) {
 
       return c.render(
         render("uploads/view.vto", {
-          options,
           type: file.type,
           size: file.size,
           upload,
-          publicPath: normalizePath(publicPath, name),
           file: name,
           version: versioning?.current(),
         }),
@@ -213,7 +208,6 @@ export default function (app: Hono) {
 
       return c.render(
         render("uploads/crop.vto", {
-          options,
           upload,
           file: name,
           version: versioning?.current(),

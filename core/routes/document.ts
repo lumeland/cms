@@ -29,7 +29,6 @@ export default function (app: Hono) {
 
       return c.render(
         render("document/edit.vto", {
-          options,
           document,
           fields,
           views: Array.from(views),

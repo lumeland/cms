@@ -1,4 +1,4 @@
-{{ function folder(options, collection, tree) }}
+{{ function folder(collection, tree) }}
   {{
     set content = Array.from([
       ...tree.folders?.entries() || [],
@@ -26,7 +26,7 @@
         <details open class="accordion">
           <summary>{{ name }}</summary>
           <ul>
-            {{ folder(options, collection, child) }}
+            {{ folder(collection, child) }}
           </ul>
         </details>
         <div class="list-actions">
@@ -43,13 +43,7 @@
   {{ /for }}
 {{ /function }}
 
-{{
-  include "breadcrumb.vto" {
-    options,
-    version,
-    links: [collection.label],
-  }
-}}
+{{ include "breadcrumb.vto" { version, links: [collection.label] } }}
 
 <header class="header is-sticky">
   <h1 class="header-title">{{ collection.label }}</h1>
@@ -65,7 +59,7 @@
   </u-filter>
 </header>
 
-{{ set content = folder(options, collection, tree) }}
+{{ set content = folder(collection, tree) }}
 
 {{ if content }}
   <ul id="list" class="list">{{ content }}</ul>
