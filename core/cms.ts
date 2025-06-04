@@ -1,5 +1,6 @@
 import { Hono, HTTPException, serveStatic } from "../deps/hono.ts";
-import layout from "./templates/layout.ts";
+import { render } from "../deps/vento.ts";
+import { getCurrentVersion } from "./utils/env.ts";
 import documentRoutes from "./routes/document.ts";
 import collectionRoutes from "./routes/collection.ts";
 import versionsRoutes from "./routes/versions.ts";
@@ -10,7 +11,7 @@ import Collection from "./collection.ts";
 import Document from "./document.ts";
 import Upload from "./upload.ts";
 import FsStorage from "../storage/fs.ts";
-import { getPath, normalizePath } from "./utils/path.ts";
+import { asset, getPath, normalizePath } from "./utils/path.ts";
 import {
   basename,
   dirname,
@@ -395,14 +396,15 @@ export default class Cms {
     ]);
 
     filter("path", (args: string[]) => getPath(this.options.basePath, ...args));
+    filter("asset", (url: string) => asset(this.options.basePath, url));
 
     app.use("*", (c: Context, next: Next) => {
       c.setRenderer(async (content) => {
-        return c.html(layout({
-          options: c.var.options,
+        return c.html(render("layout.vto", {
           jsImports: Array.from(this.#jsImports),
           extraHead: this.options.extraHead,
           content: await content,
+          version: getCurrentVersion(),
         }));
       });
       c.set("options", { ...content });
