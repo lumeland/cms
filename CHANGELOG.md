@@ -4,9 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.11.6] - Unreleased
+## [0.12.0] - Unreleased
 ### Added
 - Allow to edit documents in code mode.
+
+### Changed
+- Internal: use Vento templates instead of template strings.
 
 ### Fixed
 - Updated dependencies and vendor libs.
