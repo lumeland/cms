@@ -1,6 +1,8 @@
 import vento from "https://deno.land/x/vento@v1.13.2/mod.ts";
 import { posix as path } from "./std.ts";
 import { getPath } from "../core/utils/path.ts";
+import { formatSupported } from "./imagick.ts";
+import { formatBytes } from "./std.ts";
 
 import type {
   Loader,
@@ -52,3 +54,6 @@ export async function render(file: string, data: Record<string, unknown> = {}) {
 export function filter(name: string, filter: (...args: any[]) => any) {
   env.filters[name] = filter;
 }
+
+filter("formatSupported", formatSupported);
+filter("formatBytes", formatBytes);

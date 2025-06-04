@@ -1,9 +1,7 @@
 import uploadsList from "../templates/uploads/list.ts";
-import uploadsView from "../templates/uploads/view.ts";
-import uploadsCreate from "../templates/uploads/create.ts";
-import uploadsCrop from "../templates/uploads/crop.ts";
 import { slugify } from "../utils/string.ts";
 import { getPath, normalizeName, normalizePath } from "../utils/path.ts";
+import { render } from "../../deps/vento.ts";
 import {
   formatSupported,
   MagickGeometry,
@@ -43,7 +41,7 @@ export default function (app: Hono) {
     }
 
     return c.render(
-      uploadsCreate({
+      render("uploads/create.vto", {
         options,
         upload,
         version: versioning?.current(),
@@ -128,7 +126,7 @@ export default function (app: Hono) {
       const file = await entry.readFile();
 
       return c.render(
-        uploadsView({
+        render("uploads/view.vto", {
           options,
           type: file.type,
           size: file.size,
@@ -209,7 +207,7 @@ export default function (app: Hono) {
       }
 
       return c.render(
-        uploadsCrop({
+        render("uploads/crop.vto", {
           options,
           upload,
           file: name,

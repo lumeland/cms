@@ -16,7 +16,7 @@
       {{ if typeof link === "string" }}
         <li><a>{{ link }}</a></li>
       {{ else }}
-        <li><a href="{{ link[1] }}">{{ link[0] }}</a></li>
+        <li><a href="{{ link[1] |> path }}">{{ link[0] }}</a></li>
       {{ /if }}
     {{ /for }}
   </ul>
