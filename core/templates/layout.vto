@@ -32,14 +32,14 @@
         );
       }
     </script>
+
     <script type="module">
       import "lume_cms/components/ui.js";
-      {
-        {
-          jsImports.map((file) => `import "${file}";`).join("\n");
-        }
-      }
+      // deno-fmt-ignore-start
+      {{ jsImports.map((file) => `import "${file}";`).join("\n") }}
+      // deno-fmt-ignore-end
     </script>
+
     {{ extraHead }}
   </head>
   <body>
