@@ -32,6 +32,7 @@ customElements.define(
             transition-property: color, background;
             transition-duration: var(--animation-duration);
 
+            &[aria-expanded="true"],
             &:hover {
               background: var(--color-line);
             }
@@ -43,15 +44,17 @@ customElements.define(
             height: 24px;
           }
           .menu-selector-list:not([hidden]) {
+            --padding: 6px;
             position: absolute;
-            bottom: calc(100% + 2px);
+            bottom: calc(100% + var(--padding));
             right: 0;
             display: flex;
-            gap: 2px;
+            gap: 0px;
             flex-direction: column;
-            padding: 2px;
-            background: var(--color-background);
-            border-radius: calc(var(--border-radius) + 2px);
+            padding: var(--padding);
+            border-radius: calc(var(--border-radius) + var(--padding));
+            box-shadow: var(--shadow);
+            background: var(--color-line-light);
           }
         </style>
         <div class="menu-selector" part="dropdown">
