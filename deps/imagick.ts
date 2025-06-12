@@ -1,14 +1,17 @@
-import { initializeImageMagick } from "npm:@imagemagick/magick-wasm@0.0.35";
+import { initializeImageMagick } from "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.35/dist/index.js";
 import {
   ImageMagick,
-  type IMagickImage,
   MagickFormat,
   MagickGeometry,
-} from "npm:@imagemagick/magick-wasm@0.0.35";
+} from "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.35/dist/index.js";
+import type {
+  IMagickImage,
+  MagickFormat as IMagickFormat,
+} from "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.35/dist/index.d.ts";
 
 await initialize();
 
-export { ImageMagick, MagickFormat, MagickGeometry };
+export { ImageMagick, IMagickFormat as MagickFormat, MagickGeometry };
 
 export function transform(
   file: File,
@@ -17,7 +20,7 @@ export function transform(
   return file.arrayBuffer()
     .then((data) => {
       return new Promise((resolve) => {
-        ImageMagick.read(new Uint8Array(data), (img) => {
+        ImageMagick.read(new Uint8Array(data), (img: IMagickImage) => {
           fn(img);
           img.write((data) => {
             resolve(data);
@@ -41,10 +44,10 @@ const supportedFormats: string[] = [
   MagickFormat.WebP,
 ];
 
-export function formatSupported(file: string): MagickFormat | undefined {
+export function formatSupported(file: string): IMagickFormat | undefined {
   const extension = file.split(".").pop();
   return extension && supportedFormats.includes(extension.toUpperCase())
-    ? extension.toUpperCase() as MagickFormat
+    ? extension.toUpperCase() as IMagickFormat
     : undefined;
 }
 

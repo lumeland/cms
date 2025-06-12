@@ -4,16 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.12.0] - Unreleased
+## [0.12.0] - 2025-06-12
 ### Added
 - Allow to edit documents in code mode.
 
 ### Changed
 - Internal: use Vento templates instead of template strings.
+- Uploads icon.
 
 ### Fixed
 - Updated dependencies and vendor libs.
 - Apply a min-height to code and markdown fields.
+- Imagick lib error in Deno 2.3.6.
 
 ## [0.11.5] - 2025-04-25
 ### Fixed
@@ -655,7 +657,7 @@ First version
 [#52]: https://github.com/lumeland/cms/issues/52
 [#53]: https://github.com/lumeland/cms/issues/53
 
-[0.11.6]: https://github.com/lumeland/cms/compare/v0.11.5...HEAD
+[0.12.0]: https://github.com/lumeland/cms/compare/v0.11.5...v0.12.0
 [0.11.5]: https://github.com/lumeland/cms/compare/v0.11.4...v0.11.5
 [0.11.4]: https://github.com/lumeland/cms/compare/v0.11.3...v0.11.4
 [0.11.3]: https://github.com/lumeland/cms/compare/v0.11.2...v0.11.3
