@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.12.1] - Unreleased
+### Fixed
+- Publish version: delete the branch only after pushing changes.
+
 ## [0.12.0] - 2025-06-12
 ### Added
 - Allow to edit documents in code mode.
@@ -657,6 +661,7 @@ First version
 [#52]: https://github.com/lumeland/cms/issues/52
 [#53]: https://github.com/lumeland/cms/issues/53
 
+[0.12.1]: https://github.com/lumeland/cms/compare/v0.12.0...HEAD
 [0.12.0]: https://github.com/lumeland/cms/compare/v0.11.5...v0.12.0
 [0.11.5]: https://github.com/lumeland/cms/compare/v0.11.4...v0.11.5
 [0.11.4]: https://github.com/lumeland/cms/compare/v0.11.3...v0.11.4

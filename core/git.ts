@@ -131,11 +131,13 @@ export class Git implements Versioning {
     // merge it into the production branch and remove it
     if (branch !== this.prodBranch) {
       this.#git("merge", branch);
+      // Push changes to the remote before deleting the branch
+      this.#git("push", this.remote, this.prodBranch);
       this.#git("branch", "-d", branch);
+    } else {
+      // Push changes to the remote
+      this.#git("push", this.remote, this.prodBranch);
     }
-
-    // Push changes to the remote
-    this.#git("push", this.remote, this.prodBranch);
   }
 
   /* Delete a version */
