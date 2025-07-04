@@ -1,7 +1,9 @@
 <nav aria-label="You are here:">
   <ul class="breadcrumb">
     {{ if version }}
-      <li class='breadcrumb-version {{ version.isProduction ? "is-production" : "" }}'>
+      <li
+        class='breadcrumb-version {{ version.isProduction ? "is-production" : "" }}'
+      >
         <a title="{{ version.name }}" href="{{ [] |> path }}#versions">
           {{ version.name }}
         </a>

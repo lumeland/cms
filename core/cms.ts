@@ -88,13 +88,12 @@ interface UploadOptions {
   listed?: boolean;
 }
 
-const defaults = {
+const defaults: Partial<CmsOptions> = {
   site: {
     name: "Lume CMS",
   },
-  root: Deno.cwd(),
   basePath: "/",
-} satisfies CmsOptions;
+};
 
 export default class Cms {
   #jsImports = new Set<string>();
@@ -112,9 +111,9 @@ export default class Cms {
     this.options = {
       ...defaults,
       ...options,
-    };
+    } as CmsOptions;
 
-    this.options.root = normalizePath(this.options.root);
+    this.options.root = normalizePath(this.options.root ?? Deno.cwd());
 
     // Set the .fetch method (https://github.com/denoland/deno/issues/24062)
     let fetch: ((request: Request) => Response | Promise<Response>) | undefined;

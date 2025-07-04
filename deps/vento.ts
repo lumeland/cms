@@ -12,7 +12,7 @@ import type {
 class ModuleLoader implements Loader {
   #root: string;
 
-  constructor(root: string = Deno.cwd()) {
+  constructor(root: string) {
     this.#root = root;
   }
 
