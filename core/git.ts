@@ -10,8 +10,7 @@ export interface Options {
   remote?: string;
 }
 
-export const defaults: Required<Options> = {
-  root: Deno.cwd(),
+export const defaults: Options = {
   prodBranch: "main",
   prefix: "lumecms/",
   command: "git",
@@ -26,9 +25,9 @@ export class Git implements Versioning {
   remote: string;
 
   constructor(userOptions?: Options) {
-    const options = { ...defaults, ...userOptions };
+    const options = { ...defaults, ...userOptions } as Required<Options>;
 
-    this.root = options.root;
+    this.root = options.root ?? Deno.cwd();
     this.prodBranch = options.prodBranch;
     this.prefix = options.prefix;
     this.command = options.command;
