@@ -10,8 +10,7 @@ export interface Options {
   path?: string;
 }
 
-export const defaults: Required<Options> = {
-  root: Deno.cwd(),
+export const defaults: Options = {
   path: "**",
 };
 
@@ -25,8 +24,9 @@ export default class Fs implements Storage {
   }
 
   constructor(userOptions?: Options) {
-    const options = { ...defaults, ...userOptions };
+    const options = { ...defaults, ...userOptions } as Required<Options>;
     const pos = options.path.indexOf("*");
+    options.root ??= Deno.cwd();
 
     if (pos === -1) {
       options.root = posix.join(options.root, options.path);
