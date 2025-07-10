@@ -56,7 +56,7 @@ async function initialize() {
     "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.35/dist/magick.wasm",
   );
 
-  if (typeof caches === "undefined") {
+  if (typeof caches === "undefined" || globalThis?.Netlify) {
     const response = await fetch(wasmUrl);
     await initializeImageMagick(new Int8Array(await response.arrayBuffer()));
     return;
