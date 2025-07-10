@@ -106,6 +106,8 @@ customElements.define(
         [md.makeH2, "text-h-two"],
         [md.makeH3, "text-h-three"],
         [md.makeH4, "text-h-four"],
+        [md.makeH5, "text-h-five"],
+        [md.makeH6, "text-h-six"],
       ].forEach(([fn, icon]) => {
         dom("button", {
           class: "buttonIcon",
