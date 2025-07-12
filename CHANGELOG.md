@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.12.1] - Unreleased
+## [0.12.1] - 2025-07-12
 ### Added
 - New option `rename` to prevent to rename a document in a collection by hidding the text input.
 
@@ -670,7 +670,7 @@ First version
 [#53]: https://github.com/lumeland/cms/issues/53
 [#59]: https://github.com/lumeland/cms/issues/59
 
-[0.12.1]: https://github.com/lumeland/cms/compare/v0.12.0...HEAD
+[0.12.1]: https://github.com/lumeland/cms/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/lumeland/cms/compare/v0.11.5...v0.12.0
 [0.11.5]: https://github.com/lumeland/cms/compare/v0.11.4...v0.11.5
 [0.11.4]: https://github.com/lumeland/cms/compare/v0.11.3...v0.11.4
