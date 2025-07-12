@@ -15,7 +15,7 @@
       <input
         class="input is-inline"
         id="_id"
-        type="text"
+        type="{{ collection.permissions.rename ? 'text' : 'hidden' }}"
         name="_id"
         value="{{document.name}}"
         placeholder="Rename the file…"

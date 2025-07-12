@@ -11,20 +11,22 @@
 <header class="header">
   <h1 class="header-title">
     Creating new file
-    <label class="header-file">
-      {{ folder }}
-      <input
-        class="input is-inline"
-        id="_id"
-        type="text"
-        name="_id"
-        value="{{ defaults._id }}"
-        placeholder="Name your file…"
-        form="form-create"
-        aria-label="File name"
-        {{ if collection.documentName }}required autofocus{{ /if }}
-      >
-    </label>
+    {{ if collection.documentName && collection.permissions.rename }}
+      <label class="header-file">
+        {{ folder }}
+        <input
+          class="input is-inline"
+          id="_id"
+          type="text"
+          name="_id"
+          value="{{ defaults._id }}"
+          placeholder="Name your file…"
+          form="form-create"
+          aria-label="File name"
+          {{ if !collection.documentName }}required autofocus{{ /if }}
+        >
+      </label>
+    {{ /if }}
   </h1>
 </header>
 

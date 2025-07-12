@@ -14,11 +14,13 @@ export interface CollectionOptions {
   documentLabel?: Labelizer;
   create?: boolean;
   delete?: boolean;
+  rename?: boolean;
 }
 
 interface Permissions {
   create: boolean;
   delete: boolean;
+  rename?: boolean;
 }
 
 export default class Collection {
@@ -46,6 +48,7 @@ export default class Collection {
     this.permissions = {
       create: options.create ?? true,
       delete: options.delete ?? true,
+      rename: options.rename ?? true,
     };
   }
 

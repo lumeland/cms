@@ -37,7 +37,7 @@ export default function (app: Hono) {
 
       const data = await document.read();
       const fields = await Promise.all(
-        collection.fields.map((field) => prepareField(field, options)),
+        collection.fields.map((field) => prepareField(field, options, data)),
       );
 
       const collectionViews = collection.views;

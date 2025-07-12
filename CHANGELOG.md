@@ -5,8 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.12.1] - Unreleased
+### Added
+- New option `rename` to prevent to rename a document in a collection by hidding the text input.
+
 ### Fixed
 - Publish version: delete the branch only after pushing changes.
+- Passed the current data to the `init()` callback of fields on edit a document.
+- Netlify support:
+  - Failing on caches API. [#59]
+  - Don't run `Deno.cwd()` if it's not needed
+- `required autofocus` attributes to the field to set/edit the document name in a collection.
 
 ## [0.12.0] - 2025-06-12
 ### Added
@@ -660,6 +668,7 @@ First version
 [#51]: https://github.com/lumeland/cms/issues/51
 [#52]: https://github.com/lumeland/cms/issues/52
 [#53]: https://github.com/lumeland/cms/issues/53
+[#59]: https://github.com/lumeland/cms/issues/59
 
 [0.12.1]: https://github.com/lumeland/cms/compare/v0.12.0...HEAD
 [0.12.0]: https://github.com/lumeland/cms/compare/v0.11.5...v0.12.0
