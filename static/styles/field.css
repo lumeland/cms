@@ -1,0 +1,93 @@
+.field {
+  display: grid;
+  gap: 0.3em;
+
+  & label {
+    font: var(--font-ui-bold);
+    width: fit-content;
+    min-width: 100px;
+    cursor: pointer;
+
+    &.is-secondary {
+      font: var(--font-ui);
+    }
+  }
+}
+.field-label {
+  font: var(--font-ui-bold);
+  display: flex;
+  column-gap: 0.5em;
+  align-items: center;
+}
+.field-check-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0.5em 0 0;
+  padding: 0;
+  row-gap: 1em;
+  column-gap: 2em;
+}
+.field-check {
+  display: flex;
+  align-items: center;
+
+  & label {
+    cursor: pointer;
+    padding-left: 0.5rem;
+  }
+  + .field-description {
+    margin-top: 0.5rem;
+  }
+}
+.field-title {
+  font: var(--font-ui-bold);
+  margin: 0;
+}
+.field-description {
+  font: var(--font-small);
+  color: var(--color-dim);
+  margin-top: -0.3em;
+  margin-bottom: 0.3em;
+
+  &:empty {
+    display: none;
+  }
+}
+.field-value {
+  margin: 0;
+  font: var(--font-small);
+  color: var(--color-dim);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  & p {
+    margin: 0;
+  }
+}
+
+.field-footer {
+  margin-top: 0.5em;
+}
+
+.fieldset {
+  display: grid;
+  row-gap: 0.5em;
+  list-style: none;
+  margin: 0.5em 0 0 0.5em;
+  padding: 0.3rem 0 0.3rem 1rem;
+  border-left: solid 1px var(--color-line);
+
+  &:empty {
+    display: none;
+  }
+  &.is-separated {
+    row-gap: 1.5em;
+  }
+}
+
+f-hidden {
+  display: none;
+}

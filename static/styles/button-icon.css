@@ -1,0 +1,50 @@
+.buttonIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  column-gap: 0.5em;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius);
+  color: var(--color-dim);
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    cursor: default;
+    opacity: 0.33;
+    pointer-events: none;
+  }
+
+  & svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  & u-icon {
+    color: currentColor;
+  }
+
+  &[aria-pressed="true"],
+  &[aria-expanded="true"],
+  &:hover {
+    background-color: var(--color-line-light);
+    color: var(--color-foreground);
+  }
+
+  &.is-secondary {
+    color: var(--color-text);
+    background: var(--color-line-light);
+
+    &:hover {
+      background: var(--color-line);
+    }
+  }
+}
+
+a.buttonIcon {
+  color: var(--color-foreground);
+}

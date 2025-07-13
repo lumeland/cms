@@ -1,0 +1,42 @@
+.app {
+  margin: auto;
+  padding: 2rem 0;
+  max-width: min(100% - 10vw, 900px);
+  min-height: calc(100vh - 4rem);
+
+  &.is-preview {
+    margin: 0;
+    display: grid;
+    max-width: 100%;
+    min-height: 100vh;
+    grid-template-columns: clamp(300px, 40%, 700px) minmax(0, 1fr);
+
+    > iframe {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  }
+}
+.app-footer {
+  height: 4rem;
+  text-align: center;
+  font: var(--font-small);
+  color: var(--color-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  p {
+    margin: 0 1em 0 0;
+  }
+}

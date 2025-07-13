@@ -1,0 +1,111 @@
+.button {
+  display: inline-flex;
+  column-gap: 0.5em;
+  align-items: center;
+  border: none;
+  padding: 0 0.75em;
+  min-height: 40px;
+  font: var(--font-ui);
+  text-decoration: none;
+  color: inherit;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  transition-property: color, background;
+  transition-duration: var(--animation-duration);
+
+  &[hidden] {
+    display: none;
+  }
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    cursor: default;
+    opacity: 0.33;
+    pointer-events: none;
+  }
+
+  & svg {
+    width: 24px;
+    height: 24px;
+    opacity: 0.75;
+  }
+
+  &.is-primary {
+    font: var(--font-ui-bold);
+    color: var(--color-white);
+    background: var(--color-primary);
+
+    &:hover {
+      background: var(--color-primary-highlight);
+    }
+  }
+
+  &.is-secondary {
+    color: var(--color-text);
+    background: var(--color-line-light);
+
+    &:hover {
+      background: var(--color-line);
+    }
+
+    &[aria-pressed] {
+      background-color: transparent;
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        border: solid 1px;
+        border-radius: 2px;
+      }
+    }
+    &[aria-pressed="false"] {
+      color: var(--color-dim);
+    }
+    &[aria-pressed="true"] {
+      &::before {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        background-image: url('data:image/svg+xml;charset=UTF-8,<svg width="12" height="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M13.92 3c.297 0 .552.109.763.326.211.217.317.48.317.786 0 .307-.107.57-.32.79l-7.56 7.777a1.02 1.02 0 0 1-.76.321 1.03 1.03 0 0 1-.768-.321l-4.28-4.394A1.09 1.09 0 0 1 1 7.495c0-.307.106-.57.317-.787.21-.217.466-.325.764-.325s.555.11.77.33l3.51 3.611 6.79-6.994c.213-.22.47-.33.768-.33Z" /></svg>');
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+    }
+  }
+  &.is-tertiary {
+    color: var(--color-dim);
+    font: inherit;
+    font-weight: 600;
+
+    &:hover {
+      background: var(--color-line-light);
+    }
+
+    &[aria-pressed="false"] {
+      color: var(--color-dim);
+    }
+  }
+  &.is-link {
+    padding: 0;
+    color: var(--color-link);
+
+    &:hover {
+      color: var(--color-link-hover);
+      text-decoration: underline;
+    }
+  }
+}
+
+u-dropdown {
+  > .button:not(:last-child),
+  > :not(:last-child) > .button {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  > .button:not(:first-child),
+  > :not(:first-child) > .button {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}

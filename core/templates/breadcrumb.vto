@@ -1,0 +1,25 @@
+<nav aria-label="You are here:">
+  <ul class="breadcrumb">
+    {{ if version }}
+      <li
+        class='breadcrumb-version {{ version.isProduction ? "is-production" : "" }}'
+      >
+        <a title="{{ version.name }}" href="{{ [] |> path }}#versions">
+          {{ version.name }}
+        </a>
+      </li>
+    {{ /if }}
+
+    <li>
+      <a href="{{ [] |> path }}"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    {{ for link  of links }}
+      {{ if typeof link === "string" }}
+        <li><a>{{ link }}</a></li>
+      {{ else }}
+        <li><a href="{{ link[1] |> path }}">{{ link[0] }}</a></li>
+      {{ /if }}
+    {{ /for }}
+  </ul>
+</nav>

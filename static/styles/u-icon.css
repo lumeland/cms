@@ -1,0 +1,26 @@
+u-icon {
+  display: inline-block;
+
+  & svg {
+    display: block;
+    fill: currentColor;
+    width: 32px;
+    height: 32px;
+  }
+}
+u-icon-file u-icon {
+  display: block;
+}
+u-views {
+  border-bottom: solid 1px var(--color-line);
+}
+
+u-icon.is-version {
+  color: var(--color-black);
+  border-radius: 50%;
+  background-color: gold;
+}
+
+u-icon.is-production {
+  background-color: lightgreen;
+}

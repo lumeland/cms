@@ -1,0 +1,10 @@
+.emptyState {
+  margin: 0;
+  padding: 6rem 2rem;
+  text-align: center;
+  color: var(--color-dim);
+  font: var(--font-title);
+  font-weight: normal;
+  letter-spacing: var(--font-title-spacing);
+  background: var(--color-highlight);
+}

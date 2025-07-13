@@ -1,0 +1,30 @@
+.preview {
+  background: var(--color-highlight);
+  padding: 1rem;
+  margin: 0;
+  border-radius: var(--border-radius);
+  border: solid 1px var(--color-line-light);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 200px;
+
+  & img {
+    display: block;
+    max-width: 100%;
+    margin: auto;
+  }
+}
+.preview-caption {
+  font: var(--font-small);
+  color: var(--color-dim);
+}
+.preview-media > p {
+  font: var(--font-ui);
+  color: var(--color-dim);
+  text-align: center;
+  padding: 6rem 0;
+  background: var(--color-line-light);
+  margin: 0;
+}

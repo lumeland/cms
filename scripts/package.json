@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "@codemirror/lang-html": "^6.4.9",
+    "@codemirror/lang-markdown": "^6.3.2",
+    "@codemirror/language-data": "^6.5.1",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.36.7",
+    "@rollup/plugin-node-resolve": "^15.3.1",
+    "codemirror": "^6.0.1",
+    "rollup": "^4.40.1",
+    "terser": "^5.39.0",
+    "terser-glob": "^1.1.0"
+  },
+  "scripts": {
+    "build": "rm -f ../static/libs/* && npm run markdown && npm run code && npm run normalize && npm run terser",
+    "markdown": "rollup markdown.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
+    "code": "rollup code.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
+    "normalize": "wget -O ../static/libs/modern-normalize.css https://unpkg.com/modern-normalize/modern-normalize.css",
+    "terser": "terser-glob ../static/libs/*.js"
+  }
+}

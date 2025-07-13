@@ -1,0 +1,91 @@
+{{
+  include "breadcrumb.vto" {
+    version,
+    links: [
+      [collection.label, ["collection", collection.name]],
+      "Editing " + (collection.labelSingular || "file"),
+    ],
+  }
+}}
+
+<u-form>
+  <header class="header">
+    <h1 class="header-title">
+      Editing {{ collection.labelSingular || "file" }}
+      <input
+        class="input is-inline"
+        id="_id"
+        type="{{ collection.permissions.rename ? 'text' : 'hidden' }}"
+        name="_id"
+        value="{{document.name}}"
+        placeholder="Rename this {{ collection.labelSingular || "file" }}"
+        form="form-edit"
+        aria-label="{{ collection.labelSingular || "file" }} name"
+        {{
+          if !collection.permissions.create || !collection.permissions.delete
+        }}readonly{{ /if }}
+        required
+      >
+    </h1>
+  </header>
+
+  <form
+    action='{{ ["collection", collection.name, "code", document.name] |> path }}'
+    method="post"
+    class="form"
+    id="form-edit"
+  >
+    <u-fields
+      data-fields="{{ fields |> JSON.stringify |> escape  }}"
+      data-value="{{ data |> JSON.stringify |> escape  }}"
+    ></u-fields>
+
+    <footer class="footer ly-rowStack is-responsive">
+      <button class="button is-primary" type="submit">
+        <u-icon name="check"></u-icon>
+        Save changes
+      </button>
+
+      <u-dropdown>
+        <a
+          class="button is-secondary"
+          href='{{ ["collection", collection.name, "edit", document.name] |> path }}'
+        >
+          <u-icon name="textbox"></u-icon>
+          Edit form
+        </a>
+
+        {{ if collection.permissions.create }}
+          <u-confirm data-message="Duplicate this file?">
+            <button
+              class="button is-secondary"
+              type="submit"
+              formAction='{{ ["collection", collection.name, "duplicate", document.name] |> path }}'
+            >
+              <u-icon name="files"></u-icon>
+              Duplicate
+            </button>
+          </u-confirm>
+        {{ /if }}
+
+        {{ if collection.permissions.delete }}
+          <u-confirm data-message="Are you sure?">
+            <button
+              class="button is-secondary"
+              type="submit"
+              formAction='{{ ["collection", collection.name, "delete", document.name] |> path }}'
+            >
+              <u-icon name="trash"></u-icon>
+              Delete
+            </button>
+          </u-confirm>
+        {{ /if }}
+      </u-dropdown>
+      <u-pagepreview
+        class="ly-rowStack"
+        data-url="{{ document.url }}"
+        data-src="{{ document.src }}"
+      ></u-pagepreview>
+    </footer>
+  </form>
+</u-form>

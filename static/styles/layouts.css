@@ -1,0 +1,20 @@
+.ly-rowStack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 4px;
+  row-gap: 0.5rem;
+
+  &.is-narrow {
+    column-gap: 0.5rem;
+    flex-wrap: nowrap;
+  }
+
+  &.is-responsive {
+    @media (max-width: 400px) {
+      .button {
+        flex: 1 1 auto;
+      }
+    }
+  }
+}

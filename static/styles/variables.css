@@ -1,0 +1,104 @@
+:root {
+  /* Light colors */
+  color-scheme: light;
+  --color-text: hsl(220, 20%, 15%);
+  --color-dim: hsl(220, 20%, 40%);
+  --color-link: var(--color-primary);
+  --color-error: var(--color-primary);
+  --color-link-hover: var(--color-primary-highlight);
+  --color-line: hsl(220, 20%, 80%);
+  --color-line-light: hsl(220, 20%, 90%);
+  --color-background: hsl(220, 20%, 97%);
+  --color-input-text: var(--color-black);
+  --color-input-bg: var(--color-white);
+  --color-white: white;
+  --color-black: hsl(220, 20%, 15%);
+  --color-highlight: hsl(220, 20%, 94%);
+
+  /* Brand colors */
+  --color-primary: hsl(0, 50%, 50%);
+  --color-primary-highlight: hsl(0, 50%, 40%);
+
+  /* Code colors */
+  --color-code-5: #bf4040;
+  --color-code-b: #708;
+  --color-code-c: #2913c0;
+  --color-code-d: #164;
+  --color-code-e: #bf4040;
+  --color-code-f: #e40;
+  --color-code-g: #00f;
+  --color-code-h: hsl(220, 100%, 65%);
+  --color-code-i: #0e8759;
+  --color-code-j: #167;
+  --color-code-k: #256;
+  --color-code-l: #00c;
+  --color-code-m: #940;
+  --color-code-n: hsl(220, 20%, 20%);
+
+  /* Fonts */
+  --font-family-code:
+    Consolas, Menlo, Monaco, "Andale Mono WT", "Andale Mono", "Lucida Console",
+    "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono",
+    "Liberation Mono", "Nimbus Mono L", "Courier New", Courier, monospace;
+  --font-family-ui: -apple-system, system-ui, sans-serif;
+
+  --font-code: 0.9em/1.5 var(--font-family-code);
+  --font-display: 600 clamp(2rem, 10vw, 4rem)/1 var(--font-family-ui);
+  --font-display-spacing: -0.02em;
+  --font-title: 600 clamp(1.5rem, 8vw, 2.5rem)/1.2 var(--font-family-ui);
+  --font-title-spacing: -0.01em;
+  --font-body: clamp(1rem, 5vw, 1.125rem)/1.6 var(--font-family-ui);
+  --font-body-bold: 600 var(--font-body);
+  --font-body-spacing: 0;
+  --font-ui: 1rem/1.4 var(--font-family-ui);
+  --font-ui-bold: 600 var(--font-ui);
+  --font-small: 0.85rem/1.4 var(--font-family-ui);
+  --font-small-bold: 600 var(--font-small);
+
+  /* Space */
+  --row-gap-small: 1rem;
+  --row-gap-normal: 2.5rem;
+  --row-gap-medium: 5rem;
+
+  /* Other */
+  --border-radius: 6px;
+  --animation-duration: 0.2s;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Colors  */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-text: hsl(220, 20%, 90%);
+  --color-dim: hsl(220, 20%, 60%);
+  --color-line: hsl(220, 20%, 20%);
+  --color-line-light: hsl(220, 20%, 15%);
+  --color-highlight: hsl(220, 20%, 18%);
+  --color-background: hsl(220, 20%, 10%);
+  --color-input-text: var(--color-white);
+  --color-input-bg: var(--color-black);
+
+  /* Brand colors */
+  --color-primary: hsl(0, 50%, 45%);
+  --color-primary-highlight: hsl(0, 50%, 35%);
+
+  /* Code colors */
+  --color-code-4: hsl(220, 20%, 50%);
+  --color-code-5: hsl(0, 88%, 65%);
+  --color-code-a: hsl(290, 100%, 40%);
+  --color-code-b: hsl(290, 90%, 70%);
+  --color-code-c: #2913c0;
+  --color-code-d: hsl(155, 75%, 50%);
+  --color-code-e: #bf4040;
+  --color-code-f: hsl(17, 100%, 63%);
+  --color-code-g: #00f;
+  --color-code-h: hsl(220, 100%, 65%);
+  --color-code-i: #0e8759;
+  --color-code-j: #167;
+  --color-code-k: #256;
+  --color-code-l: #00c;
+  --color-code-m: #940;
+  --color-code-n: hsl(220, 20%, 80%);
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.5);
+}

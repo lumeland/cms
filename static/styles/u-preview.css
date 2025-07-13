@@ -1,0 +1,29 @@
+u-preview {
+  display: block;
+  border: none;
+
+  & img,
+  & video {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  & audio {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+  & iframe {
+    display: block;
+    aspect-ratio: 3 / 2;
+    width: 100%;
+    border: solid 1px #0002;
+  }
+  & p {
+    text-align: center;
+  }
+
+  &[popover] {
+    max-width: 300px;
+  }
+}

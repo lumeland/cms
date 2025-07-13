@@ -1,0 +1,58 @@
+.accordion > summary {
+  --marker-image: url('data:image/svg+xml;charset=UTF-8,<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="m8 9.586 5.293-5.293a1 1 0 1 1 1.414 1.414l-6 6a1 1 0 0 1-1.414 0l-6-6a1 1 0 0 1 1.414-1.414L8 9.586Z" /></svg>');
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 100px;
+  column-gap: 1rem;
+  align-items: center;
+  padding: 0.5rem;
+  min-height: 2.5rem;
+  text-decoration: none;
+  color: inherit;
+  background: inherit;
+  cursor: pointer;
+  list-style: none;
+  border-radius: inherit;
+  border-radius: var(--border-radius);
+  transition-property: color, background;
+  transition-duration: var(--animation-duration);
+
+  &:hover {
+    background: var(--color-line-light);
+  }
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::before {
+    content: "";
+    display: block;
+    mask: var(--marker-image) center center / 100% 100% no-repeat;
+    -webkit-mask: var(--marker-image) center center / 100% 100% no-repeat;
+    mask-size: 1rem 1rem;
+    width: 2rem;
+    height: 2rem;
+    background: currentColor;
+    transform: rotate(-90deg);
+    flex: 0 0 auto;
+  }
+}
+.accordion-title {
+  font: var(--font-ui-bold);
+  text-transform: capitalize;
+}
+.accordion-description {
+  font: var(--font-small);
+  color: var(--color-dim);
+  width: 100%;
+  padding-left: 3rem;
+}
+
+.accordion[open] > summary::before {
+  transform: rotate(0deg);
+}
+
+.accordion-body {
+  margin-top: 0.5rem;
+}

@@ -1,0 +1,16 @@
+u-cropper {
+  --bg-color: #ccc;
+  background-image: repeating-conic-gradient(
+    var(--bg-color) 0deg,
+    var(--bg-color) 25%,
+    transparent 0deg,
+    transparent 50%
+  );
+  background-size: 1rem 1rem;
+}
+
+[data-theme="dark"] {
+  u-cropper {
+    --bg-color: #ccc3;
+  }
+}

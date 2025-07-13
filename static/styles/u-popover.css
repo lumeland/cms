@@ -1,0 +1,23 @@
+u-popover {
+  position: relative;
+}
+.popover {
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0;
+  width: min(60vw, 600px);
+  max-height: calc(100vh - 1rem);
+  min-height: 48px;
+  background-color: var(--color-input-bg);
+  box-shadow: 0 0 1px #0003, 0 0 30px #0002;
+
+  & audio,
+  & iframe {
+    margin-top: calc(40px + 0.5rem);
+  }
+}
+.popover-close {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+}

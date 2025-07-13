@@ -1,0 +1,76 @@
+@import "../libs/modern-normalize.css";
+
+html {
+  scroll-padding-top: 2rem;
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+
+html,
+body {
+  font: var(--font-ui);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  overflow-wrap: break-word;
+}
+
+pre,
+code {
+  font: var(--font-code);
+  letter-spacing: 0;
+  font-variant-ligatures: none;
+}
+
+:not(pre) > code {
+  background: var(--color-line-light);
+  padding: 0 0.2rem;
+  border-radius: 4px;
+}
+
+:focus {
+  outline: 0;
+  z-index: 1;
+}
+:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px
+    color-mix(in hsl, var(--color-primary), transparent 75%);
+}
+::selection {
+  background: color-mix(in hsl, var(--color-primary), transparent 85%);
+}
+
+/* Dark Colors  */
+[data-theme="dark"] {
+  :focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 3px
+      color-mix(in hsl, var(--color-primary), transparent 75%);
+  }
+  ::selection {
+    background: color-mix(in hsl, var(--color-primary), transparent 85%);
+  }
+}
+strong, b {
+  font-weight: 600;
+}
+
+:where(a[href]) {
+  color: var(--color-link);
+
+  &:hover {
+    color: var(--color-link-hover);
+  }
+}
+
+hr {
+  color: var(--color-line);
+  margin: var(--row-gap-medium) 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+input {
+  accent-color: var(--color-primary);
+}

@@ -1,0 +1,80 @@
+.input,
+.input-autogrow::after {
+  display: block;
+  width: 100%;
+  max-width: var(--max-width, 100%);
+  padding: 0.5em 0.8em;
+  min-height: 40px;
+  border-radius: var(--border-radius);
+  border: solid 1px var(--color-line);
+  color: var(--color-input-text);
+  background: var(--color-input-bg);
+  font: var(--font-ui);
+
+  &:focus-visible {
+    border-color: var(--color-primary);
+  }
+
+  &:user-invalid {
+    border-color: var(--color-error);
+  }
+
+  &:read-only {
+    color: var(--color-dim);
+    background: none;
+  }
+
+  &.is-narrow {
+    max-width: 300px;
+  }
+  &.is-xnarrow {
+    max-width: 150px;
+  }
+  &.is-inline {
+    border: none;
+    display: inline-block;
+    vertical-align: middle;
+    flex: 1 1 200px;
+    align-self: center;
+    color: var(--color-dim);
+  }
+}
+.input[type="color"] {
+  width: 80px;
+  padding: 4px;
+}
+.input[type="datetime-local"] {
+  max-width: 16em;
+}
+.input[type="date"] {
+  max-width: 11em;
+}
+.input[type="time"] {
+  max-width: 5em;
+}
+.input[type="number"] {
+  max-width: 11em;
+}
+
+textarea.input {
+  resize: vertical;
+  height: auto;
+  min-height: 70px;
+}
+
+.input-autogrow {
+  display: grid;
+
+  &::after {
+    content: attr(data-replicated-value) " ";
+    white-space: pre-wrap;
+    visibility: hidden;
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  > textarea {
+    resize: none;
+    overflow: hidden;
+    grid-area: 1 / 1 / 2 / 2;
+  }
+}
