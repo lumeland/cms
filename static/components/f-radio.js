@@ -54,16 +54,16 @@ customElements.define(
       const form = this.closest("form");
       form[name].value = isNew ? value ?? schema.value : value;
 
-      if (schema.description) {
-        dom("div", {
-          class: "field-description",
-          html: schema.description,
-        }, this);
-      }
+      dom("div", {
+        class: "field-description",
+        html: schema.description,
+      }, this);
     }
 
     get currentValue() {
       return this.querySelector("input:checked")?.value;
     }
+
+    update() {}
   },
 );

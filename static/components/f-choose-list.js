@@ -23,12 +23,10 @@ customElements.define(
         html: schema.label,
       }, this);
 
-      if (schema.description) {
-        dom("div", {
-          class: "field-description",
-          html: schema.description,
-        }, this);
-      }
+      dom("div", {
+        class: "field-description",
+        html: schema.description,
+      }, this);
 
       const div = dom("div", { class: "fieldset" }, this);
       let index = 0;
@@ -132,5 +130,7 @@ customElements.define(
 
       return values;
     }
+
+    update() {}
   },
 );

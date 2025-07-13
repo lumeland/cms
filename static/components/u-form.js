@@ -63,6 +63,14 @@ customElements.define(
           preview.setAttribute("data-src", newPreview);
         }
       }
+
+      // Update the form with the new HTML
+      const newFields = html.querySelector("u-fields");
+      if (newFields) {
+        const { fields, value } = newFields.dataset;
+        const currentFields = this.querySelector("u-fields");
+        currentFields.update(fields, value);
+      }
     }
   },
 );

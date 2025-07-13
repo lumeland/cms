@@ -1,4 +1,4 @@
-import { oninvalid, toLocal, view } from "./utils.js";
+import { oninvalid, toLocal, updateField, view } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -24,12 +24,10 @@ export class Input extends Component {
       html: schema.label,
     }, this);
 
-    if (schema.description) {
-      dom("div", {
-        class: "field-description",
-        html: schema.description,
-      }, this);
-    }
+    dom("div", {
+      class: "field-description",
+      html: schema.description,
+    }, this);
 
     const input = dom("input", {
       type: "hidden",
@@ -52,6 +50,12 @@ export class Input extends Component {
 
   get currentValue() {
     return this.querySelector("input[type=hidden]")?.value;
+  }
+
+  update(schema, value) {
+    const input = this.querySelector("input");
+    input.value = value ? this.format(value) : null;
+    updateField(this, schema, input);
   }
 }
 

@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { oninvalid, url, view } from "./utils.js";
+import { oninvalid, updateField, url, view } from "./utils.js";
 import dom from "dom";
 
 customElements.define(
@@ -14,13 +14,11 @@ customElements.define(
       view(this);
       dom("label", { for: id, html: schema.label }, this);
 
-      if (schema.description) {
-        dom(
-          "div",
-          { class: "field-description", html: schema.description },
-          this,
-        );
-      }
+      dom(
+        "div",
+        { class: "field-description", html: schema.description },
+        this,
+      );
 
       const divValue = dom("div", { class: "field-value" }, this);
       const currValue = isNew ? value ?? schema.value : value;
@@ -75,6 +73,14 @@ customElements.define(
 
     get currentValue() {
       return this.querySelector("input[type='text']")?.value;
+    }
+
+    update(schema, value) {
+      const textInput = this.querySelector("input[type='text']");
+      const fileInput = this.querySelector("input[type='file']");
+      fileInput.value = null;
+      textInput.value = value ?? null;
+      updateField(this, schema, fileInput);
     }
   },
 );

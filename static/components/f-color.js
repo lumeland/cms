@@ -1,4 +1,4 @@
-import { oninvalid, view } from "./utils.js";
+import { oninvalid, updateField, view } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -17,12 +17,10 @@ customElements.define(
         html: schema.label,
       }, this);
 
-      if (schema.description) {
-        dom("div", {
-          class: "field-description",
-          html: schema.description,
-        }, this);
-      }
+      dom("div", {
+        class: "field-description",
+        html: schema.description,
+      }, this);
 
       const div = dom("div", { class: "ly-rowStack" }, this);
       const input = dom("input", {
@@ -39,12 +37,18 @@ customElements.define(
         value: input.value,
       }, div);
 
-      text.addEventListener("input", () => input.value = text.value);
       input.addEventListener("input", () => text.value = input.value);
+      text.addEventListener("input", () => input.value = text.value);
     }
 
     get currentValue() {
       return this.querySelector("input[type=color]")?.value;
+    }
+
+    update(schema, value) {
+      const inputs = this.querySelectorAll("input");
+      inputs.forEach((input) => input.value = value ?? null);
+      updateField(this, schema, inputs[0]);
     }
   },
 );

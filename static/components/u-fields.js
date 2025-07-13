@@ -3,18 +3,14 @@ import dom from "dom";
 
 customElements.define(
   "u-fields",
-  class Form extends Component {
+  class Fields extends Component {
     init() {
-      const fields = JSON.parse(this.dataset.fields ?? "null");
-      let value = JSON.parse(this.dataset.value ?? "null");
       const namePrefix = "changes";
       const isNew = this.dataset.new === "true";
-
-      if (
-        Array.isArray(value) && fields.length === 1 && fields[0].name === "[]"
-      ) {
-        value = { [fields[0].name]: value };
-      }
+      const { fields, value } = this.#parseData(
+        this.dataset.fields,
+        this.dataset.value,
+      );
 
       for (const field of fields) {
         dom(field.tag, {
@@ -24,6 +20,26 @@ customElements.define(
           value: value?.[field.name] ?? null,
         }, this);
       }
+    }
+
+    update(rawFields, rawValue) {
+      const { fields, value } = this.#parseData(rawFields, rawValue);
+      const items = Array.from(this.children);
+      for (const field of fields) {
+        items.shift()?.update(field, value?.[field.name]);
+      }
+    }
+
+    #parseData(fields = "null", value = "null") {
+      fields = JSON.parse(fields);
+      value = JSON.parse(value);
+
+      if (
+        Array.isArray(value) && fields.length === 1 && fields[0].name === "[]"
+      ) {
+        value = { [fields[0].name]: value };
+      }
+      return { fields, value };
     }
   },
 );

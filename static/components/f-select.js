@@ -1,4 +1,4 @@
-import { oninvalid, pushOptions, view } from "./utils.js";
+import { oninvalid, pushOptions, updateField, view } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -14,13 +14,11 @@ customElements.define(
       view(this);
       dom("label", { for: id, html: schema.label }, this);
 
-      if (schema.description) {
-        dom(
-          "div",
-          { class: "field-description", html: schema.description },
-          this,
-        );
-      }
+      dom(
+        "div",
+        { class: "field-description", html: schema.description },
+        this,
+      );
 
       const select = dom("select", {
         ...schema.attributes,
@@ -36,6 +34,12 @@ customElements.define(
 
     get currentValue() {
       return this.querySelector("select")?.value;
+    }
+
+    update(schema, value) {
+      const input = this.querySelector("select");
+      input.value = value ?? null;
+      updateField(this, schema, input);
     }
   },
 );

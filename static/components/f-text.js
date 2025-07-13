@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { oninvalid, pushOptions, view } from "./utils.js";
+import { oninvalid, pushOptions, updateField, view } from "./utils.js";
 import dom from "dom";
 
 export class Input extends Component {
@@ -16,13 +16,11 @@ export class Input extends Component {
     view(this);
     dom("label", { for: id, html: schema.label }, this);
 
-    if (schema.description) {
-      dom(
-        "div",
-        { class: "field-description", html: schema.description },
-        this,
-      );
-    }
+    dom(
+      "div",
+      { class: "field-description", html: schema.description },
+      this,
+    );
 
     const maxWidth = schema.attributes?.maxlength
       ? `${Math.max(3, schema.attributes.maxlength)}em`
@@ -59,6 +57,12 @@ export class Input extends Component {
 
   get currentValue() {
     return this.querySelector("input")?.value;
+  }
+
+  update(schema, value) {
+    const input = this.querySelector("input");
+    input.value = value ?? null;
+    updateField(this, schema, input);
   }
 }
 

@@ -13,13 +13,11 @@ customElements.define(
       view(this);
       dom("label", { for: `field_${namePrefix}.0`, html: schema.label }, this);
 
-      if (schema.description) {
-        dom(
-          "div",
-          { class: "field-description", html: schema.description },
-          this,
-        );
-      }
+      dom(
+        "div",
+        { class: "field-description", html: schema.description },
+        this,
+      );
 
       let datalist;
 
@@ -81,5 +79,7 @@ customElements.define(
         input.value
       );
     }
+
+    update() {}
   },
 );

@@ -1,4 +1,4 @@
-import { toLocal } from "./utils.js";
+import { toLocal, updateField } from "./utils.js";
 import { Input } from "./f-text.js";
 
 customElements.define(
@@ -30,6 +30,12 @@ customElements.define(
 
     get currentValue() {
       return this.querySelector("input[type='datetime-local']").value;
+    }
+
+    update(schema, value) {
+      const input = this.querySelector("input");
+      input.value = value ? format(new Date(value)) : format();
+      updateField(this, schema, input);
     }
   },
 );

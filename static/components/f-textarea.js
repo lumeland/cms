@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { oninvalid, view } from "./utils.js";
+import { oninvalid, updateField, view } from "./utils.js";
 import dom from "dom";
 
 customElements.define(
@@ -14,13 +14,11 @@ customElements.define(
       view(this);
       dom("label", { for: id, html: schema.label }, this);
 
-      if (schema.description) {
-        dom(
-          "div",
-          { class: "field-description", html: schema.description },
-          this,
-        );
-      }
+      dom(
+        "div",
+        { class: "field-description", html: schema.description },
+        this,
+      );
 
       const autogrow = dom("div", { class: "input-autogrow" }, this);
       dom("textarea", {
@@ -41,6 +39,12 @@ customElements.define(
 
     get currentValue() {
       return this.querySelector("textarea")?.value;
+    }
+
+    update(schema, value) {
+      const input = this.querySelector("textarea");
+      input.value = value ?? null;
+      updateField(this, schema, input);
     }
   },
 );

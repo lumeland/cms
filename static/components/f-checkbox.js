@@ -29,16 +29,16 @@ customElements.define(
         html: schema.label,
       }, div);
 
-      if (schema.description) {
-        dom("div", {
-          class: "field-description",
-          html: schema.description,
-        }, this);
-      }
+      dom("div", {
+        class: "field-description",
+        html: schema.description,
+      }, this);
     }
 
     get currentValue() {
       return this.querySelector("input[type=checkbox]")?.checked;
     }
+
+    update() {}
   },
 );

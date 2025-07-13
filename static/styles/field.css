@@ -49,6 +49,10 @@
   color: var(--color-dim);
   margin-top: -0.3em;
   margin-bottom: 0.3em;
+
+  &:empty {
+    display: none;
+  }
 }
 .field-value {
   margin: 0;

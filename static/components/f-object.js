@@ -43,12 +43,10 @@ customElements.define(
         html: schema.label,
       }, summary);
 
-      if (schema.description) {
-        dom("div", {
-          class: "accordion-description",
-          html: schema.description,
-        }, summary);
-      }
+      dom("div", {
+        class: "accordion-description",
+        html: schema.description,
+      }, summary);
 
       const div = dom("div", {
         class: "accordion-body fieldset is-separated",
@@ -71,5 +69,7 @@ customElements.define(
       }
       return values;
     }
+
+    update() {}
   },
 );

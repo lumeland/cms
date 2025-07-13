@@ -1,4 +1,4 @@
-import { asset, oninvalid, view } from "./utils.js";
+import { asset, oninvalid, updateField, view } from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/code.js";
 import dom from "dom";
@@ -14,16 +14,14 @@ customElements.define(
 
       view(this);
       dom("label", {
-        for: `field_${namePrefix}.0`,
+        for: id,
         html: schema.label,
       }, this);
 
-      if (schema.description) {
-        dom("div", {
-          class: "field-description",
-          html: schema.description,
-        }, this);
-      }
+      dom("div", {
+        class: "field-description",
+        html: schema.description,
+      }, this);
 
       const textarea = dom("textarea", {
         id,
@@ -45,6 +43,25 @@ customElements.define(
 
     get currentValue() {
       return this.editor.state.doc.toString();
+    }
+
+    update(schema, value) {
+      const input = this.querySelector("textarea");
+      if (input.value !== value) {
+        input.value = value ?? null;
+        const editor = this.editor;
+        editor.dispatch({
+          changes: {
+            from: 0,
+            to: editor.state.doc.length,
+            insert: value ?? "",
+          },
+          selection: {
+            anchor: 0,
+          },
+        });
+      }
+      updateField(this, schema, input);
     }
   },
 );

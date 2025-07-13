@@ -18,5 +18,10 @@ customElements.define(
     get currentValue() {
       return this.querySelector("input")?.value;
     }
+
+    update(_schema, value) {
+      const input = this.querySelector("input");
+      input.value = value ?? null;
+    }
   },
 );

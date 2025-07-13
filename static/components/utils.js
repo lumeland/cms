@@ -136,3 +136,9 @@ export function toLocal(date) {
   date.setMinutes(date.getMinutes() - offset);
   return date;
 }
+
+export function updateField(field, schema, input) {
+  input.labels[0].innerHTML = schema.label;
+  field.querySelector(".field-description").innerHTML = schema.description ??
+    "";
+}
