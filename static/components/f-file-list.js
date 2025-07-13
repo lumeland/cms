@@ -14,6 +14,7 @@ customElements.define(
       view(this);
       dom("label", {
         for: `field_${namePrefix}.0`,
+        class: "field-label",
         onclick: () => {
           open = !open;
           this.querySelectorAll("details.accordion").forEach((el) =>
@@ -31,11 +32,11 @@ customElements.define(
 
       const div = dom("div", { class: "fieldset" }, this);
       let index = 0;
+      const firstKey = schema.fields[0].name;
 
       function createOption(value, isNew = false) {
-        const firstKey = schema.fields[0].name;
         const label = (typeof value === "object" && value[firstKey]) ||
-          `${schema.label} Item ${index}`;
+          "New item";
         const attributes = schema.attributes || {};
         attributes.open ??= isNew;
 
@@ -111,6 +112,21 @@ customElements.define(
       return values;
     }
 
-    update() {}
+    update(schema, values) {
+      this.querySelector(".field-label").innerHTML = schema.label;
+      this.querySelector(".field-description").innerHTML = schema.description ??
+        "";
+      const items = Array.from(this.querySelector(".fieldset").children);
+      const firstKey = schema.fields[0].name;
+
+      for (const value of values) {
+        const label = value[firstKey];
+        items.shift()?.update({
+          type: "object",
+          label,
+          fields: schema.fields,
+        }, value);
+      }
+    }
   },
 );

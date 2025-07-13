@@ -80,6 +80,9 @@ customElements.define(
       );
     }
 
-    update() {}
+    update(schema) {
+      this.querySelector(".field-description").innerHTML = schema.description ??
+        "";
+    }
   },
 );

@@ -70,6 +70,16 @@ customElements.define(
       return values;
     }
 
-    update() {}
+    update(schema, value) {
+      this.querySelector(".accordion-title").innerHTML = schema.label ?? "";
+      this.querySelector(".accordion-description").innerHTML =
+        schema.description ??
+          "";
+      const items = Array.from(this.querySelector(".fieldset").children);
+
+      for (const field of schema.fields) {
+        items.shift()?.update(field, value?.[field.name]);
+      }
+    }
   },
 );

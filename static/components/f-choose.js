@@ -13,6 +13,7 @@ customElements.define(
       view(this);
       dom("label", {
         for: `field_${namePrefix}.${schema.name}`,
+        class: "field-label",
         onclick: () => {
           open = !open;
           this.querySelectorAll("details.accordion").forEach((el) =>
@@ -98,6 +99,25 @@ customElements.define(
         null;
     }
 
-    update() {}
+    update(schema, value) {
+      this.querySelector(".field-label").innerHTML = schema.label ?? "";
+      this.querySelector(".field-description").innerHTML = schema.description ??
+        "";
+      if (value) {
+        const field = schema.fields.find((f) => f.name === value.type);
+        const item = this.querySelector(".field-content > *");
+        item?.update({
+          ...field,
+          fields: [
+            {
+              name: "type",
+              tag: "f-hidden",
+              value: value.type,
+            },
+            ...field.fields,
+          ],
+        }, value);
+      }
+    }
   },
 );

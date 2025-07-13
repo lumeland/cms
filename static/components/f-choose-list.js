@@ -14,6 +14,7 @@ customElements.define(
       view(this);
       dom("label", {
         for: `field_${namePrefix}.0`,
+        class: "field-label",
         onclick: () => {
           open = !open;
           this.querySelectorAll("details.accordion").forEach((el) =>
@@ -41,6 +42,7 @@ customElements.define(
         ++index;
 
         const item = dom(field.tag, {
+          "data-type": value.type,
           ".schema": {
             ...field,
             attributes: { ...field.attributes, open },
@@ -131,6 +133,26 @@ customElements.define(
       return values;
     }
 
-    update() {}
+    update(schema, values) {
+      this.querySelector(".field-label").innerHTML = schema.label;
+      this.querySelector(".field-description").innerHTML = schema.description ??
+        "";
+      const items = Array.from(this.querySelector(".fieldset").children);
+
+      for (const value of values) {
+        const field = schema.fields.find((f) => f.name === value.type);
+        items.shift()?.update({
+          ...field,
+          fields: [
+            {
+              name: "type",
+              tag: "f-hidden",
+              value: value.type,
+            },
+            ...field.fields,
+          ],
+        }, value);
+      }
+    }
   },
 );

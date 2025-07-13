@@ -377,7 +377,7 @@ export default class Cms {
       const time = new Date().toISOString();
       const message = `${time} [${req.method}] ${req.url} - ${error.message}`;
       error.message = message;
-
+      console.error(message);
       log.error(error);
       log.handlers.forEach((handler) => {
         if (handler instanceof logger.FileHandler) {
