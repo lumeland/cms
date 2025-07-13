@@ -7,9 +7,17 @@ export class Input extends Component {
     return { type: "datetime-local" };
   }
 
+  get nowButtonLabel() {
+    return "Now";
+  }
+
   // Get the value in the format "YYYY-MM-DDTHH:MM"
   format(date) {
-    return toLocal(new Date(date)).toISOString().slice(0, 16);
+    if (!(date instanceof Date)) {
+      date = new Date(date);
+    }
+
+    return toLocal(date).toISOString().slice(0, 16);
   }
 
   init() {
@@ -35,7 +43,9 @@ export class Input extends Component {
       value: isNew ? value ?? schema.value : value,
     }, this);
 
-    dom("input", {
+    const div = dom("div", { class: "ly-rowStack" }, this);
+
+    const input2 = dom("input", {
       ...schema.attributes,
       id,
       value: input.value ? this.format(input.value) : undefined,
@@ -45,7 +55,17 @@ export class Input extends Component {
       oninput() {
         input.value = new Date(this.value).toISOString();
       },
-    }, this);
+    }, div);
+
+    dom("button", {
+      type: "button",
+      html: this.nowButtonLabel,
+      class: "button is-secondary",
+      onclick: () => {
+        input2.value = this.format(new Date());
+        input2.dispatchEvent(new Event("input", { bubbles: true }));
+      },
+    }, div);
   }
 
   get currentValue() {

@@ -8,9 +8,16 @@ customElements.define(
       return { type: "date" };
     }
 
+    get nowButtonLabel() {
+      return "Today";
+    }
+
     // Get the value in the format "YYYY-MM-DD"
     format(date) {
-      return toLocal(new Date(date)).toISOString().split("T")[0];
+      if (!(date instanceof Date)) {
+        date = new Date(date);
+      }
+      return toLocal(date).toISOString().split("T")[0];
     }
   },
 );
