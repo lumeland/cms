@@ -53,7 +53,7 @@ export class Input extends Component {
   }
 
   update(schema, value) {
-    const input = this.querySelector("input");
+    const input = this.querySelector(".input");
     input.value = value ? this.format(value) : null;
     updateField(this, schema, input);
   }
