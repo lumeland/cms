@@ -112,6 +112,11 @@ export default function (app: Hono) {
         name: "code",
         label: "Code",
         type: "code",
+        attributes: {
+          data: {
+            language: getLanguageCode(document.name),
+          }
+        }
       }];
       const data = { code };
 
@@ -324,4 +329,24 @@ function get(c: Context) {
     options,
     versioning,
   };
+}
+
+function getLanguageCode(path: string): string {
+  const ext = posix.extname(path).toLowerCase();
+  switch (ext) {
+    case ".md":
+      return "Markdown";
+    case ".yml":
+      return "YAML";
+    case ".json":
+      return "JSON";
+    case ".css":
+      return "CSS";
+    case ".js":
+      return "JavaScript";
+    case ".ts":
+      return "TypeScript";
+    default:
+      return "HTML";
+  }
 }

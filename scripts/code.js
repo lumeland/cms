@@ -1,6 +1,5 @@
 import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
-import { html } from "@codemirror/lang-html";
 import {
   dropCursor,
   highlightSpecialChars,
@@ -13,7 +12,7 @@ import {
   defaultHighlightStyle,
   syntaxHighlighting,
 } from "@codemirror/language";
-import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import {
   autocompletion,
   closeBrackets,
@@ -22,12 +21,16 @@ import {
 } from "@codemirror/autocomplete";
 import { languages } from "@codemirror/language-data";
 import theme from "./codemirror_theme.js";
+import { html } from "@codemirror/lang-html";
+import { yamlFrontmatter } from "@codemirror/lang-yaml";
 
 export function init(parent, textarea) {
   const themeConfig = new Compartment();
+  const languageConfig = new Compartment();
   const initTheme = document.documentElement.dataset.theme == "dark" ? theme.dark : theme.light;
   const state = EditorState.create({
     doc: textarea.value,
+    code: languages,
     extensions: [
       themeConfig.of(initTheme),
       highlightSpecialChars(),
@@ -44,10 +47,9 @@ export function init(parent, textarea) {
         ...defaultKeymap,
         ...historyKeymap,
         ...completionKeymap,
+        indentWithTab,
       ]),
-      html({
-        codeLanguages: languages,
-      }),
+      languageConfig.of(html()),
       EditorView.lineWrapping,
     ],
   });
@@ -68,5 +70,26 @@ export function init(parent, textarea) {
     });
   });
 
-  return { editor };
+  async function changeLanguage(extension) {
+    const lang = await getLanguage(extension);
+    if (lang) {
+      editor.dispatch({
+        effects: languageConfig.reconfigure(lang),
+      });
+    }
+  }
+
+  const allLanguages = languages.map((lang) => lang.name).sort();
+
+  return { editor, changeLanguage, allLanguages };
+}
+
+async function getLanguage(name) {
+  const lang = languages.find((lang) => lang.name === name);
+  if (lang) {
+    if (name === "Markdown") {
+      return yamlFrontmatter({ content: await lang.load() });
+    }
+    return await lang.load();
+  }
 }

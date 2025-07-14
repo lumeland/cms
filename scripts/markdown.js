@@ -13,7 +13,7 @@ import {
   defaultHighlightStyle,
   syntaxHighlighting,
 } from "@codemirror/language";
-import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import {
   autocompletion,
   closeBrackets,
@@ -74,6 +74,7 @@ export function init(parent, textarea, pasteLink = createLink) {
         ...closeBracketsKeymap,
         ...defaultKeymap,
         ...historyKeymap,
+        indentWithTab,
       ]),
       markdown({
         codeLanguages: languages,

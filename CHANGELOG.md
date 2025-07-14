@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.12.3] - Unreleased
 ### Added
 - Support to configure the path in `GitHub::create()`.
+- Allow to customize the language of `code` field with `attributes.data.language`.
+- Support for front matter in the `code` field.
 
 ### Changed
 - Shorter hash when using a development version [#62].
+- Indent using `tab` key in `markdown` and `code` fields.
 
 ### Fixed
 - Layout shift caused by some components.
