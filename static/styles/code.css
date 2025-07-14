@@ -17,10 +17,23 @@
     }
   }
 
+  /* !important to Override codemirror styles */
   .cm-content {
-    padding: 0.5rem !important; /* Override codemirror styles */
-    caret-color: var(--color-input-text)
-      !important; /* Override codemirror styles */
-    min-height: 70px !important; /* Override codemirror styles */
+    padding: 0.5rem !important;
+    caret-color: var(--color-input-text) !important;
+    min-height: 70px !important;
+  }
+
+  .cm-tooltip {
+    border: none;
+    background-color: var(--color-black) !important;
+    color: var(--color-white) !important;
+  }
+
+  .cm-tooltip-autocomplete {
+    & > ul > li[aria-selected] {
+      background-color: var(--color-primary) !important;
+      color: var(--color-white) !important;
+    }
   }
 }
