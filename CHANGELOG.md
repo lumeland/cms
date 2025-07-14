@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 - Shorter hash when using a development version [#62].
 
+### Fixed
+- Layout shift caused by some components.
+- Improved syntax colors of markdown and code fields.
+
 ## [0.12.2] - 2025-07-13
 ### Added
 - When the changes are saved, the edit form updates accordingly.

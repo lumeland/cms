@@ -1,8 +1,7 @@
 .app {
   margin: auto;
-  padding: 2rem 0;
   max-width: min(100% - 10vw, 900px);
-  min-height: calc(100vh - 4rem);
+  width: 100%;
 
   &.is-preview {
     margin: 0;
@@ -20,13 +19,17 @@
   }
 }
 .app-footer {
-  height: 4rem;
   text-align: center;
   font: var(--font-small);
   color: var(--color-dim);
   display: flex;
   align-items: center;
   justify-content: center;
+  column-gap: 1em;
+  flex-wrap: wrap;
+  max-width: min(100% - 10vw, 900px);
+  width: 100%;
+  margin: auto;
 
   & a {
     color: inherit;
@@ -37,6 +40,6 @@
     }
   }
   p {
-    margin: 0 1em 0 0;
+    margin: 0;
   }
 }

@@ -50,7 +50,8 @@
       <p>
         Powered by
         <a href="https://lume.land/cms/">
-          LumeCMS {{ version |> slice(0, 7) }}</a>
+          LumeCMS {{ version |> slice(0, 7) }}
+        </a>
       </p>
       <button
         class="buttonIcon"
@@ -73,9 +74,9 @@
         </u-icon>
       </button>
 
-      {{ if auth }}
+      {{ if !auth }}
         <button
-          class="button is-tertiary"
+          class="button is-link"
           id="logoutButton"
           type="button"
           aria-label="logout"
@@ -91,9 +92,19 @@
           if (localStorage.getItem(darkLightModeStorageKey) == "dark") {
             document.documentElement.removeAttribute("data-theme");
             localStorage.removeItem(darkLightModeStorageKey);
+            dispatchEvent(
+              new CustomEvent("themeChange", {
+                detail: { theme: "light" },
+              }),
+            );
           } else {
             document.documentElement.setAttribute("data-theme", "dark");
             localStorage.setItem(darkLightModeStorageKey, "dark");
+            dispatchEvent(
+              new CustomEvent("themeChange", {
+                detail: { theme: "dark" },
+              }),
+            );
           }
         }, false);
 

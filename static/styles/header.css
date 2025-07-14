@@ -74,6 +74,7 @@ dl.header-description {
 .header-filter {
   display: block;
   margin-top: 1rem;
+  min-height: 40px;
 }
 
 .subheader {

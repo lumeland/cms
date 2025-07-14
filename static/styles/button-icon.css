@@ -19,12 +19,9 @@
     pointer-events: none;
   }
 
-  & svg {
+  & u-icon {
     width: 24px;
     height: 24px;
-  }
-
-  & u-icon {
     color: currentColor;
   }
 
@@ -43,8 +40,4 @@
       background: var(--color-line);
     }
   }
-}
-
-a.buttonIcon {
-  color: var(--color-foreground);
 }

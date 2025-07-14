@@ -1,4 +1,4 @@
-import { EditorState } from "@codemirror/state";
+import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { html } from "@codemirror/lang-html";
 import {
@@ -21,11 +21,15 @@ import {
   completionKeymap,
 } from "@codemirror/autocomplete";
 import { languages } from "@codemirror/language-data";
+import theme from "./codemirror_theme.js";
 
 export function init(parent, textarea) {
+  const themeConfig = new Compartment();
+  const initTheme = document.documentElement.dataset.theme == "dark" ? theme.dark : theme.light;
   const state = EditorState.create({
     doc: textarea.value,
     extensions: [
+      themeConfig.of(initTheme),
       highlightSpecialChars(),
       history(),
       dropCursor(),
@@ -55,6 +59,13 @@ export function init(parent, textarea) {
 
   textarea.form.addEventListener("submit", () => {
     textarea.value = editor.state.doc.toString();
+  });
+
+  addEventListener("themeChange", (event) => {
+    const themeName = event.detail.theme === "dark" ? "dark" : "light";
+    editor.dispatch({
+      effects: themeConfig.reconfigure(theme[themeName]),
+    });
   });
 
   return { editor };

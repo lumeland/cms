@@ -25,7 +25,7 @@
     pointer-events: none;
   }
 
-  & svg {
+  & u-icon {
     width: 24px;
     height: 24px;
     opacity: 0.75;
@@ -74,10 +74,6 @@
     }
   }
   &.is-tertiary {
-    color: var(--color-dim);
-    font: inherit;
-    font-weight: 600;
-
     &:hover {
       background: var(--color-line-light);
     }
@@ -87,6 +83,7 @@
     }
   }
   &.is-link {
+    font: inherit;
     padding: 0;
     color: var(--color-link);
 

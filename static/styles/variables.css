@@ -19,22 +19,6 @@
   --color-primary: hsl(0, 50%, 50%);
   --color-primary-highlight: hsl(0, 50%, 40%);
 
-  /* Code colors */
-  --color-code-5: #bf4040;
-  --color-code-b: #708;
-  --color-code-c: #2913c0;
-  --color-code-d: #164;
-  --color-code-e: #bf4040;
-  --color-code-f: #e40;
-  --color-code-g: #00f;
-  --color-code-h: hsl(220, 100%, 65%);
-  --color-code-i: #0e8759;
-  --color-code-j: #167;
-  --color-code-k: #256;
-  --color-code-l: #00c;
-  --color-code-m: #940;
-  --color-code-n: hsl(220, 20%, 20%);
-
   /* Fonts */
   --font-family-code:
     Consolas, Menlo, Monaco, "Andale Mono WT", "Andale Mono", "Lucida Console",
@@ -78,27 +62,6 @@
   --color-input-text: var(--color-white);
   --color-input-bg: var(--color-black);
 
-  /* Brand colors */
-  --color-primary: hsl(0, 50%, 45%);
-  --color-primary-highlight: hsl(0, 50%, 35%);
-
-  /* Code colors */
-  --color-code-4: hsl(220, 20%, 50%);
-  --color-code-5: hsl(0, 88%, 65%);
-  --color-code-a: hsl(290, 100%, 40%);
-  --color-code-b: hsl(290, 90%, 70%);
-  --color-code-c: #2913c0;
-  --color-code-d: hsl(155, 75%, 50%);
-  --color-code-e: #bf4040;
-  --color-code-f: hsl(17, 100%, 63%);
-  --color-code-g: #00f;
-  --color-code-h: hsl(220, 100%, 65%);
-  --color-code-i: #0e8759;
-  --color-code-j: #167;
-  --color-code-k: #256;
-  --color-code-l: #00c;
-  --color-code-m: #940;
-  --color-code-n: hsl(220, 20%, 80%);
-
+  /* Other */
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.5);
 }

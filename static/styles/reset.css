@@ -5,6 +5,14 @@ html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
 }
+body {
+  display: grid;
+  min-height: 100vh;
+  align-content: space-between;
+  row-gap: 2rem;
+  padding: 2rem 0;
+  box-sizing: border-box;
+}
 
 html,
 body {

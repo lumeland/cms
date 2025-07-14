@@ -28,10 +28,10 @@
       text-decoration: underline;
     }
   }
-  svg {
+  u-icon {
     width: 1em;
     height: 1em;
-    fill: var(--color-dim);
+    color: var(--color-dim);
   }
 }
 

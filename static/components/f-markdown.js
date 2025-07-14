@@ -51,7 +51,7 @@ customElements.define(
         const name = schema.upload;
 
         dom("button", {
-          class: "button is-secondary",
+          class: "button is-tertiary",
           type: "button",
           onclick() {
             dom("u-modal", {
