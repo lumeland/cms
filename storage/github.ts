@@ -214,9 +214,9 @@ export default class GitHub implements Storage {
   commitMessage: (options: CommitMessageOptions) => string;
 
   static create(repository: string, auth: string) {
-    const [owner, repo] = repository.split("/");
+    const [owner, repo, ...path] = repository.split("/");
     const client = new Octokit({ auth });
-    return new GitHub({ client, owner, repo });
+    return new GitHub({ client, owner, repo, path: path.join("/") });
   }
 
   constructor(options: Options) {

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.12.3] - Unreleased
+### Added
+- Support to configure the path in `GitHub::create()`.
+
+### Changed
+- Shorter hash when using a development version [#62].
+
 ## [0.12.2] - 2025-07-13
 ### Added
 - When the changes are saved, the edit form updates accordingly.
@@ -677,7 +684,9 @@ First version
 [#52]: https://github.com/lumeland/cms/issues/52
 [#53]: https://github.com/lumeland/cms/issues/53
 [#59]: https://github.com/lumeland/cms/issues/59
+[#62]: https://github.com/lumeland/cms/issues/62
 
+[0.12.3]: https://github.com/lumeland/cms/compare/v0.12.2...HEAD
 [0.12.2]: https://github.com/lumeland/cms/compare/v0.12.1...v0.12.2
 [0.12.1]: https://github.com/lumeland/cms/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/lumeland/cms/compare/v0.11.5...v0.12.0
