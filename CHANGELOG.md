@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Support to configure the path in `GitHub::create()`.
 - Allow to customize the language of `code` field with `attributes.data.language`.
 - Support for front matter in the `code` field.
+- When the parsing of a collection's document fails, show the error and allow to edit the raw code.
 
 ### Changed
 - Shorter hash when using a development version [#62].

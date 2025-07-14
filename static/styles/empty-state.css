@@ -8,3 +8,32 @@
   letter-spacing: var(--font-title-spacing);
   background: var(--color-highlight);
 }
+
+.errorState {
+  border-radius: var(--border-radius);
+  margin: 1rem 0 0;
+  padding: 2rem;
+  text-align: center;
+  border: solid 1px var(--color-highlight);
+  min-height: min(80vh, 600px);
+  display: grid;
+  align-content: center;
+  row-gap: 2rem;
+  color: var(--color-dim);
+}
+.errorState-title {
+  font: var(--font-title);
+  letter-spacing: var(--font-title-spacing);
+  color: var(--color-error);
+  margin: 0;
+}
+.errorState-icon {
+  width: 64px;
+  height: 64px;
+}
+.errorState-message {
+  font: var(--font-ui);
+}
+.errorState-footer {
+  justify-content: center;
+}

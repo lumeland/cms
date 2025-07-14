@@ -4,7 +4,7 @@ import { posix } from "../../deps/std.ts";
 import { render } from "../../deps/vento.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
-import type { CMSContent } from "../../types.ts";
+import type { CMSContent, Data } from "../../types.ts";
 import createTree from "../templates/tree.ts";
 
 export default function (app: Hono) {
@@ -35,7 +35,20 @@ export default function (app: Hono) {
         return c.notFound();
       }
 
-      const data = await document.read();
+      let data: Data;
+
+      try {
+        data = await document.read();
+      } catch (error) {
+        return c.render(
+          await render("collection/edit-error.vto", {
+            error: (error as Error).message,
+            collection,
+            document,
+          }),
+        );
+      }
+
       const fields = await Promise.all(
         collection.fields.map((field) => prepareField(field, options, data)),
       );
@@ -115,8 +128,8 @@ export default function (app: Hono) {
         attributes: {
           data: {
             language: getLanguageCode(document.name),
-          }
-        }
+          },
+        },
       }];
       const data = { code };
 

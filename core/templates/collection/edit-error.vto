@@ -1,0 +1,42 @@
+{{
+  include "breadcrumb.vto" {
+    version,
+    links: [
+      [collection.label, ["collection", collection.name]],
+      "Editing file",
+    ],
+  }
+}}
+
+<section class="errorState">
+  <div>
+    <u-icon class="errorState-icon" name="warning"></u-icon>
+    <h1 class="errorState-title">Error loading the document</h1>
+    <p class="errorState-message">
+      {{ error }}
+    </p>
+  </div>
+
+  <footer class="errorState-footer ly-rowStack">
+    <a
+      class="button is-primary"
+      href='{{ ["collection", collection.name, "code", document.name] |> path }}'
+    >
+      <u-icon name="code"></u-icon>
+      Edit raw code
+    </a>
+
+    {{ if collection.permissions.delete }}
+      <u-confirm data-message="Are you sure?">
+        <button
+          class="button is-secondary"
+          type="submit"
+          formAction='{{ ["collection", collection.name, "delete", document.name] |> path }}'
+        >
+          <u-icon name="trash"></u-icon>
+          Delete
+        </button>
+      </u-confirm>
+    {{ /if }}
+  </footer>
+</section>
