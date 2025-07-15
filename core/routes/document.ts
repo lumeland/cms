@@ -3,7 +3,7 @@ import { changesToData, getViews, prepareField } from "../utils/data.ts";
 import { render } from "../../deps/vento.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
-import type { CMSContent } from "../../types.ts";
+import type { CMSContent, Data } from "../../types.ts";
 
 export default function (app: Hono) {
   app
@@ -14,7 +14,19 @@ export default function (app: Hono) {
         return c.notFound();
       }
 
-      const data = await document.read(true);
+      let data: Data;
+
+      try {
+        data = await document.read(true);
+      } catch (error) {
+        return c.render(
+          await render("document/edit-error.vto", {
+            error: (error as Error).message,
+            document,
+          }),
+        );
+      }
+
       const fields = await Promise.all(
         document.fields.map((field) => prepareField(field, options, data)),
       );

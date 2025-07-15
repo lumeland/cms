@@ -1,3 +1,4 @@
+import { TransformError } from "../storage/transformers/transform_error.js";
 import type { CMSContent, Data, Entry } from "../types.ts";
 
 export interface DocumentOptions {
@@ -57,7 +58,7 @@ export default class Document {
     try {
       return (await this.#entry.readData()) ?? {};
     } catch (err) {
-      if (create) {
+      if (!(err instanceof TransformError) && create) {
         return {};
       }
       throw err;

@@ -3,18 +3,24 @@ import {
   stringifyYaml,
   testFrontMatter,
 } from "../../deps/std.ts";
-
+import { TransformError } from "./transform_error.js";
 import type { Data, Transformer } from "../../types.ts";
 
 export const FrontMatter: Transformer<string> = {
   toData(content) {
-    if (testFrontMatter(content, ["yaml"])) {
-      const { attrs, body } = extractFrontMatter(content);
-      const data = {} as Data;
-      Object.assign(data, attrs);
-      data.content = body.trim();
+    try {
+      if (testFrontMatter(content, ["yaml"])) {
+        const { attrs, body } = extractFrontMatter(content);
+        const data = {} as Data;
+        Object.assign(data, attrs);
+        data.content = body.trim();
 
-      return data;
+        return data;
+      }
+    } catch (error) {
+      throw new TransformError(
+        `Malformed front matter code (YAML): ${(error as Error).message}`,
+      );
     }
 
     return { content };
