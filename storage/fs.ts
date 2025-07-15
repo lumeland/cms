@@ -40,8 +40,9 @@ export default class Fs implements Storage {
     this.path = options.path;
 
     // Avoid errors for paths like "src:articles/**/*{.jpg,.png,.gif,.svg}"
-    if (options.path.match(/\.\w+^/)) {
-      this.extension = posix.extname(options.path);
+    const ext = this.path.match(/\.\w+$/);
+    if (ext) {
+      this.extension = ext[0];
     }
   }
 
