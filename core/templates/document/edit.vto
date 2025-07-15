@@ -29,6 +29,17 @@
 
     <footer class="footer ly-rowStack is-responsive">
       <button class="button is-primary" type="submit">Save changes</button>
+
+      <u-dropdown>
+        <a
+          class="button is-secondary"
+          href='{{ ["document", "code", document.name] |> path }}'
+        >
+          <u-icon name="code"></u-icon>
+          Edit code
+        </a>
+      </u-dropdown>
+
       <u-pagepreview
         class="ly-rowStack"
         data-url="{{ document.url }}"

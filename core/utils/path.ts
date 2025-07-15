@@ -59,3 +59,23 @@ export function asset(basePath: string, url = "") {
     staticUrl,
   ).toString();
 }
+
+export function getLanguageCode(path: string): string {
+  const ext = posix.extname(path).toLowerCase();
+  switch (ext) {
+    case ".md":
+      return "Markdown";
+    case ".yml":
+      return "YAML";
+    case ".json":
+      return "JSON";
+    case ".css":
+      return "CSS";
+    case ".js":
+      return "JavaScript";
+    case ".ts":
+      return "TypeScript";
+    default:
+      return "HTML";
+  }
+}

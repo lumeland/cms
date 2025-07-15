@@ -1,0 +1,49 @@
+{{
+  include "breadcrumb.vto" {
+    version,
+    links: [
+      [document.label, ["document", document.name]],
+      "Editing code",
+    ],
+  }
+}}
+
+<u-form>
+  <header class="header">
+    <h1 class="header-title">Editing {{ document.label }}</h1>
+  </header>
+
+  <form
+    action='{{ ["document", "code", document.name] |> path }}'
+    method="post"
+    class="form"
+    id="form-edit"
+  >
+    <u-fields
+      data-fields="{{ fields |> JSON.stringify |> escape  }}"
+      data-value="{{ data |> JSON.stringify |> escape  }}"
+    ></u-fields>
+
+    <footer class="footer ly-rowStack is-responsive">
+      <button class="button is-primary" type="submit">
+        <u-icon name="check"></u-icon>
+        Save changes
+      </button>
+
+      <u-dropdown>
+        <a
+          class="button is-secondary"
+          href='{{ ["document", document.name] |> path }}'
+        >
+          <u-icon name="textbox"></u-icon>
+          Edit form
+        </a>
+      </u-dropdown>
+      <u-pagepreview
+        class="ly-rowStack"
+        data-url="{{ document.url }}"
+        data-src="{{ document.src }}"
+      ></u-pagepreview>
+    </footer>
+  </form>
+</u-form>
