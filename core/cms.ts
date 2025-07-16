@@ -77,6 +77,7 @@ interface CollectionOptions {
   documentLabel?: Labelizer;
   create?: boolean;
   delete?: boolean;
+  rename?: boolean | "auto";
 }
 
 interface UploadOptions {

@@ -4,6 +4,7 @@ import { posix } from "../../deps/std.ts";
 import { render } from "../../deps/vento.ts";
 
 import type { Context, Hono } from "../../deps/hono.ts";
+import type Collection from "../collection.ts";
 import type { CMSContent, Data } from "../../types.ts";
 import createTree from "../templates/tree.ts";
 
@@ -85,12 +86,26 @@ export default function (app: Hono) {
         throw new Error("Document not found");
       }
 
-      const body = await c.req.parseBody();
-      let newName = normalizeName(body._id as string);
+      const changes = await c.req.parseBody();
+      let newName = normalizeName(changes._id as string);
       let document = oldDocument;
 
       if (!newName) {
         throw new Error("Document name is required");
+      }
+
+      if (
+        oldDocument.name !== newName && collection.permissions.rename !== true
+      ) {
+        throw new Error("Permission denied");
+      }
+
+      const data = changesToData(changes);
+
+      // Recalculate the document name automatically
+      if (collection.permissions.rename === "auto") {
+        newName = getDocumentName(collection, data, changes) ||
+          newName;
       }
 
       if (oldDocument.name !== newName) {
@@ -98,7 +113,7 @@ export default function (app: Hono) {
         document = collection.get(newName);
       }
 
-      await document.write(changesToData(body), options);
+      await document.write(data, options);
 
       return c.redirect(
         getPath(
@@ -164,6 +179,9 @@ export default function (app: Hono) {
       }
 
       if (oldDocument.name !== newName) {
+        if (!collection.canRename()) {
+          throw new Error("Permission denied to rename document");
+        }
         newName = await collection.rename(oldDocument.name, newName);
         document = collection.get(newName);
       }
@@ -191,7 +209,7 @@ export default function (app: Hono) {
         throw new Error("Document not found");
       }
 
-      if (!collection.permissions.create) {
+      if (!collection.canCreate()) {
         throw new Error("Permission denied");
       }
 
@@ -234,7 +252,7 @@ export default function (app: Hono) {
       throw new Error("Document not found");
     }
 
-    if (!collection.permissions.delete) {
+    if (!collection.canDelete()) {
       throw new Error("Permission denied");
     }
 
@@ -275,46 +293,25 @@ export default function (app: Hono) {
     .post(async (c: Context) => {
       const { options, collection } = get(c);
 
-      if (!collection.permissions.create) {
+      if (!collection.canCreate()) {
         throw new Error("Permission denied");
       }
 
-      const body = await c.req.parseBody();
-      let name = normalizeName(body._id as string);
-
-      const changes = changesToData(body);
-      if (!name && collection.documentName) {
-        switch (typeof collection.documentName) {
-          case "string": {
-            name = collection.documentName.replaceAll(
-              /\{([^}\s]+)\}/g,
-              (_, key) => {
-                const value = body[`changes.${key}`];
-                if (typeof value === "string") {
-                  return value.replaceAll("/", "").trim();
-                }
-                return "";
-              },
-            ).trim();
-            break;
-          }
-          case "function": {
-            name = collection.documentName(changes);
-            break;
-          }
-        }
-      }
+      const changes = await c.req.parseBody();
+      const data = changesToData(changes);
+      let name = normalizeName(changes._id as string) ||
+        getDocumentName(collection, data, changes);
 
       if (!name) {
         throw new Error("Document name is required");
       }
 
-      if (body._prefix) {
-        name = posix.join(normalizeName(body._prefix as string) || "", name);
+      if (changes._prefix) {
+        name = posix.join(normalizeName(changes._prefix as string) || "", name);
       }
 
       const document = collection.create(name);
-      await document.write(changes, options, true);
+      await document.write(data, options, true);
 
       return c.redirect(
         getPath(
@@ -342,4 +339,27 @@ function get(c: Context) {
     options,
     versioning,
   };
+}
+
+function getDocumentName(
+  collection: Collection,
+  data: Data,
+  changes: Record<string, unknown>,
+) {
+  switch (typeof collection.documentName) {
+    case "string":
+      return collection.documentName.replaceAll(
+        /\{([^}\s]+)\}/g,
+        (_, key) => {
+          const value = changes[`changes.${key}`];
+          if (typeof value === "string") {
+            return value.replaceAll("/", "").trim();
+          }
+          return "";
+        },
+      ).trim();
+
+    case "function":
+      return collection.documentName(data);
+  }
 }

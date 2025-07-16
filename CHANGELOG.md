@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.12.5] - 2025-07-16
+### Added
+- New option `collection.rename = "auto"` to run `collection.documentName` after editing the document.
+
+### Changed
+- Show only the input to (re)name a document if `rename` option is `true`.
+
+### Fixed
+- On creating documents inside folders, the path is the folder label, instead of the folder name.
+- Visibility of filename input on creating new documents.
+- Prevent to rename a document if the `rename` permission is `false`.
+
 ## [0.12.4] - 2025-07-15
 ### Fixed
 - Error creating new documents in a collection.
@@ -699,6 +711,7 @@ First version
 [#59]: https://github.com/lumeland/cms/issues/59
 [#62]: https://github.com/lumeland/cms/issues/62
 
+[0.12.5]: https://github.com/lumeland/cms/compare/v0.12.4...v0.12.5
 [0.12.4]: https://github.com/lumeland/cms/compare/v0.12.3...v0.12.4
 [0.12.3]: https://github.com/lumeland/cms/compare/v0.12.2...v0.12.3
 [0.12.2]: https://github.com/lumeland/cms/compare/v0.12.1...v0.12.2

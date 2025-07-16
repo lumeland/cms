@@ -11,7 +11,7 @@
 <header class="header">
   <h1 class="header-title">
     Creating new file
-    {{ if !collection.documentName || !collection.permissions.rename }}
+    {{ if collection.canRename() }}
       <label class="header-file">
         {{ folder }}
         <input

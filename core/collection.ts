@@ -14,13 +14,13 @@ export interface CollectionOptions {
   documentLabel?: Labelizer;
   create?: boolean;
   delete?: boolean;
-  rename?: boolean;
+  rename?: boolean | "auto";
 }
 
 interface Permissions {
   create: boolean;
   delete: boolean;
-  rename?: boolean;
+  rename?: boolean | "auto";
 }
 
 export default class Collection {
@@ -50,6 +50,12 @@ export default class Collection {
       delete: options.delete ?? true,
       rename: options.rename ?? true,
     };
+
+    if (this.permissions.rename !== true && !this.documentName) {
+      throw new Error(
+        "The documentName option is required if the rename permission is false or auto.",
+      );
+    }
   }
 
   get fields() {
@@ -97,5 +103,18 @@ export default class Collection {
     const normalizedName = this.#storage.name(newName);
     await this.#storage.rename(name, normalizedName);
     return normalizedName;
+  }
+
+  /** User permission to create a new document */
+  canCreate(): boolean {
+    return this.permissions.create;
+  }
+  /** User permission to delete a document */
+  canDelete(): boolean {
+    return this.permissions.delete;
+  }
+  /** User permission to rename a document in the edition */
+  canRename(): boolean {
+    return this.permissions.rename === true;
   }
 }

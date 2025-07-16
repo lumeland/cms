@@ -26,7 +26,7 @@
       Edit raw code
     </a>
 
-    {{ if collection.permissions.delete }}
+    {{ if collection.canDelete() }}
       <u-confirm data-message="Are you sure?">
         <button
           class="button is-secondary"

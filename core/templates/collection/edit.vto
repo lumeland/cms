@@ -15,15 +15,12 @@
       <input
         class="input is-inline"
         id="_id"
-        type="{{ collection.permissions.rename ? 'text' : 'hidden' }}"
+        type="{{ collection.canRename() ? 'text' : 'hidden' }}"
         name="_id"
         value="{{document.name}}"
         placeholder="Rename the file…"
         form="form-edit"
         aria-label="File name"
-        {{
-          if !collection.permissions.create || !collection.permissions.delete
-        }}readonly{{ /if }}
         required
       >
     </h1>
@@ -66,7 +63,7 @@
           Edit code
         </a>
 
-        {{ if collection.permissions.create }}
+        {{ if collection.canCreate() }}
           <u-confirm data-message="Duplicate this file?">
             <button
               class="button is-secondary"
@@ -79,7 +76,7 @@
           </u-confirm>
         {{ /if }}
 
-        {{ if collection.permissions.delete }}
+        {{ if collection.canDelete() }}
           <u-confirm data-message="Are you sure?">
             <button
               class="button is-secondary"

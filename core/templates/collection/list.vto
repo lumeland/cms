@@ -70,7 +70,7 @@
 {{ /if }}
 
 <footer class="ly-rowStack footer is-responsive">
-  {{ if collection.permissions.create }}
+  {{ if collection.canCreate() }}
     <a
       href='{{ ["collection", collection.name, "create"] |> path }}'
       class="button is-primary"
