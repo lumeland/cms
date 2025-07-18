@@ -3,6 +3,9 @@ import type { Transformer } from "../../types.ts";
 
 export const Json: Transformer<string> = {
   toData(content) {
+    if (!content) {
+      return {}; // fix/malformed-json - if content is empty don't parse it
+    }
     try {
       return JSON.parse(content) as Record<string, unknown>;
     } catch (error) {
