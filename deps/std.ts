@@ -2,7 +2,7 @@ export { escape } from "jsr:@std/html@1.0.4/entities";
 export {
   parse as parseYaml,
   stringify as stringifyYaml,
-} from "jsr:@std/yaml@1.0.8";
+} from "jsr:@std/yaml@1.0.9";
 export { test as testFrontMatter } from "jsr:@std/front-matter@1.0.9";
 export { extract as extractFrontMatter } from "jsr:@std/front-matter@1.0.9/yaml";
 export { emptyDir, ensureDir, expandGlob } from "jsr:@std/fs@1.0.19";

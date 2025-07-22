@@ -1,4 +1,4 @@
-import vento from "https://deno.land/x/vento@v1.15.0/mod.ts";
+import vento from "https://deno.land/x/vento@v1.15.1/mod.ts";
 import { posix as path } from "./std.ts";
 import { normalizePath } from "../core/utils/path.ts";
 import { formatSupported } from "./imagick.ts";
@@ -7,7 +7,7 @@ import { formatBytes } from "./std.ts";
 import type {
   Loader,
   TemplateSource,
-} from "https://deno.land/x/vento@v1.15.0/src/loader.ts";
+} from "https://deno.land/x/vento@v1.15.1/src/loader.ts";
 
 class ModuleLoader implements Loader {
   #root: string;
