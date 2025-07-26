@@ -1,82 +1,84 @@
-{{ function folder(collection, tree) }}
-  {{
-    set content = Array.from([
-      ...tree.folders?.entries() || [],
-      ...tree.files?.entries() || [],
-    ]).sort(([a], [b]) => a.localeCompare(b))
-  }}
+{{ layout "layout.vto" }}
+  {{ function folder(collection, tree) }}
+    {{
+      set content = Array.from([
+        ...tree.folders?.entries() || [],
+        ...tree.files?.entries() || [],
+      ]).sort(([a], [b]) => a.localeCompare(b))
+    }}
 
-  {{ for entry of content }}
-    {{> const [name, child] = entry }}
-    {{ if typeof child === "string" }}
-      <li>
-        <a
-          href='{{ ["collection", collection.name, "edit", child] |> path }}'
-          class="list-item"
-          title="{{ name }}"
-        >
-          <u-icon name="file"></u-icon>
-          <div class="list-item-header">
-            <strong>{{ name }}</strong>
-          </div>
-        </a>
-      </li>
-    {{ else }}
-      <li>
-        <details open class="accordion">
-          <summary>{{ name }}</summary>
-          <ul>
-            {{ folder(collection, child) }}
-          </ul>
-        </details>
-        <div class="list-actions">
+    {{ for entry of content }}
+      {{> const [name, child] = entry }}
+      {{ if typeof child === "string" }}
+        <li>
           <a
-            href='{{ ["collection", collection.name, "create"] |> path }}?folder={{child.path}}'
-            title="Create new item inside this folder"
-            class="buttonIcon"
+            href='{{ ["collection", collection.name, "edit", child] |> path }}'
+            class="list-item"
+            title="{{ name }}"
           >
-            <u-icon name="plus-circle"></u-icon>
+            <u-icon name="file"></u-icon>
+            <div class="list-item-header">
+              <strong>{{ name }}</strong>
+            </div>
           </a>
-        </div>
-      </li>
+        </li>
+      {{ else }}
+        <li>
+          <details open class="accordion">
+            <summary>{{ name }}</summary>
+            <ul>
+              {{ folder(collection, child) }}
+            </ul>
+          </details>
+          <div class="list-actions">
+            <a
+              href='{{ ["collection", collection.name, "create"] |> path }}?folder={{child.path}}'
+              title="Create new item inside this folder"
+              class="buttonIcon"
+            >
+              <u-icon name="plus-circle"></u-icon>
+            </a>
+          </div>
+        </li>
+      {{ /if }}
+    {{ /for }}
+  {{ /function }}
+
+  {{ include "breadcrumb.vto" { version, links: [collection.label] } }}
+
+  {{ set content = folder(collection, tree).trim() }}
+
+  <header class="header is-sticky">
+    <h1 class="header-title">{{ collection.label }}</h1>
+    {{ if collection.description }}
+      <p class="header-description">{{ collection.description }}</p>
     {{ /if }}
-  {{ /for }}
-{{ /function }}
 
-{{ include "breadcrumb.vto" { version, links: [collection.label] } }}
-
-{{ set content = folder(collection, tree).trim() }}
-
-<header class="header is-sticky">
-  <h1 class="header-title">{{ collection.label }}</h1>
-  {{ if collection.description }}
-    <p class="header-description">{{ collection.description }}</p>
-  {{ /if }}
+    {{ if content }}
+      <u-filter
+        class="header-filter"
+        data-placeholder="Filter {{ collection.label }}"
+        data-selector="#list > li"
+      >
+      </u-filter>
+    {{ /if }}
+  </header>
 
   {{ if content }}
-    <u-filter
-      class="header-filter"
-      data-placeholder="Filter {{ collection.label }}"
-      data-selector="#list > li"
-    >
-    </u-filter>
+    <ul id="list" class="list">{{ content }}</ul>
+  {{ else }}
+    <p class="emptyState">This is empty</p>
   {{ /if }}
-</header>
 
-{{ if content }}
-  <ul id="list" class="list">{{ content }}</ul>
-{{ else }}
-  <p class="emptyState">This is empty</p>
-{{ /if }}
-
-<footer class="ly-rowStack footer is-responsive">
-  {{ if collection.canCreate() }}
-    <a
-      href='{{ ["collection", collection.name, "create"] |> path }}'
-      class="button is-primary"
-    >
-      <u-icon name="plus-circle"></u-icon>
-      Create new
-    </a>
-  {{ /if }}
-</footer>
+  <footer class="ly-rowStack footer is-responsive">
+    {{ if collection.canCreate() }}
+      <a
+        href='{{ ["collection", collection.name, "create"] |> path }}'
+        class="button is-primary"
+      >
+        <u-icon name="plus-circle"></u-icon>
+        Create new
+      </a>
+    {{ /if }}
+  </footer>
+{{ /layout }}

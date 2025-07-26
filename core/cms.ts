@@ -1,30 +1,24 @@
-import { Hono, HTTPException, serveStatic } from "../deps/hono.ts";
 import { render } from "../deps/vento.ts";
 import { getCurrentVersion } from "./utils/env.ts";
-import documentRoutes from "./routes/document.ts";
-import collectionRoutes from "./routes/collection.ts";
-import versionsRoutes from "./routes/versions.ts";
+import documentRoute from "./routes/document.ts";
+import collectionRoute from "./routes/collection.ts";
+import versionsRoute from "./routes/versions.ts";
 import indexRoute from "./routes/index.ts";
-import filesRoutes from "./routes/files.ts";
-import authRoutes from "./routes/auth.ts";
+import filesRoute from "./routes/files.ts";
+import statusRoute from "./routes/status.ts";
+import authMiddleware from "./middlewares/auth.ts";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
 import Upload from "./upload.ts";
 import FsStorage from "../storage/fs.ts";
 import { asset, getPath, normalizePath } from "./utils/path.ts";
-import {
-  basename,
-  dirname,
-  fromFileUrl,
-  logger,
-  relative,
-} from "../deps/std.ts";
+import { Router } from "../deps/galo.ts";
+import { basename, dirname, fromFileUrl } from "../deps/std.ts";
 import { filter } from "../deps/vento.ts";
 import { labelify } from "./utils/string.ts";
 import { dispatch } from "./utils/event.ts";
 import { Git, Options as GitOptions } from "./git.ts";
 
-import type { Context, Next } from "../deps/hono.ts";
 import type {
   CMSContent,
   Data,
@@ -53,6 +47,11 @@ export interface AuthOptions {
 
 export interface LogOptions {
   filename: string;
+}
+
+export interface RouterData {
+  cms: CMSContent;
+  render: (file: string, data?: Record<string, unknown>) => Promise<string>;
 }
 
 interface DocumentOptions {
@@ -329,93 +328,48 @@ export default class Cms {
   }
 
   /** Start the CMS */
-  init(): Hono {
+  init(): Router<{ cms: CMSContent }> {
     const content = this.initContent();
 
     for (const type of this.fields.values()) {
       this.#jsImports.add(type.jsImport);
     }
 
-    const app = new Hono({
-      strict: false,
-    });
-
-    if (this.options.log?.filename) {
-      logger.setup({
-        handlers: {
-          file: new logger.FileHandler("ERROR", {
-            filename: this.options.log.filename,
-          }),
-        },
-        loggers: {
-          lumecms: {
-            level: "ERROR",
-            handlers: ["file"],
-          },
-        },
-      });
-    } else {
-      logger.setup({
-        handlers: {
-          console: new logger.ConsoleHandler("ERROR"),
-        },
-        loggers: {
-          lumecms: {
-            level: "ERROR",
-            handlers: ["console"],
-          },
-        },
-      });
-    }
-
-    app.onError((error: Error, c: Context) => {
-      if (error instanceof HTTPException && error.res) {
-        return error.res;
-      }
-
-      const log = logger.getLogger("lumecms");
-      const { req } = c;
-      const time = new Date().toISOString();
-      const message = `${time} [${req.method}] ${req.url} - ${error.message}`;
-      error.message = message;
-      console.error(message);
-      log.error(error);
-      log.handlers.forEach((handler) => {
-        if (handler instanceof logger.FileHandler) {
-          handler.flush();
-        }
-      });
-
-      return c.text("There was an error. See logs for more info.", 500);
-    });
-
-    authRoutes(app, this.options.auth, [
-      // Skip auth for socket because Safari doesn't keep the auth header
-      getPath(this.options.basePath, "_socket"),
-      getPath(this.options.basePath, "logout"),
-    ]);
-
     filter("path", (args: string[]) => getPath(this.options.basePath, ...args));
     filter("asset", (url: string) => asset(this.options.basePath, url));
 
-    app.use("*", (c: Context, next: Next) => {
-      c.setRenderer(async (content) => {
-        return c.html(render("layout.vto", {
+    const app = new Router<RouterData>({
+      cms: content,
+      render: (file: string, data?: Record<string, unknown>) =>
+        render(file, {
+          ...data,
           jsImports: Array.from(this.#jsImports),
           extraHead: this.options.extraHead,
-          content: await content,
-          version: getCurrentVersion(),
-        }));
-      });
-      c.set("options", { ...content });
-      return next();
+          cmsVersion: getCurrentVersion(),
+        }),
     });
 
-    documentRoutes(app);
-    collectionRoutes(app);
-    filesRoutes(app);
-    indexRoute(app);
-    versionsRoutes(app);
+    app.path("/", indexRoute);
+    app.path("/status", statusRoute);
+    app.path("/document/*", documentRoute);
+    app.path("/collection/*", collectionRoute);
+    app.path("/uploads/*", filesRoute);
+    app.path("/versions/*", versionsRoute);
+
+    if (this.options.auth) {
+      app.use(authMiddleware(this.options.auth, [
+        getPath(this.options.basePath, "_status"),
+        getPath(this.options.basePath, "logout"),
+      ]));
+      app.get("/logout", () => {
+        return new Response("Logged out", {
+          status: 401,
+          headers: {
+            "WWW-Authenticate": 'Basic realm="Secure Area"',
+          },
+        });
+      });
+    }
 
     const sockets = new Set<WebSocket>();
 
@@ -425,50 +379,33 @@ export default class Cms {
       });
     });
 
-    app.get("_socket", (c: Context) => {
-      // Is a websocket
-      if (c.req.header("upgrade") === "websocket") {
-        const { socket, response } = Deno.upgradeWebSocket(c.req.raw);
+    app.webSocket("_socket", ({ socket }) => {
+      socket.onopen = () => sockets.add(socket);
+      socket.onclose = () => sockets.delete(socket);
+      socket.onerror = (e) => console.log("Socket errored", e);
+      socket.onmessage = async (e) => {
+        const { type, src } = JSON.parse(e.data);
 
-        socket.onopen = () => sockets.add(socket);
-        socket.onclose = () => sockets.delete(socket);
-        socket.onerror = (e) => console.log("Socket errored", e);
-        socket.onmessage = async (e) => {
-          const { type, src } = JSON.parse(e.data);
+        if (type === "url") {
+          const result = dispatch<{ src: string; url?: unknown }>(
+            "previewUrl",
+            { src },
+          );
 
-          if (type === "url") {
-            const result = dispatch<{ src: string; url?: unknown }>(
-              "previewUrl",
-              { src },
-            );
-
-            if (result) {
-              const url = await result.url;
-              if (url) {
-                socket.send(JSON.stringify({ type: "reload", src, url }));
-              }
+          if (result) {
+            const url = await result.url;
+            if (url) {
+              socket.send(JSON.stringify({ type: "reload", src, url }));
             }
           }
-        };
-
-        return response;
-      }
-
-      return c.notFound();
+        }
+      };
     });
 
-    let root = import.meta.resolve("../static/");
+    const root = import.meta.resolve("../static/");
 
     if (root.startsWith("file:")) {
-      root = relative(Deno.cwd(), fromFileUrl(root));
-      app.get(
-        "*",
-        serveStatic({
-          root,
-          rewriteRequestPath: (path: string) =>
-            normalizePath(path.substring(this.options.basePath.length)),
-        }),
-      );
+      app.staticFiles("/*", fromFileUrl(root));
     }
 
     return app;

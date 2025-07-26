@@ -1,55 +1,57 @@
-{{
-  include "breadcrumb.vto" {
-    version,
-    links: [
-      [upload.label, ["uploads", upload.name]],
-      "Upload file",
-    ],
-  }
-}}
+{{ layout "layout.vto" }}
+  {{
+    include "breadcrumb.vto" {
+      version,
+      links: [
+        [upload.label, ["uploads", upload.name]],
+        "Upload file",
+      ],
+    }
+  }}
 
-<header class="header">
-  <h1 class="header-title">
-    Upload files
-    <label class="header-file">
-      <input
-        class="input is-inline"
-        id="_id"
-        type="text"
-        name="_id"
-        placeholder="subfolder…"
-        form="form-create"
-        aria-label="File name"
-        value="{{ folder }}"
-      >
-    </label>
-  </h1>
-</header>
-
-<form
-  method="post"
-  class="form"
-  enctype="multipart/form-data"
-  id="form-create"
-  action='{{ ["uploads", upload.name, "create"] |> path }}'
->
-  <div class="field">
-    <u-upload>
-      <input
-        aria-label="Upload file"
-        id="new-file"
-        type="file"
-        name="file[]"
-        required
-        class="inputFile"
-        multiple
-      >
-    </u-upload>
-  </div>
-  <footer class="footer ly-rowStack">
-    <button class="button is-primary" type="submit">
-      <u-icon name="upload-simple"></u-icon>
+  <header class="header">
+    <h1 class="header-title">
       Upload files
-    </button>
-  </footer>
-</form>
+      <label class="header-file">
+        <input
+          class="input is-inline"
+          id="_id"
+          type="text"
+          name="_id"
+          placeholder="subfolder…"
+          form="form-create"
+          aria-label="File name"
+          value="{{ folder }}"
+        >
+      </label>
+    </h1>
+  </header>
+
+  <form
+    method="post"
+    class="form"
+    enctype="multipart/form-data"
+    id="form-create"
+    action='{{ ["uploads", upload.name, "create"] |> path }}'
+  >
+    <div class="field">
+      <u-upload>
+        <input
+          aria-label="Upload file"
+          id="new-file"
+          type="file"
+          name="files"
+          required
+          class="inputFile"
+          multiple
+        >
+      </u-upload>
+    </div>
+    <footer class="footer ly-rowStack">
+      <button class="button is-primary" type="submit">
+        <u-icon name="upload-simple"></u-icon>
+        Upload files
+      </button>
+    </footer>
+  </form>
+{{ /layout }}

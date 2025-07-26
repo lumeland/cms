@@ -1,34 +1,49 @@
 import { getLanguageCode, getPath } from "../utils/path.ts";
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
-import { render } from "../../deps/vento.ts";
+import { Router } from "../../deps/galo.ts";
 
-import type { Context, Hono } from "../../deps/hono.ts";
-import type { CMSContent, Data } from "../../types.ts";
+import type { RouterData } from "../cms.ts";
+import type { Data } from "../../types.ts";
 
-export default function (app: Hono) {
-  app
-    .get("/document/:document", async (c: Context) => {
-      const { options, document, versioning } = get(c);
+/**
+ * Route for managing document editing in the CMS.
+ * Handles viewing, editing, and saving documents.
+ *
+ * /document/:name - View and edit a document
+ * /document/:name/code - Edit the document's code
+ */
 
-      if (!document) {
-        return c.notFound();
-      }
+const app = new Router<RouterData>();
 
+app.path("/:name/*", ({ request, cms, name, render, next }) => {
+  const { documents, basePath } = cms;
+
+  // Check if the document exists
+  const document = documents[name];
+
+  if (!document) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  function redirect(...paths: string[]) {
+    const path = getPath(basePath, "document", ...paths);
+    return Response.redirect(new URL(path, request.url));
+  }
+
+  return next()
+    .get("/", async () => {
       let data: Data;
-
       try {
         data = await document.read(true);
       } catch (error) {
-        return c.render(
-          await render("document/edit-error.vto", {
-            error: (error as Error).message,
-            document,
-          }),
-        );
+        return render("document/edit-error.vto", {
+          error: (error as Error).message,
+          document,
+        });
       }
 
       const fields = await Promise.all(
-        document.fields.map((field) => prepareField(field, options, data)),
+        document.fields.map((field) => prepareField(field, cms, data)),
       );
 
       const documentViews = document.views;
@@ -39,33 +54,24 @@ export default function (app: Hono) {
       const views = new Set();
       document.fields.forEach((field) => getViews(field, views));
 
-      return c.render(
-        render("document/edit.vto", {
-          document,
-          fields,
-          views: Array.from(views),
-          initViews,
-          data,
-          version: versioning?.current(),
-        }),
-      );
+      return render("document/edit.vto", {
+        document,
+        fields,
+        views: Array.from(views),
+        initViews,
+        data,
+      });
     })
-    .post(async (c: Context) => {
-      const { options, document } = get(c);
-      const body = await c.req.parseBody();
-
-      await document.write(changesToData(body), options, true);
-      return c.redirect(getPath(options.basePath, "document", document.name));
-    });
-
-  app
-    .get("/document/code/:document", async (c: Context) => {
-      const { document, versioning } = get(c);
-
-      if (!document) {
-        return c.notFound();
-      }
-
+    .post("/", async ({ request }) => {
+      const body = await request.formData();
+      await document.write(
+        changesToData(Object.fromEntries(body)),
+        cms,
+        true,
+      );
+      return redirect(document.name);
+    })
+    .get("/code", async () => {
       const code = await document.readText();
       const fields = [{
         tag: "f-code",
@@ -80,42 +86,18 @@ export default function (app: Hono) {
       }];
       const data = { code };
 
-      try {
-        return c.render(
-          await render("document/code.vto", {
-            fields,
-            data,
-            document,
-            version: versioning?.current(),
-          }),
-        );
-      } catch (e) {
-        console.error(e);
-        return c.notFound();
-      }
+      return render("document/code.vto", {
+        fields,
+        data,
+        document,
+      });
     })
-    .post(async (c: Context) => {
-      const { options, document } = get(c);
-
-      const body = await c.req.parseBody();
-      const code = body["changes.code"] as string | undefined;
+    .post("/code", async ({ request }) => {
+      const body = await request.formData();
+      const code = body.get("changes.code") as string | undefined;
       document.writeText(code ?? "");
-
-      return c.redirect(
-        getPath(options.basePath, "document", "code", document.name),
-      );
+      return redirect("code", document.name);
     });
-}
+});
 
-function get(c: Context) {
-  const options = c.get("options") as CMSContent;
-  const { documents, versioning } = options;
-  const documentName = c.req.param("document");
-  const document = documents[documentName];
-
-  return {
-    document,
-    options,
-    versioning,
-  };
-}
+export default app;

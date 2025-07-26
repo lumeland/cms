@@ -1,345 +1,271 @@
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
 import { getLanguageCode, getPath, normalizeName } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
-import { render } from "../../deps/vento.ts";
-
-import type { Context, Hono } from "../../deps/hono.ts";
-import type Collection from "../collection.ts";
-import type { CMSContent, Data } from "../../types.ts";
+import { Router } from "../../deps/galo.ts";
 import createTree from "../templates/tree.ts";
 
-export default function (app: Hono) {
-  app.get("/collection/:collection", async (c: Context) => {
-    const { collection, versioning } = get(c);
+import type Collection from "../collection.ts";
+import type { RouterData } from "../cms.ts";
+import type { Data } from "../../types.ts";
 
-    if (!collection) {
-      return c.notFound();
-    }
+/**
+ * Route for managing collections in the CMS.
+ * Handles viewing, editing, creating, and deleting documents within a collection.
+ *
+ * /collection/:name - View the collection
+ * /collection/create - Create a new document in the collection
+ * /collection/:name/edit/:file - Edit a document in the collection
+ * /collection/:name/code/:file - Edit the code of a document in the collection
+ * /collection/:name/duplicate/:file - Duplicate a document in the collection
+ * /collection/:name/delete/:file - Delete a document in the collection
+ */
 
-    const documents = await Array.fromAsync(collection);
-    const tree = createTree(documents);
+const app = new Router<RouterData>();
 
-    return c.render(
-      await render("collection/list.vto", {
+app.path("/:name/*", ({ request, cms, render, name, next }) => {
+  const { collections, basePath } = cms;
+  const collection = collections[name];
+
+  if (!collection) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  function redirect(...paths: string[]) {
+    const path = getPath(basePath, "collection", ...paths);
+    return Response.redirect(new URL(path, request.url));
+  }
+
+  return next()
+    .get("/", async () => {
+      const documents = await Array.fromAsync(collection);
+
+      return render("collection/list.vto", {
         collection,
-        tree,
-        version: versioning?.current(),
-      }),
-    );
-  });
+        tree: createTree(documents),
+      });
+    })
+    .path("/create", ({ next }) => {
+      if (!collection.canCreate()) {
+        throw new Error("Permission denied");
+      }
 
-  app
-    .get("/collection/:collection/edit/:document", async (c: Context) => {
-      const { options, collection, versioning, document } = get(c);
+      return next()
+        .get(async ({ request }) => {
+          const { searchParams } = new URL(request.url);
+          const defaults = Object.fromEntries(searchParams);
+
+          const fields = await Promise.all(
+            collection.fields.map((field) => prepareField(field, cms)),
+          );
+
+          const collectionViews = collection.views;
+          const initViews = typeof collectionViews === "function"
+            ? collectionViews() || []
+            : collectionViews || [];
+
+          const views = new Set();
+          collection.fields.forEach((field) => getViews(field, views));
+
+          return render("collection/create.vto", {
+            defaults,
+            collection,
+            fields,
+            initViews,
+            views: Array.from(views),
+            folder: normalizeName(searchParams.get("folder")),
+          });
+        })
+        .post(async ({ request }) => {
+          const body = await request.formData();
+          const changes = Object.fromEntries(body);
+          const data = changesToData(changes);
+          let name = normalizeName(body.get("_id") as string) ||
+            getDocumentName(collection, data, changes);
+
+          if (!name) {
+            throw new Error("Document name is required");
+          }
+
+          if (changes._prefix) {
+            name = posix.join(
+              normalizeName(changes._prefix as string) || "",
+              name,
+            );
+          }
+
+          const document = collection.create(name);
+          await document.write(data, cms, true);
+
+          return redirect(collection.name, "edit", document.name);
+        });
+    })
+    .path("/:action/:file", ({ action, file, next }) => {
+      const name = normalizeName(file);
+
+      if (!name) {
+        return new Response("Not found", { status: 400 });
+      }
+
+      const document = collection?.get(name);
 
       if (!document) {
-        return c.notFound();
+        return new Response("Not found", { status: 404 });
       }
 
-      let data: Data;
+      return next()
+        .get(action === "edit", async () => {
+          let data: Data;
 
-      try {
-        data = await document.read();
-      } catch (error) {
-        return c.render(
-          await render("collection/edit-error.vto", {
-            error: (error as Error).message,
-            collection,
-            document,
-          }),
-        );
-      }
+          try {
+            data = await document.read();
+          } catch (error) {
+            return render("collection/edit-error.vto", {
+              error: (error as Error).message,
+              collection,
+              document,
+            });
+          }
 
-      const fields = await Promise.all(
-        collection.fields.map((field) => prepareField(field, options, data)),
-      );
+          const fields = await Promise.all(
+            collection.fields.map((field) => prepareField(field, cms, data)),
+          );
 
-      const collectionViews = collection.views;
-      const initViews = typeof collectionViews === "function"
-        ? collectionViews() || []
-        : collectionViews || [];
+          const collectionViews = collection.views;
+          const initViews = typeof collectionViews === "function"
+            ? collectionViews() || []
+            : collectionViews || [];
 
-      const views = new Set();
-      collection.fields.forEach((field) => getViews(field, views));
+          const views = new Set();
+          collection.fields.forEach((field) => getViews(field, views));
 
-      try {
-        return c.render(
-          await render("collection/edit.vto", {
+          return render("collection/edit.vto", {
             collection,
             fields,
             data,
             initViews,
             views: Array.from(views),
             document,
-            version: versioning?.current(),
-          }),
-        );
-      } catch (e) {
-        console.error(e);
-        return c.notFound();
-      }
-    })
-    .post(async (c: Context) => {
-      const { options, collection, document: oldDocument } = get(c);
+          });
+        })
+        .post(action === "edit", async () => {
+          const body = await request.formData();
+          let newName = normalizeName(body.get("_id") as string);
+          let finalDocument = document;
 
-      if (!oldDocument) {
-        throw new Error("Document not found");
-      }
+          if (!newName) {
+            throw new Error("Document name is required");
+          }
 
-      const changes = await c.req.parseBody();
-      let newName = normalizeName(changes._id as string);
-      let document = oldDocument;
+          if (
+            document.name !== newName &&
+            collection.permissions.rename !== true
+          ) {
+            throw new Error("Permission denied");
+          }
+          const changes = Object.fromEntries(body);
+          const data = changesToData(changes);
 
-      if (!newName) {
-        throw new Error("Document name is required");
-      }
+          // Recalculate the document name automatically
+          if (collection.permissions.rename === "auto") {
+            newName = getDocumentName(collection, data, changes) ||
+              newName;
+          }
 
-      if (
-        oldDocument.name !== newName && collection.permissions.rename !== true
-      ) {
-        throw new Error("Permission denied");
-      }
+          if (document.name !== newName) {
+            newName = await collection.rename(document.name, newName);
+            finalDocument = collection.get(newName);
+          }
 
-      const data = changesToData(changes);
+          await finalDocument.write(data, cms);
+          return redirect(collection.name, "edit", finalDocument.name);
+        })
+        .get(action === "code", async () => {
+          const code = await document.readText();
+          const fields = [{
+            tag: "f-code",
+            name: "code",
+            label: "Code",
+            type: "code",
+            attributes: {
+              data: {
+                language: getLanguageCode(document.name),
+              },
+            },
+          }];
+          const data = { code };
 
-      // Recalculate the document name automatically
-      if (collection.permissions.rename === "auto") {
-        newName = getDocumentName(collection, data, changes) ||
-          newName;
-      }
-
-      if (oldDocument.name !== newName) {
-        newName = await collection.rename(oldDocument.name, newName);
-        document = collection.get(newName);
-      }
-
-      await document.write(data, options);
-
-      return c.redirect(
-        getPath(
-          options.basePath,
-          "collection",
-          collection.name,
-          "edit",
-          document.name,
-        ),
-      );
-    });
-
-  app
-    .get("/collection/:collection/code/:document", async (c: Context) => {
-      const { collection, versioning, document } = get(c);
-
-      if (!document) {
-        return c.notFound();
-      }
-
-      const code = await document.readText();
-      const fields = [{
-        tag: "f-code",
-        name: "code",
-        label: "Code",
-        type: "code",
-        attributes: {
-          data: {
-            language: getLanguageCode(document.name),
-          },
-        },
-      }];
-      const data = { code };
-
-      try {
-        return c.render(
-          await render("collection/code.vto", {
+          return render("collection/code.vto", {
             collection,
             fields,
             data,
             document,
-            version: versioning?.current(),
-          }),
-        );
-      } catch (e) {
-        console.error(e);
-        return c.notFound();
-      }
-    })
-    .post(async (c: Context) => {
-      const { options, collection, document: oldDocument } = get(c);
+          });
+        })
+        .post(action === "code", async ({ request }) => {
+          const body = await request.formData();
+          let newName = normalizeName(body.get("_id") as string);
+          let finalDocument = document;
 
-      if (!oldDocument) {
-        throw new Error("Document not found");
-      }
+          if (!newName) {
+            throw new Error("Document name is required");
+          }
 
-      const body = await c.req.parseBody();
-      let newName = normalizeName(body._id as string);
-      let document = oldDocument;
+          if (document.name !== newName) {
+            if (!collection.canRename()) {
+              throw new Error("Permission denied to rename document");
+            }
+            newName = await collection.rename(document.name, newName);
+            finalDocument = collection.get(newName);
+          }
 
-      if (!newName) {
-        throw new Error("Document name is required");
-      }
+          const code = body.get("changes.code") as string | undefined;
+          finalDocument.writeText(code ?? "");
 
-      if (oldDocument.name !== newName) {
-        if (!collection.canRename()) {
-          throw new Error("Permission denied to rename document");
-        }
-        newName = await collection.rename(oldDocument.name, newName);
-        document = collection.get(newName);
-      }
+          return redirect(collection.name, "code", finalDocument.name);
+        })
+        .post(action === "duplicate", async ({ request }) => {
+          if (!collection.canCreate()) {
+            throw new Error("Permission denied");
+          }
 
-      const code = body["changes.code"] as string | undefined;
-      document.writeText(code ?? "");
+          const body = await request.formData();
+          let name = normalizeName(body.get("_id") as string);
 
-      return c.redirect(
-        getPath(
-          options.basePath,
-          "collection",
-          collection.name,
-          "code",
-          document.name,
-        ),
-      );
+          if (!name) {
+            throw new Error("Document name is required");
+          }
+
+          if (document.name === name) {
+            const ext = name.split(".").pop();
+            if (ext) {
+              name = name.substring(0, name.length - ext.length - 1) +
+                "-copy." +
+                ext;
+            } else {
+              name = `${name}-copy`;
+            }
+          }
+
+          const duplicate = collection.create(name);
+          await duplicate.write(
+            changesToData(Object.fromEntries(body)),
+            cms,
+            true,
+          );
+          return redirect(collection.name, "edit", duplicate.name);
+        })
+        .post(action === "delete", async () => {
+          if (!collection.canDelete()) {
+            throw new Error("Permission denied");
+          }
+
+          await collection.delete(document.name);
+          return redirect(collection.name);
+        });
     });
+});
 
-  app.post(
-    "/collection/:collection/duplicate/:document",
-    async (c: Context) => {
-      const { options, collection, document } = get(c);
-
-      if (!document) {
-        throw new Error("Document not found");
-      }
-
-      if (!collection.canCreate()) {
-        throw new Error("Permission denied");
-      }
-
-      const body = await c.req.parseBody();
-      let name = normalizeName(body._id as string);
-
-      if (!name) {
-        throw new Error("Document name is required");
-      }
-
-      if (document.name === name) {
-        const ext = name.split(".").pop();
-        if (ext) {
-          name = name.substring(0, name.length - ext.length - 1) + "-copy." +
-            ext;
-        } else {
-          name = `${name}-copy`;
-        }
-      }
-
-      const duplicate = collection.create(name);
-      await duplicate.write(changesToData(body), options, true);
-
-      return c.redirect(
-        getPath(
-          options.basePath,
-          "collection",
-          collection.name,
-          "edit",
-          duplicate.name,
-        ),
-      );
-    },
-  );
-
-  app.post("/collection/:collection/delete/:document", async (c: Context) => {
-    const { options, collection, document } = get(c);
-
-    if (!document) {
-      throw new Error("Document not found");
-    }
-
-    if (!collection.canDelete()) {
-      throw new Error("Permission denied");
-    }
-
-    await collection.delete(document.name);
-
-    return c.redirect(getPath(options.basePath, "collection", collection.name));
-  });
-
-  app
-    .get("/collection/:collection/create", async (c: Context) => {
-      const { options, collection, versioning } = get(c);
-      const defaults = c.req.query();
-
-      const fields = await Promise.all(
-        collection.fields.map((field) => prepareField(field, options)),
-      );
-
-      const collectionViews = collection.views;
-      const initViews = typeof collectionViews === "function"
-        ? collectionViews() || []
-        : collectionViews || [];
-
-      const views = new Set();
-      collection.fields.forEach((field) => getViews(field, views));
-
-      return c.render(
-        render("collection/create.vto", {
-          defaults,
-          collection,
-          fields,
-          initViews,
-          views: Array.from(views),
-          version: versioning?.current(),
-          folder: normalizeName(c.req.query("folder")),
-        }),
-      );
-    })
-    .post(async (c: Context) => {
-      const { options, collection } = get(c);
-
-      if (!collection.canCreate()) {
-        throw new Error("Permission denied");
-      }
-
-      const changes = await c.req.parseBody();
-      const data = changesToData(changes);
-      let name = normalizeName(changes._id as string) ||
-        getDocumentName(collection, data, changes);
-
-      if (!name) {
-        throw new Error("Document name is required");
-      }
-
-      if (changes._prefix) {
-        name = posix.join(normalizeName(changes._prefix as string) || "", name);
-      }
-
-      const document = collection.create(name);
-      await document.write(data, options, true);
-
-      return c.redirect(
-        getPath(
-          options.basePath,
-          "collection",
-          collection.name,
-          "edit",
-          document.name,
-        ),
-      );
-    });
-}
-
-function get(c: Context) {
-  const options = c.get("options") as CMSContent;
-  const { collections, versioning } = options;
-  const collectionName = c.req.param("collection");
-  const collection = collections[collectionName];
-  const documentName = normalizeName(c.req.param("document"));
-  const document = documentName ? collection?.get(documentName) : undefined;
-
-  return {
-    collection,
-    document,
-    options,
-    versioning,
-  };
-}
+export default app;
 
 function getDocumentName(
   collection: Collection,

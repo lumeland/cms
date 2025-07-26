@@ -1,6 +1,5 @@
 import { slugify } from "../utils/string.ts";
 import { getPath, normalizeName } from "../utils/path.ts";
-import { render } from "../../deps/vento.ts";
 import {
   formatSupported,
   MagickGeometry,
@@ -8,285 +7,189 @@ import {
 } from "../../deps/imagick.ts";
 import { posix } from "../../deps/std.ts";
 import createTree from "../templates/tree.ts";
+import { Router } from "../../deps/galo.ts";
 
-import type { Context, Hono } from "../../deps/hono.ts";
-import type { CMSContent } from "../../types.ts";
+import type { RouterData } from "../cms.ts";
 
-export default function (app: Hono) {
-  app.get("/uploads/:upload", async (c: Context) => {
-    const { uploads, uploadId, versioning } = get(c);
+/**
+ * Route for managing file uploads in the CMS.
+ * Handles listing, creating, viewing, editing, cropping, and deleting files.
+ *
+ * /uploads/:name/ - List files in the upload
+ * /uploads/:name/create - Create a new file or folder
+ * /uploads/:name/raw/:file - Get raw file content
+ * /uploads/:name/file/:file - View file details and edit
+ * /uploads/:name/crop/:file - Crop an image file
+ * /uploads/:name/delete/:file - Delete a file
+ */
 
-    const upload = uploads[uploadId];
+const app = new Router<RouterData>();
 
-    if (!upload) {
-      return c.notFound();
-    }
+app.path("/:name/*", ({ request, cms, name, render, next }) => {
+  const { uploads, basePath } = cms;
 
-    const files = await Array.fromAsync(upload);
-    const tree = createTree(files);
+  // Check if the upload exists
+  const upload = uploads[name];
 
-    return c.render(
-      render("uploads/list.vto", {
+  if (!upload) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  function redirect(...paths: string[]) {
+    const path = getPath(basePath, "uploads", ...paths);
+    return Response.redirect(new URL(path, request.url));
+  }
+
+  return next()
+    // List all files in the upload
+    .get("/", async () => {
+      const files = await Array.fromAsync(upload);
+
+      return render("uploads/list.vto", {
         upload,
-        tree,
-        version: versioning?.current(),
-      }),
-    );
-  });
+        tree: createTree(files),
+      });
+    })
+    // Show the form to upload a new file
+    .get("/create", ({ request }) => {
+      const { searchParams } = new URL(request.url);
 
-  app.get("/uploads/:upload/create", (c: Context) => {
-    const { uploads, uploadId, versioning } = get(c);
-
-    const upload = uploads[uploadId];
-
-    if (!upload) {
-      return c.notFound();
-    }
-
-    return c.render(
-      render("uploads/create.vto", {
+      return render("uploads/create.vto", {
         upload,
-        version: versioning?.current(),
-        folder: normalizeName(c.req.query("folder")),
-      }),
-    );
-  }).post("/uploads/:upload/create", async (c: Context) => {
-    const { options, uploads, uploadId } = get(c);
-    const upload = uploads[uploadId];
+        folder: normalizeName(searchParams.get("folder")),
+      });
+    })
+    // Handle file upload
+    .post("/create", async ({ request }) => {
+      const body = await request.formData();
+      const files = body.getAll("files") as File[];
 
-    if (!upload) {
-      return c.notFound();
-    }
+      for (const file of files) {
+        let fileId = file.name as string | undefined;
+        const folder = body.get("_id") as string | undefined;
 
-    const body = await c.req.parseBody();
-    const files = body["file[]"] as unknown as File[];
-    const filesArray = Array.isArray(files) ? files : [files];
-    for (const file of filesArray) {
-      let fileId = file.name as string | undefined;
-      const folder = body._id as string | undefined;
+        if (folder) {
+          fileId = folder.endsWith("/") ? posix.join(folder, fileId!) : folder;
+        }
 
-      if (folder) {
-        fileId = folder.endsWith("/") ? posix.join(folder, fileId!) : folder;
-      }
+        fileId = normalizeName(slugify(fileId!));
 
-      fileId = normalizeName(slugify(fileId!));
+        if (!fileId) {
+          throw new Error(`Invalid file name: ${file.name}`);
+        }
 
-      if (!fileId) {
-        throw new Error(`Invalid file name: ${file.name}`);
-      }
-
-      const entry = upload.get(fileId);
-      await entry.writeFile(file);
-
-      if (filesArray.length === 1) {
-        return c.redirect(
-          getPath(options.basePath, "uploads", upload.name, "file", fileId),
-        );
-      }
-    }
-
-    return c.redirect(getPath(options.basePath, "uploads", upload.name));
-  });
-
-  app.get("/uploads/:upload/raw/:file", async (c: Context) => {
-    const { uploads, uploadId, fileId } = get(c);
-
-    const upload = uploads[uploadId];
-    if (!upload) {
-      return c.notFound();
-    }
-
-    const name = normalizeName(fileId);
-
-    if (!name) {
-      return c.notFound();
-    }
-
-    const entry = upload.get(name);
-    const file = await entry.readFile();
-    c.header("Content-Type", file.type);
-    c.header("Content-Length", file.size.toString());
-    return c.body(await file.arrayBuffer());
-  });
-
-  app.get("/uploads/:upload/file/:file", async (c: Context) => {
-    const { uploadId, fileId, uploads, versioning } = get(c);
-    const upload = uploads[uploadId];
-
-    if (!upload) {
-      return c.notFound();
-    }
-
-    const { storage } = upload;
-
-    try {
-      const name = normalizeName(fileId);
-      if (!name) {
-        throw new Error("Invalid file name");
-      }
-      const entry = storage.get(name);
-      const file = await entry.readFile();
-
-      return c.render(
-        render("uploads/view.vto", {
-          type: file.type,
-          size: file.size,
-          upload,
-          file: name,
-          version: versioning?.current(),
-        }),
-      );
-    } catch {
-      return c.notFound();
-    }
-  })
-    .post(async (c: Context) => {
-      const { options, uploadId, uploads } = get(c);
-      const upload = uploads[uploadId];
-
-      if (!upload) {
-        return c.notFound();
-      }
-
-      const body = await c.req.parseBody();
-      const prevId = c.req.param("file");
-      const name = normalizeName(body._id as string);
-
-      if (!name) {
-        throw new Error("Invalid file name");
-      }
-
-      if (prevId !== name) {
-        await upload.rename(prevId, name);
-      }
-
-      const file = body.file as File | undefined;
-      const entry = upload.get(name);
-
-      if (file) {
+        const entry = upload.get(fileId);
         await entry.writeFile(file);
-      }
 
-      // Convert format
-      const format = formatSupported(name);
-      if (prevId !== name && formatSupported(prevId) && format) {
-        const extFrom = prevId.split(".").pop();
-        const extTo = name.split(".").pop();
-
-        if (extTo && extFrom !== extTo) {
-          const img = await transform(await entry.readFile(), (img) => {
-            img.format = format;
-          });
-          await entry.writeFile(new File([img], name));
+        if (files.length === 1) {
+          return redirect(upload.name, "file", fileId);
         }
       }
 
-      return c.redirect(
-        getPath(options.basePath, "uploads", upload.name, "file", name),
-      );
-    });
+      return redirect(upload.name);
+    })
+    // Handle file actions
+    .path("/:action/:file", ({ action, file, next }) => {
+      const name = normalizeName(file);
 
-  app.get("/uploads/:upload/crop/:file", (c: Context) => {
-    const { options, uploadId, fileId, uploads, versioning } = get(c);
-    const upload = uploads[uploadId];
-
-    if (!upload) {
-      return c.notFound();
-    }
-
-    if (!formatSupported(fileId)) {
-      return c.redirect(
-        getPath(options.basePath, "uploads", upload.name, "file", fileId),
-      );
-    }
-
-    try {
-      const name = normalizeName(fileId);
       if (!name) {
-        throw new Error("Invalid file name");
+        return new Response("Not found", { status: 400 });
       }
 
-      return c.render(
-        render("uploads/crop.vto", {
-          upload,
-          file: name,
-          version: versioning?.current(),
-        }),
-      );
-    } catch {
-      return c.notFound();
-    }
-  }).post(async (c: Context) => {
-    const { uploadId, uploads, fileId, options } = get(c);
-    const upload = uploads[uploadId];
+      return next()
+        // Get raw file content
+        .get(action === "raw", () => upload.get(name).readFile())
+        // View file details and edit
+        .get(action === "file", async () => {
+          const entry = upload.get(name);
+          const fileData = await entry.readFile();
 
-    if (!upload) {
-      return c.notFound();
-    }
+          return render("uploads/view.vto", {
+            type: fileData.type,
+            size: fileData.size,
+            upload,
+            file: name,
+          });
+        })
+        // Update file details or upload a new file
+        .post(action === "file", async ({ request }) => {
+          const body = await request.formData();
+          const newName = normalizeName(body.get("_id") as string);
 
-    const name = normalizeName(fileId);
+          if (!newName) {
+            throw new Error("Invalid file name");
+          }
 
-    if (!name) {
-      return c.notFound();
-    }
+          if (name !== newName) {
+            await upload.rename(name, newName);
+          }
 
-    const body = await c.req.parseBody();
-    const x = parseInt(body.x as string);
-    const y = parseInt(body.y as string);
-    const width = parseInt(body.width as string);
-    const height = parseInt(body.height as string);
+          const file = body.get("file") as File | undefined;
+          const entry = upload.get(newName);
 
-    if (
-      Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(width) ||
-      Number.isNaN(height)
-    ) {
-      throw new Error("Invalid crop values");
-    }
-    const entry = upload.get(name);
-    const img = await transform(
-      await entry.readFile(),
-      (img) => {
-        img.crop(new MagickGeometry(x, y, width, height));
-      },
-    );
+          if (file) {
+            await entry.writeFile(file);
+          }
 
-    const file = new File([img], name);
-    await entry.writeFile(file);
-    return c.redirect(
-      getPath(options.basePath, "uploads", upload.name, "file", name),
-    );
-  });
+          // Convert format
+          const format = formatSupported(newName);
+          if (name !== newName && formatSupported(name) && format) {
+            const extFrom = name.split(".").pop();
+            const extTo = newName.split(".").pop();
 
-  app.post("/uploads/:upload/delete/:file", async (c: Context) => {
-    const { options, fileId, uploadId, uploads } = get(c);
-    const upload = uploads[uploadId];
+            if (extTo && extFrom !== extTo) {
+              const img = await transform(await entry.readFile(), (img) => {
+                img.format = format;
+              });
+              await entry.writeFile(new File([img], newName));
+            }
+          }
 
-    if (!upload) {
-      return c.notFound();
-    }
+          return redirect(upload.name, "file", newName);
+        })
+        // Show the crop form for images
+        .get(action === "crop", () => {
+          if (!formatSupported(name)) {
+            return redirect(upload.name, "file", name);
+          }
 
-    const name = normalizeName(fileId);
+          return render("uploads/crop.vto", {
+            upload,
+            file: name,
+          });
+        })
+        // Handle image cropping
+        .post(action === "crop", async ({ request }) => {
+          const body = await request.formData();
+          const x = parseInt(body.get("x") as string);
+          const y = parseInt(body.get("y") as string);
+          const width = parseInt(body.get("width") as string);
+          const height = parseInt(body.get("height") as string);
 
-    if (!name) {
-      throw new Error("Invalid file name");
-    }
+          if (
+            Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(width) ||
+            Number.isNaN(height)
+          ) {
+            throw new Error("Invalid crop values");
+          }
+          const entry = upload.get(name);
+          const img = await transform(
+            await entry.readFile(),
+            (img) => {
+              img.crop(new MagickGeometry(x, y, width, height));
+            },
+          );
 
-    await upload.delete(name);
-    return c.redirect(getPath(options.basePath, "uploads", upload.name));
-  });
-}
+          const file = new File([img], name);
+          await entry.writeFile(file);
+          return redirect(upload.name, "file", name);
+        })
+        // Delete a file
+        .post(action === "delete", async () => {
+          await upload.delete(name);
+          return redirect(upload.name);
+        });
+    });
+});
 
-function get(c: Context) {
-  const options = c.get("options") as CMSContent;
-  const { uploads, versioning } = options;
-  const uploadId = c.req.param("upload");
-  const fileId = c.req.param("file");
-
-  return {
-    fileId,
-    options,
-    uploadId,
-    uploads,
-    versioning,
-  };
-}
+export default app;

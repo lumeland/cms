@@ -1,52 +1,55 @@
-import type { Context, Hono } from "../../deps/hono.ts";
-import type { CMSContent } from "../../types.ts";
 import { dispatch } from "../utils/event.ts";
 import { getPath } from "../utils/path.ts";
+import { Router } from "../../deps/galo.ts";
 
-interface Data {
-  name: string;
-  action: string;
-}
+import type { RouterData } from "../cms.ts";
 
-export default function (app: Hono) {
-  app.post("/versions", async (c: Context) => {
-    const options = c.get("options") as CMSContent;
-    const { versioning, basePath } = options;
+const app = new Router<RouterData>();
 
-    if (!versioning) {
-      throw new Error("No versioning method available");
-    }
+app.post("/", async ({ request, cms }) => {
+  const { versioning, basePath } = cms;
 
-    const body = await c.req.parseBody() as unknown as Data;
-    const { name, action } = body;
+  if (!versioning) {
+    throw new Error("No versioning method available");
+  }
 
-    const response = c.redirect(getPath(basePath));
-    // Add a header to trigger a reload in the proxy
-    response.headers.set("X-Lume-CMS", "reload");
+  const body = await request.formData();
+  const name = body.get("name") as string;
+  const action = body.get("action") as string;
 
-    if (action === "create") {
-      versioning.create(name);
-      versioning.change(name);
-      dispatch("versionCreated", { name });
-      return response;
-    }
+  const response = Response.redirect(
+    new URL(getPath(basePath), request.url),
+  );
 
-    if (action === "change") {
-      versioning.change(name);
-      dispatch("versionChanged", { name });
-      return response;
-    }
+  // Add a header to trigger a reload in the proxy
+  response.headers.set("X-Lume-CMS", "reload");
 
-    if (action === "publish") {
-      versioning.publish(name);
-      dispatch("versionPublished", { name });
-      return response;
-    }
+  if (action === "create") {
+    versioning.create(name);
+    versioning.change(name);
+    dispatch("versionCreated", { name });
+    return response;
+  }
 
-    if (action === "delete") {
-      versioning.delete(name);
-      dispatch("versionDeleted", { name });
-      return response;
-    }
-  });
-}
+  if (action === "change") {
+    versioning.change(name);
+    dispatch("versionChanged", { name });
+    return response;
+  }
+
+  if (action === "publish") {
+    versioning.publish(name);
+    dispatch("versionPublished", { name });
+    return response;
+  }
+
+  if (action === "delete") {
+    versioning.delete(name);
+    dispatch("versionDeleted", { name });
+    return response;
+  }
+
+  return new Response("Invalid action", { status: 400 });
+});
+
+export default app;
