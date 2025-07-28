@@ -5,8 +5,6 @@ import collectionRoute from "./routes/collection.ts";
 import versionsRoute from "./routes/versions.ts";
 import indexRoute from "./routes/index.ts";
 import filesRoute from "./routes/files.ts";
-import statusRoute from "./routes/status.ts";
-import authMiddleware from "./middlewares/auth.ts";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
 import Upload from "./upload.ts";
@@ -16,7 +14,7 @@ import { Router } from "../deps/galo.ts";
 import { basename, dirname, fromFileUrl } from "../deps/std.ts";
 import { filter } from "../deps/vento.ts";
 import { labelify } from "./utils/string.ts";
-import { dispatch } from "./utils/event.ts";
+import { checkBasicAuthorization } from "./utils/auth.ts";
 import { Git, Options as GitOptions } from "./git.ts";
 
 import type {
@@ -30,23 +28,23 @@ import type {
   Versioning,
 } from "../types.ts";
 
+type PreviewURL = (
+  file: string,
+) => undefined | string | Promise<string | undefined>;
+
 export interface CmsOptions {
   site?: SiteInfo;
   root: string;
   basePath: string;
   auth?: AuthOptions;
   data?: Record<string, unknown>;
-  log?: LogOptions;
   extraHead?: string;
+  previewURL?: PreviewURL;
 }
 
 export interface AuthOptions {
   method: "basic";
   users: Record<string, string>;
-}
-
-export interface LogOptions {
-  filename: string;
 }
 
 export interface RouterData {
@@ -337,6 +335,7 @@ export default class Cms {
 
     filter("path", (args: string[]) => getPath(this.options.basePath, ...args));
     filter("asset", (url: string) => asset(this.options.basePath, url));
+    filter("previewURL", (file: string) => this.options.previewURL?.(file));
 
     const app = new Router<RouterData>({
       cms: content,
@@ -349,63 +348,52 @@ export default class Cms {
         }),
     });
 
-    app.path("/", indexRoute);
-    app.path("/status", statusRoute);
-    app.path("/document/*", documentRoute);
-    app.path("/collection/*", collectionRoute);
-    app.path("/uploads/*", filesRoute);
-    app.path("/versions/*", versionsRoute);
+    const { basePath } = this.options;
 
-    if (this.options.auth) {
-      app.use(authMiddleware(this.options.auth, [
-        getPath(this.options.basePath, "_status"),
-        getPath(this.options.basePath, "logout"),
-      ]));
-      app.get("/logout", () => {
-        return new Response("Logged out", {
-          status: 401,
-          headers: {
-            "WWW-Authenticate": 'Basic realm="Secure Area"',
-          },
-        });
-      });
-    }
-
-    const sockets = new Set<WebSocket>();
-
-    addEventListener("cms:previewUpdated", () => {
-      sockets.forEach((socket) => {
-        socket.send(JSON.stringify({ type: "preview" }));
-      });
-    });
-
-    app.webSocket("_socket", ({ socket }) => {
-      socket.onopen = () => sockets.add(socket);
-      socket.onclose = () => sockets.delete(socket);
-      socket.onerror = (e) => console.log("Socket errored", e);
-      socket.onmessage = async (e) => {
-        const { type, src } = JSON.parse(e.data);
-
-        if (type === "url") {
-          const result = dispatch<{ src: string; url?: unknown }>(
-            "previewUrl",
-            { src },
-          );
-
-          if (result) {
-            const url = await result.url;
-            if (url) {
-              socket.send(JSON.stringify({ type: "reload", src, url }));
-            }
+    app.get(`${basePath}/logout`, () =>
+      new Response("Unauthorized", {
+        status: 401,
+        headers: {
+          "WWW-Authenticate": 'Basic realm="Secure Area"',
+        },
+      }))
+      .path(`${basePath}/*`, ({ request, next, _ }) => {
+        // Basic authentication
+        if (this.options.auth && _.join("/") !== "logout") {
+          const authorization = request.headers.get("authorization");
+          if (
+            !authorization ||
+            !checkBasicAuthorization(authorization, this.options.auth.users)
+          ) {
+            return new Response("Unauthorized", {
+              status: 401,
+              headers: {
+                "WWW-Authenticate": 'Basic realm="Secure Area"',
+              },
+            });
           }
         }
-      };
-    });
 
+        return next()
+          .path("/", indexRoute)
+          .path("/document/*", documentRoute)
+          .path("/collection/*", collectionRoute)
+          .path("/uploads/*", filesRoute)
+          .path("/versions/*", versionsRoute)
+          .get("/logout", () =>
+            new Response("Logged out", {
+              status: 401,
+              headers: {
+                "WWW-Authenticate": 'Basic realm="Secure Area"',
+              },
+            }));
+      });
+
+    // Serve static files from local directory
     const root = import.meta.resolve("../static/");
 
     if (root.startsWith("file:")) {
-      app.staticFiles("/*", fromFileUrl(root));
+      app.staticFiles(`${basePath}/*`, fromFileUrl(root));
     }
 
     return app;

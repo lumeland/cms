@@ -90,10 +90,15 @@
             </u-confirm>
           {{ /if }}
         </u-dropdown>
+
+        {{ if document.url }}
+          {{ set previewUrl = document.url }}
+        {{ else }}
+          {{ set previewUrl = document.src |> previewURL }}
+        {{ /if }}
         <u-pagepreview
           class="ly-rowStack"
-          data-url="{{ document.url }}"
-          data-src="{{ document.src }}"
+          data-url="{{ previewUrl }}"
         ></u-pagepreview>
       </footer>
     </form>

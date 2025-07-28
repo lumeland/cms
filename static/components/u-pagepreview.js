@@ -1,87 +1,21 @@
-import { options, url } from "./utils.js";
+import { options } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
 customElements.define(
   "u-pagepreview",
   class Modal extends Component {
-    static get observedAttributes() {
-      return ["data-src"];
-    }
-
     init() {
-      const { src, url: initUrl } = this.dataset;
+      const { url } = this.dataset;
 
-      if (!src) {
-        this.innerHTML = "";
+      if (!url) {
         return;
       }
 
-      const socketUrl = new URL(url("_socket"), document.location.origin);
-      socketUrl.protocol = document.location.protocol === "https:"
-        ? "wss:"
-        : "ws:";
-
-      const ws = new WebSocket(socketUrl);
-
-      let iframe, lastUrl;
-
-      const reload = (url) => {
-        if (!iframe) {
-          iframe = this.initUI(url);
-        }
-
-        if (lastUrl === url) {
-          iframe?.contentDocument.location.reload();
-        } else if (lastUrl) {
-          iframe.src = url;
-        }
-
-        lastUrl = url;
-      };
-
-      ws.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-
-        if (data.type === "reload") {
-          reload(data.url);
-          return;
-        }
-
-        if (data.type === "preview") {
-          if (initUrl) {
-            reload(initUrl);
-            return;
-          }
-          ws.send(JSON.stringify({ type: "url", src }));
-        }
-      };
-
-      ws.onopen = () => {
-        if (initUrl) {
-          reload(initUrl);
-          return;
-        }
-        ws.send(JSON.stringify({ type: "url", src }));
-      };
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-      if (name !== "data-src") {
-        return;
-      }
-
-      if (!oldValue || oldValue === newValue) {
-        return;
-      }
-
-      this.init();
-    }
-
-    initUI(url) {
       const dialog = dom("dialog", {
         class: "modal is-preview",
       }, document.body);
+
       const iframe = dom("iframe", {
         class: "modal-content",
         src: url,

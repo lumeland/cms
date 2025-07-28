@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.13.0] - Unreleased
+### Added
+- New option `previewURL` to return the URL of a file.
+
+### Removed
+- Float button to edit the current page in the preview.
+- `cms:*` global events.
+
+### Changed
+- BREAKING: Replaced Hono with Galo.
+
 ## [0.12.6] - 2025-07-18
 ### Fixed
 - Don't throw an error parsing empty JSON files [#64].
@@ -717,6 +728,7 @@ First version
 [#62]: https://github.com/lumeland/cms/issues/62
 [#64]: https://github.com/lumeland/cms/issues/64
 
+[0.13.0]: https://github.com/lumeland/cms/compare/v0.12.6...HEAD
 [0.12.6]: https://github.com/lumeland/cms/compare/v0.12.5...v0.12.6
 [0.12.5]: https://github.com/lumeland/cms/compare/v0.12.4...v0.12.5
 [0.12.4]: https://github.com/lumeland/cms/compare/v0.12.3...v0.12.4

@@ -1,4 +1,3 @@
-import { dispatch } from "../utils/event.ts";
 import { getPath } from "../utils/path.ts";
 import { Router } from "../../deps/galo.ts";
 
@@ -27,25 +26,21 @@ app.post("/", async ({ request, cms }) => {
   if (action === "create") {
     versioning.create(name);
     versioning.change(name);
-    dispatch("versionCreated", { name });
     return response;
   }
 
   if (action === "change") {
     versioning.change(name);
-    dispatch("versionChanged", { name });
     return response;
   }
 
   if (action === "publish") {
     versioning.publish(name);
-    dispatch("versionPublished", { name });
     return response;
   }
 
   if (action === "delete") {
     versioning.delete(name);
-    dispatch("versionDeleted", { name });
     return response;
   }
 
