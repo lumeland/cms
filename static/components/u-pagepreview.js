@@ -5,6 +5,19 @@ import dom from "dom";
 customElements.define(
   "u-pagepreview",
   class Modal extends Component {
+    static get observedAttributes() {
+      return ["data-url"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (name === "data-url" && oldValue !== newValue) {
+        const { iframe } = this;
+        if (iframe) {
+          iframe.src = newValue;
+        }
+      }
+    }
+
     init() {
       const { url } = this.dataset;
 
@@ -16,7 +29,7 @@ customElements.define(
         class: "modal is-preview",
       }, document.body);
 
-      const iframe = dom("iframe", {
+      this.iframe = dom("iframe", {
         class: "modal-content",
         src: url,
       }, dialog);
@@ -60,8 +73,6 @@ customElements.define(
           button.hidden = false;
         }
       });
-
-      return iframe;
     }
   },
 );

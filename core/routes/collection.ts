@@ -22,7 +22,7 @@ import type { Data } from "../../types.ts";
 
 const app = new Router<RouterData>();
 
-app.path("/:name/*", ({ request, cms, render, name, next }) => {
+app.path("/:name/*", ({ request, cms, render, name, next, previewURL }) => {
   const { collections, basePath } = cms;
   const collection = collections[name];
 
@@ -95,7 +95,8 @@ app.path("/:name/*", ({ request, cms, render, name, next }) => {
 
           const document = collection.create(name);
           await document.write(data, cms, true);
-
+          // Wait for the site to be ready
+          document.url ?? await previewURL?.(document.src, true);
           return redirect(collection.name, "edit", document.name);
         });
     })
@@ -137,12 +138,14 @@ app.path("/:name/*", ({ request, cms, render, name, next }) => {
 
           const views = new Set();
           collection.fields.forEach((field) => getViews(field, views));
+          const url = document.url ?? await previewURL?.(document.src);
 
           return render("collection/edit.vto", {
             collection,
             fields,
             data,
             initViews,
+            url,
             views: Array.from(views),
             document,
           });
@@ -177,6 +180,8 @@ app.path("/:name/*", ({ request, cms, render, name, next }) => {
           }
 
           await finalDocument.write(data, cms);
+          // Wait for the site to be ready
+          finalDocument.url ?? await previewURL?.(finalDocument.src, true);
           return redirect(collection.name, "edit", finalDocument.name);
         })
         .get(action === "code", async () => {
@@ -193,11 +198,13 @@ app.path("/:name/*", ({ request, cms, render, name, next }) => {
             },
           }];
           const data = { code };
+          const url = document.url ?? await previewURL?.(document.src);
 
           return render("collection/code.vto", {
             collection,
             fields,
             data,
+            url,
             document,
           });
         })
@@ -220,7 +227,8 @@ app.path("/:name/*", ({ request, cms, render, name, next }) => {
 
           const code = body.get("changes.code") as string | undefined;
           finalDocument.writeText(code ?? "");
-
+          // Wait for the site to be ready
+          finalDocument.url ?? await previewURL?.(finalDocument.src, true);
           return redirect(collection.name, "code", finalDocument.name);
         })
         .post(action === "duplicate", async ({ request }) => {
@@ -252,6 +260,8 @@ app.path("/:name/*", ({ request, cms, render, name, next }) => {
             cms,
             true,
           );
+          // Wait for the site to be ready
+          document.url ?? await previewURL?.(document.src, true);
           return redirect(collection.name, "edit", duplicate.name);
         })
         .post(action === "delete", async () => {

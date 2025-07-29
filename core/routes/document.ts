@@ -15,7 +15,7 @@ import type { Data } from "../../types.ts";
 
 const app = new Router<RouterData>();
 
-app.path("/:name/*", ({ request, cms, name, render, next }) => {
+app.path("/:name/*", ({ request, cms, name, render, next, previewURL }) => {
   const { documents, basePath } = cms;
 
   // Check if the document exists
@@ -53,12 +53,14 @@ app.path("/:name/*", ({ request, cms, name, render, next }) => {
 
       const views = new Set();
       document.fields.forEach((field) => getViews(field, views));
+      const url = document.url ?? await previewURL?.(document.src);
 
       return render("document/edit.vto", {
         document,
         fields,
         views: Array.from(views),
         initViews,
+        url,
         data,
       });
     })
@@ -69,6 +71,8 @@ app.path("/:name/*", ({ request, cms, name, render, next }) => {
         cms,
         true,
       );
+      // Wait for the site to be ready
+      document.url ?? await previewURL?.(document.src);
       return redirect(document.name);
     })
     .get("/code", async () => {
@@ -85,10 +89,11 @@ app.path("/:name/*", ({ request, cms, name, render, next }) => {
         },
       }];
       const data = { code };
-
+      const url = document.url ?? await previewURL?.(document.src);
       return render("document/code.vto", {
         fields,
         data,
+        url,
         document,
       });
     })
@@ -96,6 +101,8 @@ app.path("/:name/*", ({ request, cms, name, render, next }) => {
       const body = await request.formData();
       const code = body.get("changes.code") as string | undefined;
       document.writeText(code ?? "");
+      // Wait for the site to be ready
+      document.url ?? await previewURL?.(document.src);
       return redirect("code", document.name);
     });
 });

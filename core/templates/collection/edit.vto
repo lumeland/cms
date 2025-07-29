@@ -91,15 +91,7 @@
           {{ /if }}
         </u-dropdown>
 
-        {{ if document.url }}
-          {{ set previewUrl = document.url }}
-        {{ else }}
-          {{ set previewUrl = document.src |> previewURL }}
-        {{ /if }}
-        <u-pagepreview
-          class="ly-rowStack"
-          data-url="{{ previewUrl }}"
-        ></u-pagepreview>
+        <u-pagepreview data-url="{{ url }}"></u-pagepreview>
       </footer>
     </form>
   </u-form>

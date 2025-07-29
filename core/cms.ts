@@ -30,7 +30,12 @@ import type {
 
 type PreviewURL = (
   file: string,
+  changed?: boolean,
 ) => undefined | string | Promise<string | undefined>;
+
+type SourcePath = (
+  url: string,
+) => string | undefined | Promise<string | undefined>;
 
 export interface CmsOptions {
   site?: SiteInfo;
@@ -40,6 +45,7 @@ export interface CmsOptions {
   data?: Record<string, unknown>;
   extraHead?: string;
   previewURL?: PreviewURL;
+  sourcePath?: SourcePath;
 }
 
 export interface AuthOptions {
@@ -50,6 +56,8 @@ export interface AuthOptions {
 export interface RouterData {
   cms: CMSContent;
   render: (file: string, data?: Record<string, unknown>) => Promise<string>;
+  previewURL?: PreviewURL;
+  sourcePath?: SourcePath;
 }
 
 interface DocumentOptions {
@@ -335,10 +343,11 @@ export default class Cms {
 
     filter("path", (args: string[]) => getPath(this.options.basePath, ...args));
     filter("asset", (url: string) => asset(this.options.basePath, url));
-    filter("previewURL", (file: string) => this.options.previewURL?.(file));
 
     const app = new Router<RouterData>({
       cms: content,
+      previewURL: this.options.previewURL,
+      sourcePath: this.options.sourcePath,
       render: (file: string, data?: Record<string, unknown>) =>
         render(file, {
           ...data,
