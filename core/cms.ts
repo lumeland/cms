@@ -14,7 +14,6 @@ import { Router } from "../deps/galo.ts";
 import { basename, dirname, fromFileUrl } from "../deps/std.ts";
 import { filter } from "../deps/vento.ts";
 import { labelify } from "./utils/string.ts";
-import { checkBasicAuthorization } from "./utils/auth.ts";
 import { Git, Options as GitOptions } from "./git.ts";
 import User from "./user.ts";
 
@@ -26,6 +25,7 @@ import type {
   Labelizer,
   SiteInfo,
   Storage,
+  UserConfiguration,
   Versioning,
 } from "../types.ts";
 
@@ -51,7 +51,7 @@ export interface CmsOptions {
 
 export interface AuthOptions {
   method: "basic";
-  users: Record<string, string>;
+  users: Record<string, string | UserConfiguration>;
 }
 
 export interface RouterData {
@@ -377,15 +377,9 @@ export default class Cms {
       }))
       .path(`${basePath}/*`, ({ request, next, _, user }) => {
         // Basic authentication
-        let name: string | undefined;
         if (this.options.auth && _.join("/") !== "logout") {
-          const authorization = request.headers.get("authorization") ??
-            undefined;
-          name = authorization && checkBasicAuthorization(
-            authorization,
-            this.options.auth.users,
-          );
-          if (!name) {
+          const authorization = request.headers.get("authorization");
+          if (!user.authenticate(this.options.auth.users, authorization)) {
             return new Response("Unauthorized", {
               status: 401,
               headers: {
@@ -394,9 +388,6 @@ export default class Cms {
             });
           }
         }
-
-        // Set the user name
-        user.name = name;
 
         return next()
           .path("/", indexRoute)

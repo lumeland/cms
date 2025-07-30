@@ -199,6 +199,20 @@ export interface CMSContent {
   data: Record<string, unknown>;
 }
 
+export interface UserConfiguration {
+  password: string;
+  name?: string;
+  permissions?: Permission[];
+}
+
+export interface Permission {
+  subject: string;
+  create?: boolean;
+  delete?: boolean;
+  edit?: boolean;
+  rename?: boolean;
+}
+
 declare global {
   namespace Lume.CMS {
     type FieldStrings = `${string}:${" " | ""}${keyof Fields}${
