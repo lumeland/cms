@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.13.0] - Unreleased
 ### Added
 - New option `previewURL` to return the URL of a file.
+- New option `sourcePath` to return the file of a URL.
+- New `edit` option to customize edit permissions for collections.
+- New `edit` option to customize edit permissions for documents.
+- Permissions options form uploads (`create`, `rename`, `edit`, and `delete`).
 
 ### Removed
 - Float button to edit the current page in the preview.
