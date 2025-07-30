@@ -25,7 +25,7 @@ import type { RouterData } from "../cms.ts";
 
 const app = new Router<RouterData>();
 
-app.path("/:name/*", ({ request, cms, name, render, next }) => {
+app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
   const { uploads, basePath } = cms;
 
   // Check if the upload exists
@@ -48,6 +48,7 @@ app.path("/:name/*", ({ request, cms, name, render, next }) => {
       return render("uploads/list.vto", {
         upload,
         tree: createTree(files),
+        user,
       });
     })
     // Show the form to upload a new file
@@ -57,6 +58,7 @@ app.path("/:name/*", ({ request, cms, name, render, next }) => {
       return render("uploads/create.vto", {
         upload,
         folder: normalizeName(searchParams.get("folder")),
+        user,
       });
     })
     // Handle file upload
@@ -109,6 +111,7 @@ app.path("/:name/*", ({ request, cms, name, render, next }) => {
             size: fileData.size,
             upload,
             file: name,
+            user,
           });
         })
         // Update file details or upload a new file
@@ -156,6 +159,7 @@ app.path("/:name/*", ({ request, cms, name, render, next }) => {
           return render("uploads/crop.vto", {
             upload,
             file: name,
+            user,
           });
         })
         // Handle image cropping

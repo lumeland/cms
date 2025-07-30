@@ -58,6 +58,7 @@ export interface RouterData {
   render: (file: string, data?: Record<string, unknown>) => Promise<string>;
   previewURL?: PreviewURL;
   sourcePath?: SourcePath;
+  user?: string;
 }
 
 interface DocumentOptions {
@@ -368,12 +369,15 @@ export default class Cms {
       }))
       .path(`${basePath}/*`, ({ request, next, _ }) => {
         // Basic authentication
+        let user: string | undefined;
         if (this.options.auth && _.join("/") !== "logout") {
-          const authorization = request.headers.get("authorization");
-          if (
-            !authorization ||
-            !checkBasicAuthorization(authorization, this.options.auth.users)
-          ) {
+          const authorization = request.headers.get("authorization") ??
+            undefined;
+          user = authorization && checkBasicAuthorization(
+            authorization,
+            this.options.auth.users,
+          );
+          if (!user) {
             return new Response("Unauthorized", {
               status: 401,
               headers: {
@@ -383,7 +387,7 @@ export default class Cms {
           }
         }
 
-        return next()
+        return next<{ user?: string }>({ user })
           .path("/", indexRoute)
           .path("/document/*", documentRoute)
           .path("/collection/*", collectionRoute)

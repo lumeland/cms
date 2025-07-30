@@ -74,7 +74,8 @@
         </u-icon>
       </button>
 
-      {{ if !auth }}
+      {{ if user }}
+        <span>Logged as <strong>{{ user }}</strong></span>
         <button
           class="button is-link"
           id="logoutButton"
