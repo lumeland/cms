@@ -50,19 +50,23 @@
       ></u-fields>
 
       <footer class="footer ly-rowStack is-responsive">
-        <button class="button is-primary" type="submit">
-          <u-icon name="check"></u-icon>
-          Save changes
-        </button>
+        {{ if collection.canEdit() }}
+          <button class="button is-primary" type="submit">
+            <u-icon name="check"></u-icon>
+            Save changes
+          </button>
+        {{ /if }}
 
         <u-dropdown>
-          <a
-            class="button is-secondary"
-            href='{{ ["collection", collection.name, "code", document.name] |> path }}'
-          >
-            <u-icon name="code"></u-icon>
-            Edit code
-          </a>
+          {{ if collection.canEdit() }}
+            <a
+              class="button is-secondary"
+              href='{{ ["collection", collection.name, "code", document.name] |> path }}'
+            >
+              <u-icon name="code"></u-icon>
+              Edit code
+            </a>
+          {{ /if }}
 
           {{ if collection.canCreate() }}
             <u-confirm data-message="Duplicate this file?">

@@ -14,13 +14,15 @@ export interface CollectionOptions {
   documentLabel?: Labelizer;
   create?: boolean;
   delete?: boolean;
+  edit?: boolean;
   rename?: boolean | "auto";
 }
 
 interface Permissions {
   create: boolean;
   delete: boolean;
-  rename?: boolean | "auto";
+  edit: boolean;
+  rename: boolean | "auto";
 }
 
 export default class Collection {
@@ -46,6 +48,7 @@ export default class Collection {
     this.documentName = options.documentName;
     this.documentLabel = options.documentLabel;
     this.permissions = {
+      edit: options.edit ?? true,
       create: options.create ?? true,
       delete: options.delete ?? true,
       rename: options.rename ?? true,
@@ -116,5 +119,9 @@ export default class Collection {
   /** User permission to rename a document in the edition */
   canRename(): boolean {
     return this.permissions.rename === true;
+  }
+  /** User permission to edit a document */
+  canEdit(): boolean {
+    return this.permissions.edit;
   }
 }

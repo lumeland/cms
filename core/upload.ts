@@ -7,6 +7,17 @@ export interface UploadOptions {
   storage: Storage;
   publicPath: string;
   listed?: boolean;
+  create?: boolean;
+  delete?: boolean;
+  edit?: boolean;
+  rename?: boolean;
+}
+
+interface Permissions {
+  create: boolean;
+  delete: boolean;
+  edit: boolean;
+  rename: boolean;
 }
 
 export default class Upload {
@@ -16,6 +27,7 @@ export default class Upload {
   storage: Storage;
   publicPath: string;
   listed: boolean;
+  permissions: Permissions;
 
   constructor(options: UploadOptions) {
     this.name = options.name;
@@ -24,6 +36,12 @@ export default class Upload {
     this.storage = options.storage;
     this.publicPath = options.publicPath;
     this.listed = options.listed ?? true;
+    this.permissions = {
+      edit: options.edit ?? true,
+      create: options.create ?? true,
+      delete: options.delete ?? true,
+      rename: options.rename ?? true,
+    };
   }
 
   async *[Symbol.asyncIterator](): AsyncGenerator<EntryMetadata> {
@@ -43,5 +61,22 @@ export default class Upload {
   async rename(id: string, newId: string): Promise<void> {
     const newName = this.storage.name(newId);
     await this.storage.rename(id, newName);
+  }
+
+  /** User permission to create a new document */
+  canCreate(): boolean {
+    return this.permissions.create;
+  }
+  /** User permission to delete a document */
+  canDelete(): boolean {
+    return this.permissions.delete;
+  }
+  /** User permission to rename a document in the edition */
+  canRename(): boolean {
+    return this.permissions.rename;
+  }
+  /** User permission to edit a document */
+  canEdit(): boolean {
+    return this.permissions.edit;
   }
 }

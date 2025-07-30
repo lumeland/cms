@@ -165,11 +165,15 @@ app.path(
               throw new Error("Document name is required");
             }
 
+            if (document.name === newName && !collection.canEdit()) {
+              throw new Error("Permission denied to edit document");
+            }
+
             if (
               document.name !== newName &&
-              collection.permissions.rename !== true
+              !collection.canRename()
             ) {
-              throw new Error("Permission denied");
+              throw new Error("Permission denied to rename document");
             }
             const changes = Object.fromEntries(body);
             const data = changesToData(changes);
@@ -224,6 +228,10 @@ app.path(
               throw new Error("Document name is required");
             }
 
+            if (document.name === newName && !collection.canEdit()) {
+              throw new Error("Permission denied to edit document");
+            }
+
             if (document.name !== newName) {
               if (!collection.canRename()) {
                 throw new Error("Permission denied to rename document");
@@ -251,7 +259,7 @@ app.path(
             }
 
             if (document.name === name) {
-              const ext = name.split(".").pop();
+              const ext = getExtension(name);
               if (ext) {
                 name = name.substring(0, name.length - ext.length - 1) +
                   "-copy." +
@@ -306,4 +314,9 @@ function getDocumentName(
     case "function":
       return collection.documentName(data);
   }
+}
+
+function getExtension(name: string) {
+  const parts = name.split(".");
+  return parts.length > 1 ? parts.pop() : undefined;
 }

@@ -13,11 +13,11 @@
 
   <header class="header">
     <h1 class="header-title">
-      Details of
+      Editing file
       <input
         class="input is-inline"
         id="_id"
-        type="text"
+        type="{{ upload.canRename() ? 'text' : 'hidden' }}"
         name="_id"
         value="{{ file }}"
         placeholder="Rename the file…"
@@ -27,10 +27,11 @@
       >
     </h1>
     <dl class="header-description">
-      <dt>Public path:</dt>
+      <dt>Public URL:</dt>
+      {{ set publicUrl = [upload.publicPath, file] |> normalizePath }}
       <dd>
-        {{ [upload.publicPath] |> normalizePath }}
-        <u-copy text="{{ [upload.publicPath] |> normalizePath }}"></u-copy>
+        {{ publicUrl }}
+        <u-copy text="{{ publicUrl }}"></u-copy>
       </dd>
       <dt>Type:</dt>
       <dd>{{ type }}</dd>
@@ -45,30 +46,34 @@
     enctype="multipart/form-data"
     id="form-edit"
   >
-    <div class="field">
-      <input
-        aria-label="Update"
-        id="new-file"
-        type="file"
-        name="file"
-        class="inputFile"
-      >
-    </div>
-    <footer class="footer ly-rowStack">
-      <button class="button is-primary" type="submit">
-        <u-icon name="check"></u-icon>
-        Update file
-      </button>
-
-      {{ set format = file |> formatSupported }}
-      {{ if format }}
-        <a
-          href='{{ ["uploads", upload.name, "crop", file] |> path }}'
-          class="button is-secondary"
+    {{ if upload.canEdit() }}
+      <div class="field">
+        <input
+          aria-label="Update"
+          id="new-file"
+          type="file"
+          name="file"
+          class="inputFile"
         >
-          <u-icon name="crop"></u-icon>
-          Crop image
-        </a>
+      </div>
+    {{ /if }}
+    <footer class="footer ly-rowStack">
+      {{ if upload.canEdit() }}
+        <button class="button is-primary" type="submit">
+          <u-icon name="check"></u-icon>
+          Update file
+        </button>
+
+        {{ set format = file |> formatSupported }}
+        {{ if format }}
+          <a
+            href='{{ ["uploads", upload.name, "crop", file] |> path }}'
+            class="button is-secondary"
+          >
+            <u-icon name="crop"></u-icon>
+            Crop image
+          </a>
+        {{ /if }}
       {{ /if }}
 
       <a
@@ -81,16 +86,18 @@
         <u-icon name="download-simple"></u-icon>
       </a>
 
-      <u-confirm data-message="Delete this file?">
-        <button
-          aria-label="Delete file"
-          title="Delete file"
-          class="buttonIcon is-secondary"
-          formAction='{{ ["uploads", upload.name, "delete", file] |> path }}'
-        >
-          <u-icon name="trash"></u-icon>
-        </button>
-      </u-confirm>
+      {{ if upload.canDelete() }}
+        <u-confirm data-message="Delete this file?">
+          <button
+            aria-label="Delete file"
+            title="Delete file"
+            class="buttonIcon is-secondary"
+            formAction='{{ ["uploads", upload.name, "delete", file] |> path }}'
+          >
+            <u-icon name="trash"></u-icon>
+          </button>
+        </u-confirm>
+      {{ /if }}
     </footer>
   </form>
 

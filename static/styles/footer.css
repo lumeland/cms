@@ -4,7 +4,7 @@
   padding: var(--row-gap-small) 0;
   margin: 0;
   background-color: var(--color-background);
-  border-top: solid 1px var(--color-line);
+  /* border-top: solid 1px var(--color-line); */
   justify-items: start;
   z-index: 2;
   box-shadow: 10px 0 var(--color-background), -10px 0 var(--color-background);

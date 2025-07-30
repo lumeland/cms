@@ -9,6 +9,11 @@ export interface DocumentOptions {
   fields: Lume.CMS.ResolvedField[];
   url?: string;
   views?: string[] | ((data?: Data) => string[] | undefined);
+  edit?: boolean;
+}
+
+interface Permissions {
+  edit: boolean;
 }
 
 export default class Document {
@@ -19,6 +24,7 @@ export default class Document {
   #fields: Lume.CMS.ResolvedField[];
   url?: string;
   views?: string[] | ((data?: Data) => string[] | undefined);
+  permissions: Permissions;
 
   constructor(options: DocumentOptions) {
     this.#name = options.name;
@@ -28,6 +34,9 @@ export default class Document {
     this.#fields = options.fields;
     this.url = options.url;
     this.views = options.views;
+    this.permissions = {
+      edit: options.edit ?? true,
+    };
   }
 
   get fields() {
@@ -46,8 +55,15 @@ export default class Document {
     return this.#entry.metadata.src;
   }
 
-  async readText(): Promise<string> {
-    return await this.#entry.readText();
+  async readText(create = false): Promise<string> {
+    try {
+      return await this.#entry.readText();
+    } catch (err) {
+      if (create) {
+        return "";
+      }
+      throw err;
+    }
   }
 
   async writeText(content: string) {
@@ -85,5 +101,10 @@ export default class Document {
     }
 
     await this.#entry.writeData(currentData);
+  }
+
+  /** User permission to edit the document */
+  canEdit(): boolean {
+    return this.permissions.edit;
   }
 }

@@ -75,15 +75,17 @@
       </button>
 
       {{ if user }}
-        <span>Logged as <strong>{{ user }}</strong></span>
-        <button
-          class="button is-link"
-          id="logoutButton"
-          type="button"
-          aria-label="logout"
-        >
-          Logout
-        </button>
+        <span>
+          Logged as <strong>{{ user }}</strong>
+          — <button
+            class="button is-link"
+            id="logoutButton"
+            type="button"
+            aria-label="logout"
+          >
+            Logout
+          </button>
+        </span>
       {{ /if }}
     </footer>
 

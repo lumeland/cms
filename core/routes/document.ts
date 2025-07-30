@@ -68,6 +68,9 @@ app.path(
         });
       })
       .post("/", async ({ request }) => {
+        if (!document.canEdit()) {
+          throw new Error("Permission denied to edit this document");
+        }
         const body = await request.formData();
         await document.write(
           changesToData(Object.fromEntries(body)),
@@ -79,7 +82,7 @@ app.path(
         return redirect(document.name);
       })
       .get("/code", async () => {
-        const code = await document.readText();
+        const code = await document.readText(true);
         const fields = [{
           tag: "f-code",
           name: "code",
@@ -102,6 +105,9 @@ app.path(
         });
       })
       .post("/code", async ({ request }) => {
+        if (!document.canEdit()) {
+          throw new Error("Permission denied to edit this document");
+        }
         const body = await request.formData();
         const code = body.get("changes.code") as string | undefined;
         document.writeText(code ?? "");

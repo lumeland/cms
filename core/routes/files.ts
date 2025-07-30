@@ -53,6 +53,9 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
     })
     // Show the form to upload a new file
     .get("/create", ({ request }) => {
+      if (!upload.canCreate()) {
+        throw new Error("Permission denied to create files in this upload");
+      }
       const { searchParams } = new URL(request.url);
 
       return render("uploads/create.vto", {
@@ -63,6 +66,9 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
     })
     // Handle file upload
     .post("/create", async ({ request }) => {
+      if (!upload.canCreate()) {
+        throw new Error("Permission denied to create files in this upload");
+      }
       const body = await request.formData();
       const files = body.getAll("files") as File[];
 
@@ -116,6 +122,9 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
         })
         // Update file details or upload a new file
         .post(action === "file", async ({ request }) => {
+          if (!upload.canEdit()) {
+            throw new Error("Permission denied to edit this file");
+          }
           const body = await request.formData();
           const newName = normalizeName(body.get("_id") as string);
 
@@ -152,6 +161,9 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
         })
         // Show the crop form for images
         .get(action === "crop", () => {
+          if (!upload.canEdit()) {
+            throw new Error("Permission denied to edit this file");
+          }
           if (!formatSupported(name)) {
             return redirect(upload.name, "file", name);
           }
@@ -164,6 +176,9 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
         })
         // Handle image cropping
         .post(action === "crop", async ({ request }) => {
+          if (!upload.canEdit()) {
+            throw new Error("Permission denied to edit this file");
+          }
           const body = await request.formData();
           const x = parseInt(body.get("x") as string);
           const y = parseInt(body.get("y") as string);
@@ -190,6 +205,9 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
         })
         // Delete a file
         .post(action === "delete", async () => {
+          if (!upload.canDelete()) {
+            throw new Error("Permission denied to delete this file");
+          }
           await upload.delete(name);
           return redirect(upload.name);
         });

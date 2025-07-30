@@ -69,6 +69,7 @@ interface DocumentOptions {
   fields: Lume.CMS.Field[];
   url?: string;
   views?: string[] | ((data?: Data) => string[] | undefined);
+  edit?: boolean;
 }
 
 interface CollectionOptions {
@@ -83,6 +84,7 @@ interface CollectionOptions {
   documentLabel?: Labelizer;
   create?: boolean;
   delete?: boolean;
+  edit?: boolean;
   rename?: boolean | "auto";
 }
 
@@ -93,6 +95,10 @@ interface UploadOptions {
   store: string;
   publicPath?: string;
   listed?: boolean;
+  create?: boolean;
+  delete?: boolean;
+  edit?: boolean;
+  rename?: boolean | "auto";
 }
 
 const defaults: Partial<CmsOptions> = {
