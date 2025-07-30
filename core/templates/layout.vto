@@ -74,9 +74,9 @@
         </u-icon>
       </button>
 
-      {{ if user }}
+      {{ if user.isLogged }}
         <span>
-          Logged as <strong>{{ user }}</strong>
+          Logged as <strong>{{ user.name }}</strong>
           — <button
             class="button is-link"
             id="logoutButton"

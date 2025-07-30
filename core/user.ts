@@ -7,6 +7,10 @@ type Subject = Collection | Document | Upload;
 export default class User {
   name?: string;
 
+  get isLogged(): boolean {
+    return !!this.name;
+  }
+
   canCreate(subject: Subject): boolean {
     // Document has no create permission. Use edit instead.
     if (subject instanceof Document) {
