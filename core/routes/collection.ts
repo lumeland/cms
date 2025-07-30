@@ -48,7 +48,7 @@ app.path(
         });
       })
       .path("/create", ({ next }) => {
-        if (!collection.canCreate()) {
+        if (!user.canCreate(collection)) {
           throw new Error("Permission denied");
         }
 
@@ -165,13 +165,13 @@ app.path(
               throw new Error("Document name is required");
             }
 
-            if (document.name === newName && !collection.canEdit()) {
+            if (document.name === newName && !user.canEdit(collection)) {
               throw new Error("Permission denied to edit document");
             }
 
             if (
               document.name !== newName &&
-              !collection.canRename()
+              !user.canRename(collection)
             ) {
               throw new Error("Permission denied to rename document");
             }
@@ -228,12 +228,12 @@ app.path(
               throw new Error("Document name is required");
             }
 
-            if (document.name === newName && !collection.canEdit()) {
+            if (document.name === newName && !user.canEdit(collection)) {
               throw new Error("Permission denied to edit document");
             }
 
             if (document.name !== newName) {
-              if (!collection.canRename()) {
+              if (!user.canRename(collection)) {
                 throw new Error("Permission denied to rename document");
               }
               newName = await collection.rename(document.name, newName);
@@ -247,7 +247,7 @@ app.path(
             return redirect(collection.name, "code", finalDocument.name);
           })
           .post(action === "duplicate", async ({ request }) => {
-            if (!collection.canCreate()) {
+            if (!user.canCreate(collection)) {
               throw new Error("Permission denied");
             }
 
@@ -280,7 +280,7 @@ app.path(
             return redirect(collection.name, "edit", duplicate.name);
           })
           .post(action === "delete", async () => {
-            if (!collection.canDelete()) {
+            if (!user.canDelete(collection)) {
               throw new Error("Permission denied");
             }
 

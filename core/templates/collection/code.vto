@@ -16,7 +16,7 @@
         <input
           class="input is-inline"
           id="_id"
-          type="{{ collection.canRename() ? 'text' : 'hidden' }}"
+          type="{{ user.canRename(collection) ? 'text' : 'hidden' }}"
           name="_id"
           value="{{document.name}}"
           placeholder="Rename the file…"
@@ -53,7 +53,7 @@
             Edit form
           </a>
 
-          {{ if collection.canCreate() }}
+          {{ if user.canCreate(collection) }}
             <u-confirm data-message="Duplicate this file?">
               <button
                 class="button is-secondary"
@@ -66,7 +66,7 @@
             </u-confirm>
           {{ /if }}
 
-          {{ if collection.canDelete() }}
+          {{ if user.canDelete(collection) }}
             <u-confirm data-message="Are you sure?">
               <button
                 class="button is-secondary"

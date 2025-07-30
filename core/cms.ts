@@ -16,6 +16,7 @@ import { filter } from "../deps/vento.ts";
 import { labelify } from "./utils/string.ts";
 import { checkBasicAuthorization } from "./utils/auth.ts";
 import { Git, Options as GitOptions } from "./git.ts";
+import User from "./user.ts";
 
 import type {
   CMSContent,
@@ -58,7 +59,7 @@ export interface RouterData {
   render: (file: string, data?: Record<string, unknown>) => Promise<string>;
   previewURL?: PreviewURL;
   sourcePath?: SourcePath;
-  user?: string;
+  user: User;
 }
 
 interface DocumentOptions {
@@ -355,6 +356,7 @@ export default class Cms {
       cms: content,
       previewURL: this.options.previewURL,
       sourcePath: this.options.sourcePath,
+      user: new User(),
       render: (file: string, data?: Record<string, unknown>) =>
         render(file, {
           ...data,
@@ -373,17 +375,17 @@ export default class Cms {
           "WWW-Authenticate": 'Basic realm="Secure Area"',
         },
       }))
-      .path(`${basePath}/*`, ({ request, next, _ }) => {
+      .path(`${basePath}/*`, ({ request, next, _, user }) => {
         // Basic authentication
-        let user: string | undefined;
+        let name: string | undefined;
         if (this.options.auth && _.join("/") !== "logout") {
           const authorization = request.headers.get("authorization") ??
             undefined;
-          user = authorization && checkBasicAuthorization(
+          name = authorization && checkBasicAuthorization(
             authorization,
             this.options.auth.users,
           );
-          if (!user) {
+          if (!name) {
             return new Response("Unauthorized", {
               status: 401,
               headers: {
@@ -393,7 +395,10 @@ export default class Cms {
           }
         }
 
-        return next<{ user?: string }>({ user })
+        // Set the user name
+        user.name = name;
+
+        return next()
           .path("/", indexRoute)
           .path("/document/*", documentRoute)
           .path("/collection/*", collectionRoute)

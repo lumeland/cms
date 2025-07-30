@@ -17,7 +17,7 @@
       <input
         class="input is-inline"
         id="_id"
-        type="{{ upload.canRename() ? 'text' : 'hidden' }}"
+        type="{{ user.canRename(collection) ? 'text' : 'hidden' }}"
         name="_id"
         value="{{ file }}"
         placeholder="Rename the file…"
@@ -46,7 +46,7 @@
     enctype="multipart/form-data"
     id="form-edit"
   >
-    {{ if upload.canEdit() }}
+    {{ if user.canEdit(upload) }}
       <div class="field">
         <input
           aria-label="Update"
@@ -58,7 +58,7 @@
       </div>
     {{ /if }}
     <footer class="footer ly-rowStack">
-      {{ if upload.canEdit() }}
+      {{ if user.canEdit(upload) }}
         <button class="button is-primary" type="submit">
           <u-icon name="check"></u-icon>
           Update file
@@ -86,7 +86,7 @@
         <u-icon name="download-simple"></u-icon>
       </a>
 
-      {{ if upload.canDelete() }}
+      {{ if user.canDelete(upload) }}
         <u-confirm data-message="Delete this file?">
           <button
             aria-label="Delete file"

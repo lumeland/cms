@@ -68,7 +68,7 @@ app.path(
         });
       })
       .post("/", async ({ request }) => {
-        if (!document.canEdit()) {
+        if (!user.canEdit(document)) {
           throw new Error("Permission denied to edit this document");
         }
         const body = await request.formData();
@@ -105,7 +105,7 @@ app.path(
         });
       })
       .post("/code", async ({ request }) => {
-        if (!document.canEdit()) {
+        if (!user.canEdit(document)) {
           throw new Error("Permission denied to edit this document");
         }
         const body = await request.formData();

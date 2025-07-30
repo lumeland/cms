@@ -84,7 +84,7 @@
   {{ /if }}
 
   <footer class="ly-rowStack footer is-responsive">
-    {{ if upload.canCreate() }}
+    {{ if user.canCreate(upload) }}
       <a
         href='{{ ["uploads", upload.name, "create"] |> path }}'
         class="button is-primary"
