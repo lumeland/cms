@@ -8,6 +8,7 @@ import {
 import { posix } from "../../deps/std.ts";
 import createTree from "../templates/tree.ts";
 import { Router } from "../../deps/galo.ts";
+import { parseExif } from "../../deps/exifr.ts";
 
 import type { RouterData } from "../cms.ts";
 
@@ -89,7 +90,7 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
 
         // If only one file is uploaded, redirect to its details
         if (files.length === 1) {
-          return redirect(upload.name, "file", fileId);
+          return redirect(upload.name, fileId, "edit");
         }
       }
 
@@ -114,6 +115,7 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
           return render("uploads/view.vto", {
             type: fileData.type,
             size: fileData.size,
+            exif: await parseExif(fileData),
             upload,
             file: name,
             user,

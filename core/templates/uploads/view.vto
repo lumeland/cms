@@ -38,6 +38,17 @@
       <dt>Size:</dt>
       <dd>{{ size |> formatBytes }}</dd>
     </dl>
+    {{ if exif }}
+      <details class="accordion">
+        <summary class="accordion-title is-fit">Show EXIF data</summary>
+        <dl class="header-description">
+          {{ for key, value of exif }}
+            <dt>{{ key }}:</dt>
+            <dd>{{ value }}</dd>
+          {{ /for }}
+        </dl>
+      </details>
+    {{ /if }}
   </header>
 
   <form

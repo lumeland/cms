@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New `edit` option to customize edit permissions for documents.
 - Permissions options form uploads (`create`, `rename`, `edit`, and `delete`).
 - User-level permissions
+- Show EXIF data of some files in the uploads detail.
 - New `type` option for documents and collections to indicate the root field. The available values:
   - `object`: The default value
   - `object-list`: To store an array of objects.
