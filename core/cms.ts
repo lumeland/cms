@@ -291,17 +291,13 @@ export default class Cms {
   initContent(): CMSContent {
     const content: CMSContent = {
       basePath: this.options.basePath,
-      auth: this.options.auth?.method === "basic",
       site: this.options.site!,
       data: this.options.data ?? {},
+      versioning: this.versionManager,
       collections: {},
       documents: {},
       uploads: {},
     };
-
-    if (this.versionManager) {
-      content.versioning = this.versionManager;
-    }
 
     for (
       const { name, label, description, store, publicPath, listed } of this

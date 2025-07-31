@@ -24,12 +24,13 @@ app.post("/*", async ({ request, cms, next }) => {
   const body = await request.formData();
   const name = body.get("name") as string;
 
-  const response = Response.redirect(
-    new URL(getPath(basePath), request.url),
-  );
-
-  // Add a header to trigger a reload in the proxy
-  response.headers.set("X-Lume-CMS", "reload");
+  const response = new Response(null, {
+    status: 302,
+    headers: new Headers({
+      "Location": new URL(getPath(basePath), request.url).toString(),
+      "X-Lume-CMS": "reload",
+    }),
+  });
 
   return next()
     /* POST /versions/create - Create a new version */

@@ -6,7 +6,7 @@ import type { RouterData } from "../cms.ts";
 const app = new Router<RouterData>();
 
 app.get("/", async ({ request, cms, render, sourcePath, user }) => {
-  const { collections, documents, uploads, site, basePath } = cms;
+  const { collections, documents, uploads, site, basePath, versioning } = cms;
   const searchParams = new URL(request.url).searchParams;
   const edit = searchParams.get("edit");
 
@@ -47,6 +47,7 @@ app.get("/", async ({ request, cms, render, sourcePath, user }) => {
     documents,
     uploads,
     user,
+    versioning,
   });
 });
 
