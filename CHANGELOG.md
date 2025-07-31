@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New `type` option for documents and collections to indicate the root field. The available values:
   - `object`: The default value
   - `object-list`: To store an array of objects.
+  - `choose`: To select between different objects
 
 ### Removed
 - Float button to edit the current page in the preview.

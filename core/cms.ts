@@ -62,7 +62,13 @@ export interface RouterData {
   user: User;
 }
 
-type DocumentType = "object" | "object-list";
+type DocumentType = "object" | "object-list" | "choose";
+
+const allowedTypes: DocumentType[] = [
+  "object",
+  "object-list",
+  "choose",
+];
 
 interface DocumentOptions {
   name: string;
@@ -447,6 +453,9 @@ export default class Cms {
     content: CMSContent,
     type: DocumentType = "object",
   ): Lume.CMS.ResolvedField {
+    if (!allowedTypes.includes(type)) {
+      throw new Error(`Unknown document type "${type}"`);
+    }
     const field = this.fields.get(type);
     if (!field) {
       throw new Error(`Field of type "${type}" was not found`);

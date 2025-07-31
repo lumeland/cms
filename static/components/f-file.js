@@ -45,7 +45,7 @@ customElements.define(
             }
 
             dom("u-modal", {
-              data: { src: url("uploads", upload, "file", filename) },
+              data: { src: url("uploads", upload, filename, "edit") },
             }, document.body);
           } else {
             dom("u-modal", {
