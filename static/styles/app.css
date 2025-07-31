@@ -1,34 +1,33 @@
+.app-container {
+  display: grid;
+  align-content: space-between;
+  row-gap: 2rem;
+  padding: 2rem;
+  box-sizing: border-box;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  min-height: 100vh;
+}
 .app {
-  margin: auto;
-  max-width: min(100% - 10vw, 900px);
   width: 100%;
-
-  &.is-preview {
-    margin: 0;
-    display: grid;
-    max-width: 100%;
-    min-height: 100vh;
-    grid-template-columns: clamp(300px, 40%, 700px) minmax(0, 1fr);
-
-    > iframe {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
+  max-width: var(--app-width);
+  margin: auto;
+}
+.app-nav {
+  position: relative;
+  z-index: 5;
+  u-dropdown {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 }
 .app-footer {
   text-align: center;
   font: var(--font-small);
   color: var(--color-dim);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  column-gap: 1em;
-  flex-wrap: wrap;
-  max-width: min(100% - 10vw, 900px);
   width: 100%;
+  max-width: var(--app-width);
   margin: auto;
 
   & a {

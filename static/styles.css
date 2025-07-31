@@ -30,6 +30,7 @@
 @import "./styles/u-popover.css";
 @import "./styles/u-upload.css";
 @import "./styles/u-cropper.css";
+@import "./styles/u-pagepreview.css";
 
 .is-small {
   font: var(--font-small);

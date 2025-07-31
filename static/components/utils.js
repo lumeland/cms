@@ -118,18 +118,6 @@ export function labelify(slug) {
   return slug;
 }
 
-const optionsKey = "lumecms_options";
-const initVal = localStorage.getItem(optionsKey);
-const currOptions = initVal ? JSON.parse(initVal) : {};
-
-export const options = {
-  get: (key) => currOptions[key],
-  set: (key, value) => {
-    currOptions[key] = value;
-    localStorage.setItem(optionsKey, JSON.stringify(currOptions));
-  },
-};
-
 /** Convert a Date to local timezone */
 export function toLocal(date) {
   const offset = date.getTimezoneOffset();

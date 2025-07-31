@@ -58,6 +58,9 @@
         {{ /if }}
 
         <u-dropdown>
+          <div slot="header">
+            Edit options
+          </div>
           {{ if user.canEdit(collection) }}
             <a
               class="button is-secondary"

@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - BREAKING: Replaced Hono with Galo.
+- Responsive layout to show the previews.
 
 ## [0.12.6] - 2025-07-18
 ### Fixed

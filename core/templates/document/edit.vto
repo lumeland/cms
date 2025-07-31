@@ -32,6 +32,9 @@
         <button class="button is-primary" type="submit">Save changes</button>
 
         <u-dropdown>
+          <div slot="header">
+            Edit options
+          </div>
           <a
             class="button is-secondary"
             href='{{ ["document", document.name, "code"] |> path }}'
