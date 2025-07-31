@@ -25,17 +25,19 @@
     "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono",
     "Liberation Mono", "Nimbus Mono L", "Courier New", Courier, monospace;
   --font-family-ui: -apple-system, system-ui, sans-serif;
-
+  --bold: 500;
   --font-code: 0.9em/1.5 var(--font-family-code);
-  --font-display: 600 clamp(2rem, 10vw, 4rem)/1 var(--font-family-ui);
+  --font-display: var(--bold) clamp(2rem, 10vw, 4rem)/1 var(--font-family-ui);
   --font-display-spacing: -0.02em;
-  --font-title: 600 clamp(1.5rem, 8vw, 2.5rem)/1.2 var(--font-family-ui);
+  --font-title: var(--bold) clamp(1.5rem, 8vw, 2.5rem)/1.2 var(
+    --font-family-ui
+  );
   --font-title-spacing: -0.01em;
   --font-body: clamp(1rem, 5vw, 1.125rem)/1.6 var(--font-family-ui);
-  --font-body-bold: 600 var(--font-body);
+  --font-body-bold: var(--bold) var(--font-body);
   --font-body-spacing: 0;
   --font-ui: 1rem/1.4 var(--font-family-ui);
-  --font-ui-bold: 600 var(--font-ui);
+  --font-ui-bold: var(--bold) var(--font-ui);
   --font-small: 0.85rem/1.4 var(--font-family-ui);
   --font-small-bold: 600 var(--font-small);
 
