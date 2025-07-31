@@ -19,8 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Removed
 - Float button to edit the current page in the preview.
-- `cms:*` global events.
-- Ability to name the root field as `[]` to indicate that it's an array. Use the new `type` option.
+- BREAKING: `cms:*` global events.
+- BREAKING: Ability to name the root field as `[]` to indicate that it's an array. Use the new `type` option.
 
 ### Changed
 - BREAKING: Replaced Hono with Galo.
