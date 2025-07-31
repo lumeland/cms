@@ -50,7 +50,7 @@ export function changesToData(
     }
   }
 
-  return data.changes as Data;
+  return data as Data;
 }
 
 export async function prepareField(

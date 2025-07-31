@@ -15,7 +15,7 @@
     </header>
 
     <form
-      action='{{ ["document", "code", document.name] |> path }}'
+      action='{{ ["document", document.name, "code"] |> path }}'
       method="post"
       class="form"
       id="form-edit"

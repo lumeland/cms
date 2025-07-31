@@ -81,10 +81,20 @@
   border-left: solid 1px var(--color-line);
 
   &:empty {
-    display: none;
+    display: none !important;
   }
   &.is-separated {
     row-gap: 1.5em;
+  }
+  &.is-root {
+    display: grid;
+    border: none;
+    margin-left: 0;
+    padding-left: 0;
+
+    &.is-separated {
+      row-gap: 2em;
+    }
   }
 }
 

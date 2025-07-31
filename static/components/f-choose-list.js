@@ -1,4 +1,4 @@
-import { view } from "./utils.js";
+import { getFieldName, view } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -8,7 +8,7 @@ customElements.define(
     init() {
       this.classList.add("field");
       const { schema, value, isNew } = this;
-      const namePrefix = `${this.namePrefix}.${schema.name}`;
+      const namePrefix = getFieldName(this);
       let open = true;
 
       view(this);

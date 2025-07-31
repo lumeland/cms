@@ -142,3 +142,11 @@ export function updateField(field, schema, input) {
   field.querySelector(".field-description").innerHTML = schema.description ??
     "";
 }
+
+export function getFieldName(field) {
+  const { namePrefix, schema } = field;
+  if (namePrefix) {
+    return `${namePrefix}.${schema.name}`;
+  }
+  return schema.name;
+}

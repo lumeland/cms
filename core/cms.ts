@@ -62,10 +62,13 @@ export interface RouterData {
   user: User;
 }
 
+type DocumentType = "object" | "object-list";
+
 interface DocumentOptions {
   name: string;
   label?: string;
   description?: string;
+  type?: DocumentType;
   store: string;
   fields: Lume.CMS.Field[];
   url?: string;
@@ -77,6 +80,7 @@ interface CollectionOptions {
   name: string;
   label?: string;
   description?: string;
+  type?: DocumentType;
   store: string;
   fields: Lume.CMS.Field[];
   url?: string;
@@ -309,13 +313,14 @@ export default class Cms {
     }
 
     for (
-      const { name, label, store, fields, documentLabel, ...options } of this
-        .collections
-        .values()
+      const { name, label, store, fields, documentLabel, type, ...options }
+        of this
+          .collections
+          .values()
     ) {
       content.collections[name] = new Collection({
         storage: this.#getStorage(store),
-        fields: this.#resolveFields(fields, content),
+        fields: this.#resolveFields(fields, content, type),
         name,
         label: label ?? labelify(name),
         documentLabel: documentLabel
@@ -326,12 +331,12 @@ export default class Cms {
     }
 
     for (
-      const { name, label, store, fields, ...options } of this.documents
+      const { name, label, store, fields, type, ...options } of this.documents
         .values()
     ) {
       content.documents[name] = new Document({
         entry: this.#getEntry(store),
-        fields: this.#resolveFields(fields, content),
+        fields: this.#resolveFields(fields, content, type),
         name,
         label: label ?? labelify(name),
         ...options,
@@ -440,8 +445,21 @@ export default class Cms {
   #resolveFields(
     fields: Lume.CMS.Field[],
     content: CMSContent,
-  ): Lume.CMS.ResolvedField[] {
-    return fields.map((field) => this.#resolveField(field, content));
+    type: DocumentType = "object",
+  ): Lume.CMS.ResolvedField {
+    const field = this.fields.get(type);
+    if (!field) {
+      throw new Error(`Field of type "${type}" was not found`);
+    }
+
+    return {
+      name: "root",
+      type: "object",
+      tag: field.tag + "-root",
+      applyChanges: field.applyChanges,
+      init: field.init,
+      fields: fields.map((field) => this.#resolveField(field, content)),
+    } as Lume.CMS.ResolvedField;
   }
 
   #resolveField(
@@ -480,9 +498,8 @@ export default class Cms {
     };
 
     if (resolvedField.fields) {
-      resolvedField.fields = this.#resolveFields(
-        resolvedField.fields,
-        content,
+      resolvedField.fields = resolvedField.fields.map((field: Lume.CMS.Field) =>
+        this.#resolveField(field, content)
       );
     }
 

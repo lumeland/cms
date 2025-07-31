@@ -44,17 +44,14 @@ app.path(
           });
         }
 
-        const fields = await Promise.all(
-          document.fields.map((field) => prepareField(field, cms, data)),
-        );
-
+        const fields = await prepareField(document.fields, cms, data);
         const documentViews = document.views;
         const initViews = typeof documentViews === "function"
           ? documentViews() || []
           : documentViews || [];
 
         const views = new Set();
-        document.fields.forEach((field) => getViews(field, views));
+        getViews(document.fields, views);
         const url = document.url ?? await previewURL?.(document.src);
 
         return render("document/edit.vto", {
@@ -83,18 +80,22 @@ app.path(
       })
       .get("/code", async () => {
         const code = await document.readText(true);
-        const fields = [{
-          tag: "f-code",
-          name: "code",
-          label: "Code",
-          type: "code",
-          attributes: {
-            data: {
-              language: getLanguageCode(document.name),
+        const fields = {
+          tag: "f-object-root",
+          name: "root",
+          fields: [{
+            tag: "f-code",
+            name: "code",
+            label: "Code",
+            type: "code",
+            attributes: {
+              data: {
+                language: getLanguageCode(document.name),
+              },
             },
-          },
-        }];
-        const data = { code };
+          }],
+        };
+        const data = { root: { code } };
         const url = document.url ?? await previewURL?.(document.src);
         return render("document/code.vto", {
           fields,
@@ -109,7 +110,7 @@ app.path(
           throw new Error("Permission denied to edit this document");
         }
         const body = await request.formData();
-        const code = body.get("changes.code") as string | undefined;
+        const code = body.get("root.code") as string | undefined;
         document.writeText(code ?? "");
         // Wait for the site to be ready
         document.url ?? await previewURL?.(document.src);

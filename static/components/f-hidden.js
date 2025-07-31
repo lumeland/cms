@@ -1,12 +1,13 @@
 import { Component } from "./component.js";
+import { getFieldName } from "./utils.js";
 import dom from "dom";
 
 customElements.define(
   "f-hidden",
   class extends Component {
     init() {
-      const { schema, value, namePrefix, isNew } = this;
-      const name = `${namePrefix}.${schema.name}`;
+      const { schema, value, isNew } = this;
+      const name = getFieldName(this);
 
       dom("input", {
         type: "hidden",

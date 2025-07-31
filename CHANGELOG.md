@@ -12,10 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New `edit` option to customize edit permissions for documents.
 - Permissions options form uploads (`create`, `rename`, `edit`, and `delete`).
 - User-level permissions
+- New `type` option for documents and collections to indicate the root field. The available values:
+  - `object`: The default value
+  - `object-list`: To store an array of objects.
 
 ### Removed
 - Float button to edit the current page in the preview.
 - `cms:*` global events.
+- Ability to name the root field as `[]` to indicate that it's an array. Use the new `type` option.
 
 ### Changed
 - BREAKING: Replaced Hono with Galo.

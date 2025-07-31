@@ -10,6 +10,7 @@ export function fromFilename(path: string): Transformer<string> {
 
   switch (ext) {
     case ".json":
+    case "":
       return Json;
     case ".yaml":
     case ".yml":

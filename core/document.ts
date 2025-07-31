@@ -6,7 +6,7 @@ export interface DocumentOptions {
   label?: string;
   description?: string;
   entry: Entry;
-  fields: Lume.CMS.ResolvedField[];
+  fields: Lume.CMS.ResolvedField;
   url?: string;
   views?: string[] | ((data?: Data) => string[] | undefined);
   edit?: boolean;
@@ -21,7 +21,7 @@ export default class Document {
   #label?: string;
   description?: string;
   #entry: Entry;
-  #fields: Lume.CMS.ResolvedField[];
+  #fields: Lume.CMS.ResolvedField;
   url?: string;
   views?: string[] | ((data?: Data) => string[] | undefined);
   permissions: Permissions;
@@ -72,35 +72,21 @@ export default class Document {
 
   async read(create = false) {
     try {
-      return (await this.#entry.readData()) ?? {};
+      return {
+        root: (await this.#entry.readData()) ?? {},
+      };
     } catch (err) {
       if (!(err instanceof TransformError) && create) {
-        return {};
+        return { root: {} };
       }
       throw err;
     }
   }
 
   async write(data: Data, cms: CMSContent, create = false) {
-    let currentData = await this.read(create);
-    const fields = this.fields || [];
-
-    const isArray = fields.length === 1 && fields[0].name === "[]" &&
-      ("[]" in data);
-
-    if (isArray) {
-      currentData = { "[]": currentData };
-    }
-
-    for (const field of this.fields || []) {
-      await field.applyChanges(currentData, data, field, this, cms);
-    }
-
-    if (isArray) {
-      currentData = currentData["[]"] as Data;
-    }
-
-    await this.#entry.writeData(currentData);
+    const currentData = await this.read(create);
+    await this.fields.applyChanges(currentData, data, this.fields, this, cms);
+    await this.#entry.writeData(currentData.root);
   }
 
   /** User permission to edit the document */

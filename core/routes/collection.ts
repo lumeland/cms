@@ -57,17 +57,14 @@ app.path(
             const { searchParams } = new URL(request.url);
             const defaults = Object.fromEntries(searchParams);
 
-            const fields = await Promise.all(
-              collection.fields.map((field) => prepareField(field, cms)),
-            );
-
+            const fields = await prepareField(collection.fields, cms);
             const collectionViews = collection.views;
             const initViews = typeof collectionViews === "function"
               ? collectionViews() || []
               : collectionViews || [];
 
             const views = new Set();
-            collection.fields.forEach((field) => getViews(field, views));
+            getViews(collection.fields, views);
 
             return render("collection/create.vto", {
               defaults,
@@ -132,17 +129,14 @@ app.path(
               });
             }
 
-            const fields = await Promise.all(
-              collection.fields.map((field) => prepareField(field, cms, data)),
-            );
-
+            const fields = await prepareField(collection.fields, cms, data);
             const collectionViews = collection.views;
             const initViews = typeof collectionViews === "function"
               ? collectionViews() || []
               : collectionViews || [];
 
             const views = new Set();
-            collection.fields.forEach((field) => getViews(field, views));
+            getViews(collection.fields, views);
             const url = document.url ?? await previewURL?.(document.src);
 
             return render("collection/edit.vto", {
@@ -196,18 +190,22 @@ app.path(
           })
           .get(action === "code", async () => {
             const code = await document.readText();
-            const fields = [{
-              tag: "f-code",
-              name: "code",
-              label: "Code",
-              type: "code",
-              attributes: {
-                data: {
-                  language: getLanguageCode(document.name),
+            const fields = {
+              tag: "f-object-root",
+              name: "root",
+              fields: [{
+                tag: "f-code",
+                name: "code",
+                label: "Code",
+                type: "code",
+                attributes: {
+                  data: {
+                    language: getLanguageCode(document.name),
+                  },
                 },
-              },
-            }];
-            const data = { code };
+              }],
+            };
+            const data = { root: { code } };
             const url = document.url ?? await previewURL?.(document.src);
 
             return render("collection/code.vto", {
@@ -240,7 +238,7 @@ app.path(
               finalDocument = collection.get(newName);
             }
 
-            const code = body.get("changes.code") as string | undefined;
+            const code = body.get("root.code") as string | undefined;
             finalDocument.writeText(code ?? "");
             // Wait for the site to be ready
             finalDocument.url ?? await previewURL?.(finalDocument.src, true);
@@ -303,7 +301,7 @@ function getDocumentName(
       return collection.documentName.replaceAll(
         /\{([^}\s]+)\}/g,
         (_, key) => {
-          const value = changes[`changes.${key}`];
+          const value = changes[`root.${key}`];
           if (typeof value === "string") {
             return value.replaceAll("/", "").trim();
           }
@@ -312,7 +310,7 @@ function getDocumentName(
       ).trim();
 
     case "function":
-      return collection.documentName(data);
+      return collection.documentName((data.root ?? {}) as Data);
   }
 }
 
