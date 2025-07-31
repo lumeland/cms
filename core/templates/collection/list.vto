@@ -12,7 +12,7 @@
       {{ if typeof child === "string" }}
         <li>
           <a
-            href='{{ ["collection", collection.name, "edit", child] |> path }}'
+            href='{{ ["collection", collection.name, child, "edit"] |> path }}'
             class="list-item"
             title="{{ name }}"
           >

@@ -76,8 +76,8 @@ export async function prepareField(
 
 export function getViews(
   field: Lume.CMS.ResolvedField,
-  views = new Set(),
-): unknown {
+  views = new Set<string>(),
+): Set<string> {
   if (typeof field.view === "string") {
     views.add(field.view);
   }

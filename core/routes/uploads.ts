@@ -17,10 +17,10 @@ import type { RouterData } from "../cms.ts";
  *
  * /uploads/:name/ - List files in the upload
  * /uploads/:name/create - Create a new file or folder
- * /uploads/:name/raw/:file - Get raw file content
- * /uploads/:name/file/:file - View file details and edit
- * /uploads/:name/crop/:file - Crop an image file
- * /uploads/:name/delete/:file - Delete a file
+ * /uploads/:name/:file - Get raw file content
+ * /uploads/:name/:file/edit - Edit a file
+ * /uploads/:name/:file/crop - Crop an image file
+ * /uploads/:name/:file/delete - Delete a file
  */
 
 const app = new Router<RouterData>();
@@ -41,17 +41,15 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
   }
 
   return next()
-    // List all files in the upload
+    /* GET /uploads/:name/ - List files in the upload */
     .get("/", async () => {
-      const files = await Array.fromAsync(upload);
-
       return render("uploads/list.vto", {
         upload,
-        tree: createTree(files),
+        tree: createTree(await Array.fromAsync(upload)),
         user,
       });
     })
-    // Show the form to upload a new file
+    /* GET /uploads/:name/create - Show the file upload form */
     .get("/create", ({ request }) => {
       if (!user.canCreate(upload)) {
         throw new Error("Permission denied to create files in this upload");
@@ -64,7 +62,7 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
         user,
       });
     })
-    // Handle file upload
+    /* POST /uploads/:name/create - Upload a new file */
     .post("/create", async ({ request }) => {
       if (!user.canCreate(upload)) {
         throw new Error("Permission denied to create files in this upload");
@@ -89,6 +87,7 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
         const entry = upload.get(fileId);
         await entry.writeFile(file);
 
+        // If only one file is uploaded, redirect to its details
         if (files.length === 1) {
           return redirect(upload.name, "file", fileId);
         }
@@ -96,8 +95,8 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
 
       return redirect(upload.name);
     })
-    // Handle file actions
-    .path("/:action/:file", ({ action, file, next }) => {
+    /* GET /uploads/:name/:file/* - File actions */
+    .path("/:file/*", ({ file, next }) => {
       const name = normalizeName(file);
 
       if (!name) {
@@ -105,10 +104,10 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
       }
 
       return next()
-        // Get raw file content
-        .get(action === "raw", () => upload.get(name).readFile())
-        // View file details and edit
-        .get(action === "file", async () => {
+        /* GET /uploads/:name/:file - Get raw file content */
+        .get("/", () => upload.get(name).readFile())
+        /* GET /uploads/:name/:file/edit - Show the file edit form */
+        .get("/edit", async () => {
           const entry = upload.get(name);
           const fileData = await entry.readFile();
 
@@ -120,8 +119,8 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
             user,
           });
         })
-        // Update file details or upload a new file
-        .post(action === "file", async ({ request }) => {
+        /* POST /uploads/:name/:file/edit - Edit the file */
+        .post("/edit", async ({ request }) => {
           if (!user.canEdit(upload)) {
             throw new Error("Permission denied to edit this file");
           }
@@ -132,6 +131,7 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
             throw new Error("Invalid file name");
           }
 
+          // Rename the file if the name has changed
           if (name !== newName) {
             await upload.rename(name, newName);
           }
@@ -143,7 +143,7 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
             await entry.writeFile(file);
           }
 
-          // Convert format
+          // Convert format if the extension has changed (e.g., from .jpg to .png)
           const format = formatSupported(newName);
           if (name !== newName && formatSupported(name) && format) {
             const extFrom = name.split(".").pop();
@@ -157,15 +157,16 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
             }
           }
 
-          return redirect(upload.name, "file", newName);
+          return redirect(upload.name, newName, "edit");
         })
-        // Show the crop form for images
-        .get(action === "crop", () => {
+        /* GET /uploads/:name/:file/crop - Show the crop form for images */
+        .get("/crop", () => {
           if (!user.canEdit(upload)) {
             throw new Error("Permission denied to edit this file");
           }
+
           if (!formatSupported(name)) {
-            return redirect(upload.name, "file", name);
+            return redirect(upload.name, name, "edit");
           }
 
           return render("uploads/crop.vto", {
@@ -174,8 +175,8 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
             user,
           });
         })
-        // Handle image cropping
-        .post(action === "crop", async ({ request }) => {
+        /* POST /uploads/:name/:file/crop - Crop the image */
+        .post("/crop", async ({ request }) => {
           if (!user.canEdit(upload)) {
             throw new Error("Permission denied to edit this file");
           }
@@ -201,10 +202,10 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
 
           const file = new File([img], name);
           await entry.writeFile(file);
-          return redirect(upload.name, "file", name);
+          return redirect(upload.name, name, "edit");
         })
-        // Delete a file
-        .post(action === "delete", async () => {
+        /* POST /uploads/:name/:file/delete - Delete the file */
+        .post("/delete", async () => {
           if (!user.canDelete(upload)) {
             throw new Error("Permission denied to delete this file");
           }

@@ -13,11 +13,11 @@ import type { Data } from "../../types.ts";
  * Handles viewing, editing, creating, and deleting documents within a collection.
  *
  * /collection/:name - View the collection
- * /collection/create - Create a new document in the collection
- * /collection/:name/edit/:file - Edit a document in the collection
- * /collection/:name/code/:file - Edit the code of a document in the collection
- * /collection/:name/duplicate/:file - Duplicate a document in the collection
- * /collection/:name/delete/:file - Delete a document in the collection
+ * /collection/:name/create - Create a new document in the collection
+ * /collection/:name/:file/edit - Edit a document in the collection
+ * /collection/:name/:file/code - Edit the code of a document in the collection
+ * /collection/:name/:file/duplicate - Duplicate a document in the collection
+ * /collection/:name/:file/delete - Delete a document in the collection
  */
 
 const app = new Router<RouterData>();
@@ -38,15 +38,15 @@ app.path(
     }
 
     return next()
+      /* /collection/:name - View the collection */
       .get("/", async () => {
-        const documents = await Array.fromAsync(collection);
-
         return render("collection/list.vto", {
           collection,
-          tree: createTree(documents),
+          tree: createTree(await Array.fromAsync(collection)),
           user,
         });
       })
+      /* /collection/:name/create - Create a new document in the collection */
       .path("/create", ({ next }) => {
         if (!user.canCreate(collection)) {
           throw new Error("Permission denied");
@@ -55,23 +55,16 @@ app.path(
         return next()
           .get(async ({ request }) => {
             const { searchParams } = new URL(request.url);
-            const defaults = Object.fromEntries(searchParams);
-
-            const fields = await prepareField(collection.fields, cms);
-            const collectionViews = collection.views;
-            const initViews = typeof collectionViews === "function"
-              ? collectionViews() || []
-              : collectionViews || [];
-
-            const views = new Set();
-            getViews(collection.fields, views);
+            const initViews = typeof collection.views === "function"
+              ? collection.views() || []
+              : collection.views || [];
 
             return render("collection/create.vto", {
-              defaults,
+              defaults: Object.fromEntries(searchParams),
               collection,
-              fields,
+              fields: await prepareField(collection.fields, cms),
               initViews,
-              views: Array.from(views),
+              views: Array.from(getViews(collection.fields)),
               folder: normalizeName(searchParams.get("folder")),
               user,
             });
@@ -80,6 +73,8 @@ app.path(
             const body = await request.formData();
             const changes = Object.fromEntries(body);
             const data = changesToData(changes);
+
+            // Calculate the document name
             let name = normalizeName(body.get("_id") as string) ||
               getDocumentName(collection, data, changes);
 
@@ -94,28 +89,27 @@ app.path(
               );
             }
 
+            // Write the document
             const document = collection.create(name);
             await document.write(data, cms, true);
-            // Wait for the site to be ready
+
+            // Wait for the previewURL to be ready before redirecting
             document.url ?? await previewURL?.(document.src, true);
-            return redirect(collection.name, "edit", document.name);
+            return redirect(collection.name, document.name, "edit");
           });
       })
-      .path("/:action/:file", ({ action, file, next }) => {
-        const name = normalizeName(file);
-
-        if (!name) {
-          return new Response("Not found", { status: 400 });
-        }
-
-        const document = collection?.get(name);
+      /* /collection/:name/:file/* - Document actions */
+      .path("/:file/*", ({ file, next }) => {
+        file = normalizeName(file);
+        const document = collection?.get(file);
 
         if (!document) {
           return new Response("Not found", { status: 404 });
         }
 
         return next()
-          .get(action === "edit", async () => {
+          /* GET /collection/:name/:file/edit - Show edit form */
+          .get("/edit", async () => {
             let data: Data;
 
             try {
@@ -129,28 +123,23 @@ app.path(
               });
             }
 
-            const fields = await prepareField(collection.fields, cms, data);
-            const collectionViews = collection.views;
-            const initViews = typeof collectionViews === "function"
-              ? collectionViews() || []
-              : collectionViews || [];
-
-            const views = new Set();
-            getViews(collection.fields, views);
-            const url = document.url ?? await previewURL?.(document.src);
+            const initViews = typeof collection.views === "function"
+              ? collection.views() || []
+              : collection.views || [];
 
             return render("collection/edit.vto", {
               collection,
-              fields,
+              fields: await prepareField(collection.fields, cms, data),
               data,
               initViews,
-              url,
-              views: Array.from(views),
+              url: document.url ?? await previewURL?.(document.src),
+              views: Array.from(getViews(collection.fields)),
               document,
               user,
             });
           })
-          .post(action === "edit", async () => {
+          /* POST /collection/:name/:file/edit - Save edit data */
+          .post("/edit", async () => {
             const body = await request.formData();
             let newName = normalizeName(body.get("_id") as string);
             let finalDocument = document;
@@ -184,12 +173,13 @@ app.path(
             }
 
             await finalDocument.write(data, cms);
-            // Wait for the site to be ready
+            // Wait for the preview URL to be ready
             finalDocument.url ?? await previewURL?.(finalDocument.src, true);
-            return redirect(collection.name, "edit", finalDocument.name);
+            return redirect(collection.name, finalDocument.name, "edit");
           })
-          .get(action === "code", async () => {
-            const code = await document.readText();
+          /* GET /collection/:name/:file/code - Show the code editor */
+          .get("/code", async () => {
+            const data = { root: { code: await document.readText() } };
             const fields = {
               tag: "f-object-root",
               name: "root",
@@ -205,19 +195,18 @@ app.path(
                 },
               }],
             };
-            const data = { root: { code } };
-            const url = document.url ?? await previewURL?.(document.src);
 
             return render("collection/code.vto", {
               collection,
               fields,
               data,
-              url,
+              url: document.url ?? await previewURL?.(document.src),
               document,
               user,
             });
           })
-          .post(action === "code", async ({ request }) => {
+          /* POST /collection/:name/:file/code - Save code changes */
+          .post("/code", async ({ request }) => {
             const body = await request.formData();
             let newName = normalizeName(body.get("_id") as string);
             let finalDocument = document;
@@ -240,11 +229,12 @@ app.path(
 
             const code = body.get("root.code") as string | undefined;
             finalDocument.writeText(code ?? "");
-            // Wait for the site to be ready
+            // Wait for the preview URL to be ready
             finalDocument.url ?? await previewURL?.(finalDocument.src, true);
-            return redirect(collection.name, "code", finalDocument.name);
+            return redirect(collection.name, finalDocument.name, "code");
           })
-          .post(action === "duplicate", async ({ request }) => {
+          /* POST /collection/:name/:file/duplicate - Duplicate the document */
+          .post("/duplicate", async ({ request }) => {
             if (!user.canCreate(collection)) {
               throw new Error("Permission denied");
             }
@@ -256,6 +246,7 @@ app.path(
               throw new Error("Document name is required");
             }
 
+            // If the name is already used, append "-copy" to it
             if (document.name === name) {
               const ext = getExtension(name);
               if (ext) {
@@ -273,11 +264,12 @@ app.path(
               cms,
               true,
             );
-            // Wait for the site to be ready
+            // Wait for the preview URL to be ready
             document.url ?? await previewURL?.(document.src, true);
-            return redirect(collection.name, "edit", duplicate.name);
+            return redirect(collection.name, duplicate.name, "edit");
           })
-          .post(action === "delete", async () => {
+          /* POST /collection/:name/:file/delete - Delete the document */
+          .post("/delete", async () => {
             if (!user.canDelete(collection)) {
               throw new Error("Permission denied");
             }

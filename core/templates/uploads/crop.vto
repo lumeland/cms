@@ -4,13 +4,13 @@
       version,
       links: [
         [upload.label, ["uploads", upload.name]],
-        ["File details", ["uploads", upload.name, "file", file]],
+        ["File details", ["uploads", upload.name, file, "edit"]],
         "Crop image",
       ],
     }
   }}
 
-  {{ set src = ["uploads", upload.name, "raw", file] |> path }}
+  {{ set src = ["uploads", upload.name, file] |> path }}
 
   <header class="header">
     <h1 class="header-title">
@@ -33,7 +33,7 @@
     <footer class="footer ly-rowStack">
       <a
         class="button is-secondary"
-        href='{{ ["uploads", upload.name, "file", file] |> path }}'
+        href='{{ ["uploads", upload.name, file] |> path }}'
       >
         Cancel
       </a>

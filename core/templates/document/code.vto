@@ -3,7 +3,7 @@
     include "breadcrumb.vto" {
       version,
       links: [
-        [document.label, ["document", document.name]],
+        [document.label, ["document", document.name, "edit"]],
         "Editing code",
       ],
     }
@@ -34,7 +34,7 @@
         <u-dropdown>
           <a
             class="button is-secondary"
-            href='{{ ["document", document.name] |> path }}'
+            href='{{ ["document", document.name, "edit"] |> path }}'
           >
             <u-icon name="textbox"></u-icon>
             Edit form

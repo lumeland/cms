@@ -17,7 +17,7 @@
     {{ /if }}
 
     <form
-      action='{{ ["document", document.name] |> path }}'
+      action='{{ ["document", document.name, "edit"] |> path }}'
       method="post"
       class="form"
       id="form-edit"

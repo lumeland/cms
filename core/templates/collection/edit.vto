@@ -38,7 +38,7 @@
     {{ /if }}
 
     <form
-      action='{{ ["collection", collection.name, "edit", document.name] |> path }}'
+      action='{{ ["collection", collection.name, document.name, "edit"] |> path }}'
       method="post"
       class="form"
       enctype="multipart/form-data"
@@ -61,7 +61,7 @@
           {{ if user.canEdit(collection) }}
             <a
               class="button is-secondary"
-              href='{{ ["collection", collection.name, "code", document.name] |> path }}'
+              href='{{ ["collection", collection.name, document.name, "code"] |> path }}'
             >
               <u-icon name="code"></u-icon>
               Edit code
@@ -73,7 +73,7 @@
               <button
                 class="button is-secondary"
                 type="submit"
-                formAction='{{ ["collection", collection.name, "duplicate", document.name] |> path }}'
+                formAction='{{ ["collection", collection.name, document.name, "duplicate"] |> path }}'
               >
                 <u-icon name="files"></u-icon>
                 Duplicate
@@ -86,7 +86,7 @@
               <button
                 class="button is-secondary"
                 type="submit"
-                formAction='{{ ["collection", collection.name, "delete", document.name] |> path }}'
+                formAction='{{ ["collection", collection.name, document.name, "delete"] |> path }}'
               >
                 <u-icon name="trash"></u-icon>
                 Delete

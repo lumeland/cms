@@ -13,7 +13,7 @@
       {{ if typeof child === "string" }}
         <li>
           <a
-            href='{{ ["uploads", upload.name, "file", child] |> path }}'
+            href='{{ ["uploads", upload.name, child, "edit"] |> path }}'
             class="list-item"
           >
             <u-icon-file path="{{child}}"></u-icon-file> {{ name }}
@@ -25,7 +25,7 @@
             <template>
               <u-preview
                 id="preview_{{child}}"
-                data-src='{{ ["uploads", upload.name, "raw", child] |> path }}'
+                data-src='{{ ["uploads", upload.name, child] |> path }}'
               >
               </u-preview>
             </template>

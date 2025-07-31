@@ -39,7 +39,7 @@
     {{ for document of documents }}
       <li>
         <a
-          href='{{ ["document", document.name] |> path }}'
+          href='{{ ["document", document.name, "edit"] |> path }}'
           class="list-item"
           title="{{ document.label }}"
         >
@@ -98,9 +98,8 @@
             <form
               class="list-item"
               method="post"
-              action='{{ ["versions"] |> path }}'
+              action='{{ ["versions", "change"] |> path }}'
             >
-              <input type="hidden" name="action" value="change">
               <input type="hidden" name="name" value="{{ version.name }}">
               <button>
                 <u-icon name="circle"></u-icon> {{ version.name }}
@@ -110,8 +109,7 @@
 
           {{ if !version.isProduction }}
             <u-confirm data-message="Are you sure?">
-              <form method="post" action='{{ ["versions"] |> path }}'>
-                <input type="hidden" name="action" value="delete">
+              <form method="post" action='{{ ["versions", "delete"] |> path }}'>
                 <input type="hidden" name="name" value="{{ version.name }}">
                 <button class="buttonIcon" aria-label="Delete">
                   <u-icon name="trash"></u-icon>
@@ -120,8 +118,7 @@
             </u-confirm>
           {{ /if }}
 
-          <form method="post" action='{{ ["versions"] |> path }}'>
-            <input type="hidden" name="action" value="publish">
+          <form method="post" action='{{ ["versions", "publish"] |> path }}'>
             <input type="hidden" name="name" value="{{ version.name }}">
             <button class="button is-secondary">
               {{ if version.isProduction }}
@@ -142,9 +139,8 @@
     <dialog class="modal is-center" id="modal-new-version">
       <form
         method="post"
-        action='{{ ["versions"] |> path }}'
+        action='{{ ["versions", "create"] |> path }}'
       >
-        <input type="hidden" name="action" value="create">
         <div class="field">
           <label for="version-name">Name of the new version</label>
           <input

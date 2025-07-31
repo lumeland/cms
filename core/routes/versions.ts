@@ -5,7 +5,16 @@ import type { RouterData } from "../cms.ts";
 
 const app = new Router<RouterData>();
 
-app.post("/", async ({ request, cms }) => {
+/**
+ * Route for handling versioning actions.
+ * It supports creating, changing, publishing, and deleting versions.
+ *
+ * /versions/create - Create a new version
+ * /versions/change - Change the current version
+ * /versions/publish - Publish the current version
+ * /versions/delete - Delete a version
+ */
+app.post("/*", async ({ request, cms, next }) => {
   const { versioning, basePath } = cms;
 
   if (!versioning) {
@@ -14,7 +23,6 @@ app.post("/", async ({ request, cms }) => {
 
   const body = await request.formData();
   const name = body.get("name") as string;
-  const action = body.get("action") as string;
 
   const response = Response.redirect(
     new URL(getPath(basePath), request.url),
@@ -23,28 +31,28 @@ app.post("/", async ({ request, cms }) => {
   // Add a header to trigger a reload in the proxy
   response.headers.set("X-Lume-CMS", "reload");
 
-  if (action === "create") {
-    versioning.create(name);
-    versioning.change(name);
-    return response;
-  }
-
-  if (action === "change") {
-    versioning.change(name);
-    return response;
-  }
-
-  if (action === "publish") {
-    versioning.publish(name);
-    return response;
-  }
-
-  if (action === "delete") {
-    versioning.delete(name);
-    return response;
-  }
-
-  return new Response("Invalid action", { status: 400 });
+  return next()
+    /* POST /versions/create - Create a new version */
+    .post("/create", () => {
+      versioning.create(name);
+      versioning.change(name);
+      return response;
+    })
+    /* POST /versions/change - Change the current version */
+    .post("/change", () => {
+      versioning.change(name);
+      return response;
+    })
+    /* POST /versions/publish - Publish the current version */
+    .post("/publish", () => {
+      versioning.publish(name);
+      return response;
+    })
+    /* POST /versions/delete - Delete a version */
+    .post("/delete", () => {
+      versioning.delete(name);
+      return response;
+    });
 });
 
 export default app;

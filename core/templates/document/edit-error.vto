@@ -3,7 +3,7 @@
     include "breadcrumb.vto" {
       version,
       links: [
-        [document.label, ["document", document.name]],
+        [document.label, ["document", document.name, "edit"]],
         "Editing file",
       ],
     }
@@ -21,7 +21,7 @@
     <footer class="errorState-footer ly-rowStack">
       <a
         class="button is-primary"
-        href='{{ ["document", "code", document.name] |> path }}'
+        href='{{ ["document", document.name, "code"] |> path }}'
       >
         <u-icon name="code"></u-icon>
         Edit raw code

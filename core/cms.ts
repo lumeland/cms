@@ -4,7 +4,7 @@ import documentRoute from "./routes/document.ts";
 import collectionRoute from "./routes/collection.ts";
 import versionsRoute from "./routes/versions.ts";
 import indexRoute from "./routes/index.ts";
-import filesRoute from "./routes/files.ts";
+import uploadsRoute from "./routes/uploads.ts";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
 import Upload from "./upload.ts";
@@ -398,7 +398,7 @@ export default class Cms {
           .path("/", indexRoute)
           .path("/document/*", documentRoute)
           .path("/collection/*", collectionRoute)
-          .path("/uploads/*", filesRoute)
+          .path("/uploads/*", uploadsRoute)
           .path("/versions/*", versionsRoute)
           .get("/logout", () =>
             new Response("Logged out", {

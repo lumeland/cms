@@ -9,7 +9,7 @@ import type { Data } from "../../types.ts";
  * Route for managing document editing in the CMS.
  * Handles viewing, editing, and saving documents.
  *
- * /document/:name - View and edit a document
+ * /document/:name/edit - Edit a document
  * /document/:name/code - Edit the document's code
  */
 
@@ -33,7 +33,8 @@ app.path(
     }
 
     return next()
-      .get("/", async () => {
+      /* GET /document/:name/edit - Show the document editor */
+      .get("/edit", async () => {
         let data: Data;
         try {
           data = await document.read(true);
@@ -44,27 +45,22 @@ app.path(
           });
         }
 
-        const fields = await prepareField(document.fields, cms, data);
-        const documentViews = document.views;
-        const initViews = typeof documentViews === "function"
-          ? documentViews() || []
-          : documentViews || [];
-
-        const views = new Set();
-        getViews(document.fields, views);
-        const url = document.url ?? await previewURL?.(document.src);
+        const initViews = typeof document.views === "function"
+          ? document.views() || []
+          : document.views || [];
 
         return render("document/edit.vto", {
           document,
-          fields,
-          views: Array.from(views),
+          fields: await prepareField(document.fields, cms, data),
+          views: Array.from(getViews(document.fields)),
           initViews,
-          url,
+          url: document.url ?? await previewURL?.(document.src),
           data,
           user,
         });
       })
-      .post("/", async ({ request }) => {
+      /* POST /document/:name/edit - Save the document */
+      .post("/edit", async ({ request }) => {
         if (!user.canEdit(document)) {
           throw new Error("Permission denied to edit this document");
         }
@@ -74,12 +70,13 @@ app.path(
           cms,
           true,
         );
-        // Wait for the site to be ready
+        // Wait for the preview URL to be ready
         document.url ?? await previewURL?.(document.src);
-        return redirect(document.name);
+        return redirect(document.name, "edit");
       })
+      /* GET /document/:name/code - Show the code editor */
       .get("/code", async () => {
-        const code = await document.readText(true);
+        const data = { root: { code: await document.readText(true) } };
         const fields = {
           tag: "f-object-root",
           name: "root",
@@ -95,16 +92,16 @@ app.path(
             },
           }],
         };
-        const data = { root: { code } };
-        const url = document.url ?? await previewURL?.(document.src);
+
         return render("document/code.vto", {
           fields,
           data,
-          url,
+          url: document.url ?? await previewURL?.(document.src),
           document,
           user,
         });
       })
+      /* POST /document/:name/code - Save the code */
       .post("/code", async ({ request }) => {
         if (!user.canEdit(document)) {
           throw new Error("Permission denied to edit this document");
@@ -112,9 +109,9 @@ app.path(
         const body = await request.formData();
         const code = body.get("root.code") as string | undefined;
         document.writeText(code ?? "");
-        // Wait for the site to be ready
+        // Wait for the preview URL to be ready
         document.url ?? await previewURL?.(document.src);
-        return redirect("code", document.name);
+        return redirect(document.name, "code");
       });
   },
 );

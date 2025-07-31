@@ -9,7 +9,7 @@
     }
   }}
 
-  {{ set src = ["uploads", upload.name, "raw", file] |> path }}
+  {{ set src = ["uploads", upload.name, file] |> path }}
 
   <header class="header">
     <h1 class="header-title">
@@ -67,7 +67,7 @@
         {{ set format = file |> formatSupported }}
         {{ if format }}
           <a
-            href='{{ ["uploads", upload.name, "crop", file] |> path }}'
+            href='{{ ["uploads", upload.name, file, "crop"] |> path }}'
             class="button is-secondary"
           >
             <u-icon name="crop"></u-icon>
@@ -92,7 +92,7 @@
             aria-label="Delete file"
             title="Delete file"
             class="buttonIcon is-secondary"
-            formAction='{{ ["uploads", upload.name, "delete", file] |> path }}'
+            formAction='{{ ["uploads", upload.name, file, "delete"] |> path }}'
           >
             <u-icon name="trash"></u-icon>
           </button>
