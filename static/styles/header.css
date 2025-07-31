@@ -57,7 +57,6 @@
   }
 }
 dl.header-description {
-  margin-top: 2rem;
   display: grid;
   grid-template-columns: auto 1fr;
   grid-auto-rows: 40px;
@@ -65,11 +64,15 @@ dl.header-description {
   column-gap: 2em;
 
   & dt {
-    font: var(--font-ui-bold);
+    font: var(--font-small-bold);
   }
   & dd {
+    font: var(--font-small);
     margin: 0;
   }
+}
+.header-title + dl.header-description {
+  margin-top: 2rem;
 }
 .header-filter {
   display: block;

@@ -16,7 +16,11 @@ customElements.define(
         ...schema.attributes,
       }, this);
 
-      const summary = dom("summary", { slot: "content" }, details);
+      const summary = dom(
+        "summary",
+        { slot: "content", class: "is-header" },
+        details,
+      );
 
       const shadow = this.attachShadow({ mode: "open" });
       shadow.innerHTML = `
