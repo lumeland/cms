@@ -70,7 +70,7 @@ const allowedTypes: DocumentType[] = [
   "choose",
 ];
 
-interface DocumentOptions {
+export interface DocumentOptions {
   name: string;
   label?: string;
   description?: string;
@@ -82,7 +82,7 @@ interface DocumentOptions {
   edit?: boolean;
 }
 
-interface CollectionOptions {
+export interface CollectionOptions {
   name: string;
   label?: string;
   description?: string;
@@ -99,7 +99,7 @@ interface CollectionOptions {
   rename?: boolean | "auto";
 }
 
-interface UploadOptions {
+export interface UploadOptions {
   name: string;
   label?: string;
   description?: string;

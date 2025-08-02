@@ -1,6 +1,13 @@
 import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
+import type {
+  CmsOptions,
+  CollectionOptions,
+  DocumentOptions,
+  UploadOptions,
+} from "./core/cms.ts";
+import type { Options as GitOptions } from "./core/git.ts";
 
 /** Generic data to store */
 export type Data = Record<string, unknown>;
@@ -222,5 +229,13 @@ declare global {
       | ParentFields[keyof ParentFields]
       | FieldStrings;
     export type ResolvedField = ResolvedFields[keyof ResolvedFields];
+
+    export type {
+      CmsOptions,
+      CollectionOptions,
+      DocumentOptions,
+      GitOptions,
+      UploadOptions,
+    };
   }
 }
