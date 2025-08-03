@@ -18,11 +18,7 @@ export interface EntrySource {
   src: string;
 }
 
-export interface EntryMetadata extends EntrySource {
-  label: string;
-  icon?: string;
-  [key: string]: unknown;
-}
+export type EntryMetadata = EntrySource & DocumentLabel;
 
 export interface SiteInfo {
   name: string;
@@ -204,7 +200,8 @@ type Prettify<T> =
 
 export interface DocumentLabel {
   label: string;
-  [key: string]: unknown;
+  icon?: string;
+  flags?: Record<string, unknown>;
 }
 
 export type Labelizer = (name: string) => string | DocumentLabel;

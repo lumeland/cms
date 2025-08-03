@@ -9,21 +9,19 @@
 
     {{ for entry of content }}
       {{> const [name, child] = entry }}
-      {{ if Array.isArray(child) }}
-        {{> const [document, data] = child }}
+
+      {{ if "label" in child /* It's a file */ }}
         <li>
           <a
-            href='{{ ["collection", collection.name, document, "edit"] |> path }}'
+            href='{{ ["collection", collection.name, child.name, "edit"] |> path }}'
             class="list-item"
-            title="{{ name }}"
+            title="{{ child.label |> escape }}"
           >
-            <u-icon name='{{ data.icon ?? "file" }}'></u-icon>
+            <u-icon name='{{ child.icon ?? "file" }}'></u-icon>
             <div class="list-item-header">
               <strong>{{ name }}</strong>
-              {{ for key, value of child }}
-                {{ if !["icon", "name", "src", "path", "label"].includes(key) }}
-                  <span title="{{ key }}" class="tag">{{ value }}</span>
-                {{ /if }}
+              {{ for key, value of child.flags }}
+                <span title="{{ key }}" class="tag">{{ value }}</span>
               {{ /for }}
             </div>
           </a>

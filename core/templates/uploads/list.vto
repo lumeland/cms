@@ -15,6 +15,7 @@
           <a
             href='{{ ["uploads", upload.name, child.name, "edit"] |> path }}'
             class="list-item"
+            title="{{ child.label |> escape }}"
           >
             {{ if child.icon }}
               <u-icon name="{{ child.icon }}"></u-icon>
@@ -22,10 +23,8 @@
               <u-icon-file path="{{child.name}}"></u-icon-file>
             {{ /if }}
             {{ name }}
-            {{ for key, value of child }}
-              {{ if !["icon", "name", "src", "path", "label"].includes(key) }}
-                <span title="{{ key }}" class="tag">{{ value }}</span>
-              {{ /if }}
+            {{ for key, value of child.flags }}
+              <span title="{{ key }}" class="tag">{{ value }}</span>
             {{ /for }}
           </a>
           <u-popover>

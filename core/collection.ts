@@ -139,6 +139,6 @@ function getMetadata(
   return {
     ...source,
     label: labelify(source.name),
-    extension,
+    flags: { extension },
   };
 }
