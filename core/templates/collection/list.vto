@@ -10,19 +10,21 @@
     {{ for entry of content }}
       {{> const [name, child] = entry }}
       {{ if Array.isArray(child) }}
-        {{> const [document, tags] = child }}
+        {{> const [document, data] = child }}
         <li>
           <a
             href='{{ ["collection", collection.name, document, "edit"] |> path }}'
             class="list-item"
             title="{{ name }}"
           >
-            <u-icon name="file"></u-icon>
+            <u-icon name='{{ data.icon ?? "file" }}'></u-icon>
             <div class="list-item-header">
               <strong>{{ name }}</strong>
-              {{
-                tags.map((tag) => `<span class="tag">${tag}</span>`).join(" ")
-              }}
+              {{ for key, value of child }}
+                {{ if !["icon", "name", "src", "path", "label"].includes(key) }}
+                  <span title="{{ key }}" class="tag">{{ value }}</span>
+                {{ /if }}
+              {{ /for }}
             </div>
           </a>
         </li>

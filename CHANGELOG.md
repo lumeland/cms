@@ -8,12 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - New option `previewURL` to return the URL of a file. It can be defined globally or per document and collection.
 - New option `sourcePath` to return the file of a URL.
+- `documentLabel` option to uploads.
 - New `edit` option to customize edit permissions for collections.
 - New `edit` option to customize edit permissions for documents.
 - Permissions options form uploads (`create`, `rename`, `edit`, and `delete`).
 - User-level permissions
 - Show EXIF data of some files in the uploads detail.
-- Allow to generate tags per document in the collection and upload views.
+- Allow to parse and show extra data per document in the collection and upload views.
 - New `type` option for documents and collections to indicate the root field. The available values:
   - `object`: The default value
   - `object-list`: To store an array of objects.

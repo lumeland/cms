@@ -10,15 +10,23 @@
     {{ for entry of content }}
       {{> const [name, child] = entry }}
 
-      {{ if Array.isArray(child) }}
-        {{> const [file, tags] = child }}
+      {{ if "label" in child /* It's a file */ }}
         <li>
           <a
-            href='{{ ["uploads", upload.name, file, "edit"] |> path }}'
+            href='{{ ["uploads", upload.name, child.name, "edit"] |> path }}'
             class="list-item"
           >
-            <u-icon-file path="{{file}}"></u-icon-file> {{ name }}
-            {{ tags.map((tag) => `<span class="tag">${tag}</span>`).join(" ") }}
+            {{ if child.icon }}
+              <u-icon name="{{ child.icon }}"></u-icon>
+            {{ else }}
+              <u-icon-file path="{{child.name}}"></u-icon-file>
+            {{ /if }}
+            {{ name }}
+            {{ for key, value of child }}
+              {{ if !["icon", "name", "src", "path", "label"].includes(key) }}
+                <span title="{{ key }}" class="tag">{{ value }}</span>
+              {{ /if }}
+            {{ /for }}
           </a>
           <u-popover>
             <button class="buttonIcon" type="button">
@@ -27,13 +35,13 @@
             <template>
               <u-preview
                 id="preview_{{file}}"
-                data-src='{{ ["uploads", upload.name, file] |> path }}'
+                data-src='{{ ["uploads", upload.name, child.name] |> path }}'
               >
               </u-preview>
             </template>
           </u-popover>
           <u-copy
-            text="{{ [upload.publicPath, file] |> normalizePath }}"
+            text="{{ [upload.publicPath, child.name] |> normalizePath }}"
           ></u-copy>
         </li>
       {{ else }}

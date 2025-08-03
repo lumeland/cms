@@ -3,7 +3,7 @@ import { slugify } from "../core/utils/string.ts";
 import { contentType, ensureDir, expandGlob, posix } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
 
-import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
+import type { Data, Entry, EntrySource, Storage } from "../types.ts";
 
 export interface Options {
   root?: string;
@@ -46,7 +46,7 @@ export default class Fs implements Storage {
     }
   }
 
-  async *[Symbol.asyncIterator]() {
+  async *[Symbol.asyncIterator](): AsyncGenerator<EntrySource> {
     const root = this.root;
     const iterable = expandGlob(this.path, {
       root,
@@ -58,11 +58,19 @@ export default class Fs implements Storage {
       const src = normalizePath(entry.path);
       const name = src.slice(root.length + 1);
       yield {
-        label: name,
         name,
+        path: name,
         src,
       };
     }
+  }
+
+  source(name: string): EntrySource {
+    return {
+      src: posix.join(this.root, name),
+      name,
+      path: name,
+    };
   }
 
   name(name: string): string {
@@ -81,11 +89,7 @@ export default class Fs implements Storage {
   }
 
   get(name: string): Entry {
-    return new FsEntry({
-      src: posix.join(this.root, name),
-      name,
-      label: name,
-    });
+    return new FsEntry(this.source(name));
   }
 
   async delete(name: string) {
@@ -100,29 +104,25 @@ export default class Fs implements Storage {
 }
 
 export class FsEntry implements Entry {
-  metadata: EntryMetadata;
+  source: EntrySource;
 
-  constructor(metadata: EntryMetadata) {
-    this.metadata = metadata;
-  }
-
-  get src(): string {
-    return this.metadata.src;
+  constructor(source: EntrySource) {
+    this.source = source;
   }
 
   async readText(): Promise<string> {
-    const { src } = this.metadata;
+    const { src } = this.source;
     return await Deno.readTextFile(src);
   }
 
   async writeText(content: string): Promise<void> {
-    const { src } = this.metadata;
+    const { src } = this.source;
     await ensureDir(posix.dirname(src));
     await Deno.writeTextFile(src, content);
   }
 
   async readData(): Promise<Data> {
-    const { src } = this.metadata;
+    const { src } = this.source;
     const content = await this.readText();
     const transformer = fromFilename(src);
 
@@ -130,7 +130,7 @@ export class FsEntry implements Entry {
   }
 
   async writeData(data: Data) {
-    const { src } = this.metadata;
+    const { src } = this.source;
     const transformer = fromFilename(src);
     const content = (await transformer.fromData(data))
       .replaceAll(/\r\n/g, "\n"); // Unify line endings
@@ -139,7 +139,7 @@ export class FsEntry implements Entry {
   }
 
   async readFile(): Promise<File> {
-    const { src, name } = this.metadata;
+    const { src, name } = this.source;
     const content = await Deno.readFile(src);
     const type = contentType(posix.extname(src));
 
@@ -147,7 +147,7 @@ export class FsEntry implements Entry {
   }
 
   async writeFile(file: File) {
-    const { src } = this.metadata;
+    const { src } = this.source;
     const content = await file.arrayBuffer();
 
     await ensureDir(posix.dirname(src));

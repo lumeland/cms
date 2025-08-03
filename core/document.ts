@@ -44,7 +44,7 @@ export default class Document {
   }
 
   get name() {
-    return this.#name ?? this.#entry.metadata.name;
+    return this.#name ?? this.#entry.source.name;
   }
 
   get label() {
@@ -52,7 +52,7 @@ export default class Document {
   }
 
   get src() {
-    return this.#entry.metadata.src;
+    return this.#entry.source.src;
   }
 
   async readText(create = false): Promise<string> {
@@ -87,10 +87,5 @@ export default class Document {
     const currentData = await this.read(create);
     await this.fields.applyChanges(currentData, data, this.fields, this, cms);
     await this.#entry.writeData(currentData.root);
-  }
-
-  /** User permission to edit the document */
-  canEdit(): boolean {
-    return this.permissions.edit;
   }
 }

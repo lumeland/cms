@@ -12,11 +12,16 @@ import type { Options as GitOptions } from "./core/git.ts";
 /** Generic data to store */
 export type Data = Record<string, unknown>;
 
-export interface EntryMetadata {
-  label: string;
+export interface EntrySource {
   name: string;
+  path: string;
   src: string;
-  tags?: string[];
+}
+
+export interface EntryMetadata extends EntrySource {
+  label: string;
+  icon?: string;
+  [key: string]: unknown;
 }
 
 export interface SiteInfo {
@@ -27,17 +32,17 @@ export interface SiteInfo {
 }
 
 /** A storage mechanism for data */
-export interface Storage extends AsyncIterable<EntryMetadata> {
+export interface Storage extends AsyncIterable<EntrySource> {
   name(name: string): string;
   get(name: string): Entry;
+  source(name: string): EntrySource;
   directory(name: string): Storage;
   delete(name: string): Promise<void>;
   rename(name: string, newName: string): Promise<void>;
 }
 
 export interface Entry {
-  src?: string;
-  metadata: EntryMetadata;
+  source: EntrySource;
 
   readData(): Promise<Data>;
   writeData(content: Data): Promise<void>;
@@ -199,7 +204,7 @@ type Prettify<T> =
 
 export interface DocumentLabel {
   label: string;
-  tags?: string[];
+  [key: string]: unknown;
 }
 
 export type Labelizer = (name: string) => string | DocumentLabel;

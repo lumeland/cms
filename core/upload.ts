@@ -1,4 +1,10 @@
-import type { Entry, EntryMetadata, Storage } from "../types.ts";
+import type {
+  Entry,
+  EntryMetadata,
+  EntrySource,
+  Labelizer,
+  Storage,
+} from "../types.ts";
 
 export interface UploadOptions {
   name: string;
@@ -6,6 +12,7 @@ export interface UploadOptions {
   description?: string;
   storage: Storage;
   publicPath: string;
+  documentLabel?: Labelizer;
   listed?: boolean;
   create?: boolean;
   delete?: boolean;
@@ -24,18 +31,20 @@ export default class Upload {
   name: string;
   label: string;
   description?: string;
-  storage: Storage;
+  #storage: Storage;
   publicPath: string;
   listed: boolean;
+  documentLabel?: Labelizer;
   permissions: Permissions;
 
   constructor(options: UploadOptions) {
     this.name = options.name;
     this.label = options.label || options.name;
     this.description = options.description;
-    this.storage = options.storage;
+    this.#storage = options.storage;
     this.publicPath = options.publicPath;
     this.listed = options.listed ?? true;
+    this.documentLabel = options.documentLabel;
     this.permissions = {
       edit: options.edit ?? true,
       create: options.create ?? true,
@@ -45,38 +54,46 @@ export default class Upload {
   }
 
   async *[Symbol.asyncIterator](): AsyncGenerator<EntryMetadata> {
-    for await (const metadata of this.storage) {
-      yield metadata;
+    for await (const source of this.#storage) {
+      yield getMetadata(source, this.documentLabel);
     }
   }
 
   get(id: string): Entry {
-    return this.storage.get(id);
+    return this.#storage.get(id);
   }
 
   async delete(id: string): Promise<void> {
-    await this.storage.delete(id);
+    await this.#storage.delete(id);
   }
 
   async rename(id: string, newId: string): Promise<void> {
-    const newName = this.storage.name(newId);
-    await this.storage.rename(id, newName);
+    const newName = this.#storage.name(newId);
+    await this.#storage.rename(id, newName);
+  }
+}
+
+function getMetadata(
+  source: EntrySource,
+  labelizer?: Labelizer,
+): EntryMetadata {
+  if (labelizer) {
+    const label = labelizer(source.name);
+    if (typeof label === "string") {
+      return {
+        ...source,
+        label,
+      };
+    }
+
+    return {
+      ...source,
+      ...label,
+    };
   }
 
-  /** User permission to create a new document */
-  canCreate(): boolean {
-    return this.permissions.create;
-  }
-  /** User permission to delete a document */
-  canDelete(): boolean {
-    return this.permissions.delete;
-  }
-  /** User permission to rename a document in the edition */
-  canRename(): boolean {
-    return this.permissions.rename;
-  }
-  /** User permission to edit a document */
-  canEdit(): boolean {
-    return this.permissions.edit;
-  }
+  return {
+    ...source,
+    label: source.name,
+  };
 }

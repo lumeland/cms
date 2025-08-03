@@ -1,9 +1,11 @@
 import Document from "./document.ts";
-import { getLabel } from "./utils/string.ts";
+import { getExtension } from "./utils/path.ts";
+import { labelify } from "./utils/string.ts";
 
 import type {
   Data,
   EntryMetadata,
+  EntrySource,
   Labelizer,
   PreviewURL,
   Storage,
@@ -73,17 +75,15 @@ export default class Collection {
   }
 
   async *[Symbol.asyncIterator](): AsyncGenerator<EntryMetadata> {
-    for await (const metadata of this.#storage) {
-      yield {
-        ...metadata,
-        ...getLabel(metadata.name, this.documentLabel),
-      };
+    for await (const source of this.#storage) {
+      yield getMetadata(source, this.documentLabel);
     }
   }
 
   create(id: string): Document {
-    const name = this.#storage.name(id);
-    const { label } = getLabel(name, this.documentLabel);
+    const source = this.#storage.source(this.#storage.name(id));
+    const { name, label } = getMetadata(source, this.documentLabel);
+
     return new Document({
       name,
       label,
@@ -92,8 +92,9 @@ export default class Collection {
     });
   }
 
-  get(name: string): Document {
-    const { label } = getLabel(name, this.documentLabel);
+  get(id: string): Document {
+    const source = this.#storage.source(id);
+    const { name, label } = getMetadata(source, this.documentLabel);
 
     return new Document({
       name,
@@ -112,21 +113,32 @@ export default class Collection {
     await this.#storage.rename(name, normalizedName);
     return normalizedName;
   }
+}
 
-  /** User permission to create a new document */
-  canCreate(): boolean {
-    return this.permissions.create;
+function getMetadata(
+  source: EntrySource,
+  labelizer?: Labelizer,
+): EntryMetadata {
+  if (labelizer) {
+    const label = labelizer(source.name);
+    if (typeof label === "string") {
+      return {
+        ...source,
+        label,
+      };
+    }
+
+    return {
+      ...source,
+      ...label,
+    };
   }
-  /** User permission to delete a document */
-  canDelete(): boolean {
-    return this.permissions.delete;
-  }
-  /** User permission to rename a document in the edition */
-  canRename(): boolean {
-    return this.permissions.rename === true;
-  }
-  /** User permission to edit a document */
-  canEdit(): boolean {
-    return this.permissions.edit;
-  }
+
+  const extension = getExtension(source.name);
+
+  return {
+    ...source,
+    label: labelify(source.name),
+    extension,
+  };
 }

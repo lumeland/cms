@@ -10,7 +10,7 @@ import { slugify } from "../core/utils/string.ts";
 import { normalizePath } from "../core/utils/path.ts";
 import { Octokit } from "npm:octokit@5.0.3";
 
-import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
+import type { Data, Entry, EntrySource, Storage } from "../types.ts";
 
 export interface Options {
   client: Octokit;
@@ -255,7 +255,7 @@ export default class GitHub implements Storage {
     this.git = new GitClient(options);
   }
 
-  async *[Symbol.asyncIterator]() {
+  async *[Symbol.asyncIterator](): AsyncGenerator<EntrySource> {
     const regexp = globToRegExp(this.path, { extended: true });
     const depth = getDepth(this.path);
     const offsetPath = this.root.length ? this.root.length + 1 : 0;
@@ -269,12 +269,22 @@ export default class GitHub implements Storage {
         }
 
         yield {
-          label: name,
           name,
+          path: posix.join(this.root, name),
           src: entry.download_url,
         };
       }
     }
+  }
+
+  source(name: string): EntrySource {
+    const path = posix.join(this.root, name);
+    return {
+      name: name,
+      path: posix.join(this.root, name),
+      src:
+        `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}/${path}`,
+    };
   }
 
   name(name: string): string {
@@ -297,17 +307,7 @@ export default class GitHub implements Storage {
   }
 
   get(name: string): Entry {
-    const path = posix.join(this.root, name);
-    return new GitHubEntry(
-      posix.join(this.root, name),
-      {
-        label: name,
-        name: name,
-        src:
-          `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}/${path}`,
-      },
-      this.git,
-    );
+    return new GitHubEntry(this.source(name), this.git);
   }
 
   async delete(name: string) {
@@ -324,32 +324,30 @@ export default class GitHub implements Storage {
 }
 
 export class GitHubEntry implements Entry {
-  metadata: EntryMetadata;
-  git: GitClient;
-  path: string;
+  readonly source: EntrySource;
+  readonly git: GitClient;
 
-  constructor(path: string, metadata: EntryMetadata, git: GitClient) {
-    this.path = path;
-    this.metadata = metadata;
+  constructor(source: EntrySource, git: GitClient) {
+    this.source = source;
     this.git = git;
   }
 
   async readText(): Promise<string> {
-    return await this.git.getTextContent(this.path) || "";
+    return await this.git.getTextContent(this.source.path) || "";
   }
 
   async writeText(content: string): Promise<void> {
-    await this.git.setContent(this.path, content);
+    await this.git.setContent(this.source.path, content);
   }
 
   async readData(): Promise<Data> {
     const data = await this.readText();
-    const transformer = fromFilename(this.path);
+    const transformer = fromFilename(this.source.path);
     return transformer.toData(data);
   }
 
   async writeData(data: Data) {
-    const transformer = fromFilename(this.path);
+    const transformer = fromFilename(this.source.path);
     const content = (await transformer.fromData(data))
       .replaceAll(/\r\n/g, "\n"); // Unify line endings
 
@@ -357,19 +355,19 @@ export class GitHubEntry implements Entry {
   }
 
   async readFile(): Promise<File> {
-    const data = await this.git.getBinaryContent(this.path);
+    const data = await this.git.getBinaryContent(this.source.path);
 
     if (!data) {
-      throw new Error(`File not found: ${this.path}`);
+      throw new Error(`File not found: ${this.source.path}`);
     }
 
-    const type = contentType(extname(this.path));
+    const type = contentType(extname(this.source.path));
 
-    return new File([new Blob([data])], this.path, { type });
+    return new File([new Blob([data])], this.source.path, { type });
   }
 
   async writeFile(file: File) {
-    await this.git.setContent(this.path, await file.arrayBuffer());
+    await this.git.setContent(this.source.path, await file.arrayBuffer());
   }
 }
 

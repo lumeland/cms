@@ -63,11 +63,11 @@ export default {
     }
     const upload = field.upload || "default";
     let [uploadKey, uploadPath = ""] = upload.split(":");
-    const { storage, publicPath } = cmsContent.uploads[uploadKey];
+    const uploads = cmsContent.uploads[uploadKey];
 
-    if (!storage) {
+    if (!uploads) {
       throw new Error(
-        `No storage found for file field '${field.name}'`,
+        `No upload found for file field '${field.name}'`,
       );
     }
 
@@ -76,12 +76,12 @@ export default {
       posix.dirname(document.name),
     );
 
-    const entry = storage.get(normalizePath(uploadPath, uploaded.name));
+    const entry = uploads.get(normalizePath(uploadPath, uploaded.name));
     await entry.writeFile(uploaded);
     data[field.name] = transform(
       field,
       normalizePath(
-        publicPath,
+        uploads.publicPath,
         uploadPath,
         uploaded.name,
       ),

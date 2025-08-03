@@ -143,7 +143,7 @@ app.path(
               fields: await prepareField(collection.fields, cms, data),
               data,
               initViews,
-              url: await getPreviewURL(document, true),
+              url: await getPreviewURL(document),
               views: Array.from(getViews(collection.fields)),
               document,
               user,

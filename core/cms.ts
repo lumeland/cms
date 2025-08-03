@@ -101,6 +101,7 @@ export interface UploadOptions {
   description?: string;
   store: string;
   publicPath?: string;
+  documentLabel?: Labelizer;
   listed?: boolean;
   create?: boolean;
   delete?: boolean;
@@ -296,7 +297,15 @@ export default class Cms {
     };
 
     for (
-      const { name, label, description, store, publicPath, listed } of this
+      const {
+        name,
+        label,
+        description,
+        documentLabel,
+        store,
+        publicPath,
+        listed,
+      } of this
         .uploads
         .values()
     ) {
@@ -304,6 +313,7 @@ export default class Cms {
         name,
         label: label ?? labelify(name),
         description,
+        documentLabel,
         storage: this.#getStorage(store),
         publicPath: publicPath ?? "/",
         listed: listed ?? true,

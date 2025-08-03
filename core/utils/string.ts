@@ -1,7 +1,3 @@
-import { getExtension } from "./path.ts";
-
-import type { DocumentLabel, Labelizer } from "../../types.ts";
-
 /** Convert slugs to labels */
 export function labelify(slug: string) {
   if (slug === "[]") {
@@ -53,18 +49,4 @@ export function isEmpty(value: unknown): value is Exclude<unknown, string> {
   }
 
   return false;
-}
-
-export function getLabel(path: string, labelizer?: Labelizer): DocumentLabel {
-  if (labelizer) {
-    const label = labelizer(path);
-    return typeof label === "string" ? { label, tags: [] } : label;
-  }
-
-  const ext = getExtension(path);
-
-  return {
-    label: labelify(path),
-    tags: ext ? [ext] : [],
-  };
 }
