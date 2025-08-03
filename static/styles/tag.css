@@ -1,0 +1,8 @@
+.tag {
+  display: inline-block;
+  font: var(--font-small);
+  color: var(--color-dim);
+  background-color: var(--color-highlight);
+  padding: 0.2em 0.5em;
+  border-radius: var(--border-radius);
+}

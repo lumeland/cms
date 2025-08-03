@@ -79,3 +79,8 @@ export function getLanguageCode(path: string): string {
       return "HTML";
   }
 }
+
+export function getExtension(name: string) {
+  const parts = name.split(".");
+  return parts.length > 1 ? parts.pop() : undefined;
+}

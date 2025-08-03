@@ -9,16 +9,20 @@
 
     {{ for entry of content }}
       {{> const [name, child] = entry }}
-      {{ if typeof child === "string" }}
+      {{ if Array.isArray(child) }}
+        {{> const [document, tags] = child }}
         <li>
           <a
-            href='{{ ["collection", collection.name, child, "edit"] |> path }}'
+            href='{{ ["collection", collection.name, document, "edit"] |> path }}'
             class="list-item"
             title="{{ name }}"
           >
             <u-icon name="file"></u-icon>
             <div class="list-item-header">
               <strong>{{ name }}</strong>
+              {{
+                tags.map((tag) => `<span class="tag">${tag}</span>`).join(" ")
+              }}
             </div>
           </a>
         </li>

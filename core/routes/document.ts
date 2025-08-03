@@ -2,6 +2,7 @@ import { getLanguageCode, getPath } from "../utils/path.ts";
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
 import { Router } from "../../deps/galo.ts";
 
+import type Document from "../document.ts";
 import type { RouterData } from "../cms.ts";
 import type { Data } from "../../types.ts";
 
@@ -32,6 +33,10 @@ app.path(
       return Response.redirect(new URL(path, request.url));
     }
 
+    function getPreviewURL(document: Document, changed = false) {
+      return (document.previewURL ?? previewURL)?.(document.src, changed);
+    }
+
     return next()
       /* GET /document/:name/edit - Show the document editor */
       .get("/edit", async () => {
@@ -54,7 +59,7 @@ app.path(
           fields: await prepareField(document.fields, cms, data),
           views: Array.from(getViews(document.fields)),
           initViews,
-          url: document.url ?? await previewURL?.(document.src),
+          url: getPreviewURL(document),
           data,
           user,
         });
@@ -70,8 +75,10 @@ app.path(
           cms,
           true,
         );
+
         // Wait for the preview URL to be ready
-        document.url ?? await previewURL?.(document.src);
+        await getPreviewURL(document, true);
+
         return redirect(document.name, "edit");
       })
       /* GET /document/:name/code - Show the code editor */
@@ -96,7 +103,7 @@ app.path(
         return render("document/code.vto", {
           fields,
           data,
-          url: document.url ?? await previewURL?.(document.src),
+          url: getPreviewURL(document),
           document,
           user,
         });
@@ -109,8 +116,10 @@ app.path(
         const body = await request.formData();
         const code = body.get("root.code") as string | undefined;
         document.writeText(code ?? "");
+
         // Wait for the preview URL to be ready
-        document.url ?? await previewURL?.(document.src);
+        await getPreviewURL(document, true);
+
         return redirect(document.name, "code");
       });
   },

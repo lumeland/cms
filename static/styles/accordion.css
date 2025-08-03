@@ -6,7 +6,7 @@
   column-gap: 0.5rem;
   align-items: center;
   padding: 0.25rem 1rem 0.25rem 0.25rem;
-  min-height: 2.5rem;
+  min-height: 3rem;
   text-decoration: none;
   color: var(--color-text);
   background: var(--color-line-light);

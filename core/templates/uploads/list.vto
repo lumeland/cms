@@ -10,13 +10,15 @@
     {{ for entry of content }}
       {{> const [name, child] = entry }}
 
-      {{ if typeof child === "string" }}
+      {{ if Array.isArray(child) }}
+        {{> const [file, tags] = child }}
         <li>
           <a
-            href='{{ ["uploads", upload.name, child, "edit"] |> path }}'
+            href='{{ ["uploads", upload.name, file, "edit"] |> path }}'
             class="list-item"
           >
-            <u-icon-file path="{{child}}"></u-icon-file> {{ name }}
+            <u-icon-file path="{{file}}"></u-icon-file> {{ name }}
+            {{ tags.map((tag) => `<span class="tag">${tag}</span>`).join(" ") }}
           </a>
           <u-popover>
             <button class="buttonIcon" type="button">
@@ -24,14 +26,14 @@
             </button>
             <template>
               <u-preview
-                id="preview_{{child}}"
-                data-src='{{ ["uploads", upload.name, child] |> path }}'
+                id="preview_{{file}}"
+                data-src='{{ ["uploads", upload.name, file] |> path }}'
               >
               </u-preview>
             </template>
           </u-popover>
           <u-copy
-            text="{{ [upload.publicPath, child] |> normalizePath }}"
+            text="{{ [upload.publicPath, file] |> normalizePath }}"
           ></u-copy>
         </li>
       {{ else }}

@@ -1,6 +1,13 @@
 import Document from "./document.ts";
+import { getLabel } from "./utils/string.ts";
 
-import type { Data, EntryMetadata, Labelizer, Storage } from "../types.ts";
+import type {
+  Data,
+  EntryMetadata,
+  Labelizer,
+  PreviewURL,
+  Storage,
+} from "../types.ts";
 
 export interface CollectionOptions {
   name: string;
@@ -8,7 +15,7 @@ export interface CollectionOptions {
   description?: string;
   storage: Storage;
   fields: Lume.CMS.ResolvedField;
-  url?: string;
+  previewURL?: PreviewURL;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
@@ -31,7 +38,7 @@ export default class Collection {
   description?: string;
   #storage: Storage;
   #fields: Lume.CMS.ResolvedField;
-  url?: string;
+  previewURL?: PreviewURL;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
@@ -43,7 +50,7 @@ export default class Collection {
     this.description = options.description;
     this.#storage = options.storage;
     this.#fields = options.fields;
-    this.url = options.url;
+    this.previewURL = options.previewURL;
     this.views = options.views;
     this.documentName = options.documentName;
     this.documentLabel = options.documentLabel;
@@ -69,32 +76,30 @@ export default class Collection {
     for await (const metadata of this.#storage) {
       yield {
         ...metadata,
-        label: this.documentLabel?.(metadata.label) ?? metadata.label,
+        ...getLabel(metadata.name, this.documentLabel),
       };
     }
   }
 
   create(id: string): Document {
     const name = this.#storage.name(id);
-    const label = this.documentLabel ? this.documentLabel(name) : name;
+    const { label } = getLabel(name, this.documentLabel);
     return new Document({
       name,
       label,
       entry: this.#storage.get(name),
       fields: this.#fields,
-      url: this.url,
     });
   }
 
   get(name: string): Document {
-    const label = this.documentLabel ? this.documentLabel(name) : name;
+    const { label } = getLabel(name, this.documentLabel);
 
     return new Document({
       name,
       label,
       entry: this.#storage.get(name),
       fields: this.#fields,
-      url: this.url,
     });
   }
 

@@ -1,9 +1,15 @@
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
-import { getLanguageCode, getPath, normalizeName } from "../utils/path.ts";
+import {
+  getExtension,
+  getLanguageCode,
+  getPath,
+  normalizeName,
+} from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
 import { Router } from "../../deps/galo.ts";
 import createTree from "../templates/tree.ts";
 
+import type Document from "../document.ts";
 import type Collection from "../collection.ts";
 import type { RouterData } from "../cms.ts";
 import type { Data } from "../../types.ts";
@@ -35,6 +41,10 @@ app.path(
     function redirect(...paths: string[]) {
       const path = getPath(basePath, "collection", ...paths);
       return Response.redirect(new URL(path, request.url));
+    }
+
+    function getPreviewURL(document: Document, changed = false) {
+      return (collection.previewURL ?? previewURL)?.(document.src, changed);
     }
 
     return next()
@@ -93,8 +103,9 @@ app.path(
             const document = collection.create(name);
             await document.write(data, cms, true);
 
-            // Wait for the previewURL to be ready before redirecting
-            document.url ?? await previewURL?.(document.src, true);
+            // Wait for the preview URL to be ready before redirecting
+            await getPreviewURL(document, true);
+
             return redirect(collection.name, document.name, "edit");
           });
       })
@@ -132,7 +143,7 @@ app.path(
               fields: await prepareField(collection.fields, cms, data),
               data,
               initViews,
-              url: document.url ?? await previewURL?.(document.src),
+              url: await getPreviewURL(document, true),
               views: Array.from(getViews(collection.fields)),
               document,
               user,
@@ -173,8 +184,10 @@ app.path(
             }
 
             await finalDocument.write(data, cms);
+
             // Wait for the preview URL to be ready
-            finalDocument.url ?? await previewURL?.(finalDocument.src, true);
+            await getPreviewURL(finalDocument, true);
+
             return redirect(collection.name, finalDocument.name, "edit");
           })
           /* GET /collection/:name/:file/code - Show the code editor */
@@ -200,7 +213,7 @@ app.path(
               collection,
               fields,
               data,
-              url: document.url ?? await previewURL?.(document.src),
+              url: await getPreviewURL(document),
               document,
               user,
             });
@@ -229,8 +242,10 @@ app.path(
 
             const code = body.get("root.code") as string | undefined;
             finalDocument.writeText(code ?? "");
+
             // Wait for the preview URL to be ready
-            finalDocument.url ?? await previewURL?.(finalDocument.src, true);
+            await getPreviewURL(finalDocument, true);
+
             return redirect(collection.name, finalDocument.name, "code");
           })
           /* POST /collection/:name/:file/duplicate - Duplicate the document */
@@ -264,8 +279,10 @@ app.path(
               cms,
               true,
             );
+
             // Wait for the preview URL to be ready
-            document.url ?? await previewURL?.(document.src, true);
+            await getPreviewURL(duplicate, true);
+
             return redirect(collection.name, duplicate.name, "edit");
           })
           /* POST /collection/:name/:file/delete - Delete the document */
@@ -304,9 +321,4 @@ function getDocumentName(
     case "function":
       return collection.documentName((data.root ?? {}) as Data);
   }
-}
-
-function getExtension(name: string) {
-  const parts = name.split(".");
-  return parts.length > 1 ? parts.pop() : undefined;
 }

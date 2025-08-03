@@ -16,6 +16,7 @@ export interface EntryMetadata {
   label: string;
   name: string;
   src: string;
+  tags?: string[];
 }
 
 export interface SiteInfo {
@@ -140,6 +141,12 @@ export interface ResolvedGroupField extends ResolvedField {
   fields: Lume.CMS.ResolvedField[];
 }
 
+/** A function to generate a preview URL for a file */
+export type PreviewURL = (
+  file: string,
+  changed?: boolean,
+) => undefined | string | Promise<string | undefined>;
+
 /** Field visible in the UI */
 export interface UIField<T extends ResolvedField = ResolvedField>
   extends Field<T> {
@@ -190,10 +197,12 @@ type Prettify<T> =
   // deno-lint-ignore ban-types
   & {};
 
-export type Labelizer = (
-  name: string,
-  prev?: (name: string) => string,
-) => string;
+export interface DocumentLabel {
+  label: string;
+  tags?: string[];
+}
+
+export type Labelizer = (name: string) => string | DocumentLabel;
 
 export interface CMSContent {
   basePath: string;

@@ -23,16 +23,12 @@ import type {
   Entry,
   FieldDefinition,
   Labelizer,
+  PreviewURL,
   SiteInfo,
   Storage,
   UserConfiguration,
   Versioning,
 } from "../types.ts";
-
-type PreviewURL = (
-  file: string,
-  changed?: boolean,
-) => undefined | string | Promise<string | undefined>;
 
 type SourcePath = (
   url: string,
@@ -77,7 +73,7 @@ export interface DocumentOptions {
   type?: DocumentType;
   store: string;
   fields: Lume.CMS.Field[];
-  url?: string;
+  previewURL?: PreviewURL;
   views?: string[] | ((data?: Data) => string[] | undefined);
   edit?: boolean;
 }
@@ -89,7 +85,7 @@ export interface CollectionOptions {
   type?: DocumentType;
   store: string;
   fields: Lume.CMS.Field[];
-  url?: string;
+  previewURL?: PreviewURL;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
@@ -315,19 +311,15 @@ export default class Cms {
     }
 
     for (
-      const { name, label, store, fields, documentLabel, type, ...options }
-        of this
-          .collections
-          .values()
+      const { name, label, store, fields, type, ...options } of this
+        .collections
+        .values()
     ) {
       content.collections[name] = new Collection({
         storage: this.#getStorage(store),
         fields: this.#resolveFields(fields, content, type),
         name,
         label: label ?? labelify(name),
-        documentLabel: documentLabel
-          ? (name) => documentLabel(name, labelify)
-          : labelify,
         ...options,
       });
     }

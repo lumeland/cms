@@ -6,19 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.13.0] - Unreleased
 ### Added
-- New option `previewURL` to return the URL of a file.
+- New option `previewURL` to return the URL of a file. It can be defined globally or per document and collection.
 - New option `sourcePath` to return the file of a URL.
 - New `edit` option to customize edit permissions for collections.
 - New `edit` option to customize edit permissions for documents.
 - Permissions options form uploads (`create`, `rename`, `edit`, and `delete`).
 - User-level permissions
 - Show EXIF data of some files in the uploads detail.
+- Allow to generate tags per document in the collection and upload views.
 - New `type` option for documents and collections to indicate the root field. The available values:
   - `object`: The default value
   - `object-list`: To store an array of objects.
   - `choose`: To select between different objects
 
 ### Removed
+- `url` configuration for documents and collections. Use `previewURL` instead.
 - Float button to edit the current page in the preview.
 - BREAKING: `cms:*` global events.
 - BREAKING: Ability to name the root field as `[]` to indicate that it's an array. Use the new `type` option.

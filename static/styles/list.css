@@ -98,4 +98,7 @@ form.list-item {
     color: var(--color-dim);
     font: var(--font-small);
   }
+  > .tag {
+    float: right;
+  }
 }
