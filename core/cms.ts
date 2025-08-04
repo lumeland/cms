@@ -512,7 +512,18 @@ export default class Cms {
     }
 
     if (type.init) {
-      type.init(resolvedField, content);
+      const customInit = resolvedField.init;
+
+      resolvedField.init = typeof customInit === "function"
+        ? async (
+          field: Lume.CMS.ResolvedField,
+          content: CMSContent,
+          data: Data,
+        ) => {
+          await type.init!(field, content);
+          await customInit(field, content, data);
+        }
+        : type.init;
     }
 
     return resolvedField as Lume.CMS.ResolvedField;

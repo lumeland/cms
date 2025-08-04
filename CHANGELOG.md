@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - `documentLabel` option to uploads.
 - New `edit` option to customize edit permissions for collections.
 - New `edit` option to customize edit permissions for documents.
+- New `relation` field type.
 - Permissions options form uploads (`create`, `rename`, `edit`, and `delete`).
 - User-level permissions
 - Show EXIF data of some files in the uploads detail.
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 - BREAKING: Replaced Hono with Galo.
 - Responsive layout to show the previews.
+- The `FieldDefinition.init` callback is run every time the field is initialized.
 
 ## [0.12.6] - 2025-07-18
 ### Fixed
