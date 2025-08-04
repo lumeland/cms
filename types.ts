@@ -135,7 +135,7 @@ export type FieldDefinition<
 };
 
 /** Option item for a select or datalist */
-export type Option<T = string> = T | { value: T; label: string };
+export type Option<T = string | number> = T | { value: T; label: string };
 
 export interface ResolvedGroupField extends ResolvedField {
   /** The fields that belong to this group */

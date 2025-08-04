@@ -10,7 +10,7 @@ import type {
 /** Field for list values */
 interface ListField extends UIField<ResolvedListField> {
   type: "list";
-  value?: string;
+  value?: string[];
 
   /** A list of predefined values to suggest to the user. */
   options?: Option[];
@@ -23,9 +23,8 @@ export default {
   tag: "f-list",
   jsImport: "lume_cms/components/f-list.js",
   applyChanges(data, changes, field) {
-    const value = Object.values(changes[field.name] || {}).filter((v) =>
-      !isEmpty(v)
-    );
+    const value = Object.values(changes[field.name] || {})
+      .filter((v) => !isEmpty(v));
     data[field.name] = transform(field, value);
   },
 } as FieldDefinition<ResolvedListField>;

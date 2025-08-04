@@ -1,3 +1,4 @@
+import { prepareField } from "./utils/data.ts";
 import { TransformError } from "../storage/transformers/transform_error.js";
 import type { CMSContent, Data, Entry, PreviewURL } from "../types.ts";
 
@@ -85,7 +86,8 @@ export default class Document {
 
   async write(data: Data, cms: CMSContent, create = false) {
     const currentData = await this.read(create);
-    await this.fields.applyChanges(currentData, data, this.fields, this, cms);
+    const fields = await prepareField(this.fields, cms, currentData);
+    await this.fields.applyChanges(currentData, data, fields, this, cms);
     await this.#entry.writeData(currentData.root);
   }
 }

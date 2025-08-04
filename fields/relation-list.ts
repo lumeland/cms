@@ -1,16 +1,17 @@
-import { applySelectChanges, compareOptions } from "./utils.ts";
+import { compareOptions, getSelectValue, transform } from "./utils.ts";
+import { isEmpty } from "../core/utils/string.ts";
 import type {
   EntryMetadata,
   FieldDefinition,
-  InputField,
   Option,
   ResolvedField,
+  UIField,
 } from "../types.ts";
 
-/** Field for select values */
-interface RelationField extends InputField<ResolvedRelationField> {
-  type: "relation";
-  value?: string;
+/** Field for list values */
+interface RelationListField extends UIField<ResolvedRelationListField> {
+  type: "relation-list";
+  value?: string[];
 
   /** The options to show in the field */
   /** If not provided, the options will be loaded from the collection */
@@ -23,13 +24,13 @@ interface RelationField extends InputField<ResolvedRelationField> {
   option?: (data: EntryMetadata) => Option;
 }
 
-interface ResolvedRelationField extends RelationField, ResolvedField {
+interface ResolvedRelationListField extends RelationListField, ResolvedField {
   options: Option[];
 }
 
 export default {
-  tag: "f-relation",
-  jsImport: "lume_cms/components/f-relation.js",
+  tag: "f-relation-list",
+  jsImport: "lume_cms/components/f-relation-list.js",
   async init(field, cmsContent) {
     if (field.options?.length) {
       return;
@@ -52,13 +53,23 @@ export default {
       .map(createOption)
       .sort(compareOptions);
   },
-  applyChanges: applySelectChanges,
-} as FieldDefinition<ResolvedRelationField>;
+  applyChanges(data, changes, field) {
+    const options = field.options;
+    const value = Object.values(changes[field.name] || {})
+      .map((value) => getSelectValue(options, value))
+      .filter((v) => !isEmpty(v));
+
+    data[field.name] = transform(field, value);
+  },
+} as FieldDefinition<ResolvedRelationListField>;
 
 declare global {
   namespace Lume.CMS {
     export interface Fields {
-      relation: RelationField;
+      "relation-list": RelationListField;
+    }
+    export interface ResolvedFields {
+      "relation-list": ResolvedRelationListField;
     }
   }
 }
