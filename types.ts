@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
@@ -88,7 +89,6 @@ export interface Field<T extends ResolvedField = ResolvedField, V = unknown> {
   ): void | Promise<void>;
 
   /** Function to transform the value before saved */
-  // deno-lint-ignore no-explicit-any
   transform?(value: any): any;
 }
 
@@ -145,6 +145,7 @@ export interface ResolvedGroupField extends ResolvedField {
 /** A function to generate a preview URL for a file */
 export type PreviewURL = (
   file: string,
+  cms: CMSContent,
   changed?: boolean,
 ) => undefined | string | Promise<string | undefined>;
 
@@ -201,7 +202,7 @@ type Prettify<T> =
 export interface DocumentLabel {
   label: string;
   icon?: string;
-  flags?: Record<string, unknown>;
+  flags?: Record<string, any>;
 }
 
 export type Labelizer = (name: string) => string | DocumentLabel;
@@ -213,7 +214,7 @@ export interface CMSContent {
   documents: Record<string, Document>;
   uploads: Record<string, Upload>;
   versioning?: Versioning;
-  data: Record<string, unknown>;
+  data: Record<string, any>;
 }
 
 export interface UserConfiguration {

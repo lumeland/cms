@@ -51,8 +51,8 @@ export default class Document {
     return this.#label ?? this.name;
   }
 
-  get src() {
-    return this.#entry.source.src;
+  get source() {
+    return this.#entry.source;
   }
 
   async readText(create = false): Promise<string> {

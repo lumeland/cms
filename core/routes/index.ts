@@ -18,20 +18,21 @@ app.get("/", async ({ request, cms, render, sourcePath, user }) => {
   // If the edit parameter is set, redirect to the edit page
   // for the specified document or collection
   if (edit) {
-    const path = await sourcePath?.(edit);
+    const path = await sourcePath?.(edit, cms);
+
     if (!path) {
       return new Response("Not found", { status: 404 });
     }
 
     for (const document of Object.values(cms.documents)) {
-      if (document.src === path) {
+      if (document.source.path === path) {
         return redirect("document", document.name, "edit");
       }
     }
 
     for (const collection of Object.values(cms.collections)) {
       for await (const entry of collection) {
-        if (entry.src === path) {
+        if (entry.path === path) {
           return redirect("collection", collection.name, entry.name, "edit");
         }
       }

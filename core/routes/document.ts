@@ -34,7 +34,11 @@ app.path(
     }
 
     function getPreviewURL(document: Document, changed = false) {
-      return (document.previewURL ?? previewURL)?.(document.src, changed);
+      return (document.previewURL ?? previewURL)?.(
+        document.source.path,
+        cms,
+        changed,
+      );
     }
 
     return next()

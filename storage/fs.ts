@@ -59,7 +59,7 @@ export default class Fs implements Storage {
       const name = src.slice(root.length + 1);
       yield {
         name,
-        path: name,
+        path: posix.join("/", name),
         src,
       };
     }
@@ -69,7 +69,7 @@ export default class Fs implements Storage {
     return {
       src: posix.join(this.root, name),
       name,
-      path: name,
+      path: posix.join("/", name),
     };
   }
 

@@ -32,6 +32,7 @@ import type {
 
 type SourcePath = (
   url: string,
+  cms: CMSContent,
 ) => string | undefined | Promise<string | undefined>;
 
 export interface CmsOptions {
