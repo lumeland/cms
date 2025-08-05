@@ -65,34 +65,27 @@
     {{ /for }}
   {{ /function }}
 
-  {{ include "breadcrumb.vto" { version, links: [upload.label] } }}
+  <header class="header">
+    {{ include "breadcrumb.vto" { version, links: [upload.label] } }}
 
-  {{ set content = folder(upload, tree).trim() }}
-
-  <header class="header is-sticky">
     <h1 class="header-title">{{ upload.label }}</h1>
 
     {{ if upload.description }}
       <p class="header-description">{{ upload.description }}</p>
     {{ /if }}
+  </header>
 
+  {{ set content = folder(upload, tree).trim() }}
+
+  <nav class="navigation">
     {{ if content }}
       <u-filter
-        class="header-filter"
         data-placeholder="Search files in {{upload.label}}"
         data-selector="#list li"
       >
       </u-filter>
     {{ /if }}
-  </header>
 
-  {{ if content }}
-    <ul id="list" class="list">{{ content }}</ul>
-  {{ else }}
-    <p class="emptyState">This is empty</p>
-  {{ /if }}
-
-  <footer class="ly-rowStack footer is-responsive">
     {{ if user.canCreate(upload) }}
       <a
         href='{{ ["uploads", upload.name, "create"] |> path }}'
@@ -102,5 +95,11 @@
         Add files
       </a>
     {{ /if }}
-  </footer>
+  </nav>
+
+  {{ if content }}
+    <ul id="list" class="list">{{ content }}</ul>
+  {{ else }}
+    <p class="emptyState">This is empty</p>
+  {{ /if }}
 {{ /layout }}

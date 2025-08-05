@@ -20,20 +20,18 @@ app.get("/", async ({ request, cms, render, sourcePath, user }) => {
   if (edit) {
     const path = await sourcePath?.(edit, cms);
 
-    if (!path) {
-      return new Response("Not found", { status: 404 });
-    }
-
-    for (const document of Object.values(cms.documents)) {
-      if (document.source.path === path) {
-        return redirect("document", document.name, "edit");
+    if (path) {
+      for (const document of Object.values(cms.documents)) {
+        if (document.source.path === path) {
+          return redirect("document", document.name, "edit");
+        }
       }
-    }
 
-    for (const collection of Object.values(cms.collections)) {
-      for await (const entry of collection) {
-        if (entry.path === path) {
-          return redirect("collection", collection.name, entry.name, "edit");
+      for (const collection of Object.values(cms.collections)) {
+        for await (const entry of collection) {
+          if (entry.path === path) {
+            return redirect("collection", collection.name, entry.name, "edit");
+          }
         }
       }
     }

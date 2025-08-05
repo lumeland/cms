@@ -4,9 +4,10 @@
 @import "./styles/variables.css";
 @import "./styles/breadcrumb.css";
 @import "./styles/form.css";
+@import "./styles/definition.css";
 @import "./styles/header.css";
 @import "./styles/preview.css";
-@import "./styles/footer.css";
+@import "./styles/navigation.css";
 @import "./styles/field.css";
 @import "./styles/input.css";
 @import "./styles/code.css";

@@ -112,7 +112,7 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
           const entry = upload.get(name);
           const fileData = await entry.readFile();
 
-          return render("uploads/view.vto", {
+          return render("uploads/edit.vto", {
             type: fileData.type,
             size: fileData.size,
             exif: await parseExif(fileData),

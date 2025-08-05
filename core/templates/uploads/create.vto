@@ -1,31 +1,41 @@
 {{ layout "layout.vto" }}
-  {{
-    include "breadcrumb.vto" {
-      version,
-      links: [
-        [upload.label, ["uploads", upload.name]],
-        "Upload file",
-      ],
-    }
-  }}
-
   <header class="header">
-    <h1 class="header-title">
-      Upload files
-      <label class="header-file">
-        <input
-          class="input is-inline"
-          id="_id"
-          type="text"
-          name="_id"
-          placeholder="subfolder…"
-          form="form-create"
-          aria-label="File name"
-          value="{{ folder }}"
-        >
-      </label>
-    </h1>
+    {{
+      include "breadcrumb.vto" {
+        version,
+        links: [
+          [upload.label, ["uploads", upload.name]],
+          "Upload file",
+        ],
+      }
+    }}
+    <h1 class="header-title">Upload files</h1>
   </header>
+
+  <nav class="navigation">
+    <label class="input-file">
+      <input
+        class="input"
+        id="_id"
+        type="text"
+        name="_id"
+        placeholder="subfolder…"
+        form="form-create"
+        aria-label="File name"
+        value="{{ folder }}"
+      >
+    </label>
+
+    <button
+      class="button is-primary"
+      type="submit"
+      form="form-create"
+      tabindex="1"
+    >
+      <u-icon name="upload-simple"></u-icon>
+      Upload files
+    </button>
+  </nav>
 
   <form
     method="post"
@@ -47,11 +57,5 @@
         >
       </u-upload>
     </div>
-    <footer class="footer ly-rowStack">
-      <button class="button is-primary" type="submit">
-        <u-icon name="upload-simple"></u-icon>
-        Upload files
-      </button>
-    </footer>
   </form>
 {{ /layout }}

@@ -1,0 +1,133 @@
+{{ layout "layout.vto" }}
+  {{ set src = ["uploads", upload.name, file] |> path }}
+
+  <header class="header">
+    {{
+      include "breadcrumb.vto" {
+        version,
+        links: [
+          [upload.label, ["uploads", upload.name]],
+          "Edit file",
+        ],
+      }
+    }}
+
+    <h1 class="header-title">
+      File details
+    </h1>
+  </header>
+
+  <nav class="navigation">
+    <label class="input-file">
+      <input
+        class="input is-inline"
+        id="_id"
+        type="{{ user.canRename(upload) ? 'text' : 'hidden' }}"
+        name="_id"
+        value="{{ file }}"
+        placeholder="Rename the file…"
+        form="form-edit"
+        aria-label="File name"
+        required
+      >
+    </label>
+
+    {{ if user.canEdit(upload) }}
+      <button
+        class="button is-primary"
+        type="submit"
+        form="form-edit"
+        tabindex="1"
+      >
+        <u-icon name="floppy-disk"></u-icon>
+        Update file
+      </button>
+    {{ /if }}
+
+    <u-dropdown>
+      <div slot="header">
+        File options
+      </div>
+
+      {{ set format = file |> formatSupported }}
+      {{ if format && user.canEdit(upload) }}
+        <a
+          href='{{ ["uploads", upload.name, file, "crop"] |> path }}'
+          class="button is-secondary"
+        >
+          <u-icon name="crop"></u-icon>
+          Crop image
+        </a>
+      {{ /if }}
+
+      <a
+        href="{{src}}"
+        download="{{file}}"
+        class="button is-secondary"
+      >
+        <u-icon name="download-simple"></u-icon>
+        Download file
+      </a>
+
+      {{ if user.canDelete(upload) }}
+        <u-confirm data-message="Delete this file?">
+          <button
+            class="button is-secondary"
+            form="form-edit"
+            formAction='{{ ["uploads", upload.name, file, "delete"] |> path }}'
+          >
+            <u-icon name="trash"></u-icon>
+            Delete file
+          </button>
+        </u-confirm>
+      {{ /if }}
+    </u-dropdown>
+  </nav>
+
+  <form
+    method="post"
+    class="form"
+    enctype="multipart/form-data"
+    id="form-edit"
+  >
+    {{ if user.canEdit(upload) }}
+      <div class="field">
+        <input
+          aria-label="Update"
+          id="new-file"
+          type="file"
+          name="file"
+          class="inputFile"
+        >
+      </div>
+    {{ /if }}
+  </form>
+
+  <figure class="preview">
+    <dl class="definition">
+      <dt>Public URL:</dt>
+      {{ set publicUrl = [upload.publicPath, file] |> normalizePath }}
+      <dd>
+        {{ publicUrl }}
+        <u-copy text="{{ publicUrl }}"></u-copy>
+      </dd>
+      <dt>Type:</dt>
+      <dd>{{ type }}</dd>
+      <dt>Size:</dt>
+      <dd>{{ size |> formatBytes }}</dd>
+    </dl>
+
+    <u-preview class="preview-media" data-src="{{src}}"></u-preview>
+    {{ if exif }}
+      <details class="accordion is-button">
+        <summary>Show EXIF data</summary>
+        <dl class="definition">
+          {{ for key, value of exif }}
+            <dt>{{ key }}:</dt>
+            <dd>{{ value }}</dd>
+          {{ /for }}
+        </dl>
+      </details>
+    {{ /if }}
+  </figure>
+{{ /layout }}

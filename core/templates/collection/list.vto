@@ -48,33 +48,27 @@
     {{ /for }}
   {{ /function }}
 
-  {{ include "breadcrumb.vto" { version, links: [collection.label] } }}
+  <header class="header">
+    {{ include "breadcrumb.vto" { version, links: [collection.label] } }}
 
-  {{ set content = folder(collection, tree).trim() }}
-
-  <header class="header is-sticky">
     <h1 class="header-title">{{ collection.label }}</h1>
+
     {{ if collection.description }}
       <p class="header-description">{{ collection.description }}</p>
     {{ /if }}
+  </header>
 
+  {{ set content = folder(collection, tree).trim() }}
+
+  <nav class="navigation">
     {{ if content }}
       <u-filter
-        class="header-filter"
         data-placeholder="Filter {{ collection.label }}"
         data-selector="#list > li"
       >
       </u-filter>
     {{ /if }}
-  </header>
 
-  {{ if content }}
-    <ul id="list" class="list">{{ content }}</ul>
-  {{ else }}
-    <p class="emptyState">This is empty</p>
-  {{ /if }}
-
-  <footer class="ly-rowStack footer is-responsive">
     {{ if user.canCreate(collection) }}
       <a
         href='{{ ["collection", collection.name, "create"] |> path }}'
@@ -84,5 +78,11 @@
         Create new
       </a>
     {{ /if }}
-  </footer>
+  </nav>
+
+  {{ if content }}
+    <ul id="list" class="list">{{ content }}</ul>
+  {{ else }}
+    <p class="emptyState">This is empty</p>
+  {{ /if }}
 {{ /layout }}

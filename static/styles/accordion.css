@@ -17,16 +17,11 @@
   transition-property: background;
   transition-duration: var(--animation-duration);
 
-  &.is-fit {
-    width: fit-content;
-  }
-
   &:hover {
     background: var(--color-line);
   }
 
   &.is-header {
-    min-height: 3rem;
     background: none;
 
     &:hover {
@@ -49,6 +44,13 @@
     background: currentColor;
     transform: rotate(-90deg);
     flex: 0 0 auto;
+  }
+}
+.accordion.is-button {
+  > summary {
+    min-height: 40px;
+    width: fit-content;
+    margin-bottom: 1em;
   }
 }
 .accordion-title {

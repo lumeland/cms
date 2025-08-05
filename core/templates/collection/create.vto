@@ -1,35 +1,48 @@
 {{ layout "layout.vto" }}
-  {{
-    include "breadcrumb.vto" {
-      version,
-      links: [
-        [collection.label, ["collection", collection.name]],
-        "New file",
-      ],
-    }
-  }}
-
   <header class="header">
+    {{
+      include "breadcrumb.vto" {
+        version,
+        links: [
+          [collection.label, ["collection", collection.name]],
+          "New document",
+        ],
+      }
+    }}
+
     <h1 class="header-title">
-      Creating new file
-      {{ if user.canRename(collection) }}
-        <label class="header-file">
-          {{ folder }}
-          <input
-            class="input is-inline"
-            id="_id"
-            type="text"
-            name="_id"
-            value="{{ defaults._id }}"
-            placeholder="Name your file…"
-            form="form-create"
-            aria-label="File name"
-            {{ if !collection.documentName }}required autofocus{{ /if }}
-          >
-        </label>
-      {{ /if }}
+      New document
     </h1>
   </header>
+
+  <nav class="navigation">
+    {{ if user.canRename(collection) }}
+      <label class="input-file">
+        {{ folder }}
+        <input
+          class="input"
+          id="_id"
+          type="text"
+          name="_id"
+          value="{{ defaults._id }}"
+          placeholder="Name your file…"
+          form="form-create"
+          aria-label="File name"
+          {{ if !collection.documentName }}required autofocus{{ /if }}
+        >
+      </label>
+    {{ /if }}
+
+    <button
+      class="button is-primary"
+      form="form-create"
+      type="submit"
+      tabindex="1"
+    >
+      <u-icon name="plus-circle"></u-icon>
+      Create document
+    </button>
+  </nav>
 
   {{ if views.length }}
     <u-views
@@ -54,8 +67,5 @@
       data-new="true"
       data-value="{{ defaults |> JSON.stringify |> escape }}"
     ></u-fields>
-    <footer class="footer ly-rowStack">
-      <button class="button is-primary" type="submit">Create</button>
-    </footer>
   </form>
 {{ /layout }}

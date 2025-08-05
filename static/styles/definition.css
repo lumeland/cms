@@ -1,0 +1,18 @@
+.definition {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 2em;
+  row-gap: 0.5em;
+
+  & dt {
+    font: var(--font-small-bold);
+    color: var(--color-dim);
+    text-align: right;
+  }
+  & dd {
+    font: var(--font-small);
+    margin: 0;
+  }
+}

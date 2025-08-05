@@ -51,6 +51,7 @@ app.path(
           return render("document/edit-error.vto", {
             error: (error as Error).message,
             document,
+            user,
           });
         }
 

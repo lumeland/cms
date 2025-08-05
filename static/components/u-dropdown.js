@@ -5,7 +5,7 @@ customElements.define(
   class Views extends Component {
     init() {
       this.attachShadow({ mode: "open" });
-      const { direction = "top", icon = "dots-three-vertical" } = this.dataset;
+      const { icon = "dots-three-vertical" } = this.dataset;
 
       this.shadowRoot.innerHTML = `
         <style>
@@ -47,11 +47,7 @@ customElements.define(
           .menu-selector-list:not([hidden]) {
             --padding: 6px;
             position: absolute;
-            ${
-        direction === "bottom"
-          ? "top: calc(100% + var(--padding));"
-          : "bottom: calc(100% + var(--padding));"
-      }
+            top: calc(100% + var(--padding));
             right: 0;
             display: flex;
             gap: 0px;

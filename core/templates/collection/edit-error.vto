@@ -1,24 +1,22 @@
 {{ layout "layout.vto" }}
-  {{
-    include "breadcrumb.vto" {
-      version,
-      links: [
-        [collection.label, ["collection", collection.name]],
-        "Editing file",
-      ],
-    }
-  }}
+  <header class="header">
+    {{
+      include "breadcrumb.vto" {
+        version,
+        links: [
+          [collection.label, ["collection", collection.name]],
+          "Editing document",
+        ],
+      }
+    }}
+    <h1 class="header-title">Editing item of {{ collection.label }}</h1>
+  </header>
 
-  <section class="errorState">
-    <div>
-      <u-icon class="errorState-icon" name="warning"></u-icon>
-      <h1 class="errorState-title">Error loading the document</h1>
-      <p class="errorState-message">
-        {{ error }}
-      </p>
-    </div>
+  <section class="emptyState is-error">
+    <u-icon class="errorState-icon" name="warning"></u-icon>
+    <h1>Error loading the document:<br><code>{{ error }}</code></h1>
 
-    <footer class="errorState-footer ly-rowStack">
+    <div class="ly-rowStack">
       <a
         class="button is-primary"
         href='{{ ["collection", collection.name, document.name, "code"] |> path }}'
@@ -39,6 +37,6 @@
           </button>
         </u-confirm>
       {{ /if }}
-    </footer>
+    </div>
   </section>
 {{ /layout }}

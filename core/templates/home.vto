@@ -1,7 +1,7 @@
 {{ layout "layout.vto" }}
-  {{ include "breadcrumb.vto" { version: versioning?.current() } }}
-
   <header class="header">
+    {{ include "breadcrumb.vto" { version: versioning?.current() } }}
+
     <h1 class="header-title">
       {{ site.name }}
     </h1>

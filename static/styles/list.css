@@ -1,6 +1,6 @@
 .list {
   list-style: none;
-  margin: var(--row-gap-normal) 0;
+  margin: 0;
   padding: 0;
 
   li {

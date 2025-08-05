@@ -12,14 +12,17 @@
   width: 100%;
   max-width: var(--app-width);
   margin: auto;
+  display: grid;
+  row-gap: var(--row-gap-small);
 }
 .app-nav {
-  position: relative;
-  z-index: 5;
+  display: flex;
+  column-gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+
   u-dropdown {
-    position: absolute;
-    top: 0;
-    right: 0;
+    z-index: 3;
   }
 }
 .app-footer {

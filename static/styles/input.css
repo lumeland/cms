@@ -30,14 +30,6 @@
   &.is-xnarrow {
     max-width: 150px;
   }
-  &.is-inline {
-    border: none;
-    display: inline-block;
-    vertical-align: middle;
-    flex: 1 1 200px;
-    align-self: center;
-    color: var(--color-dim);
-  }
 }
 .input[type="color"] {
   width: 80px;
@@ -76,5 +68,41 @@ textarea.input {
     resize: none;
     overflow: hidden;
     grid-area: 1 / 1 / 2 / 2;
+  }
+}
+
+.input-file {
+  font: var(--font-ui);
+  letter-spacing: 0;
+  display: flex;
+  white-space: nowrap;
+  align-items: center;
+  color: var(--color-dim);
+  padding-left: 0.8em;
+  border-radius: var(--border-radius);
+  flex: 1 1 auto;
+  border: solid 1px var(--color-line);
+  min-height: 40px;
+
+  & input {
+    border: none;
+    padding-left: 0;
+    flex: 1 1 200px;
+    color: var(--color-dim);
+    background: none;
+    min-height: 38px;
+
+    &:focus-visible {
+      box-shadow: none;
+    }
+  }
+  &:focus-within {
+    background-color: var(--color-input-bg);
+    box-shadow: 0 0 0 3px
+      color-mix(in hsl, var(--color-primary), transparent 75%);
+  }
+
+  &:has(input[type="hidden"]) {
+    display: none;
   }
 }
