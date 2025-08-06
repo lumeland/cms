@@ -44,7 +44,7 @@ customElements.define(
       const doc = await this.#document;
       const element = doc?.querySelector(selector);
       if (!element) {
-        return;
+        return false;
       }
       const container = this.iframe.parentElement;
 

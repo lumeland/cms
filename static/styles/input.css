@@ -81,7 +81,7 @@ textarea.input {
   padding-left: 0.8em;
   border-radius: var(--border-radius);
   flex: 1 1 auto;
-  border: solid 1px var(--color-line);
+  border: solid 1px var(--color-line-light);
   min-height: 40px;
 
   & input {
@@ -96,10 +96,16 @@ textarea.input {
       box-shadow: none;
     }
   }
+
   &:focus-within {
     background-color: var(--color-input-bg);
+    border: solid 1px var(--color-line);
     box-shadow: 0 0 0 3px
       color-mix(in hsl, var(--color-primary), transparent 75%);
+  }
+  &:has(input[required]:placeholder-shown) {
+    background-color: var(--color-input-bg);
+    border: solid 1px var(--color-line);
   }
 
   &:has(input[type="hidden"]) {

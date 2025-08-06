@@ -41,10 +41,21 @@ export function initField(element) {
     class: "buttonIcon field-dom-picker",
     type: "button",
     html: '<u-icon name="crosshair-simple"></u-icon>',
-    onclick() {
+    async onclick() {
       const preview = document.querySelector("u-pagepreview");
       if (preview) {
-        preview.highlight(schema.cssSelector);
+        const exists = await preview.highlight(schema.cssSelector);
+        if (!exists) {
+          this.animate([
+            { transform: "translate(-40px, -8px)", opacity: 1 },
+            { transform: "translate(-50px, -8px)" },
+            { transform: "translate(-40px, -8px)" },
+            { transform: "translate(-50px, -8px)" },
+            { transform: "translate(-40px, -8px)", opacity: 1 },
+          ], {
+            duration: 500,
+          });
+        }
       }
     },
   }, element);
