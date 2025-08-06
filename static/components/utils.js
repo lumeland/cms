@@ -17,9 +17,12 @@ const hash = location.hash.slice(1);
 export const initialViews = new Set(
   hash ? hash.split(",").map(decodeURIComponent) : [],
 );
-export function view(element) {
+
+/** Common init code used by several components */
+export function initField(element) {
   const { schema } = element;
 
+  // Show or hide the element based on the current view
   if (schema.view) {
     element.setAttribute("data-view", schema.view);
     element.hidden = !initialViews.has(schema.view);
@@ -28,6 +31,23 @@ export function view(element) {
       element.hidden = false;
     });
   }
+
+  if (!schema.cssSelector) {
+    return;
+  }
+
+  // Add a button to highlight the element in the page preview
+  dom("button", {
+    class: "buttonIcon field-dom-picker",
+    type: "button",
+    html: '<u-icon name="crosshair-simple"></u-icon>',
+    onclick() {
+      const preview = document.querySelector("u-pagepreview");
+      if (preview) {
+        preview.highlight(schema.cssSelector);
+      }
+    },
+  }, element);
 }
 
 /** Dispatch a bubbled event on error */

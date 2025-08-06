@@ -1,4 +1,4 @@
-import { getFieldName, view } from "./utils.js";
+import { getFieldName, initField } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -11,7 +11,7 @@ customElements.define(
       const namePrefix = getFieldName(this);
       let open = true;
 
-      view(this);
+      initField(this);
       dom("label", {
         for: `field_${namePrefix}.0`,
         class: "field-label",

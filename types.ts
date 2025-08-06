@@ -160,6 +160,9 @@ export interface UIField<T extends ResolvedField = ResolvedField>
 
   /** View name in which this field is visible */
   view?: string;
+
+  /** CSS selector to highlight the element in the preview panel */
+  cssSelector?: string;
 }
 
 /** Field for input values */

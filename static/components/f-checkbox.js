@@ -1,4 +1,4 @@
-import { getFieldName, oninvalid, view } from "./utils.js";
+import { getFieldName, initField, oninvalid } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -11,7 +11,7 @@ customElements.define(
       const name = getFieldName(this);
       const id = `field_${name}`;
       const div = dom("div", { class: "field-check" }, this);
-      view(this);
+      initField(this);
       dom("input", { name, type: "hidden", value: false }, div);
       dom("input", {
         ...schema.attributes,

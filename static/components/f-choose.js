@@ -1,4 +1,4 @@
-import { view } from "./utils.js";
+import { initField } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -10,7 +10,7 @@ customElements.define(
       const { namePrefix, schema, value } = this;
       let open = true;
 
-      view(this);
+      initField(this);
       dom("label", {
         for: `field_${namePrefix}.${schema.name}`,
         class: "field-label",

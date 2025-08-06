@@ -2,11 +2,15 @@
   display: grid;
   align-content: space-between;
   row-gap: 2rem;
-  padding: 2rem;
+  padding: 2rem 3rem;
   box-sizing: border-box;
   color: var(--color-text);
   background-color: var(--color-background);
   min-height: 100vh;
+
+  @media (width < 500px) {
+    padding: 2rem 2rem 2rem 3rem;
+  }
 }
 .app {
   width: 100%;

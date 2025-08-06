@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { getFieldName, view } from "./utils.js";
+import { getFieldName, initField } from "./utils.js";
 import dom from "dom";
 
 customElements.define(
@@ -8,7 +8,7 @@ customElements.define(
     init() {
       this.classList.add("field", "is-group");
       const { schema, value, isNew } = this;
-      view(this);
+      initField(this);
       const namePrefix = getFieldName(this);
       const details = dom("details", {
         class: "accordion",

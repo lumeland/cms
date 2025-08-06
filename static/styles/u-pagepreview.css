@@ -24,6 +24,7 @@ body:has(> .pagepreview) {
       width: 100%;
       height: 100%;
       border: none;
+      background-color: white;
     }
   }
   > .app-container {
@@ -40,6 +41,27 @@ body:has(> .pagepreview) {
       }
     }
   }
+}
+.pagepreview-mask {
+  --size: 100% 100%;
+  --position: 0 0;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #9999;
+  mask-position: 0 0, var(--position);
+  mask-image:
+    linear-gradient(white, white),
+    linear-gradient(white, white);
+  mask-size: 100% 100%, var(--size);
+  mask-repeat: no-repeat;
+  mask-composite: subtract;
+  z-index: 1;
+  transition-property: mask-position, mask-size;
+  transition-duration: 500ms;
 }
 
 @keyframes previewIn {

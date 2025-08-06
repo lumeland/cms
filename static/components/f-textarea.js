@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { getFieldName, oninvalid, updateField, view } from "./utils.js";
+import { getFieldName, initField, oninvalid, updateField } from "./utils.js";
 import dom from "dom";
 
 customElements.define(
@@ -11,7 +11,7 @@ customElements.define(
       const name = getFieldName(this);
       const id = `field_${name}`;
 
-      view(this);
+      initField(this);
       dom("label", { for: id, html: schema.label }, this);
 
       dom(

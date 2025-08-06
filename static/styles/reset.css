@@ -73,6 +73,6 @@ input {
   accent-color: var(--color-primary);
 }
 
-:not(:defined) {
-  visibility: hidden;
+:not(u-icon):not(:defined) {
+  display: none;
 }
