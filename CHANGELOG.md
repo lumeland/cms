@@ -8,14 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - New option `previewUrl` to return the URL of a file. It can be defined globally or per document and collection.
 - New option `sourcePath` to return the file of a URL.
-- New option `cssSelector` to highlight an element in the previewer.
-- `documentLabel` option to uploads.
-- New `edit` option to customize edit permissions for collections.
-- New `edit` option to customize edit permissions for documents.
-- New `relation` field type.
-- New `relation-list` field type.
-- Permissions options form uploads (`create`, `rename`, `edit`, and `delete`).
-- `select` field: allow numbers as values.
+- New option `cssSelector` to highlight an element in the previewer related with a field.
+- New option `documentLabel` for uploads, to configure the name of the file.
+- New `edit` option to documents and collections to enable/disable edit permissions.
+- New `relation` field.
+- New `relation-list` field.
+- Permissions options for uploads (`create`, `rename`, `edit`, and `delete`).
 - User-level permissions
 - Show EXIF data of some files in the uploads detail.
 - Allow to parse and show extra data per document in the collection and upload views.
@@ -25,16 +23,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   - `choose`: To select between different objects
 
 ### Removed
-- `url` configuration for documents and collections. Use `previewUrl` instead.
-- Float button to edit the current page in the preview.
+- BREAKING: `url` configuration for documents and collections. Use `previewUrl` instead.
+- Float button to edit the current page in the preview. It was moved to Lume debugbar.
 - BREAKING: `cms:*` global events.
 - BREAKING: Ability to name the root field as `[]` to indicate that it's an array. Use the new `type` option.
 
 ### Changed
 - BREAKING: Replaced Hono with Galo.
-- Responsive layout to show the previews.
+- Responsive layout to show the previews in small screens.
 - `select` field: only allow defined values.
 - The `FieldDefinition.init` callback is run every time the field is initialized.
+
+### Fixed
+- `select` field: allow numbers as values.
 
 ## [0.12.6] - 2025-07-18
 ### Fixed
