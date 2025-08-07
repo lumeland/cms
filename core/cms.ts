@@ -111,9 +111,6 @@ export interface UploadOptions {
 }
 
 const defaults: Partial<CmsOptions> = {
-  site: {
-    name: "Lume CMS",
-  },
   basePath: "/",
 };
 
@@ -159,7 +156,7 @@ export default class Cms {
   }
 
   /** Setup the basic auth */
-  auth(users: Record<string, string>): this {
+  auth(users: Record<string, string | UserConfiguration>): this {
     this.options.auth = {
       method: "basic",
       users,
@@ -289,7 +286,7 @@ export default class Cms {
   initContent(): CMSContent {
     const content: CMSContent = {
       basePath: this.options.basePath,
-      site: this.options.site!,
+      site: this.options.site ?? {},
       data: this.options.data ?? {},
       versioning: this.versionManager,
       collections: {},

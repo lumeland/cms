@@ -3,7 +3,7 @@
     {{ include "breadcrumb.vto" { version: versioning?.current() } }}
 
     <h1 class="header-title">
-      {{ site.name }}
+      {{ site.name ?? "Lume CMS" }}
     </h1>
 
     <div class="header-description">

@@ -22,7 +22,7 @@ export interface EntrySource {
 export type EntryMetadata = EntrySource & DocumentLabel;
 
 export interface SiteInfo {
-  name: string;
+  name?: string;
   description?: string;
   url?: string;
   body?: string;
