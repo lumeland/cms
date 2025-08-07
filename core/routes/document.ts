@@ -18,7 +18,7 @@ const app = new Router<RouterData>();
 
 app.path(
   "/:name/*",
-  ({ request, cms, name, render, next, previewURL, user }) => {
+  ({ request, cms, name, render, next, previewUrl, user }) => {
     const { documents, basePath } = cms;
 
     // Check if the document exists
@@ -33,8 +33,8 @@ app.path(
       return Response.redirect(new URL(path, request.url));
     }
 
-    function getPreviewURL(document: Document, changed = false) {
-      return (document.previewURL ?? previewURL)?.(
+    function getPreviewUrl(document: Document, changed = false) {
+      return (document.previewUrl ?? previewUrl)?.(
         document.source.path,
         cms,
         changed,
@@ -64,7 +64,7 @@ app.path(
           fields: await prepareField(document.fields, cms, data),
           views: Array.from(getViews(document.fields)),
           initViews,
-          url: getPreviewURL(document),
+          url: getPreviewUrl(document),
           data,
           user,
         });
@@ -82,7 +82,7 @@ app.path(
         );
 
         // Wait for the preview URL to be ready
-        await getPreviewURL(document, true);
+        await getPreviewUrl(document, true);
 
         return redirect(document.name, "edit");
       })
@@ -108,7 +108,7 @@ app.path(
         return render("document/code.vto", {
           fields,
           data,
-          url: getPreviewURL(document),
+          url: getPreviewUrl(document),
           document,
           user,
         });
@@ -123,7 +123,7 @@ app.path(
         document.writeText(code ?? "");
 
         // Wait for the preview URL to be ready
-        await getPreviewURL(document, true);
+        await getPreviewUrl(document, true);
 
         return redirect(document.name, "code");
       });

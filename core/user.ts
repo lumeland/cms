@@ -2,13 +2,13 @@ import Collection from "./collection.ts";
 import Document from "./document.ts";
 import Upload from "./upload.ts";
 
-import type { Permission, UserConfiguration } from "../types.ts";
+import type { Permissions, UserConfiguration } from "../types.ts";
 
 type Subject = Collection | Document | Upload;
 
 export default class User {
   name?: string;
-  permissions: Permission[] = [];
+  permissions: Record<string, Permissions> = {};
 
   get isLogged(): boolean {
     return !!this.name;
@@ -30,7 +30,7 @@ export default class User {
             this.name = name;
           } else {
             this.name = config.name ?? name;
-            this.permissions = config.permissions ?? [];
+            this.permissions = config.permissions ?? {};
           }
           return true;
         }
@@ -74,7 +74,11 @@ export default class User {
       subject.permissions.rename === true;
   }
 
-  #getUserPermission(subject: Subject): Permission | undefined {
-    return this.permissions.find((p) => p.subject === subject.name);
+  #getUserPermission(subject: Subject): Permissions | undefined {
+    for (const [name, permissions] of Object.entries(this.permissions)) {
+      if (name === subject.name) {
+        return permissions;
+      }
+    }
   }
 }

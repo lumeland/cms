@@ -1,6 +1,6 @@
 import { prepareField } from "./utils/data.ts";
 import { TransformError } from "../storage/transformers/transform_error.js";
-import type { CMSContent, Data, Entry, PreviewURL } from "../types.ts";
+import type { CMSContent, Data, Entry, PreviewUrl } from "../types.ts";
 
 export interface DocumentOptions {
   name?: string;
@@ -8,7 +8,7 @@ export interface DocumentOptions {
   description?: string;
   entry: Entry;
   fields: Lume.CMS.ResolvedField;
-  previewURL?: PreviewURL;
+  previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   edit?: boolean;
 }
@@ -23,7 +23,7 @@ export default class Document {
   description?: string;
   #entry: Entry;
   #fields: Lume.CMS.ResolvedField;
-  previewURL?: PreviewURL;
+  previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   permissions: Permissions;
 
@@ -33,7 +33,7 @@ export default class Document {
     this.description = options.description;
     this.#entry = options.entry;
     this.#fields = options.fields;
-    this.previewURL = options.previewURL;
+    this.previewUrl = options.previewUrl;
     this.views = options.views;
     this.permissions = {
       edit: options.edit ?? true,

@@ -143,7 +143,7 @@ export interface ResolvedGroupField extends ResolvedField {
 }
 
 /** A function to generate a preview URL for a file */
-export type PreviewURL = (
+export type PreviewUrl = (
   file: string,
   cms: CMSContent,
   changed?: boolean,
@@ -223,11 +223,10 @@ export interface CMSContent {
 export interface UserConfiguration {
   password: string;
   name?: string;
-  permissions?: Permission[];
+  permissions?: Record<string, Permissions>;
 }
 
-export interface Permission {
-  subject: string;
+export interface Permissions {
   create?: boolean;
   delete?: boolean;
   edit?: boolean;
@@ -246,6 +245,7 @@ declare global {
     export type ResolvedField = ResolvedFields[keyof ResolvedFields];
 
     export type {
+      CMSContent as Content,
       CmsOptions,
       CollectionOptions,
       DocumentOptions,

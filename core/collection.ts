@@ -7,7 +7,7 @@ import type {
   EntryMetadata,
   EntrySource,
   Labelizer,
-  PreviewURL,
+  PreviewUrl,
   Storage,
 } from "../types.ts";
 
@@ -17,7 +17,7 @@ export interface CollectionOptions {
   description?: string;
   storage: Storage;
   fields: Lume.CMS.ResolvedField;
-  previewURL?: PreviewURL;
+  previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
@@ -40,7 +40,7 @@ export default class Collection {
   description?: string;
   #storage: Storage;
   #fields: Lume.CMS.ResolvedField;
-  previewURL?: PreviewURL;
+  previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
@@ -52,7 +52,7 @@ export default class Collection {
     this.description = options.description;
     this.#storage = options.storage;
     this.#fields = options.fields;
-    this.previewURL = options.previewURL;
+    this.previewUrl = options.previewUrl;
     this.views = options.views;
     this.documentName = options.documentName;
     this.documentLabel = options.documentLabel;

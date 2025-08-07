@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.13.0] - Unreleased
 ### Added
-- New option `previewURL` to return the URL of a file. It can be defined globally or per document and collection.
+- New option `previewUrl` to return the URL of a file. It can be defined globally or per document and collection.
 - New option `sourcePath` to return the file of a URL.
 - New option `cssSelector` to highlight an element in the previewer.
 - `documentLabel` option to uploads.
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   - `choose`: To select between different objects
 
 ### Removed
-- `url` configuration for documents and collections. Use `previewURL` instead.
+- `url` configuration for documents and collections. Use `previewUrl` instead.
 - Float button to edit the current page in the preview.
 - BREAKING: `cms:*` global events.
 - BREAKING: Ability to name the root field as `[]` to indicate that it's an array. Use the new `type` option.

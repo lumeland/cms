@@ -30,7 +30,7 @@ const app = new Router<RouterData>();
 
 app.path(
   "/:name/*",
-  ({ request, cms, render, name, next, previewURL, user }) => {
+  ({ request, cms, render, name, next, previewUrl, user }) => {
     const { collections, basePath } = cms;
     const collection = collections[name];
 
@@ -43,8 +43,8 @@ app.path(
       return Response.redirect(new URL(path, request.url));
     }
 
-    function getPreviewURL(document: Document, changed = false) {
-      return (collection.previewURL ?? previewURL)?.(
+    function getPreviewUrl(document: Document, changed = false) {
+      return (collection.previewUrl ?? previewUrl)?.(
         document.source.path,
         cms,
         changed,
@@ -108,7 +108,7 @@ app.path(
             await document.write(data, cms, true);
 
             // Wait for the preview URL to be ready before redirecting
-            await getPreviewURL(document, true);
+            await getPreviewUrl(document, true);
 
             return redirect(collection.name, document.name, "edit");
           });
@@ -147,7 +147,7 @@ app.path(
               fields: await prepareField(collection.fields, cms, data),
               data,
               initViews,
-              url: await getPreviewURL(document),
+              url: await getPreviewUrl(document),
               views: Array.from(getViews(collection.fields)),
               document,
               user,
@@ -190,7 +190,7 @@ app.path(
             await finalDocument.write(data, cms);
 
             // Wait for the preview URL to be ready
-            await getPreviewURL(finalDocument, true);
+            await getPreviewUrl(finalDocument, true);
 
             return redirect(collection.name, finalDocument.name, "edit");
           })
@@ -217,7 +217,7 @@ app.path(
               collection,
               fields,
               data,
-              url: await getPreviewURL(document),
+              url: await getPreviewUrl(document),
               document,
               user,
             });
@@ -248,7 +248,7 @@ app.path(
             finalDocument.writeText(code ?? "");
 
             // Wait for the preview URL to be ready
-            await getPreviewURL(finalDocument, true);
+            await getPreviewUrl(finalDocument, true);
 
             return redirect(collection.name, finalDocument.name, "code");
           })
@@ -285,7 +285,7 @@ app.path(
             );
 
             // Wait for the preview URL to be ready
-            await getPreviewURL(duplicate, true);
+            await getPreviewUrl(duplicate, true);
 
             return redirect(collection.name, duplicate.name, "edit");
           })

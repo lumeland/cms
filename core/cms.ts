@@ -23,7 +23,7 @@ import type {
   Entry,
   FieldDefinition,
   Labelizer,
-  PreviewURL,
+  PreviewUrl,
   SiteInfo,
   Storage,
   UserConfiguration,
@@ -42,7 +42,7 @@ export interface CmsOptions {
   auth?: AuthOptions;
   data?: Record<string, unknown>;
   extraHead?: string;
-  previewURL?: PreviewURL;
+  previewUrl?: PreviewUrl;
   sourcePath?: SourcePath;
 }
 
@@ -54,7 +54,7 @@ export interface AuthOptions {
 export interface RouterData {
   cms: CMSContent;
   render: (file: string, data?: Record<string, unknown>) => Promise<string>;
-  previewURL?: PreviewURL;
+  previewUrl?: PreviewUrl;
   sourcePath?: SourcePath;
   user: User;
 }
@@ -74,7 +74,7 @@ export interface DocumentOptions {
   type?: DocumentType;
   store: string;
   fields: Lume.CMS.Field[];
-  previewURL?: PreviewURL;
+  previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   edit?: boolean;
 }
@@ -86,7 +86,7 @@ export interface CollectionOptions {
   type?: DocumentType;
   store: string;
   fields: Lume.CMS.Field[];
-  previewURL?: PreviewURL;
+  previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
@@ -361,7 +361,7 @@ export default class Cms {
 
     const app = new Router<RouterData>({
       cms: content,
-      previewURL: this.options.previewURL,
+      previewUrl: this.options.previewUrl,
       sourcePath: this.options.sourcePath,
       user: new User(),
       render: (file: string, data?: Record<string, unknown>) =>
