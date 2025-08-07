@@ -207,8 +207,8 @@ export default class GitHub implements Storage {
   client: Octokit;
   owner: string;
   repo: string;
-  root: string;
   path: string;
+  pattern: string;
   extension?: string;
   branch?: string;
   commitMessage: (options: CommitMessageOptions) => string;
@@ -241,26 +241,26 @@ export default class GitHub implements Storage {
     const pos = path.indexOf("*");
 
     if (pos === -1) {
-      this.root = normalizePath(path).slice(1);
-      this.path = "**";
+      this.path = normalizePath(path).slice(1);
+      this.pattern = "**";
     } else if (pos > 0) {
-      this.root = normalizePath(path.slice(0, pos)).slice(1);
-      this.path = path.slice(pos);
+      this.path = normalizePath(path.slice(0, pos)).slice(1);
+      this.pattern = path.slice(pos);
       this.extension = posix.extname(path);
     } else {
-      this.root = "";
-      this.path = path;
+      this.path = "";
+      this.pattern = path;
       this.extension = posix.extname(path);
     }
     this.git = new GitClient(options);
   }
 
   async *[Symbol.asyncIterator](): AsyncGenerator<EntrySource> {
-    const regexp = globToRegExp(this.path, { extended: true });
-    const depth = getDepth(this.path);
-    const offsetPath = this.root.length ? this.root.length + 1 : 0;
+    const regexp = globToRegExp(this.pattern, { extended: true });
+    const depth = getDepth(this.pattern);
+    const offsetPath = this.pattern.length ? this.pattern.length + 1 : 0;
 
-    for await (const entry of this.git.listFiles(this.root, depth)) {
+    for await (const entry of this.git.listFiles(this.pattern, depth)) {
       if (entry.type === "file") {
         const name = offsetPath ? entry.path.slice(offsetPath) : entry.path;
 
@@ -270,7 +270,7 @@ export default class GitHub implements Storage {
 
         yield {
           name,
-          path: posix.join(this.root, name),
+          path: posix.join(this.path, name),
           src: entry.download_url,
         };
       }
@@ -278,12 +278,12 @@ export default class GitHub implements Storage {
   }
 
   source(name: string): EntrySource {
-    const path = posix.join(this.root, name);
+    const path = posix.join("/", this.path, name);
     return {
       name: name,
-      path: posix.join(this.root, name),
+      path,
       src:
-        `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}/${path}`,
+        `https://raw.githubusercontent.com/${this.owner}/${this.repo}/${this.branch}${path}`,
     };
   }
 
@@ -300,7 +300,7 @@ export default class GitHub implements Storage {
       client: this.client,
       owner: this.owner,
       repo: this.repo,
-      path: posix.join(this.root, id),
+      path: posix.join(this.path, id),
       branch: this.branch,
       commitMessage: this.commitMessage,
     });
@@ -311,13 +311,13 @@ export default class GitHub implements Storage {
   }
 
   async delete(name: string) {
-    const path = posix.join(this.root, name);
+    const path = posix.join(this.path, name);
     await this.git.deleteFile(path);
   }
 
   async rename(name: string, newName: string): Promise<void> {
-    name = posix.join(this.root, name);
-    newName = posix.join(this.root, newName);
+    name = posix.join(this.path, name);
+    newName = posix.join(this.path, newName);
 
     await this.git.rename(name, newName);
   }
@@ -371,12 +371,12 @@ export class GitHubEntry implements Entry {
   }
 }
 
-function getDepth(path: string): number {
-  if (path.includes("**/")) {
+function getDepth(pattern: string): number {
+  if (pattern.includes("**/")) {
     return Infinity;
   }
 
-  if (path.includes("*/")) {
+  if (pattern.includes("*/")) {
     return 1;
   }
 
