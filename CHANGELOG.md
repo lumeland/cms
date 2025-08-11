@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Responsive layout to show the previews in small screens.
 - `select` field: only allow defined values.
 - The `FieldDefinition.init` callback is run every time the field is initialized.
+- Some changes to Git class:
+  - `prefix` option was renamed to `branchPrefix`.
+  - The branch with versions are pushed to the remote repo.
 
 ### Fixed
 - `select` field: allow numbers as values.
