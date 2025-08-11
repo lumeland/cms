@@ -50,6 +50,8 @@
   --border-radius: 6px;
   --animation-duration: 0.2s;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-big: 0 0 1px #0003, 0 0 30px #0002;
+  --backdrop: #3332;
   --app-width: 900px;
 }
 
@@ -67,4 +69,6 @@
 
   /* Other */
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.5);
+  --shadow-big: 0 0 1px #0003, 0 0 30px #0002;
+  --backdrop: #fff1;
 }

@@ -36,18 +36,20 @@ export class Git implements Versioning {
 
   *[Symbol.iterator](): Generator<Version> {
     const current = this.#gitCurrentBranch();
-    const allBranches = this.#git("branch", "--list");
+    const allBranches = new Set([
+      current,
+      ...this.#git("branch", "--list")
+        .split("\n")
+        .map((b) => b.replace("*", "").trim()),
+    ]);
 
-    for (const item of allBranches.split("\n")) {
-      const branch = item.replace("*", "").trim();
-
+    for (const branch of allBranches) {
       if (branch !== this.prodBranch && !branch.startsWith(this.branchPrefix)) {
         continue;
       }
 
-      const name = this.#branchToName(branch);
       yield {
-        name,
+        name: this.#branchToName(branch),
         isCurrent: branch === current,
         isProduction: branch === this.prodBranch,
       };

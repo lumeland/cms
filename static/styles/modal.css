@@ -10,7 +10,7 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
 
     @media (width < 1000px) {
       position: fixed;
-      box-shadow: 0 0 1px #0003, 0 0 30px #0002;
+      box-shadow: var(--shadow-big);
       top: 0;
       right: 0;
 
@@ -27,7 +27,13 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
   display: grid;
   grid-template: 1fr / 1fr;
   animation-fill-mode: both;
-  box-shadow: 0 0 1px #0003, 0 0 30px #0002;
+  box-shadow: var(--shadow-big);
+  background-color: var(--color-background);
+  color: var(--color-text);
+
+  &::backdrop {
+    background-color: var(--backdrop);
+  }
 
   &.is-center {
     padding: 2rem 1rem 1rem;
