@@ -36,11 +36,11 @@ type SourcePath = (
 ) => string | undefined | Promise<string | undefined>;
 
 export interface CmsOptions {
-  site?: SiteInfo;
+  site: SiteInfo;
   root: string;
   basePath: string;
   auth?: AuthOptions;
-  data?: Record<string, unknown>;
+  data: Record<string, unknown>;
   extraHead?: string;
   previewUrl?: PreviewUrl;
   sourcePath?: SourcePath;
@@ -111,7 +111,9 @@ export interface UploadOptions {
 }
 
 const defaults: Partial<CmsOptions> = {
+  site: {},
   basePath: "/",
+  data: {},
 };
 
 export default class Cms {
