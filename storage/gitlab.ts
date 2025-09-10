@@ -1,13 +1,13 @@
 import { posix } from "../deps/std.ts";
-import { GitHubAPI } from "./apis/github.ts";
+import { GitLabAPI } from "./apis/gitlab.ts";
 import { BaseGitAPI, defaultCommitMessage } from "./_base_git.ts";
 
 import type { Storage } from "../types.ts";
 
-export default function create(repository: string, token: string): GitHub {
+export default function create(repository: string, token: string): GitLab {
   const [owner, repo, ...path] = repository.split("/");
 
-  const api = new GitHubAPI({
+  const api = new GitLabAPI("https://gitlab.com", {
     token: token,
     owner: owner,
     repo: repo,
@@ -15,7 +15,7 @@ export default function create(repository: string, token: string): GitHub {
     commitMessage: defaultCommitMessage,
   });
 
-  return new GitHub({
+  return new GitLab({
     api,
     owner,
     repo,
@@ -23,9 +23,9 @@ export default function create(repository: string, token: string): GitHub {
   });
 }
 
-export class GitHub extends BaseGitAPI<GitHubAPI> {
+export class GitLab extends BaseGitAPI<GitLabAPI> {
   directory(id: string): Storage {
-    return new GitHub({
+    return new GitLab({
       api: this.api,
       owner: this.owner,
       repo: this.repo,

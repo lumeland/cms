@@ -1,13 +1,13 @@
 import { posix } from "../deps/std.ts";
-import { GitHubAPI } from "./apis/github.ts";
+import { ForgejoAPI } from "./apis/forgejo.ts";
 import { BaseGitAPI, defaultCommitMessage } from "./_base_git.ts";
 
 import type { Storage } from "../types.ts";
 
-export default function create(repository: string, token: string): GitHub {
+export default function create(repository: string, token: string): Codeberg {
   const [owner, repo, ...path] = repository.split("/");
 
-  const api = new GitHubAPI({
+  const api = new ForgejoAPI("https://codeberg.org", {
     token: token,
     owner: owner,
     repo: repo,
@@ -15,7 +15,7 @@ export default function create(repository: string, token: string): GitHub {
     commitMessage: defaultCommitMessage,
   });
 
-  return new GitHub({
+  return new Codeberg({
     api,
     owner,
     repo,
@@ -23,9 +23,9 @@ export default function create(repository: string, token: string): GitHub {
   });
 }
 
-export class GitHub extends BaseGitAPI<GitHubAPI> {
+export class Codeberg extends BaseGitAPI<ForgejoAPI> {
   directory(id: string): Storage {
-    return new GitHub({
+    return new Codeberg({
       api: this.api,
       owner: this.owner,
       repo: this.repo,
