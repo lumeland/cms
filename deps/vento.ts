@@ -1,13 +1,10 @@
-import vento from "https://deno.land/x/vento@v1.15.1/mod.ts";
-import { UrlLoader } from "https://deno.land/x/vento@v1.15.1/src/url_loader.ts";
+import vento from "https://deno.land/x/vento@v2.1.1/web.ts";
 import { normalizePath } from "../core/utils/path.ts";
 import { formatSupported } from "./imagick.ts";
 import { formatBytes } from "./std.ts";
 
-const loader = new UrlLoader(new URL(import.meta.resolve("../core/templates")));
-
 const env = vento({
-  includes: loader,
+  includes: new URL(import.meta.resolve("../core/templates")),
 });
 
 export async function render(file: string, data: Record<string, unknown> = {}) {

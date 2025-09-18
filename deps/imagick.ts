@@ -1,13 +1,13 @@
-import { initializeImageMagick } from "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.35/dist/index.js";
+import { initializeImageMagick } from "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.36/dist/index.js";
 import {
   ImageMagick,
   MagickFormat,
   MagickGeometry,
-} from "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.35/dist/index.js";
+} from "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.36/dist/index.js";
 import type {
   IMagickImage,
   MagickFormat as IMagickFormat,
-} from "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.35/dist/index.d.ts";
+} from "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.36/dist/index.d.ts";
 
 await initialize();
 
@@ -16,14 +16,14 @@ export { ImageMagick, IMagickFormat as MagickFormat, MagickGeometry };
 export function transform(
   file: File,
   fn: (img: IMagickImage) => void,
-): Promise<Uint8Array> {
+): Promise<Uint8Array<ArrayBuffer>> {
   return file.arrayBuffer()
     .then((data) => {
       return new Promise((resolve) => {
         ImageMagick.read(new Uint8Array(data), (img: IMagickImage) => {
           fn(img);
           img.write((data) => {
-            resolve(data);
+            resolve(data as Uint8Array<ArrayBuffer>);
           });
         });
       });
@@ -53,7 +53,7 @@ export function formatSupported(file: string): IMagickFormat | undefined {
 
 async function initialize() {
   const wasmUrl = new URL(
-    "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.35/dist/magick.wasm",
+    "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.36/dist/magick.wasm",
   );
 
   // @ts-ignore Netlify does not support caches

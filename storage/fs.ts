@@ -31,7 +31,9 @@ export default class Fs implements Storage {
     const pos = options.path.indexOf("*");
 
     if (pos === -1) {
-      this.path = options.path;
+      this.path = options.path.endsWith("/")
+        ? options.path
+        : options.path + "/";
       this.pattern = "**";
     } else if (pos === 0) {
       this.path = "";
