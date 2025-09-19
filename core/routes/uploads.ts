@@ -37,7 +37,12 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
   }
 
   function redirect(...paths: string[]) {
-    return Response.redirect(getPath(basePath, "uploads", ...paths));
+    return new Response(null, {
+      status: 302,
+      headers: new Headers({
+        "Location": getPath(basePath, "uploads", ...paths),
+      }),
+    });
   }
 
   return next()

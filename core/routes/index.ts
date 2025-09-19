@@ -11,7 +11,12 @@ app.get("/", async ({ request, cms, render, sourcePath, user }) => {
   const edit = searchParams.get("edit");
 
   function redirect(...paths: string[]) {
-    return Response.redirect(getPath(basePath, ...paths));
+    return new Response(null, {
+      status: 302,
+      headers: new Headers({
+        "Location": getPath(basePath, ...paths),
+      }),
+    });
   }
 
   // If the edit parameter is set, redirect to the edit page

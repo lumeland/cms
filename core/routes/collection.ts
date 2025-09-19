@@ -39,7 +39,12 @@ app.path(
     }
 
     function redirect(...paths: string[]) {
-      return Response.redirect(getPath(basePath, "collection", ...paths));
+      return new Response(null, {
+        status: 302,
+        headers: new Headers({
+          "Location": getPath(basePath, "collection", ...paths),
+        }),
+      });
     }
 
     function getPreviewUrl(document: Document, changed = false) {
