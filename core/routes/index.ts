@@ -41,7 +41,7 @@ app.get("/", async ({ request, cms, render, sourcePath, user }) => {
     }
 
     // If no document or collection matches, redirect to the home page
-    return Response.redirect(basePath);
+    return redirect();
   }
 
   return render("home.vto", {
