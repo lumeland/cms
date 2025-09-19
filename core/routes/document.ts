@@ -18,7 +18,7 @@ const app = new Router<RouterData>();
 
 app.path(
   "/:name/*",
-  ({ request, cms, name, render, next, previewUrl, user }) => {
+  ({ cms, name, render, next, previewUrl, user }) => {
     const { documents, basePath } = cms;
 
     // Check if the document exists
@@ -29,8 +29,7 @@ app.path(
     }
 
     function redirect(...paths: string[]) {
-      const path = getPath(basePath, "document", ...paths);
-      return Response.redirect(new URL(path, request.url));
+      return Response.redirect(getPath(basePath, "document", ...paths));
     }
 
     function getPreviewUrl(document: Document, changed = false) {

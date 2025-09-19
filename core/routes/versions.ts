@@ -27,7 +27,7 @@ app.post("/*", async ({ request, cms, next }) => {
   const response = new Response(null, {
     status: 302,
     headers: new Headers({
-      "Location": new URL(getPath(basePath), request.url).toString(),
+      "Location": getPath(basePath),
       "X-Lume-CMS": "reload",
     }),
   });

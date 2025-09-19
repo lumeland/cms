@@ -26,7 +26,7 @@ import type { RouterData } from "../cms.ts";
 
 const app = new Router<RouterData>();
 
-app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
+app.path("/:name/*", ({ cms, name, render, next, user }) => {
   const { uploads, basePath } = cms;
 
   // Check if the upload exists
@@ -37,8 +37,7 @@ app.path("/:name/*", ({ request, cms, name, render, next, user }) => {
   }
 
   function redirect(...paths: string[]) {
-    const path = getPath(basePath, "uploads", ...paths);
-    return Response.redirect(new URL(path, request.url));
+    return Response.redirect(getPath(basePath, "uploads", ...paths));
   }
 
   return next()

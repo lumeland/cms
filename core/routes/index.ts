@@ -11,8 +11,7 @@ app.get("/", async ({ request, cms, render, sourcePath, user }) => {
   const edit = searchParams.get("edit");
 
   function redirect(...paths: string[]) {
-    const path = getPath(basePath, ...paths);
-    return Response.redirect(new URL(path, request.url));
+    return Response.redirect(getPath(basePath, ...paths));
   }
 
   // If the edit parameter is set, redirect to the edit page
@@ -37,7 +36,7 @@ app.get("/", async ({ request, cms, render, sourcePath, user }) => {
     }
 
     // If no document or collection matches, redirect to the home page
-    return Response.redirect(new URL(basePath, request.url));
+    return Response.redirect(basePath);
   }
 
   return render("home.vto", {

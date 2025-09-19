@@ -39,8 +39,7 @@ app.path(
     }
 
     function redirect(...paths: string[]) {
-      const path = getPath(basePath, "collection", ...paths);
-      return Response.redirect(new URL(path, request.url));
+      return Response.redirect(getPath(basePath, "collection", ...paths));
     }
 
     function getPreviewUrl(document: Document, changed = false) {
