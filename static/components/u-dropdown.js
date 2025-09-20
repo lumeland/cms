@@ -5,6 +5,7 @@ customElements.define(
   class Views extends Component {
     init() {
       this.attachShadow({ mode: "open" });
+      const { icon = "dots-three-vertical" } = this.dataset;
 
       this.shadowRoot.innerHTML = `
         <style>
@@ -46,7 +47,7 @@ customElements.define(
           .menu-selector-list:not([hidden]) {
             --padding: 6px;
             position: absolute;
-            bottom: calc(100% + var(--padding));
+            top: calc(100% + var(--padding));
             right: 0;
             display: flex;
             gap: 0px;
@@ -55,13 +56,21 @@ customElements.define(
             border-radius: calc(var(--border-radius) + var(--padding));
             box-shadow: var(--shadow);
             background: var(--color-line-light);
+            width: 200px;
+          }
+          .menu-selector-header {
+            padding: 0.5em;
+            font: var(--font-small);
+            color: var(--color-dim);
+            border-bottom: 1px solid var(--color-line);
           }
         </style>
         <div class="menu-selector" part="dropdown">
           <button aria-label="Options" aria-controls="options-list" class="menu-selector-button" type="button" part="dropdown-button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM128,72a12,12,0,1,0-12-12A12,12,0,0,0,128,72Zm0,112a12,12,0,1,0,12,12A12,12,0,0,0,128,184Z"></path></svg>
+            <u-icon name="${icon}"><u-icon>
           </button>
           <div id="options-list" class="menu-selector-list" hidden part="dropdown-links">
+            <div class="menu-selector-header"><slot name="header"></slot></div>
             <slot></slot>
           </div>
         </div>

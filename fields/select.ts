@@ -1,4 +1,4 @@
-import { applyTextChanges } from "./utils.ts";
+import { applySelectChanges } from "./utils.ts";
 import type {
   FieldDefinition,
   InputField,
@@ -21,7 +21,7 @@ interface ResolvedSelectField extends SelectField, ResolvedField {
 export default {
   tag: "f-select",
   jsImport: "lume_cms/components/f-select.js",
-  applyChanges: applyTextChanges,
+  applyChanges: applySelectChanges,
 } as FieldDefinition<ResolvedSelectField>;
 
 declare global {

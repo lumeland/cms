@@ -1,19 +1,21 @@
-{{
-  include "breadcrumb.vto" {
-    version,
-    links: [
-      [upload.label, ["uploads", upload.name]],
-      "Upload file",
-    ],
-  }
-}}
+{{ layout "layout.vto" }}
+  <header class="header">
+    {{
+      include "breadcrumb.vto" {
+        version,
+        links: [
+          [upload.label, ["uploads", upload.name]],
+          "Upload file",
+        ],
+      }
+    }}
+    <h1 class="header-title">Upload files</h1>
+  </header>
 
-<header class="header">
-  <h1 class="header-title">
-    Upload files
-    <label class="header-file">
+  <nav class="navigation">
+    <label class="input-file">
       <input
-        class="input is-inline"
+        class="input"
         id="_id"
         type="text"
         name="_id"
@@ -23,33 +25,37 @@
         value="{{ folder }}"
       >
     </label>
-  </h1>
-</header>
 
-<form
-  method="post"
-  class="form"
-  enctype="multipart/form-data"
-  id="form-create"
-  action='{{ ["uploads", upload.name, "create"] |> path }}'
->
-  <div class="field">
-    <u-upload>
-      <input
-        aria-label="Upload file"
-        id="new-file"
-        type="file"
-        name="file[]"
-        required
-        class="inputFile"
-        multiple
-      >
-    </u-upload>
-  </div>
-  <footer class="footer ly-rowStack">
-    <button class="button is-primary" type="submit">
+    <button
+      class="button is-primary"
+      type="submit"
+      form="form-create"
+      tabindex="1"
+    >
       <u-icon name="upload-simple"></u-icon>
       Upload files
     </button>
-  </footer>
-</form>
+  </nav>
+
+  <form
+    method="post"
+    class="form"
+    enctype="multipart/form-data"
+    id="form-create"
+    action='{{ ["uploads", upload.name, "create"] |> path }}'
+  >
+    <div class="field">
+      <u-upload>
+        <input
+          aria-label="Upload file"
+          id="new-file"
+          type="file"
+          name="files"
+          required
+          class="inputFile"
+          multiple
+        >
+      </u-upload>
+    </div>
+  </form>
+{{ /layout }}

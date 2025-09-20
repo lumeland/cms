@@ -1,0 +1,77 @@
+body:has(> .pagepreview) {
+  display: grid;
+  --modal-width: max(min(500px, 90vw), 50%, 100% - var(--app-width));
+
+  > * {
+    grid-area: 1 / 1;
+    align-self: start;
+  }
+  > .pagepreview {
+    justify-self: start;
+    resize: both;
+    overflow: hidden;
+    display: flex;
+    animation: previewIn var(--animation-duration);
+    width: var(--modal-width);
+    max-height: 100vh;
+    height: 100vh;
+    box-shadow: 0 0 1px #0003, 0 0 30px #0002;
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: white;
+    }
+  }
+  > .app-container {
+    justify-self: end;
+    width: max(min(500px, 90vw), 100% - var(--modal-width));
+
+    @media (width < 1000px) {
+      box-shadow: 0 0 1px #0003, 0 0 30px #0002;
+
+      &:hover,
+      &:focus,
+      &:focus-within {
+        z-index: 11;
+      }
+    }
+  }
+}
+.pagepreview-mask {
+  --size: 100% 100%;
+  --position: 0 0;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #9999;
+  mask-position: 0 0, var(--position);
+  mask-image:
+    linear-gradient(white, white),
+    linear-gradient(white, white);
+  mask-size: 100% 100%, var(--size);
+  mask-repeat: no-repeat;
+  mask-composite: subtract;
+  z-index: 1;
+  transition-property: mask-position, mask-size;
+  transition-duration: 500ms;
+}
+
+@keyframes previewIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

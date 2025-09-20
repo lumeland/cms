@@ -1,90 +1,57 @@
-import { dispatch } from "../utils/event.ts";
+import { Router } from "../../deps/galo.ts";
 import { getPath } from "../utils/path.ts";
-import { render } from "../../deps/vento.ts";
 
-import type { Context, Hono } from "../../deps/hono.ts";
-import type { CMSContent } from "../../types.ts";
+import type { RouterData } from "../cms.ts";
 
-export default function (app: Hono) {
-  app.get("/", (c: Context) => {
-    const { options, collections, documents, uploads, versioning, site } = get(
-      c,
-    );
+const app = new Router<RouterData>();
 
-    return c.render(render("home.vto", {
-      options,
-      site,
-      collections,
-      documents,
-      uploads,
-      versioning,
-    }));
-  });
+app.get("/", async ({ request, cms, render, sourcePath, user }) => {
+  const { collections, documents, uploads, site, basePath, versioning } = cms;
+  const searchParams = new URL(request.url).searchParams;
+  const edit = searchParams.get("edit");
 
-  app.get("/status", async (c: Context) => {
-    const { options, documents, collections, url, versioning } = get(c);
-    const result = dispatch<{ src?: string; url?: string }>(
-      "editSource",
-      { url },
-    );
+  function redirect(...paths: string[]) {
+    return new Response(null, {
+      status: 302,
+      headers: new Headers({
+        "Location": getPath(basePath, ...paths),
+      }),
+    });
+  }
 
-    if (!result || !result.src) {
-      return c.json({
-        error: "No edit URL found",
-      });
-    }
+  // If the edit parameter is set, redirect to the edit page
+  // for the specified document or collection
+  if (edit) {
+    const path = await sourcePath?.(edit, cms);
 
-    const response = {
-      homeURL: getPath(options.basePath),
-      version: versioning?.current(),
-    };
-
-    for (const document of Object.values(documents)) {
-      if (document.src === result.src) {
-        return c.json({
-          ...response,
-          editURL: getPath(options.basePath, "document", document.name),
-        });
+    if (path) {
+      for (const document of Object.values(cms.documents)) {
+        if (document.source.path === path) {
+          return redirect("document", document.name, "edit");
+        }
       }
-    }
 
-    for (const collection of Object.values(collections)) {
-      for await (const entry of collection) {
-        if (entry.src === result.src) {
-          return c.json({
-            ...response,
-            editURL: getPath(
-              options.basePath,
-              "collection",
-              collection.name,
-              "edit",
-              entry.name,
-            ),
-          });
+      for (const collection of Object.values(cms.collections)) {
+        for await (const entry of collection) {
+          if (entry.path === path) {
+            return redirect("collection", collection.name, entry.name, "edit");
+          }
         }
       }
     }
 
-    return c.json(response);
-  });
+    // If no document or collection matches, redirect to the home page
+    return redirect();
+  }
 
-  app.notFound((c: Context) => {
-    return c.render(render("notfound.vto"));
-  });
-}
-
-function get(c: Context) {
-  const options = c.get("options") as CMSContent;
-  const { collections, documents, uploads, versioning, site } = options;
-  const url = c.req.query("url") ?? "/";
-
-  return {
+  return render("home.vto", {
+    site,
     collections,
     documents,
     uploads,
-    site,
-    options,
+    user,
     versioning,
-    url,
-  };
-}
+  });
+});
+
+export default app;

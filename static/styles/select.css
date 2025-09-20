@@ -12,6 +12,8 @@
   display: block;
   border-radius: var(--border-radius);
   border: solid 1px var(--color-line);
+  max-width: 100%;
+  min-width: 0;
 
   &:focus-visible {
     border-color: var(--color-primary);
@@ -26,7 +28,7 @@
     pointer-events: none;
   }
   &.is-narrow {
-    max-width: 300px;
+    max-width: min(100%, 300px);
   }
   &.is-secondary {
     background-color: var(--color-line-light);

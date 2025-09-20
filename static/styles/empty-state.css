@@ -3,37 +3,27 @@
   padding: 6rem 2rem;
   text-align: center;
   color: var(--color-dim);
-  font: var(--font-title);
+  font: var(--font-ui);
   font-weight: normal;
   letter-spacing: var(--font-title-spacing);
   background: var(--color-highlight);
-}
-
-.errorState {
   border-radius: var(--border-radius);
-  margin: 1rem 0 0;
-  padding: 2rem;
-  text-align: center;
-  border: solid 1px var(--color-highlight);
-  min-height: min(80vh, 600px);
-  display: grid;
-  align-content: center;
-  row-gap: 2rem;
-  color: var(--color-dim);
-}
-.errorState-title {
-  font: var(--font-title);
-  letter-spacing: var(--font-title-spacing);
-  color: var(--color-error);
-  margin: 0;
-}
-.errorState-icon {
-  width: 64px;
-  height: 64px;
-}
-.errorState-message {
-  font: var(--font-ui);
-}
-.errorState-footer {
-  justify-content: center;
+
+  h1 {
+    font: var(--font-body-bold);
+    margin: 0 0 2em;
+
+    code {
+      color: var(--color-dim);
+    }
+  }
+
+  &.is-error {
+    h1, > u-icon {
+      color: var(--color-error);
+    }
+  }
+  .ly-rowStack {
+    justify-content: center;
+  }
 }

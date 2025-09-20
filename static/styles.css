@@ -4,9 +4,10 @@
 @import "./styles/variables.css";
 @import "./styles/breadcrumb.css";
 @import "./styles/form.css";
+@import "./styles/definition.css";
 @import "./styles/header.css";
 @import "./styles/preview.css";
-@import "./styles/footer.css";
+@import "./styles/navigation.css";
 @import "./styles/field.css";
 @import "./styles/input.css";
 @import "./styles/code.css";
@@ -23,6 +24,7 @@
 @import "./styles/tooltip.css";
 @import "./styles/modal.css";
 @import "./styles/tools.css";
+@import "./styles/tag.css";
 @import "./styles/u-icon.css";
 @import "./styles/u-copy.css";
 @import "./styles/u-draggable.css";
@@ -30,6 +32,7 @@
 @import "./styles/u-popover.css";
 @import "./styles/u-upload.css";
 @import "./styles/u-cropper.css";
+@import "./styles/u-pagepreview.css";
 
 .is-small {
   font: var(--font-small);

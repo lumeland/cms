@@ -1,35 +1,45 @@
+// deno-lint-ignore-file no-explicit-any
 import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
+import type {
+  CmsOptions,
+  CollectionOptions,
+  DocumentOptions,
+  UploadOptions,
+} from "./core/cms.ts";
+import type { Options as GitOptions } from "./core/git.ts";
 
 /** Generic data to store */
 export type Data = Record<string, unknown>;
 
-export interface EntryMetadata {
-  label: string;
+export interface EntrySource {
   name: string;
+  path: string;
   src: string;
 }
 
+export type EntryMetadata = EntrySource & DocumentLabel;
+
 export interface SiteInfo {
-  name: string;
+  name?: string;
   description?: string;
   url?: string;
   body?: string;
 }
 
 /** A storage mechanism for data */
-export interface Storage extends AsyncIterable<EntryMetadata> {
+export interface Storage extends AsyncIterable<EntrySource> {
   name(name: string): string;
   get(name: string): Entry;
+  source(name: string): EntrySource;
   directory(name: string): Storage;
   delete(name: string): Promise<void>;
   rename(name: string, newName: string): Promise<void>;
 }
 
 export interface Entry {
-  src?: string;
-  metadata: EntryMetadata;
+  source: EntrySource;
 
   readData(): Promise<Data>;
   writeData(content: Data): Promise<void>;
@@ -79,7 +89,6 @@ export interface Field<T extends ResolvedField = ResolvedField, V = unknown> {
   ): void | Promise<void>;
 
   /** Function to transform the value before saved */
-  // deno-lint-ignore no-explicit-any
   transform?(value: any): any;
 }
 
@@ -126,12 +135,19 @@ export type FieldDefinition<
 };
 
 /** Option item for a select or datalist */
-export type Option<T = string> = T | { value: T; label: string };
+export type Option<T = string | number> = T | { value: T; label: string };
 
 export interface ResolvedGroupField extends ResolvedField {
   /** The fields that belong to this group */
   fields: Lume.CMS.ResolvedField[];
 }
+
+/** A function to generate a preview URL for a file */
+export type PreviewUrl = (
+  file: string,
+  cms: CMSContent,
+  changed?: boolean,
+) => undefined | string | Promise<string | undefined>;
 
 /** Field visible in the UI */
 export interface UIField<T extends ResolvedField = ResolvedField>
@@ -144,6 +160,9 @@ export interface UIField<T extends ResolvedField = ResolvedField>
 
   /** View name in which this field is visible */
   view?: string;
+
+  /** CSS selector to highlight the element in the preview panel */
+  cssSelector?: string;
 }
 
 /** Field for input values */
@@ -183,20 +202,35 @@ type Prettify<T> =
   // deno-lint-ignore ban-types
   & {};
 
-export type Labelizer = (
-  name: string,
-  prev?: (name: string) => string,
-) => string;
+export interface DocumentLabel {
+  label: string;
+  icon?: string;
+  flags?: Record<string, any>;
+}
+
+export type Labelizer = (name: string) => string | DocumentLabel;
 
 export interface CMSContent {
   basePath: string;
-  auth: boolean;
   site: SiteInfo;
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
   uploads: Record<string, Upload>;
   versioning?: Versioning;
-  data: Record<string, unknown>;
+  data: Record<string, any>;
+}
+
+export interface UserConfiguration {
+  password: string;
+  name?: string;
+  permissions?: Record<string, Permissions>;
+}
+
+export interface Permissions {
+  create?: boolean;
+  delete?: boolean;
+  edit?: boolean;
+  rename?: boolean;
 }
 
 declare global {
@@ -209,5 +243,14 @@ declare global {
       | ParentFields[keyof ParentFields]
       | FieldStrings;
     export type ResolvedField = ResolvedFields[keyof ResolvedFields];
+
+    export type {
+      CMSContent as Content,
+      CmsOptions,
+      CollectionOptions,
+      DocumentOptions,
+      GitOptions,
+      UploadOptions,
+    };
   }
 }

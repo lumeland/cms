@@ -1,21 +1,25 @@
-{{
-  include "breadcrumb.vto" {
-    version,
-    links: [
-      [collection.label, ["collection", collection.name]],
-      "Editing code",
-    ],
-  }
-}}
+{{ layout "layout.vto" }}
+  <u-pagepreview data-url="{{ url }}"></u-pagepreview>
 
-<u-form>
   <header class="header">
-    <h1 class="header-title">
-      Editing file
+    {{
+      include "breadcrumb.vto" {
+        version,
+        links: [
+          [collection.label, ["collection", collection.name]],
+          "Editing file code",
+        ],
+      }
+    }}
+    <h1 class="header-title">Editing file code</h1>
+  </header>
+
+  <nav class="navigation">
+    <label class="input-file">
       <input
-        class="input is-inline"
+        class="input"
         id="_id"
-        type="{{ collection.canRename() ? 'text' : 'hidden' }}"
+        type="{{ user.canRename(collection) ? 'text' : 'hidden' }}"
         name="_id"
         value="{{document.name}}"
         placeholder="Rename the file…"
@@ -23,66 +27,71 @@
         aria-label="File name"
         required
       >
-    </h1>
-  </header>
+    </label>
 
-  <form
-    action='{{ ["collection", collection.name, "code", document.name] |> path }}'
-    method="post"
-    class="form"
-    id="form-edit"
-  >
-    <u-fields
-      data-fields="{{ fields |> JSON.stringify |> escape  }}"
-      data-value="{{ data |> JSON.stringify |> escape  }}"
-    ></u-fields>
-
-    <footer class="footer ly-rowStack is-responsive">
-      <button class="button is-primary" type="submit">
-        <u-icon name="check"></u-icon>
+    {{ if user.canEdit(collection) }}
+      <button
+        class="button is-primary"
+        type="submit"
+        form="form-edit"
+        tabindex="1"
+      >
+        <u-icon name="floppy-disk"></u-icon>
         Save changes
       </button>
+    {{ /if }}
 
-      <u-dropdown>
-        <a
-          class="button is-secondary"
-          href='{{ ["collection", collection.name, "edit", document.name] |> path }}'
-        >
-          <u-icon name="textbox"></u-icon>
-          Edit form
-        </a>
+    <u-dropdown>
+      <div slot="header">
+        Edit options
+      </div>
+      <a
+        class="button is-secondary"
+        href='{{ ["collection", collection.name, document.name, "edit"] |> path }}'
+      >
+        <u-icon name="textbox"></u-icon>
+        Edit form
+      </a>
 
-        {{ if collection.canCreate() }}
-          <u-confirm data-message="Duplicate this file?">
-            <button
-              class="button is-secondary"
-              type="submit"
-              formAction='{{ ["collection", collection.name, "duplicate", document.name] |> path }}'
-            >
-              <u-icon name="files"></u-icon>
-              Duplicate
-            </button>
-          </u-confirm>
-        {{ /if }}
+      {{ if user.canCreate(collection) }}
+        <u-confirm data-message="Duplicate this file?">
+          <button
+            class="button is-secondary"
+            type="submit"
+            formAction='{{ ["collection", collection.name, document.name, "duplicate"] |> path }}'
+          >
+            <u-icon name="files"></u-icon>
+            Duplicate
+          </button>
+        </u-confirm>
+      {{ /if }}
 
-        {{ if collection.canDelete() }}
-          <u-confirm data-message="Are you sure?">
-            <button
-              class="button is-secondary"
-              type="submit"
-              formAction='{{ ["collection", collection.name, "delete", document.name] |> path }}'
-            >
-              <u-icon name="trash"></u-icon>
-              Delete
-            </button>
-          </u-confirm>
-        {{ /if }}
-      </u-dropdown>
-      <u-pagepreview
-        class="ly-rowStack"
-        data-url="{{ document.url }}"
-        data-src="{{ document.src }}"
-      ></u-pagepreview>
-    </footer>
-  </form>
-</u-form>
+      {{ if user.canDelete(collection) }}
+        <u-confirm data-message="Are you sure?">
+          <button
+            class="button is-secondary"
+            type="submit"
+            formAction='{{ ["collection", collection.name, document.name, "delete"] |> path }}'
+          >
+            <u-icon name="trash"></u-icon>
+            Delete
+          </button>
+        </u-confirm>
+      {{ /if }}
+    </u-dropdown>
+  </nav>
+
+  <u-form>
+    <form
+      action='{{ ["collection", collection.name, document.name, "code"] |> path }}'
+      method="post"
+      class="form"
+      id="form-edit"
+    >
+      <u-fields
+        data-fields="{{ fields |> JSON.stringify |> escape  }}"
+        data-value="{{ data |> JSON.stringify |> escape  }}"
+      ></u-fields>
+    </form>
+  </u-form>
+{{ /layout }}

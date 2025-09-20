@@ -1,161 +1,162 @@
-{{ include "breadcrumb.vto" { version: versioning?.current() } }}
+{{ layout "layout.vto" }}
+  <header class="header">
+    {{ include "breadcrumb.vto" { version: versioning?.current() } }}
 
-<header class="header">
-  <h1 class="header-title">
-    {{ site.name }}
-  </h1>
+    <h1 class="header-title">
+      {{ site.name ?? "Lume CMS" }}
+    </h1>
 
-  <div class="header-description">
-    {{ site.description }}
+    <div class="header-description">
+      {{ site.description }}
 
-    {{ if site.url }}
-      <p>
-        <a href="{{ site.url }}" target="_blank">{{ site.url }} ↗</a>
-      </p>
-    {{ /if }}
-  </div>
-</header>
-
-<ul class="list">
-  {{ for collection of collections }}
-    <li>
-      <a href='{{ ["collection", collection.name] |> path }}' class="list-item">
-        <u-icon name="folder-fill"></u-icon>
-        <div class="list-item-header">
-          <strong>{{ collection.label }}</strong>
-
-          {{ if collection.description }}
-            <p>{{ collection.description }}</p>
-          {{ /if }}
-        </div>
-      </a>
-    </li>
-  {{ /for }}
-
-  {{ for document of documents }}
-    <li>
-      <a
-        href='{{ ["document", document.name] |> path }}'
-        class="list-item"
-        title="{{ document.label }}"
-      >
-        <u-icon name="file"></u-icon>
-        <div class="list-item-header">
-          <strong>{{ document.label }}</strong>
-
-          {{ if document.description }}
-            <p>{{ document.description }}</p>
-          {{ /if }}
-        </div>
-      </a>
-    </li>
-  {{ /for }}
-
-  {{
-    for upload of Object.values(uploads)
-    |> filter((upload) => upload.listed)
-  }}
-    <li>
-      <a href='{{ ["uploads", upload.name] |> path }}' class="list-item">
-        <u-icon name="images-square-fill"></u-icon>
-        <div class="list-item-header">
-          <strong>{{ upload.label }}</strong>
-
-          {{ if upload.description }}
-            <p>{{ upload.description }}</p>
-          {{ /if }}
-        </div>
-      </a>
-    </li>
-  {{ /for }}
-</ul>
-
-{{ if site.body }}
-  <div class="body">{{ site.body }}</div>
-{{ /if }}
-
-{{ if versioning }}
-  <header class="subheader" id="versions">
-    <h2>Available versions</h2>
+      {{ if site.url }}
+        <p>
+          <a href="{{ site.url }}">{{ site.url }}</a>
+        </p>
+      {{ /if }}
+    </div>
   </header>
 
   <ul class="list">
-    {{ for version of versioning }}
+    {{ for collection of collections }}
       <li>
-        {{ if version.isCurrent }}
-          <span class="list-item">
-            <u-icon
-              class='is-version {{ version.isProduction ? "is-production" : "" }}'
-              name="check-circle"
-            ></u-icon>
-            {{ version.name }}
-          </span>
-        {{ else }}
-          <form
-            class="list-item"
-            method="post"
-            action='{{ ["versions"] |> path }}'
-          >
-            <input type="hidden" name="action" value="change">
-            <input type="hidden" name="name" value="{{ version.name }}">
-            <button>
-              <u-icon name="circle"></u-icon> {{ version.name }}
-            </button>
-          </form>
-        {{ /if }}
+        <a
+          href='{{ ["collection", collection.name] |> path }}'
+          class="list-item"
+        >
+          <u-icon name="folder-fill"></u-icon>
+          <div class="list-item-header">
+            <strong>{{ collection.label }}</strong>
 
-        {{ if !version.isProduction }}
-          <u-confirm data-message="Are you sure?">
-            <form method="post" action='{{ ["versions"] |> path }}'>
-              <input type="hidden" name="action" value="delete">
-              <input type="hidden" name="name" value="{{ version.name }}">
-              <button class="buttonIcon" aria-label="Delete">
-                <u-icon name="trash"></u-icon>
-              </button>
-            </form>
-          </u-confirm>
-        {{ /if }}
-
-        <form method="post" action='{{ ["versions"] |> path }}'>
-          <input type="hidden" name="action" value="publish">
-          <input type="hidden" name="name" value="{{ version.name }}">
-          <button class="button is-secondary">
-            {{ if version.isProduction }}
-              <u-icon name="arrows-clockwise"></u-icon> Sync
-            {{ else }}
-              <u-icon name="rocket-launch"></u-icon> Publish
+            {{ if collection.description }}
+              <p>{{ collection.description }}</p>
             {{ /if }}
-          </button>
-        </form>
+          </div>
+        </a>
+      </li>
+    {{ /for }}
+
+    {{ for document of documents }}
+      <li>
+        <a
+          href='{{ ["document", document.name, "edit"] |> path }}'
+          class="list-item"
+          title="{{ document.label }}"
+        >
+          <u-icon name="file"></u-icon>
+          <div class="list-item-header">
+            <strong>{{ document.label }}</strong>
+
+            {{ if document.description }}
+              <p>{{ document.description }}</p>
+            {{ /if }}
+          </div>
+        </a>
+      </li>
+    {{ /for }}
+
+    {{
+      for upload of Object.values(uploads)
+      |> filter((upload) => upload.listed)
+    }}
+      <li>
+        <a href='{{ ["uploads", upload.name] |> path }}' class="list-item">
+          <u-icon name="images-square-fill"></u-icon>
+          <div class="list-item-header">
+            <strong>{{ upload.label }}</strong>
+
+            {{ if upload.description }}
+              <p>{{ upload.description }}</p>
+            {{ /if }}
+          </div>
+        </a>
       </li>
     {{ /for }}
   </ul>
 
-  <u-modal-trigger data-target="modal-new-version">
-    <button class="button is-secondary">New version</button>
-  </u-modal-trigger>
+  {{ if site.body }}
+    <div class="body">{{ site.body }}</div>
+  {{ /if }}
 
-  <dialog class="modal is-center" id="modal-new-version">
-    <form
-      method="post"
-      action='{{ ["versions"] |> path }}'
-    >
-      <input type="hidden" name="action" value="create">
-      <div class="field">
-        <label for="version-name">Name of the new version</label>
-        <input
-          id="version-name"
-          class="input"
-          type="text"
-          required
-          autofocus
-          name="name"
-        >
+  {{ if versioning }}
+    <header class="subheader" id="versions">
+      <h2>Available versions</h2>
+    </header>
 
-        <footer class="field-footer">
-          <button class="button is-primary">Create version</button>
-        </footer>
-      </div>
-    </form>
-  </dialog>
-{{ /if }}
+    <ul class="list">
+      {{ for version of versioning }}
+        <li>
+          {{ if version.isCurrent }}
+            <span class="list-item">
+              <u-icon
+                class='is-version {{ version.isProduction ? "is-production" : "" }}'
+                name="check-circle"
+              ></u-icon>
+              {{ version.name }}
+            </span>
+          {{ else }}
+            <form
+              class="list-item"
+              method="post"
+              action='{{ ["versions", "change"] |> path }}'
+            >
+              <input type="hidden" name="name" value="{{ version.name }}">
+              <button>
+                <u-icon name="circle"></u-icon> {{ version.name }}
+              </button>
+            </form>
+          {{ /if }}
+
+          {{ if !version.isProduction }}
+            <u-confirm data-message="Are you sure?">
+              <form method="post" action='{{ ["versions", "delete"] |> path }}'>
+                <input type="hidden" name="name" value="{{ version.name }}">
+                <button class="buttonIcon" aria-label="Delete">
+                  <u-icon name="trash"></u-icon>
+                </button>
+              </form>
+            </u-confirm>
+          {{ /if }}
+
+          <form method="post" action='{{ ["versions", "publish"] |> path }}'>
+            <input type="hidden" name="name" value="{{ version.name }}">
+            <button class="button is-secondary">
+              {{ if version.isProduction }}
+                <u-icon name="arrows-clockwise"></u-icon> Sync
+              {{ else }}
+                <u-icon name="rocket-launch"></u-icon> Publish
+              {{ /if }}
+            </button>
+          </form>
+        </li>
+      {{ /for }}
+    </ul>
+
+    <u-modal-trigger data-target="modal-new-version">
+      <button class="button is-secondary">New version</button>
+    </u-modal-trigger>
+
+    <dialog class="modal is-center" id="modal-new-version">
+      <form
+        method="post"
+        action='{{ ["versions", "create"] |> path }}'
+      >
+        <div class="field">
+          <label for="version-name">Name of the new version</label>
+          <input
+            id="version-name"
+            class="input"
+            type="text"
+            required
+            autofocus
+            name="name"
+          >
+
+          <footer class="field-footer">
+            <button class="button is-primary">Create version</button>
+          </footer>
+        </div>
+      </form>
+    </dialog>
+  {{ /if }}
+{{ /layout }}

@@ -1,6 +1,6 @@
 import { slugify } from "../core/utils/string.ts";
 
-import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
+import type { Data, Entry, EntrySource, Storage } from "../types.ts";
 
 export interface Options {
   prefix?: string[];
@@ -21,19 +21,31 @@ export default class Kv implements Storage {
     this.kv = options.kv;
   }
 
-  async *[Symbol.asyncIterator]() {
+  async *[Symbol.asyncIterator](): AsyncGenerator<EntrySource> {
     for await (const entry of this.kv.list({ prefix: this.prefix })) {
       const name = entry.key.slice(this.prefix.length).join("/");
+      const path = entry.key.join("/");
+
       yield {
-        label: name,
         name,
-        src: entry.key.join("/"),
+        path,
+        src: path,
       };
     }
   }
 
   name(name: string): string {
     return slugify(name);
+  }
+
+  source(name: string): EntrySource {
+    const path = key(this.prefix, name).join("/");
+
+    return {
+      name,
+      path,
+      src: path,
+    };
   }
 
   directory(name: string): Storage {
@@ -44,11 +56,7 @@ export default class Kv implements Storage {
   }
 
   get(name: string): Entry {
-    return new KvEntry({
-      kv: this.kv,
-      prefix: this.prefix,
-      name,
-    });
+    return new KvEntry(this.source(name), this.kv);
   }
 
   async delete(name: string) {
@@ -69,25 +77,13 @@ export default class Kv implements Storage {
   }
 }
 
-export interface DocumentOptions extends Options {
-  kv: Deno.Kv;
-  prefix: string[];
-  name: string;
-}
-
 export class KvEntry implements Entry {
-  metadata: EntryMetadata;
+  source: EntrySource;
   kv: Deno.Kv;
-  key: string[];
 
-  constructor(options: DocumentOptions) {
-    this.kv = options.kv;
-    this.key = [...options.prefix, ...options.name.split("/")];
-    this.metadata = {
-      label: options.name,
-      name: options.name,
-      src: this.key.join("/"),
-    };
+  constructor(source: EntrySource, kv: Deno.Kv) {
+    this.kv = kv;
+    this.source = source;
   }
 
   async readText(): Promise<string> {
@@ -101,17 +97,19 @@ export class KvEntry implements Entry {
   }
 
   async readData(): Promise<Data> {
-    const item = await this.kv.get<Data>(this.key);
+    const { src } = this.source;
+    const item = await this.kv.get<Data>(src.split("/"));
 
     if (!item.value) {
-      throw new Error(`Item not found: ${this.key.join("/")}`);
+      throw new Error(`Item not found: ${src}`);
     }
 
     return item.value;
   }
 
   async writeData(data: Data) {
-    await this.kv.set(this.key, data);
+    const { src } = this.source;
+    await this.kv.set(src.split("/"), data);
   }
 
   readFile(): Promise<File> {

@@ -1,4 +1,4 @@
-<nav aria-label="You are here:">
+<nav class="app-nav" aria-label="You are here:">
   <ul class="breadcrumb">
     {{ if version }}
       <li
@@ -22,4 +22,35 @@
       {{ /if }}
     {{ /for }}
   </ul>
+
+  <u-dropdown data-icon="user-circle">
+    <div slot="header">
+      {{ if user.isLogged }}
+        Logged as <strong>{{ user.name }}</strong>
+      {{ else }}
+        No authentication
+      {{ /if }}
+    </div>
+
+    <button
+      class="button is-secondary"
+      id="themeButton"
+      type="button"
+      aria-label="toggle-theme"
+    >
+      <u-icon name="paint-roller"></u-icon>
+      Switch theme
+    </button>
+
+    {{ if user.isLogged }}
+      <button
+        class="button is-secondary"
+        id="logoutButton"
+        type="button"
+      >
+        <u-icon name="sign-out"></u-icon>
+        Logout
+      </button>
+    {{ /if }}
+  </u-dropdown>
 </nav>

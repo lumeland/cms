@@ -3,7 +3,7 @@ import { slugify } from "../core/utils/string.ts";
 import { contentType, ensureDir, expandGlob, posix } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
 
-import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
+import type { Data, Entry, EntrySource, Storage } from "../types.ts";
 
 export interface Options {
   root?: string;
@@ -17,6 +17,7 @@ export const defaults: Options = {
 export default class Fs implements Storage {
   root: string;
   path: string;
+  pattern: string;
   extension?: string;
 
   static create(path: string) {
@@ -25,30 +26,34 @@ export default class Fs implements Storage {
 
   constructor(userOptions?: Options) {
     const options = { ...defaults, ...userOptions } as Required<Options>;
+    this.root = normalizePath(options.root ?? Deno.cwd());
+
     const pos = options.path.indexOf("*");
-    options.root ??= Deno.cwd();
 
     if (pos === -1) {
-      options.root = posix.join(options.root, options.path);
-      options.path = "**";
-    } else if (pos > 0) {
-      options.root = posix.join(options.root, options.path.slice(0, pos));
-      options.path = options.path.slice(pos);
+      this.path = options.path.endsWith("/")
+        ? options.path
+        : options.path + "/";
+      this.pattern = "**";
+    } else if (pos === 0) {
+      this.path = "";
+      this.pattern = options.path;
+    } else {
+      this.path = options.path.slice(0, pos);
+      this.pattern = options.path.slice(pos);
     }
 
-    this.root = normalizePath(options.root);
-    this.path = options.path;
-
     // Avoid errors for paths like "src:articles/**/*{.jpg,.png,.gif,.svg}"
-    const ext = this.path.match(/\.\w+$/);
+    const ext = this.pattern.match(/\.\w+$/);
+
     if (ext) {
       this.extension = ext[0];
     }
   }
 
-  async *[Symbol.asyncIterator]() {
-    const root = this.root;
-    const iterable = expandGlob(this.path, {
+  async *[Symbol.asyncIterator](): AsyncGenerator<EntrySource> {
+    const { root, path, pattern } = this;
+    const iterable = expandGlob(posix.join(path, pattern), {
       root,
       includeDirs: false,
       exclude: ["_*", ".*"],
@@ -56,13 +61,22 @@ export default class Fs implements Storage {
 
     for await (const entry of iterable) {
       const src = normalizePath(entry.path);
-      const name = src.slice(root.length + 1);
+      const name = src.slice(root.length + path.length + 1);
+
       yield {
-        label: name,
         name,
+        path: posix.join("/", path, name),
         src,
       };
     }
+  }
+
+  source(name: string): EntrySource {
+    return {
+      src: posix.join(this.root, this.path, name),
+      name,
+      path: posix.join("/", this.path, name),
+    };
   }
 
   name(name: string): string {
@@ -81,48 +95,41 @@ export default class Fs implements Storage {
   }
 
   get(name: string): Entry {
-    return new FsEntry({
-      src: posix.join(this.root, name),
-      name,
-      label: name,
-    });
+    return new FsEntry(this.source(name));
   }
 
   async delete(name: string) {
-    await Deno.remove(posix.join(this.root, name));
+    await Deno.remove(posix.join(this.root, this.path, name));
   }
 
   async rename(name: string, newName: string) {
-    const dest = posix.join(this.root, newName);
+    const src = posix.join(this.root, this.path, name);
+    const dest = posix.join(this.root, this.path, newName);
     await ensureDir(posix.dirname(dest));
-    await Deno.rename(posix.join(this.root, name), dest);
+    await Deno.rename(src, dest);
   }
 }
 
 export class FsEntry implements Entry {
-  metadata: EntryMetadata;
+  source: EntrySource;
 
-  constructor(metadata: EntryMetadata) {
-    this.metadata = metadata;
-  }
-
-  get src(): string {
-    return this.metadata.src;
+  constructor(source: EntrySource) {
+    this.source = source;
   }
 
   async readText(): Promise<string> {
-    const { src } = this.metadata;
+    const { src } = this.source;
     return await Deno.readTextFile(src);
   }
 
   async writeText(content: string): Promise<void> {
-    const { src } = this.metadata;
+    const { src } = this.source;
     await ensureDir(posix.dirname(src));
     await Deno.writeTextFile(src, content);
   }
 
   async readData(): Promise<Data> {
-    const { src } = this.metadata;
+    const { src } = this.source;
     const content = await this.readText();
     const transformer = fromFilename(src);
 
@@ -130,7 +137,7 @@ export class FsEntry implements Entry {
   }
 
   async writeData(data: Data) {
-    const { src } = this.metadata;
+    const { src } = this.source;
     const transformer = fromFilename(src);
     const content = (await transformer.fromData(data))
       .replaceAll(/\r\n/g, "\n"); // Unify line endings
@@ -139,7 +146,7 @@ export class FsEntry implements Entry {
   }
 
   async readFile(): Promise<File> {
-    const { src, name } = this.metadata;
+    const { src, name } = this.source;
     const content = await Deno.readFile(src);
     const type = contentType(posix.extname(src));
 
@@ -147,7 +154,7 @@ export class FsEntry implements Entry {
   }
 
   async writeFile(file: File) {
-    const { src } = this.metadata;
+    const { src } = this.source;
     const content = await file.arrayBuffer();
 
     await ensureDir(posix.dirname(src));

@@ -1,133 +1,81 @@
-import { options, url } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
 customElements.define(
   "u-pagepreview",
   class Modal extends Component {
+    #document;
+
     static get observedAttributes() {
-      return ["data-src"];
-    }
-
-    init() {
-      const { src, url: initUrl } = this.dataset;
-
-      if (!src) {
-        this.innerHTML = "";
-        return;
-      }
-
-      const socketUrl = new URL(url("_socket"), document.location.origin);
-      socketUrl.protocol = document.location.protocol === "https:"
-        ? "wss:"
-        : "ws:";
-
-      const ws = new WebSocket(socketUrl);
-
-      let iframe, lastUrl;
-
-      const reload = (url) => {
-        if (!iframe) {
-          iframe = this.initUI(url);
-        }
-
-        if (lastUrl === url) {
-          iframe?.contentDocument.location.reload();
-        } else if (lastUrl) {
-          iframe.src = url;
-        }
-
-        lastUrl = url;
-      };
-
-      ws.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-
-        if (data.type === "reload") {
-          reload(data.url);
-          return;
-        }
-
-        if (data.type === "preview") {
-          if (initUrl) {
-            reload(initUrl);
-            return;
-          }
-          ws.send(JSON.stringify({ type: "url", src }));
-        }
-      };
-
-      ws.onopen = () => {
-        if (initUrl) {
-          reload(initUrl);
-          return;
-        }
-        ws.send(JSON.stringify({ type: "url", src }));
-      };
+      return ["data-url"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-      if (name !== "data-src") {
-        return;
+      if (name === "data-url" && oldValue !== newValue) {
+        const { iframe } = this;
+        if (iframe) {
+          iframe.src = newValue;
+        }
       }
-
-      if (!oldValue || oldValue === newValue) {
-        return;
-      }
-
-      this.init();
     }
 
-    initUI(url) {
-      const dialog = dom("dialog", {
-        class: "modal is-preview",
-      }, document.body);
-      const iframe = dom("iframe", {
-        class: "modal-content",
-        src: url,
-      }, dialog);
+    init() {
+      const { url } = this.dataset;
 
-      const mq = matchMedia("(max-width:1100px)");
-
-      let icon;
-      const button = dom("button", {
-        class: "buttonIcon is-secondary",
-        type: "button",
-        "aria-pressed": "true",
-        onclick: () => {
-          if (dialog.open) {
-            dialog.close();
-            options.set("preview", false);
-            icon.setAttribute("name", "eye-slash");
-            button.setAttribute("aria-pressed", "false");
-          } else if (!mq.matches) {
-            dialog.show();
-            options.set("preview", true);
-            icon.setAttribute("name", "eye");
-            button.setAttribute("aria-pressed", "true");
-          }
-        },
-      }, this);
-
-      if (options.get("preview") !== false) {
-        icon = dom("u-icon", { name: "eye" }, button);
-        button.dispatchEvent(new Event("click"));
-      } else {
-        icon = dom("u-icon", { name: "eye-slash" }, button);
-        button.setAttribute("aria-pressed", "false");
+      if (!url) {
+        return;
       }
+      const div = dom("div", {
+        class: "pagepreview",
+      }, document.body);
 
-      mq.addEventListener("change", (ev) => {
-        if (ev.matches) {
-          dialog.close();
-          button.hidden = true;
-        } else {
-          dialog.show();
-          button.hidden = false;
-        }
+      this.#document = new Promise((resolve) => {
+        this.iframe = dom("iframe", {
+          class: "pagepreview",
+          src: url,
+          onload() {
+            resolve(this.contentDocument);
+          },
+        }, div);
       });
+    }
 
-      return iframe;
+    async highlight(selector) {
+      const doc = await this.#document;
+      const element = doc?.querySelector(selector);
+      if (!element) {
+        return false;
+      }
+      const container = this.iframe.parentElement;
+
+      container.style.zIndex = 12;
+
+      // Create the div that will highlight the element
+      const div = dom("div", {
+        class: "pagepreview-mask",
+      }, container);
+
+      // Scroll to the element
+      element.scrollIntoView({ behavior: "instant", block: "center" });
+
+      // Set the position and size of the mask
+      const rect = element.getBoundingClientRect();
+      const offset = 4;
+
+      div.style.setProperty(
+        "--position",
+        `${rect.left - offset / 2}px ${rect.top - offset / 2}px`,
+      );
+      div.style.setProperty(
+        "--size",
+        `${rect.width + offset}px ${rect.height + offset}px`,
+      );
+
+      // Remove the mask after a while
+      setTimeout(() => {
+        div.remove();
+        container.style.zIndex = null;
+      }, 3000);
     }
   },
 );

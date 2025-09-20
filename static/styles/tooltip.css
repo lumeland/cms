@@ -12,6 +12,7 @@
   width: max-content;
   border-radius: var(--border-radius);
   box-shadow: 0 4px 10px #0002;
+  z-index: 9;
 
   &.is-toast {
     animation: toastShow var(--animation-duration);

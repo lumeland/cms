@@ -1,5 +1,6 @@
 .field {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.3em;
 
   & label {
@@ -12,6 +13,22 @@
       font: var(--font-ui);
     }
   }
+
+  &:has(> label + .field-dom-picker) {
+    > label,
+    > .field-dom-picker {
+      grid-row: 1;
+      grid-column: 1;
+    }
+  }
+  &:hover > .field-dom-picker {
+    opacity: 1;
+  }
+}
+.field-dom-picker {
+  transform: translate(-44px, -8px);
+  position: absolute;
+  opacity: 0;
 }
 .field-label {
   font: var(--font-ui-bold);
@@ -74,6 +91,7 @@
 
 .fieldset {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   row-gap: 0.5em;
   list-style: none;
   margin: 0.5em 0 0 0.5em;
@@ -81,10 +99,20 @@
   border-left: solid 1px var(--color-line);
 
   &:empty {
-    display: none;
+    display: none !important;
   }
   &.is-separated {
     row-gap: 1.5em;
+  }
+  &.is-root {
+    display: grid;
+    border: none;
+    margin-left: 0;
+    padding-left: 0;
+
+    &.is-separated {
+      row-gap: 2em;
+    }
   }
 }
 

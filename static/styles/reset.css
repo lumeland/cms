@@ -5,21 +5,11 @@ html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
 }
-body {
-  display: grid;
-  min-height: 100vh;
-  align-content: space-between;
-  row-gap: 2rem;
-  padding: 2rem 0;
-  box-sizing: border-box;
-}
-
 html,
 body {
   font: var(--font-ui);
-  color: var(--color-text);
-  background-color: var(--color-background);
   overflow-wrap: break-word;
+  background-color: var(--color-background);
 }
 
 pre,
@@ -60,7 +50,7 @@ code {
   }
 }
 strong, b {
-  font-weight: 600;
+  font-weight: var(--bold);
 }
 
 :where(a[href]) {
@@ -81,4 +71,8 @@ hr {
 }
 input {
   accent-color: var(--color-primary);
+}
+
+:not(u-icon):not(:defined) {
+  display: none;
 }

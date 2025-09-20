@@ -1,121 +1,137 @@
 import { getLanguageCode, getPath } from "../utils/path.ts";
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
-import { render } from "../../deps/vento.ts";
+import { Router } from "../../deps/galo.ts";
 
-import type { Context, Hono } from "../../deps/hono.ts";
-import type { CMSContent, Data } from "../../types.ts";
+import type Document from "../document.ts";
+import type { RouterData } from "../cms.ts";
+import type { Data } from "../../types.ts";
 
-export default function (app: Hono) {
-  app
-    .get("/document/:document", async (c: Context) => {
-      const { options, document, versioning } = get(c);
+/**
+ * Route for managing document editing in the CMS.
+ * Handles viewing, editing, and saving documents.
+ *
+ * /document/:name/edit - Edit a document
+ * /document/:name/code - Edit the document's code
+ */
 
-      if (!document) {
-        return c.notFound();
-      }
+const app = new Router<RouterData>();
 
-      let data: Data;
+app.path(
+  "/:name/*",
+  ({ cms, name, render, next, previewUrl, user }) => {
+    const { documents, basePath } = cms;
 
-      try {
-        data = await document.read(true);
-      } catch (error) {
-        return c.render(
-          await render("document/edit-error.vto", {
+    // Check if the document exists
+    const document = documents[name];
+
+    if (!document) {
+      return new Response("Not found", { status: 404 });
+    }
+
+    function redirect(...paths: string[]) {
+      return new Response(null, {
+        status: 302,
+        headers: new Headers({
+          "Location": getPath(basePath, "document", ...paths),
+        }),
+      });
+    }
+
+    function getPreviewUrl(document: Document, changed = false) {
+      return (document.previewUrl ?? previewUrl)?.(
+        document.source.path,
+        cms,
+        changed,
+      );
+    }
+
+    return next()
+      /* GET /document/:name/edit - Show the document editor */
+      .get("/edit", async () => {
+        let data: Data;
+        try {
+          data = await document.read(true);
+        } catch (error) {
+          return render("document/edit-error.vto", {
             error: (error as Error).message,
             document,
-          }),
-        );
-      }
+            user,
+          });
+        }
 
-      const fields = await Promise.all(
-        document.fields.map((field) => prepareField(field, options, data)),
-      );
+        const initViews = typeof document.views === "function"
+          ? document.views() || []
+          : document.views || [];
 
-      const documentViews = document.views;
-      const initViews = typeof documentViews === "function"
-        ? documentViews() || []
-        : documentViews || [];
-
-      const views = new Set();
-      document.fields.forEach((field) => getViews(field, views));
-
-      return c.render(
-        render("document/edit.vto", {
+        return render("document/edit.vto", {
           document,
-          fields,
-          views: Array.from(views),
+          fields: await prepareField(document.fields, cms, data),
+          views: Array.from(getViews(document.fields)),
           initViews,
+          url: getPreviewUrl(document),
           data,
-          version: versioning?.current(),
-        }),
-      );
-    })
-    .post(async (c: Context) => {
-      const { options, document } = get(c);
-      const body = await c.req.parseBody();
-
-      await document.write(changesToData(body), options, true);
-      return c.redirect(getPath(options.basePath, "document", document.name));
-    });
-
-  app
-    .get("/document/code/:document", async (c: Context) => {
-      const { document, versioning } = get(c);
-
-      if (!document) {
-        return c.notFound();
-      }
-
-      const code = await document.readText();
-      const fields = [{
-        tag: "f-code",
-        name: "code",
-        label: "Code",
-        type: "code",
-        attributes: {
-          data: {
-            language: getLanguageCode(document.name),
-          },
-        },
-      }];
-      const data = { code };
-
-      try {
-        return c.render(
-          await render("document/code.vto", {
-            fields,
-            data,
-            document,
-            version: versioning?.current(),
-          }),
+          user,
+        });
+      })
+      /* POST /document/:name/edit - Save the document */
+      .post("/edit", async ({ request }) => {
+        if (!user.canEdit(document)) {
+          throw new Error("Permission denied to edit this document");
+        }
+        const body = await request.formData();
+        await document.write(
+          changesToData(Object.fromEntries(body)),
+          cms,
+          true,
         );
-      } catch (e) {
-        console.error(e);
-        return c.notFound();
-      }
-    })
-    .post(async (c: Context) => {
-      const { options, document } = get(c);
 
-      const body = await c.req.parseBody();
-      const code = body["changes.code"] as string | undefined;
-      document.writeText(code ?? "");
+        // Wait for the preview URL to be ready
+        await getPreviewUrl(document, true);
 
-      return c.redirect(
-        getPath(options.basePath, "document", "code", document.name),
-      );
-    });
-}
+        return redirect(document.name, "edit");
+      })
+      /* GET /document/:name/code - Show the code editor */
+      .get("/code", async () => {
+        const data = { root: { code: await document.readText(true) } };
+        const fields = {
+          tag: "f-object-root",
+          name: "root",
+          fields: [{
+            tag: "f-code",
+            name: "code",
+            label: "Code",
+            type: "code",
+            attributes: {
+              data: {
+                language: getLanguageCode(document.name),
+              },
+            },
+          }],
+        };
 
-function get(c: Context) {
-  const options = c.get("options") as CMSContent;
-  const { documents, versioning } = options;
-  const documentName = c.req.param("document");
-  const document = documents[documentName];
+        return render("document/code.vto", {
+          fields,
+          data,
+          url: getPreviewUrl(document),
+          document,
+          user,
+        });
+      })
+      /* POST /document/:name/code - Save the code */
+      .post("/code", async ({ request }) => {
+        if (!user.canEdit(document)) {
+          throw new Error("Permission denied to edit this document");
+        }
+        const body = await request.formData();
+        const code = body.get("root.code") as string | undefined;
+        document.writeText(code ?? "");
 
-  return {
-    document,
-    options,
-    versioning,
-  };
-}
+        // Wait for the preview URL to be ready
+        await getPreviewUrl(document, true);
+
+        return redirect(document.name, "code");
+      });
+  },
+);
+
+export default app;

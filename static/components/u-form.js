@@ -56,11 +56,11 @@ customElements.define(
       const preview = document.querySelector("u-pagepreview");
 
       if (preview) {
-        const oldPreview = preview.dataset.src;
-        const newPreview = html.querySelector("u-pagepreview")?.dataset.src;
+        const oldPreview = preview.dataset.url;
+        const newPreview = html.querySelector("u-pagepreview")?.dataset.url;
 
         if (oldPreview !== newPreview) {
-          preview.setAttribute("data-src", newPreview);
+          preview.setAttribute("data-url", newPreview);
         }
       }
 

@@ -1,12 +1,12 @@
 import {
   asset,
   fileType,
+  initField,
   labelify,
   oninvalid,
   pushOptions,
   updateField,
   url,
-  view,
 } from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/markdown.js";
@@ -21,7 +21,7 @@ customElements.define(
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
-      view(this);
+      initField(this);
       dom("label", { for: id, html: schema.label }, this);
 
       dom(

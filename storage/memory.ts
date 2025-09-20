@@ -3,7 +3,7 @@ import { slugify } from "../core/utils/string.ts";
 import { contentType, globToRegExp, posix } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
 
-import type { Data, Entry, EntryMetadata, Storage } from "../types.ts";
+import type { Data, Entry, EntrySource, Storage } from "../types.ts";
 
 export interface Options {
   root?: string;
@@ -24,6 +24,7 @@ export default class Memory implements Storage {
   #storage: MemoryStorage;
   root: string;
   path: string;
+  pattern: string;
   extension?: string;
 
   static create(path = "/") {
@@ -33,43 +34,52 @@ export default class Memory implements Storage {
   constructor(userOptions?: Options, storage: MemoryStorage = new Map()) {
     this.#storage = storage;
     const options = { ...defaults, ...userOptions } as Required<Options>;
+    this.root = normalizePath(options.root ?? "/");
     const pos = options.path.indexOf("*");
-    options.root ??= "/";
 
     if (pos === -1) {
-      options.root = posix.join(options.root, options.path);
-      options.path = "**";
-    } else if (pos > 0) {
-      options.root = posix.join(options.root, options.path.slice(0, pos));
-      options.path = options.path.slice(pos);
+      this.path = options.path;
+      this.pattern = "**";
+    } else if (pos === 0) {
+      this.path = "";
+      this.pattern = options.path;
+    } else {
+      this.path = options.path.slice(0, pos);
+      this.pattern = options.path.slice(pos);
     }
 
-    this.root = normalizePath(options.root);
-    this.path = options.path;
-
     // Avoid errors for paths like "src:articles/**/*{.jpg,.png,.gif,.svg}"
-    const ext = this.path.match(/\.\w+$/);
+    const ext = this.pattern.match(/\.\w+$/);
     if (ext) {
       this.extension = ext[0];
     }
   }
 
-  async *[Symbol.asyncIterator]() {
-    const root = this.root;
-    const regexp = globToRegExp(posix.resolve(root, this.path));
+  async *[Symbol.asyncIterator](): AsyncGenerator<EntrySource> {
+    const { root, path, pattern } = this;
+    const regexp = globToRegExp(posix.join(root, path, pattern));
 
-    for await (const path of this.#storage.keys()) {
-      if (path.includes("/_") || path.includes("/.") || !regexp.test(path)) {
+    for await (const entry of this.#storage.keys()) {
+      if (entry.includes("/_") || entry.includes("/.") || !regexp.test(entry)) {
         continue;
       }
-      const src = normalizePath(path);
-      const name = src.slice(root.length + 1);
+      const src = normalizePath(entry);
+      const name = src.slice(root.length + path.length + 1);
+
       yield {
-        label: name,
         name,
+        path: posix.join("/", path, name),
         src,
       };
     }
+  }
+
+  source(name: string): EntrySource {
+    return {
+      src: posix.join(this.root, this.path, name),
+      name,
+      path: posix.join("/", this.path, name),
+    };
   }
 
   name(name: string): string {
@@ -88,27 +98,24 @@ export default class Memory implements Storage {
   }
 
   get(name: string): Entry {
-    return new MemoryEntry({
-      src: posix.join(this.root, name),
-      name,
-      label: name,
-    }, this.#storage);
+    return new MemoryEntry(this.source(name), this.#storage);
   }
 
   delete(name: string) {
-    const src = posix.join(this.root, name);
+    const src = posix.join(this.root, this.path, name);
     this.#storage.delete(src);
     return Promise.resolve();
   }
 
   rename(name: string, newName: string) {
-    const src = posix.join(this.root, name);
-    const entry = this.#storage.get(name);
+    const src = posix.join(this.root, this.path, name);
+    const dest = posix.join(this.root, this.path, newName);
+
+    const entry = this.#storage.get(src);
     if (entry === undefined) {
       throw new Error(`File not found: ${src}`);
     }
 
-    const dest = posix.join(this.root, newName);
     this.#storage.delete(src);
     this.#storage.set(dest, entry);
     return Promise.resolve();
@@ -116,20 +123,16 @@ export default class Memory implements Storage {
 }
 
 export class MemoryEntry implements Entry {
-  metadata: EntryMetadata;
+  source: EntrySource;
   #storage: MemoryStorage;
 
-  constructor(metadata: EntryMetadata, storage: MemoryStorage) {
-    this.metadata = metadata;
+  constructor(source: EntrySource, storage: MemoryStorage) {
+    this.source = source;
     this.#storage = storage;
   }
 
-  get src(): string {
-    return this.metadata.src;
-  }
-
   readText(): Promise<string> {
-    const { src } = this.metadata;
+    const { src } = this.source;
     const content = this.#storage.get(src);
 
     if (content === undefined) {
@@ -144,14 +147,14 @@ export class MemoryEntry implements Entry {
   }
 
   writeText(content: string): Promise<void> {
-    const { src } = this.metadata;
+    const { src } = this.source;
     this.#storage.set(src, content);
 
     return Promise.resolve();
   }
 
   async readData(): Promise<Data> {
-    const { src } = this.metadata;
+    const { src } = this.source;
     const content = await this.readText();
     const transformer = fromFilename(src);
 
@@ -159,7 +162,7 @@ export class MemoryEntry implements Entry {
   }
 
   async writeData(data: Data) {
-    const { src } = this.metadata;
+    const { src } = this.source;
     const transformer = fromFilename(src);
     const content = (await transformer.fromData(data))
       .replaceAll(/\r\n/g, "\n"); // Unify line endings
@@ -168,7 +171,7 @@ export class MemoryEntry implements Entry {
   }
 
   readFile(): Promise<File> {
-    const { src, name } = this.metadata;
+    const { src, name } = this.source;
     const content = this.#storage.get(src);
     if (content === undefined) {
       throw new Error(`File not found: ${src}`);
@@ -182,7 +185,7 @@ export class MemoryEntry implements Entry {
   }
 
   async writeFile(file: File) {
-    const { src } = this.metadata;
+    const { src } = this.source;
     const content = await file.arrayBuffer();
     this.#storage.set(src, new Uint8Array(content));
   }

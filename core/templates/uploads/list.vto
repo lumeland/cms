@@ -1,90 +1,105 @@
-{{ function folder(upload, tree) }}
-  {{
-    set content = Array.from([
-      ...tree.folders?.entries() || [],
-      ...tree.files?.entries() || [],
-    ]).sort(([a], [b]) => a.localeCompare(b))
-  }}
+{{ layout "layout.vto" }}
+  {{ function folder(upload, tree) }}
+    {{
+      set content = Array.from([
+        ...tree.folders?.entries() || [],
+        ...tree.files?.entries() || [],
+      ]).sort(([a], [b]) => a.localeCompare(b))
+    }}
 
-  {{ for entry of content }}
-    {{> const [name, child] = entry }}
+    {{ for entry of content }}
+      {{> const [name, child] = entry }}
 
-    {{ if typeof child === "string" }}
-      <li>
-        <a
-          href='{{ ["uploads", upload.name, "file", child] |> path }}'
-          class="list-item"
-        >
-          <u-icon-file path="{{child}}"></u-icon-file> {{ name }}
-        </a>
-        <u-popover>
-          <button class="buttonIcon" type="button">
-            <u-icon name="eye"></u-icon>
-          </button>
-          <template>
-            <u-preview
-              id="preview_{{child}}"
-              data-src='{{ ["uploads", upload.name, "raw", child] |> path }}'
-            >
-            </u-preview>
-          </template>
-        </u-popover>
-        <u-copy
-          text="{{ [upload.publicPath, child] |> normalizePath }}"
-        ></u-copy>
-      </li>
-    {{ else }}
-      <li>
-        <details open class="accordion">
-          <summary>{{ name }}</summary>
-          <ul>
-            {{ folder(upload, child) }}
-          </ul>
-        </details>
-        <div class="list-actions">
+      {{ if "label" in child /* It's a file */ }}
+        <li>
           <a
-            href='{{ ["uploads", upload.name, "create"] |> path }}?folder={{child.path}}'
-            title="Upload file inside ${name}"
-            class="buttonIcon"
+            href='{{ ["uploads", upload.name, child.name, "edit"] |> path }}'
+            class="list-item"
+            title="{{ child.label |> escape }}"
           >
-            <u-icon name="plus-circle"></u-icon>
+            {{ if child.icon }}
+              <u-icon name="{{ child.icon }}"></u-icon>
+            {{ else }}
+              <u-icon-file path="{{child.name}}"></u-icon-file>
+            {{ /if }}
+            {{ name }}
+            {{ for key, value of child.flags }}
+              <span title="{{ key }}" class="tag">{{ value }}</span>
+            {{ /for }}
           </a>
-        </div>
-      </li>
+          <u-popover>
+            <button class="buttonIcon" type="button">
+              <u-icon name="eye"></u-icon>
+            </button>
+            <template>
+              <u-preview
+                id="preview_{{file}}"
+                data-src='{{ ["uploads", upload.name, child.name] |> path }}'
+              >
+              </u-preview>
+            </template>
+          </u-popover>
+          <u-copy
+            text="{{ [upload.publicPath, child.name] |> normalizePath }}"
+          ></u-copy>
+        </li>
+      {{ else }}
+        <li>
+          <details open class="accordion">
+            <summary>{{ name }}</summary>
+            <ul>
+              {{ folder(upload, child) }}
+            </ul>
+          </details>
+          <div class="list-actions">
+            <a
+              href='{{ ["uploads", upload.name, "create"] |> path }}?folder={{child.path}}'
+              title="Upload file inside ${name}"
+              class="buttonIcon"
+            >
+              <u-icon name="plus-circle"></u-icon>
+            </a>
+          </div>
+        </li>
+      {{ /if }}
+    {{ /for }}
+  {{ /function }}
+
+  <header class="header">
+    {{ include "breadcrumb.vto" { version, links: [upload.label] } }}
+
+    <h1 class="header-title">{{ upload.label }}</h1>
+
+    {{ if upload.description }}
+      <p class="header-description">{{ upload.description }}</p>
     {{ /if }}
-  {{ /for }}
-{{ /function }}
+  </header>
 
-{{ include "breadcrumb.vto" { version, links: [upload.label] } }}
+  {{ set content = folder(upload, tree).trim() }}
 
-<header class="header is-sticky">
-  <h1 class="header-title">{{ upload.label }}</h1>
+  <nav class="navigation">
+    {{ if content }}
+      <u-filter
+        data-placeholder="Search files in {{upload.label}}"
+        data-selector="#list li"
+      >
+      </u-filter>
+    {{ /if }}
 
-  {{ if upload.description }}
-    <p class="header-description">{{ upload.description }}</p>
+    {{ if user.canCreate(upload) }}
+      <a
+        href='{{ ["uploads", upload.name, "create"] |> path }}'
+        class="button is-primary"
+      >
+        <u-icon name="plus-circle"></u-icon>
+        Add files
+      </a>
+    {{ /if }}
+  </nav>
+
+  {{ if content }}
+    <ul id="list" class="list">{{ content }}</ul>
+  {{ else }}
+    <p class="emptyState">This is empty</p>
   {{ /if }}
-
-  <u-filter
-    class="header-filter"
-    data-placeholder="Search files in {{upload.label}}"
-    data-selector="#list li"
-  >
-  </u-filter>
-</header>
-
-{{ set content = folder(upload, tree) }}
-{{ if content }}
-  <ul id="list" class="list">{{ content }}</ul>
-{{ else }}
-  <p class="emptyState">No results</p>
-{{ /if }}
-
-<footer class="ly-rowStack footer is-responsive">
-  <a
-    href='{{ ["uploads", upload.name, "create"] |> path }}'
-    class="button is-primary"
-  >
-    <u-icon name="plus-circle"></u-icon>
-    Add files
-  </a>
-</footer>
+{{ /layout }}

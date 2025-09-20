@@ -1,0 +1,19 @@
+.navigation {
+  margin: 0;
+  background-color: var(--color-background);
+  justify-items: start;
+  z-index: 2;
+  position: sticky;
+  top: 0;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  margin-bottom: var(--row-gap-normal);
+
+  u-filter {
+    flex: 1 1 auto;
+  }
+  .button {
+    flex: 0 0 auto;
+  }
+}

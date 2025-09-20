@@ -1,4 +1,4 @@
-import { labelify, oninvalid, view } from "./utils.js";
+import { getFieldName, initField, labelify, oninvalid } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -7,11 +7,11 @@ customElements.define(
   class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix, isNew } = this;
-      const name = `${namePrefix}.${schema.name}`;
+      const { schema, value, isNew } = this;
+      const name = getFieldName(this);
       const id = `field_${name}`;
 
-      view(this);
+      initField(this);
       dom("span", { class: "field-label", html: schema.label }, this);
       const ul = dom("ul", { class: "field-check-list" }, this);
 

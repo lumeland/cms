@@ -1,26 +1,37 @@
 import Document from "./document.ts";
+import { getExtension } from "./utils/path.ts";
+import { labelify } from "./utils/string.ts";
 
-import type { Data, EntryMetadata, Labelizer, Storage } from "../types.ts";
+import type {
+  Data,
+  EntryMetadata,
+  EntrySource,
+  Labelizer,
+  PreviewUrl,
+  Storage,
+} from "../types.ts";
 
 export interface CollectionOptions {
   name: string;
   label?: string;
   description?: string;
   storage: Storage;
-  fields: Lume.CMS.ResolvedField[];
-  url?: string;
+  fields: Lume.CMS.ResolvedField;
+  previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
   create?: boolean;
   delete?: boolean;
+  edit?: boolean;
   rename?: boolean | "auto";
 }
 
 interface Permissions {
   create: boolean;
   delete: boolean;
-  rename?: boolean | "auto";
+  edit: boolean;
+  rename: boolean | "auto";
 }
 
 export default class Collection {
@@ -28,8 +39,8 @@ export default class Collection {
   label: string;
   description?: string;
   #storage: Storage;
-  #fields: Lume.CMS.ResolvedField[];
-  url?: string;
+  #fields: Lume.CMS.ResolvedField;
+  previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
@@ -41,11 +52,12 @@ export default class Collection {
     this.description = options.description;
     this.#storage = options.storage;
     this.#fields = options.fields;
-    this.url = options.url;
+    this.previewUrl = options.previewUrl;
     this.views = options.views;
     this.documentName = options.documentName;
     this.documentLabel = options.documentLabel;
     this.permissions = {
+      edit: options.edit ?? true,
       create: options.create ?? true,
       delete: options.delete ?? true,
       rename: options.rename ?? true,
@@ -63,35 +75,32 @@ export default class Collection {
   }
 
   async *[Symbol.asyncIterator](): AsyncGenerator<EntryMetadata> {
-    for await (const metadata of this.#storage) {
-      yield {
-        ...metadata,
-        label: this.documentLabel?.(metadata.label) ?? metadata.label,
-      };
+    for await (const source of this.#storage) {
+      yield getMetadata(source, this.documentLabel);
     }
   }
 
   create(id: string): Document {
-    const name = this.#storage.name(id);
-    const label = this.documentLabel ? this.documentLabel(name) : name;
+    const source = this.#storage.source(this.#storage.name(id));
+    const { name, label } = getMetadata(source, this.documentLabel);
+
     return new Document({
       name,
       label,
       entry: this.#storage.get(name),
       fields: this.#fields,
-      url: this.url,
     });
   }
 
-  get(name: string): Document {
-    const label = this.documentLabel ? this.documentLabel(name) : name;
+  get(id: string): Document {
+    const source = this.#storage.source(id);
+    const { name, label } = getMetadata(source, this.documentLabel);
 
     return new Document({
       name,
       label,
       entry: this.#storage.get(name),
       fields: this.#fields,
-      url: this.url,
     });
   }
 
@@ -104,17 +113,32 @@ export default class Collection {
     await this.#storage.rename(name, normalizedName);
     return normalizedName;
   }
+}
 
-  /** User permission to create a new document */
-  canCreate(): boolean {
-    return this.permissions.create;
+function getMetadata(
+  source: EntrySource,
+  labelizer?: Labelizer,
+): EntryMetadata {
+  if (labelizer) {
+    const label = labelizer(source.name);
+    if (typeof label === "string") {
+      return {
+        ...source,
+        label,
+      };
+    }
+
+    return {
+      ...source,
+      ...label,
+    };
   }
-  /** User permission to delete a document */
-  canDelete(): boolean {
-    return this.permissions.delete;
-  }
-  /** User permission to rename a document in the edition */
-  canRename(): boolean {
-    return this.permissions.rename === true;
-  }
+
+  const extension = getExtension(source.name);
+
+  return {
+    ...source,
+    label: labelify(source.name),
+    flags: { extension },
+  };
 }

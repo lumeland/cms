@@ -2,8 +2,24 @@ html:has(.modal.is-aside[open]) {
   overflow: hidden;
 }
 html:has(.modal.is-preview:not(.is-hidden)[open]) {
-  --modal-width: calc(100% - min(50vw, 1000px));
-  padding-left: var(--modal-width);
+  --modal-width: max(min(500px, 90vw), 50%, 100% - var(--app-width));
+
+  .app-container {
+    max-width: max(min(500px, 90vw), 100% - var(--modal-width));
+    margin-inline: auto 0;
+
+    @media (width < 1000px) {
+      position: fixed;
+      box-shadow: var(--shadow-big);
+      top: 0;
+      right: 0;
+
+      &:focus,
+      &:focus-within {
+        z-index: 3;
+      }
+    }
+  }
 }
 .modal[open] {
   border: none;
@@ -11,7 +27,13 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
   display: grid;
   grid-template: 1fr / 1fr;
   animation-fill-mode: both;
-  box-shadow: 0 0 1px #0003, 0 0 30px #0002;
+  box-shadow: var(--shadow-big);
+  background-color: var(--color-background);
+  color: var(--color-text);
+
+  &::backdrop {
+    background-color: var(--backdrop);
+  }
 
   &.is-center {
     padding: 2rem 1rem 1rem;

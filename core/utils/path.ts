@@ -3,7 +3,7 @@ import { posix, SEPARATOR } from "../../deps/std.ts";
 /**
  * Normalize the name of a file or directory
  */
-export function normalizeName(name?: string): string | undefined {
+export function normalizeName(name?: string | null): string | undefined {
   if (!name) {
     return;
   }
@@ -78,4 +78,9 @@ export function getLanguageCode(path: string): string {
     default:
       return "HTML";
   }
+}
+
+export function getExtension(name: string) {
+  const parts = name.split(".");
+  return parts.length > 1 ? parts.pop() : undefined;
 }

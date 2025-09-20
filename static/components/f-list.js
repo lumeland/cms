@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { pushOptions, view } from "./utils.js";
+import { getFieldName, initField, pushOptions } from "./utils.js";
 import dom from "dom";
 
 customElements.define(
@@ -8,9 +8,9 @@ customElements.define(
     init() {
       this.classList.add("field");
       const { schema, value, isNew } = this;
-      const namePrefix = `${this.namePrefix}.${schema.name}`;
+      const namePrefix = getFieldName(this);
 
-      view(this);
+      initField(this);
       dom("label", { for: `field_${namePrefix}.0`, html: schema.label }, this);
 
       dom(

@@ -5,14 +5,14 @@ import type { Versioning } from "../types.ts";
 export interface Options {
   root?: string;
   prodBranch?: string;
-  prefix?: string;
+  branchPrefix?: string;
   command?: string;
   remote?: string;
 }
 
 export const defaults: Options = {
   prodBranch: "main",
-  prefix: "lumecms/",
+  branchPrefix: "lumecms/",
   command: "git",
   remote: "origin",
 };
@@ -21,7 +21,7 @@ export class Git implements Versioning {
   root: string;
   prodBranch: string;
   command: string;
-  prefix: string;
+  branchPrefix: string;
   remote: string;
 
   constructor(userOptions?: Options) {
@@ -29,25 +29,27 @@ export class Git implements Versioning {
 
     this.root = options.root ?? Deno.cwd();
     this.prodBranch = options.prodBranch;
-    this.prefix = options.prefix;
+    this.branchPrefix = options.branchPrefix;
     this.command = options.command;
     this.remote = options.remote;
   }
 
   *[Symbol.iterator](): Generator<Version> {
     const current = this.#gitCurrentBranch();
-    const allBranches = this.#git("branch", "--list");
+    const allBranches = new Set([
+      current,
+      ...this.#git("branch", "--list")
+        .split("\n")
+        .map((b) => b.replace("*", "").trim()),
+    ]);
 
-    for (const item of allBranches.split("\n")) {
-      const branch = item.replace("*", "").trim();
-
-      if (branch !== this.prodBranch && !branch.startsWith(this.prefix)) {
+    for (const branch of allBranches) {
+      if (branch !== this.prodBranch && !branch.startsWith(this.branchPrefix)) {
         continue;
       }
 
-      const name = this.#branchToName(branch);
       yield {
-        name,
+        name: this.#branchToName(branch),
         isCurrent: branch === current,
         isProduction: branch === this.prodBranch,
       };
@@ -87,10 +89,10 @@ export class Git implements Versioning {
       throw new Error(`Version ${name} does not exist`);
     }
 
+    const currentBranch = this.#gitCurrentBranch();
+
     // If there are pending changes, commit them before changing the branch
     if (this.#gitPendingChanges()) {
-      const currentBranch = this.#gitCurrentBranch();
-
       // If the current branch exists in the remote, pull it before pushing
       if (this.#gitRemoteBranchExists(currentBranch)) {
         try {
@@ -103,6 +105,11 @@ export class Git implements Versioning {
       // Add and commit changes
       this.#git("add", ".");
       this.#git("commit", "-m", "Changes from CMS");
+    }
+
+    // If the current branch is not the production branch, push changes to the remote
+    if (currentBranch !== this.prodBranch) {
+      this.#git("push", this.remote, currentBranch);
     }
 
     // Checkout to the new branch
@@ -154,21 +161,26 @@ export class Git implements Versioning {
     }
 
     this.#git("branch", "-D", branch);
+
+    // If the branch exists in the remote, delete it there too
+    if (this.#gitRemoteBranchExists(branch)) {
+      this.#git("push", this.remote, "--delete", branch);
+    }
   }
 
   /** Converts a version name to a branch name */
   #nameToBranch(name: string): string {
     name = slugify(name);
-    if (name !== this.prodBranch && !name.startsWith(this.prefix)) {
-      name = this.prefix + name;
+    if (name !== this.prodBranch && !name.startsWith(this.branchPrefix)) {
+      name = this.branchPrefix + name;
     }
     return name;
   }
 
   /** Converts a branch name to a version name */
   #branchToName(branch: string): string {
-    if (branch.startsWith(this.prefix)) {
-      return branch.slice(this.prefix.length);
+    if (branch.startsWith(this.branchPrefix)) {
+      return branch.slice(this.branchPrefix.length);
     }
 
     return branch;

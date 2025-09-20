@@ -1,50 +1,65 @@
-{{ include "breadcrumb.vto" { version, links: [document.label] } }}
+{{ layout "layout.vto" }}
+  <u-pagepreview data-url="{{ url }}"></u-pagepreview>
 
-<u-form>
   <header class="header">
+    {{ include "breadcrumb.vto" { version, links: [document.label] } }}
+
     <h1 class="header-title">Editing {{ document.label }}</h1>
+
+    {{ if document.description }}
+      <div class="header-description">
+        {{ document.description }}
+      </div>
+    {{ /if }}
   </header>
 
-  {{ if views.length }}
-    <u-views
-      data-target="form-edit"
-      data-state="{{ initViews |> JSON.stringify |> escape }}"
-      data-views="{{ views |> JSON.stringify |> escape }}"
+  <nav class="navigation">
+    <button
+      class="button is-primary"
+      type="submit"
+      form="form-edit"
+      tabindex="1"
     >
-      <strong class="field-label">View:</strong>
-    </u-views>
-  {{ /if }}
+      <u-icon name="floppy-disk"></u-icon>
+      Save changes
+    </button>
 
-  <form
-    action='{{ ["document", document.name] |> path }}'
-    method="post"
-    class="form"
-    id="form-edit"
-    enctype="multipart/form-data"
-  >
-    <u-fields
-      data-fields="{{ fields |> JSON.stringify |> escape }}"
-      data-value="{{ data |> JSON.stringify |> escape }}"
-    ></u-fields>
+    <u-dropdown>
+      <div slot="header">
+        Edit options
+      </div>
+      <a
+        class="button is-secondary"
+        href='{{ ["document", document.name, "code"] |> path }}'
+      >
+        <u-icon name="code"></u-icon>
+        Edit code
+      </a>
+    </u-dropdown>
+  </nav>
 
-    <footer class="footer ly-rowStack is-responsive">
-      <button class="button is-primary" type="submit">Save changes</button>
+  <u-form>
+    {{ if views.length }}
+      <u-views
+        data-target="form-edit"
+        data-state="{{ initViews |> JSON.stringify |> escape }}"
+        data-views="{{ views |> JSON.stringify |> escape }}"
+      >
+        <strong class="field-label">View:</strong>
+      </u-views>
+    {{ /if }}
 
-      <u-dropdown>
-        <a
-          class="button is-secondary"
-          href='{{ ["document", "code", document.name] |> path }}'
-        >
-          <u-icon name="code"></u-icon>
-          Edit code
-        </a>
-      </u-dropdown>
-
-      <u-pagepreview
-        class="ly-rowStack"
-        data-url="{{ document.url }}"
-        data-src="{{document.src}}"
-      ></u-pagepreview>
-    </footer>
-  </form>
-</u-form>
+    <form
+      action='{{ ["document", document.name, "edit"] |> path }}'
+      method="post"
+      class="form"
+      id="form-edit"
+      enctype="multipart/form-data"
+    >
+      <u-fields
+        data-fields="{{ fields |> JSON.stringify |> escape }}"
+        data-value="{{ data |> JSON.stringify |> escape }}"
+      ></u-fields>
+    </form>
+  </u-form>
+{{ /layout }}

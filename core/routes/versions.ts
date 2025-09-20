@@ -1,52 +1,59 @@
-import type { Context, Hono } from "../../deps/hono.ts";
-import type { CMSContent } from "../../types.ts";
-import { dispatch } from "../utils/event.ts";
 import { getPath } from "../utils/path.ts";
+import { Router } from "../../deps/galo.ts";
 
-interface Data {
-  name: string;
-  action: string;
-}
+import type { RouterData } from "../cms.ts";
 
-export default function (app: Hono) {
-  app.post("/versions", async (c: Context) => {
-    const options = c.get("options") as CMSContent;
-    const { versioning, basePath } = options;
+const app = new Router<RouterData>();
 
-    if (!versioning) {
-      throw new Error("No versioning method available");
-    }
+/**
+ * Route for handling versioning actions.
+ * It supports creating, changing, publishing, and deleting versions.
+ *
+ * /versions/create - Create a new version
+ * /versions/change - Change the current version
+ * /versions/publish - Publish the current version
+ * /versions/delete - Delete a version
+ */
+app.post("/*", async ({ request, cms, next }) => {
+  const { versioning, basePath } = cms;
 
-    const body = await c.req.parseBody() as unknown as Data;
-    const { name, action } = body;
+  if (!versioning) {
+    throw new Error("No versioning method available");
+  }
 
-    const response = c.redirect(getPath(basePath));
-    // Add a header to trigger a reload in the proxy
-    response.headers.set("X-Lume-CMS", "reload");
+  const body = await request.formData();
+  const name = body.get("name") as string;
 
-    if (action === "create") {
+  const response = new Response(null, {
+    status: 302,
+    headers: new Headers({
+      "Location": getPath(basePath),
+      "X-Lume-CMS": "reload",
+    }),
+  });
+
+  return next()
+    /* POST /versions/create - Create a new version */
+    .post("/create", () => {
       versioning.create(name);
       versioning.change(name);
-      dispatch("versionCreated", { name });
       return response;
-    }
-
-    if (action === "change") {
+    })
+    /* POST /versions/change - Change the current version */
+    .post("/change", () => {
       versioning.change(name);
-      dispatch("versionChanged", { name });
       return response;
-    }
-
-    if (action === "publish") {
+    })
+    /* POST /versions/publish - Publish the current version */
+    .post("/publish", () => {
       versioning.publish(name);
-      dispatch("versionPublished", { name });
       return response;
-    }
-
-    if (action === "delete") {
+    })
+    /* POST /versions/delete - Delete a version */
+    .post("/delete", () => {
       versioning.delete(name);
-      dispatch("versionDeleted", { name });
       return response;
-    }
-  });
-}
+    });
+});
+
+export default app;

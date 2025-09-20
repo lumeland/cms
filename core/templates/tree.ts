@@ -3,7 +3,7 @@ import type { EntryMetadata } from "../../types.ts";
 export interface Tree {
   path: string;
   folders?: Map<string, Tree>;
-  files?: Map<string, string>;
+  files?: Map<string, EntryMetadata>;
 }
 
 export default function createTree(files: EntryMetadata[]): Tree {
@@ -11,17 +11,16 @@ export default function createTree(files: EntryMetadata[]): Tree {
     path: "",
   };
 
-  for (const file of files) {
-    const { label, name } = file;
-    placeFile(tree, name, label.split("/"), name.split("/"));
+  for (const metadata of files) {
+    const { label, name } = metadata;
+    placeFile(tree, metadata, label.split("/"), name.split("/"));
   }
-
   return tree;
 }
 
 function placeFile(
   tree: Tree,
-  name: string,
+  metadata: EntryMetadata,
   labelParts: string[],
   nameParts: string[],
 ) {
@@ -33,11 +32,11 @@ function placeFile(
     const folder: Tree = tree.folders.get(labelPart) ?? {
       path: `${tree.path}${namePart}/`,
     };
-    placeFile(folder, name, labelParts, nameParts);
+    placeFile(folder, metadata, labelParts, nameParts);
     tree.folders.set(labelPart, folder);
     return;
   }
 
   tree.files ??= new Map();
-  tree.files.set(labelPart, name);
+  tree.files.set(labelPart, metadata);
 }

@@ -1,21 +1,26 @@
-{{
-  include "breadcrumb.vto" {
-    version,
-    links: [
-      [collection.label, ["collection", collection.name]],
-      "New file",
-    ],
-  }
-}}
+{{ layout "layout.vto" }}
+  <header class="header">
+    {{
+      include "breadcrumb.vto" {
+        version,
+        links: [
+          [collection.label, ["collection", collection.name]],
+          "New document",
+        ],
+      }
+    }}
 
-<header class="header">
-  <h1 class="header-title">
-    Creating new file
-    {{ if collection.canRename() }}
-      <label class="header-file">
+    <h1 class="header-title">
+      New document
+    </h1>
+  </header>
+
+  <nav class="navigation">
+    {{ if user.canRename(collection) }}
+      <label class="input-file">
         {{ folder }}
         <input
-          class="input is-inline"
+          class="input"
           id="_id"
           type="text"
           name="_id"
@@ -27,33 +32,40 @@
         >
       </label>
     {{ /if }}
-  </h1>
-</header>
 
-{{ if views.length }}
-  <u-views
-    data-target="form-create"
-    data-state="{{ initViews |> JSON.stringify |> escape }}"
-    data-views="{{ views |> JSON.stringify |> escape }}"
+    <button
+      class="button is-primary"
+      form="form-create"
+      type="submit"
+      tabindex="1"
+    >
+      <u-icon name="plus-circle"></u-icon>
+      Create document
+    </button>
+  </nav>
+
+  {{ if views.length }}
+    <u-views
+      data-target="form-create"
+      data-state="{{ initViews |> JSON.stringify |> escape }}"
+      data-views="{{ views |> JSON.stringify |> escape }}"
+    >
+      <strong class="field-label">View:</strong>
+    </u-views>
+  {{ /if }}
+
+  <form
+    action='{{ ["collection", collection.name, "create"] |> path }}'
+    method="post"
+    class="form"
+    enctype="multipart/form-data"
+    id="form-create"
   >
-    <strong class="field-label">View:</strong>
-  </u-views>
-{{ /if }}
-
-<form
-  action='{{ ["collection", collection.name, "create"] |> path }}'
-  method="post"
-  class="form"
-  enctype="multipart/form-data"
-  id="form-create"
->
-  <input type="hidden" name="_prefix" value="{{ folder }}">
-  <u-fields
-    data-fields="{{ fields |> JSON.stringify |> escape }}"
-    data-new="true"
-    data-value="{{ defaults |> JSON.stringify |> escape }}"
-  ></u-fields>
-  <footer class="footer ly-rowStack">
-    <button class="button is-primary" type="submit">Create</button>
-  </footer>
-</form>
+    <input type="hidden" name="_prefix" value="{{ folder }}">
+    <u-fields
+      data-fields="{{ fields |> JSON.stringify |> escape }}"
+      data-new="true"
+      data-value="{{ defaults |> JSON.stringify |> escape }}"
+    ></u-fields>
+  </form>
+{{ /layout }}

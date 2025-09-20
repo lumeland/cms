@@ -1,49 +1,57 @@
-{{
-  include "breadcrumb.vto" {
-    version,
-    links: [
-      [document.label, ["document", document.name]],
-      "Editing code",
-    ],
-  }
-}}
+{{ layout "layout.vto" }}
+  <u-pagepreview data-url="{{ url }}"></u-pagepreview>
 
-<u-form>
   <header class="header">
+    {{
+      include "breadcrumb.vto" {
+        version,
+        links: [
+          [document.label, ["document", document.name, "edit"]],
+          "Editing code",
+        ],
+      }
+    }}
+
     <h1 class="header-title">Editing {{ document.label }}</h1>
+
+    {{ if document.description }}
+      <div class="header-description">
+        {{ document.description }}
+      </div>
+    {{ /if }}
   </header>
 
-  <form
-    action='{{ ["document", "code", document.name] |> path }}'
-    method="post"
-    class="form"
-    id="form-edit"
-  >
-    <u-fields
-      data-fields="{{ fields |> JSON.stringify |> escape  }}"
-      data-value="{{ data |> JSON.stringify |> escape  }}"
-    ></u-fields>
+  <nav class="navigation">
+    <button id="form-edit" class="button is-primary" type="submit" tabindex="1">
+      <u-icon name="floppy-disk"></u-icon>
+      Save changes
+    </button>
 
-    <footer class="footer ly-rowStack is-responsive">
-      <button class="button is-primary" type="submit">
-        <u-icon name="check"></u-icon>
-        Save changes
-      </button>
+    <u-dropdown>
+      <div slot="header">
+        Edit options
+      </div>
+      <a
+        class="button is-secondary"
+        href='{{ ["document", document.name, "edit"] |> path }}'
+      >
+        <u-icon name="textbox"></u-icon>
+        Edit form
+      </a>
+    </u-dropdown>
+  </nav>
 
-      <u-dropdown>
-        <a
-          class="button is-secondary"
-          href='{{ ["document", document.name] |> path }}'
-        >
-          <u-icon name="textbox"></u-icon>
-          Edit form
-        </a>
-      </u-dropdown>
-      <u-pagepreview
-        class="ly-rowStack"
-        data-url="{{ document.url }}"
-        data-src="{{ document.src }}"
-      ></u-pagepreview>
-    </footer>
-  </form>
-</u-form>
+  <u-form>
+    <form
+      action='{{ ["document", document.name, "code"] |> path }}'
+      method="post"
+      class="form"
+      id="form-edit"
+    >
+      <u-fields
+        data-fields="{{ fields |> JSON.stringify |> escape  }}"
+        data-value="{{ data |> JSON.stringify |> escape  }}"
+      ></u-fields>
+    </form>
+  </u-form>
+{{ /layout }}

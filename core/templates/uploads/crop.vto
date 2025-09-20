@@ -1,44 +1,44 @@
-{{
-  include "breadcrumb.vto" {
-    version,
-    links: [
-      [upload.label, ["uploads", upload.name]],
-      ["File details", ["uploads", upload.name, "file", file]],
-      "Crop image",
-    ],
-  }
-}}
+{{ layout "layout.vto" }}
+  <header class="header">
+    {{
+      include "breadcrumb.vto" {
+        version,
+        links: [
+          [upload.label, ["uploads", upload.name]],
+          ["File details", ["uploads", upload.name, file, "edit"]],
+          "Crop image",
+        ],
+      }
+    }}
 
-{{ set src = ["uploads", upload.name, "raw", file] |> path }}
+    <h1 class="header-title">Edit {{ file }}</h1>
+  </header>
 
-<header class="header">
-  <h1 class="header-title">
-    Edit {{ file }}
-  </h1>
-</header>
-
-<form
-  method="post"
-  class="form"
-  id="form-edit"
->
-  <input type="hidden" name="x">
-  <input type="hidden" name="y">
-  <input type="hidden" name="width">
-  <input type="hidden" name="height">
-
-  <u-cropper data-src="{{ src }}"></u-cropper>
-
-  <footer class="footer ly-rowStack">
+  <nav class="navigation">
     <a
       class="button is-secondary"
-      href='{{ ["uploads", upload.name, "file", file] |> path }}'
+      href='{{ ["uploads", upload.name, file, "edit"] |> path }}'
     >
       Cancel
     </a>
-    <button class="button is-primary" type="submit">
+    <button class="button is-primary" type="submit" form="form-edit">
       <u-icon name="check"></u-icon>
       Crop image
     </button>
-  </footer>
-</form>
+  </nav>
+
+  {{ set src = ["uploads", upload.name, file] |> path }}
+
+  <form
+    method="post"
+    class="form"
+    id="form-edit"
+  >
+    <input type="hidden" name="x">
+    <input type="hidden" name="y">
+    <input type="hidden" name="width">
+    <input type="hidden" name="height">
+
+    <u-cropper data-src="{{ src }}"></u-cropper>
+  </form>
+{{ /layout }}

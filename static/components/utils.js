@@ -17,9 +17,12 @@ const hash = location.hash.slice(1);
 export const initialViews = new Set(
   hash ? hash.split(",").map(decodeURIComponent) : [],
 );
-export function view(element) {
+
+/** Common init code used by several components */
+export function initField(element) {
   const { schema } = element;
 
+  // Show or hide the element based on the current view
   if (schema.view) {
     element.setAttribute("data-view", schema.view);
     element.hidden = !initialViews.has(schema.view);
@@ -28,6 +31,34 @@ export function view(element) {
       element.hidden = false;
     });
   }
+
+  if (!schema.cssSelector) {
+    return;
+  }
+
+  // Add a button to highlight the element in the page preview
+  dom("button", {
+    class: "buttonIcon field-dom-picker",
+    type: "button",
+    html: '<u-icon name="crosshair-simple"></u-icon>',
+    async onclick() {
+      const preview = document.querySelector("u-pagepreview");
+      if (preview) {
+        const exists = await preview.highlight(schema.cssSelector);
+        if (!exists) {
+          this.animate([
+            { transform: "translate(-40px, -8px)", opacity: 1 },
+            { transform: "translate(-50px, -8px)" },
+            { transform: "translate(-40px, -8px)" },
+            { transform: "translate(-50px, -8px)" },
+            { transform: "translate(-40px, -8px)", opacity: 1 },
+          ], {
+            duration: 500,
+          });
+        }
+      }
+    },
+  }, element);
 }
 
 /** Dispatch a bubbled event on error */
@@ -118,18 +149,6 @@ export function labelify(slug) {
   return slug;
 }
 
-const optionsKey = "lumecms_options";
-const initVal = localStorage.getItem(optionsKey);
-const currOptions = initVal ? JSON.parse(initVal) : {};
-
-export const options = {
-  get: (key) => currOptions[key],
-  set: (key, value) => {
-    currOptions[key] = value;
-    localStorage.setItem(optionsKey, JSON.stringify(currOptions));
-  },
-};
-
 /** Convert a Date to local timezone */
 export function toLocal(date) {
   const offset = date.getTimezoneOffset();
@@ -141,4 +160,12 @@ export function updateField(field, schema, input) {
   input.labels[0].innerHTML = schema.label;
   field.querySelector(".field-description").innerHTML = schema.description ??
     "";
+}
+
+export function getFieldName(field) {
+  const { namePrefix, schema } = field;
+  if (namePrefix) {
+    return `${namePrefix}.${schema.name}`;
+  }
+  return schema.name;
 }

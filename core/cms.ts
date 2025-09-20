@@ -1,99 +1,119 @@
-import { Hono, HTTPException, serveStatic } from "../deps/hono.ts";
 import { render } from "../deps/vento.ts";
 import { getCurrentVersion } from "./utils/env.ts";
-import documentRoutes from "./routes/document.ts";
-import collectionRoutes from "./routes/collection.ts";
-import versionsRoutes from "./routes/versions.ts";
+import documentRoute from "./routes/document.ts";
+import collectionRoute from "./routes/collection.ts";
+import versionsRoute from "./routes/versions.ts";
 import indexRoute from "./routes/index.ts";
-import filesRoutes from "./routes/files.ts";
-import authRoutes from "./routes/auth.ts";
+import uploadsRoute from "./routes/uploads.ts";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
 import Upload from "./upload.ts";
 import FsStorage from "../storage/fs.ts";
 import { asset, getPath, normalizePath } from "./utils/path.ts";
-import {
-  basename,
-  dirname,
-  fromFileUrl,
-  logger,
-  relative,
-} from "../deps/std.ts";
+import { Router } from "../deps/galo.ts";
+import { basename, dirname, fromFileUrl } from "../deps/std.ts";
 import { filter } from "../deps/vento.ts";
 import { labelify } from "./utils/string.ts";
-import { dispatch } from "./utils/event.ts";
 import { Git, Options as GitOptions } from "./git.ts";
+import User from "./user.ts";
 
-import type { Context, Next } from "../deps/hono.ts";
 import type {
   CMSContent,
   Data,
   Entry,
   FieldDefinition,
   Labelizer,
+  PreviewUrl,
   SiteInfo,
   Storage,
+  UserConfiguration,
   Versioning,
 } from "../types.ts";
 
+type SourcePath = (
+  url: string,
+  cms: CMSContent,
+) => string | undefined | Promise<string | undefined>;
+
 export interface CmsOptions {
-  site?: SiteInfo;
+  site: SiteInfo;
   root: string;
   basePath: string;
   auth?: AuthOptions;
-  data?: Record<string, unknown>;
-  log?: LogOptions;
+  data: Record<string, unknown>;
   extraHead?: string;
+  previewUrl?: PreviewUrl;
+  sourcePath?: SourcePath;
 }
 
 export interface AuthOptions {
   method: "basic";
-  users: Record<string, string>;
+  users: Record<string, string | UserConfiguration>;
 }
 
-export interface LogOptions {
-  filename: string;
+export interface RouterData {
+  cms: CMSContent;
+  render: (file: string, data?: Record<string, unknown>) => Promise<string>;
+  previewUrl?: PreviewUrl;
+  sourcePath?: SourcePath;
+  user: User;
 }
 
-interface DocumentOptions {
+type DocumentType = "object" | "object-list" | "choose";
+
+const allowedTypes: DocumentType[] = [
+  "object",
+  "object-list",
+  "choose",
+];
+
+export interface DocumentOptions {
   name: string;
   label?: string;
   description?: string;
+  type?: DocumentType;
   store: string;
   fields: Lume.CMS.Field[];
-  url?: string;
+  previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
+  edit?: boolean;
 }
 
-interface CollectionOptions {
+export interface CollectionOptions {
   name: string;
   label?: string;
   description?: string;
+  type?: DocumentType;
   store: string;
   fields: Lume.CMS.Field[];
-  url?: string;
+  previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
   create?: boolean;
   delete?: boolean;
+  edit?: boolean;
   rename?: boolean | "auto";
 }
 
-interface UploadOptions {
+export interface UploadOptions {
   name: string;
   label?: string;
   description?: string;
   store: string;
   publicPath?: string;
+  documentLabel?: Labelizer;
   listed?: boolean;
+  create?: boolean;
+  delete?: boolean;
+  edit?: boolean;
+  rename?: boolean | "auto";
 }
 
 const defaults: Partial<CmsOptions> = {
-  site: {
-    name: "Lume CMS",
-  },
+  site: {},
   basePath: "/",
+  data: {},
 };
 
 export default class Cms {
@@ -138,7 +158,7 @@ export default class Cms {
   }
 
   /** Setup the basic auth */
-  auth(users: Record<string, string>): this {
+  auth(users: Record<string, string | UserConfiguration>): this {
     this.options.auth = {
       method: "basic",
       users,
@@ -268,20 +288,24 @@ export default class Cms {
   initContent(): CMSContent {
     const content: CMSContent = {
       basePath: this.options.basePath,
-      auth: this.options.auth?.method === "basic",
-      site: this.options.site!,
+      site: this.options.site ?? {},
       data: this.options.data ?? {},
+      versioning: this.versionManager,
       collections: {},
       documents: {},
       uploads: {},
     };
 
-    if (this.versionManager) {
-      content.versioning = this.versionManager;
-    }
-
     for (
-      const { name, label, description, store, publicPath, listed } of this
+      const {
+        name,
+        label,
+        description,
+        documentLabel,
+        store,
+        publicPath,
+        listed,
+      } of this
         .uploads
         .values()
     ) {
@@ -289,6 +313,7 @@ export default class Cms {
         name,
         label: label ?? labelify(name),
         description,
+        documentLabel,
         storage: this.#getStorage(store),
         publicPath: publicPath ?? "/",
         listed: listed ?? true,
@@ -296,29 +321,26 @@ export default class Cms {
     }
 
     for (
-      const { name, label, store, fields, documentLabel, ...options } of this
+      const { name, label, store, fields, type, ...options } of this
         .collections
         .values()
     ) {
       content.collections[name] = new Collection({
         storage: this.#getStorage(store),
-        fields: this.#resolveFields(fields, content),
+        fields: this.#resolveFields(fields, content, type),
         name,
         label: label ?? labelify(name),
-        documentLabel: documentLabel
-          ? (name) => documentLabel(name, labelify)
-          : labelify,
         ...options,
       });
     }
 
     for (
-      const { name, label, store, fields, ...options } of this.documents
+      const { name, label, store, fields, type, ...options } of this.documents
         .values()
     ) {
       content.documents[name] = new Document({
         entry: this.#getEntry(store),
-        fields: this.#resolveFields(fields, content),
+        fields: this.#resolveFields(fields, content, type),
         name,
         label: label ?? labelify(name),
         ...options,
@@ -329,146 +351,73 @@ export default class Cms {
   }
 
   /** Start the CMS */
-  init(): Hono {
+  init(): Router<{ cms: CMSContent }> {
     const content = this.initContent();
 
     for (const type of this.fields.values()) {
       this.#jsImports.add(type.jsImport);
     }
 
-    const app = new Hono({
-      strict: false,
-    });
-
-    if (this.options.log?.filename) {
-      logger.setup({
-        handlers: {
-          file: new logger.FileHandler("ERROR", {
-            filename: this.options.log.filename,
-          }),
-        },
-        loggers: {
-          lumecms: {
-            level: "ERROR",
-            handlers: ["file"],
-          },
-        },
-      });
-    } else {
-      logger.setup({
-        handlers: {
-          console: new logger.ConsoleHandler("ERROR"),
-        },
-        loggers: {
-          lumecms: {
-            level: "ERROR",
-            handlers: ["console"],
-          },
-        },
-      });
-    }
-
-    app.onError((error: Error, c: Context) => {
-      if (error instanceof HTTPException && error.res) {
-        return error.res;
-      }
-
-      const log = logger.getLogger("lumecms");
-      const { req } = c;
-      const time = new Date().toISOString();
-      const message = `${time} [${req.method}] ${req.url} - ${error.message}`;
-      error.message = message;
-      console.error(message);
-      log.error(error);
-      log.handlers.forEach((handler) => {
-        if (handler instanceof logger.FileHandler) {
-          handler.flush();
-        }
-      });
-
-      return c.text("There was an error. See logs for more info.", 500);
-    });
-
-    authRoutes(app, this.options.auth, [
-      // Skip auth for socket because Safari doesn't keep the auth header
-      getPath(this.options.basePath, "_socket"),
-      getPath(this.options.basePath, "logout"),
-    ]);
-
     filter("path", (args: string[]) => getPath(this.options.basePath, ...args));
     filter("asset", (url: string) => asset(this.options.basePath, url));
 
-    app.use("*", (c: Context, next: Next) => {
-      c.setRenderer(async (content) => {
-        return c.html(render("layout.vto", {
+    const app = new Router<RouterData>({
+      cms: content,
+      previewUrl: this.options.previewUrl,
+      sourcePath: this.options.sourcePath,
+      user: new User(),
+      render: (file: string, data?: Record<string, unknown>) =>
+        render(file, {
+          ...data,
           jsImports: Array.from(this.#jsImports),
           extraHead: this.options.extraHead,
-          content: await content,
-          version: getCurrentVersion(),
-        }));
-      });
-      c.set("options", { ...content });
-      return next();
+          cmsVersion: getCurrentVersion(),
+        }),
     });
 
-    documentRoutes(app);
-    collectionRoutes(app);
-    filesRoutes(app);
-    indexRoute(app);
-    versionsRoutes(app);
+    const { basePath } = this.options;
 
-    const sockets = new Set<WebSocket>();
-
-    addEventListener("cms:previewUpdated", () => {
-      sockets.forEach((socket) => {
-        socket.send(JSON.stringify({ type: "preview" }));
-      });
-    });
-
-    app.get("_socket", (c: Context) => {
-      // Is a websocket
-      if (c.req.header("upgrade") === "websocket") {
-        const { socket, response } = Deno.upgradeWebSocket(c.req.raw);
-
-        socket.onopen = () => sockets.add(socket);
-        socket.onclose = () => sockets.delete(socket);
-        socket.onerror = (e) => console.log("Socket errored", e);
-        socket.onmessage = async (e) => {
-          const { type, src } = JSON.parse(e.data);
-
-          if (type === "url") {
-            const result = dispatch<{ src: string; url?: unknown }>(
-              "previewUrl",
-              { src },
-            );
-
-            if (result) {
-              const url = await result.url;
-              if (url) {
-                socket.send(JSON.stringify({ type: "reload", src, url }));
-              }
-            }
+    app.get(`${basePath}/logout`, () =>
+      new Response("Unauthorized", {
+        status: 401,
+        headers: {
+          "WWW-Authenticate": 'Basic realm="Secure Area"',
+        },
+      }))
+      .path(`${basePath}/*`, ({ request, next, _, user }) => {
+        // Basic authentication
+        if (this.options.auth && _.join("/") !== "logout") {
+          const authorization = request.headers.get("authorization");
+          if (!user.authenticate(this.options.auth.users, authorization)) {
+            return new Response("Unauthorized", {
+              status: 401,
+              headers: {
+                "WWW-Authenticate": 'Basic realm="Secure Area"',
+              },
+            });
           }
-        };
+        }
 
-        return response;
-      }
+        return next()
+          .path("/", indexRoute)
+          .path("/document/*", documentRoute)
+          .path("/collection/*", collectionRoute)
+          .path("/uploads/*", uploadsRoute)
+          .path("/versions/*", versionsRoute)
+          .get("/logout", () =>
+            new Response("Logged out", {
+              status: 401,
+              headers: {
+                "WWW-Authenticate": 'Basic realm="Secure Area"',
+              },
+            }));
+      });
 
-      return c.notFound();
-    });
-
-    let root = import.meta.resolve("../static/");
+    // Serve static files from local directory
+    const root = import.meta.resolve("../static/");
 
     if (root.startsWith("file:")) {
-      root = relative(Deno.cwd(), fromFileUrl(root));
-      app.get(
-        "*",
-        serveStatic({
-          root,
-          rewriteRequestPath: (path: string) =>
-            normalizePath(path.substring(this.options.basePath.length)),
-        }),
-      );
+      app.staticFiles(`${basePath}/*`, fromFileUrl(root));
     }
 
     return app;
@@ -500,8 +449,24 @@ export default class Cms {
   #resolveFields(
     fields: Lume.CMS.Field[],
     content: CMSContent,
-  ): Lume.CMS.ResolvedField[] {
-    return fields.map((field) => this.#resolveField(field, content));
+    type: DocumentType = "object",
+  ): Lume.CMS.ResolvedField {
+    if (!allowedTypes.includes(type)) {
+      throw new Error(`Unknown document type "${type}"`);
+    }
+    const field = this.fields.get(type);
+    if (!field) {
+      throw new Error(`Field of type "${type}" was not found`);
+    }
+
+    return {
+      name: "root",
+      type: "object",
+      tag: field.tag + "-root",
+      applyChanges: field.applyChanges,
+      init: field.init,
+      fields: fields.map((field) => this.#resolveField(field, content)),
+    } as Lume.CMS.ResolvedField;
   }
 
   #resolveField(
@@ -540,14 +505,24 @@ export default class Cms {
     };
 
     if (resolvedField.fields) {
-      resolvedField.fields = this.#resolveFields(
-        resolvedField.fields,
-        content,
+      resolvedField.fields = resolvedField.fields.map((field: Lume.CMS.Field) =>
+        this.#resolveField(field, content)
       );
     }
 
     if (type.init) {
-      type.init(resolvedField, content);
+      const customInit = resolvedField.init;
+
+      resolvedField.init = typeof customInit === "function"
+        ? async (
+          field: Lume.CMS.ResolvedField,
+          content: CMSContent,
+          data: Data,
+        ) => {
+          await type.init!(field, content);
+          await customInit(field, content, data);
+        }
+        : type.init;
     }
 
     return resolvedField as Lume.CMS.ResolvedField;

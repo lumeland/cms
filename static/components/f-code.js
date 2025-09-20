@@ -1,4 +1,11 @@
-import { asset, oninvalid, pushOptions, updateField, view } from "./utils.js";
+import {
+  asset,
+  getFieldName,
+  initField,
+  oninvalid,
+  pushOptions,
+  updateField,
+} from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/code.js";
 import dom from "dom";
@@ -8,11 +15,11 @@ customElements.define(
   class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix, isNew } = this;
-      const name = `${namePrefix}.${schema.name}`;
+      const { schema, value, isNew } = this;
+      const name = getFieldName(this);
       const id = `field_${name}`;
 
-      view(this);
+      initField(this);
       dom("label", {
         for: id,
         html: schema.label,
