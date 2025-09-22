@@ -1,0 +1,42 @@
+.u-busy {
+  border: none;
+  display: grid;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  align-content: center;
+  justify-items: center;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  font: var(--font-ui-bold);
+  row-gap: 0.5em;
+
+  p {
+    margin: 0;
+  }
+}
+.u-busy::after {
+  content: "";
+  display: block;
+  width: 0.5em;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: u-busy 1s infinite linear alternate;
+}
+@keyframes u-busy {
+  0% {
+    box-shadow: -20px 0 hsl(0 50% 50% / 0.1), 20px 0 hsl(0 50% 50%);
+    background: hsl(0 50% 50%);
+  }
+  33% {
+    box-shadow: -20px 0 hsl(0 50% 50% / 0.1), 20px 0 hsl(0 50% 50%);
+    background: hsl(0 50% 50% / 0.1);
+  }
+  66% {
+    box-shadow: -20px 0 hsl(0 50% 50%), 20px 0 hsl(0 50% 50% / 0.1);
+    background: hsl(0 50% 50% / 0.1);
+  }
+  100% {
+    box-shadow: -20px 0 hsl(0 50% 50%), 20px 0 hsl(0 50% 50% / 0.1);
+    background: hsl(0 50% 50%);
+  }
+}

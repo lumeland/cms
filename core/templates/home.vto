@@ -120,13 +120,17 @@
 
           <form method="post" action='{{ ["versions", "publish"] |> path }}'>
             <input type="hidden" name="name" value="{{ version.name }}">
-            <button class="button is-secondary">
-              {{ if version.isProduction }}
-                <u-icon name="arrows-clockwise"></u-icon> Sync
-              {{ else }}
-                <u-icon name="rocket-launch"></u-icon> Publish
-              {{ /if }}
-            </button>
+            <u-busy
+              data-message="{{ version.isProduction ? 'Syncing…' : 'Publishing…' }}"
+            >
+              <button class="button is-secondary">
+                {{ if version.isProduction }}
+                  <u-icon name="arrows-clockwise"></u-icon> Sync
+                {{ else }}
+                  <u-icon name="rocket-launch"></u-icon> Publish
+                {{ /if }}
+              </button>
+            </u-busy>
           </form>
         </li>
       {{ /for }}
