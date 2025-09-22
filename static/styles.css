@@ -33,6 +33,7 @@
 @import "./styles/u-upload.css";
 @import "./styles/u-cropper.css";
 @import "./styles/u-pagepreview.css";
+@import "./styles/u-busy.css";
 
 .is-small {
   font: var(--font-small);
