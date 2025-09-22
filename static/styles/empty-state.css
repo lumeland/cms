@@ -26,4 +26,10 @@
   .ly-rowStack {
     justify-content: center;
   }
+
+  &.is-fullscreen {
+    display: grid;
+    align-content: center;
+    height: 100vh;
+  }
 }

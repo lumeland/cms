@@ -8,10 +8,8 @@ customElements.define(
       const button = this.querySelector("button");
       const { message = "Please wait..." } = this.dataset;
       this.classList.add("ly-none");
-      const form = button.form;
 
-      form.addEventListener("submit", () => {
-        button.disabled = true;
+      button.form.addEventListener("submit", () => {
         dom("dialog", {
           class: "u-busy",
           html: `<p>${message}</p>`,
