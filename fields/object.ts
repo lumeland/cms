@@ -10,6 +10,7 @@ import type {
 interface ObjectField extends GroupField<ResolvedObjectField> {
   type: "object";
   value?: Record<string, unknown>;
+  attributes?: Record<string, string | number | boolean>;
 }
 
 interface ResolvedObjectField
