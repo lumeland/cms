@@ -48,6 +48,11 @@ app.path(
     return next()
       /* GET /document/:name/edit - Show the document editor */
       .get("/edit", async () => {
+        // If there are no fields defined, redirect to the code editor
+        if (document.fields === undefined) {
+          return redirect(document.name, "code");
+        }
+
         let data: Data;
         try {
           data = await document.read(true);

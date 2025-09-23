@@ -41,17 +41,16 @@
       </button>
     {{ /if }}
 
-    <u-dropdown>
-      <div slot="header">
-        Edit options
-      </div>
-      <a
-        class="button is-secondary"
-        href='{{ ["collection", collection.name, document.name, "edit"] |> path }}'
-      >
-        <u-icon name="textbox"></u-icon>
-        Edit form
-      </a>
+    {{ set editOptions }}
+      {{ if collection.fields !== undefined }}
+        <a
+          class="button is-secondary"
+          href='{{ ["collection", collection.name, document.name, "edit"] |> path }}'
+        >
+          <u-icon name="textbox"></u-icon>
+          Edit form
+        </a>
+      {{ /if }}
 
       {{ if user.canCreate(collection) }}
         <u-confirm data-message="Duplicate this file?">
@@ -78,7 +77,16 @@
           </button>
         </u-confirm>
       {{ /if }}
-    </u-dropdown>
+    {{ /set }}
+
+    {{ if editOptions.trim() }}
+      <u-dropdown>
+        <div slot="header">
+          Edit options
+        </div>
+        {{ editOptions }}
+      </u-dropdown>
+    {{ /if }}
   </nav>
 
   <u-form>

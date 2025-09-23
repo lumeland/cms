@@ -7,7 +7,7 @@ export interface DocumentOptions {
   label?: string;
   description?: string;
   entry: Entry;
-  fields: Lume.CMS.ResolvedField;
+  fields?: Lume.CMS.ResolvedField;
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   edit?: boolean;
@@ -22,7 +22,7 @@ export default class Document {
   #label?: string;
   description?: string;
   #entry: Entry;
-  #fields: Lume.CMS.ResolvedField;
+  #fields?: Lume.CMS.ResolvedField;
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   permissions: Permissions;
@@ -85,6 +85,10 @@ export default class Document {
   }
 
   async write(data: Data, cms: CMSContent, create = false) {
+    if (!this.fields) {
+      throw new Error("Cannot write data without fields");
+    }
+
     const currentData = await this.read(create);
     const fields = await prepareField(this.fields, cms, currentData);
     await this.fields.applyChanges(currentData, data, fields, this, cms);

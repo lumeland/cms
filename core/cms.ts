@@ -73,7 +73,7 @@ export interface DocumentOptions {
   description?: string;
   type?: DocumentType;
   store: string;
-  fields: Lume.CMS.Field[];
+  fields?: Lume.CMS.Field[];
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   edit?: boolean;
@@ -85,7 +85,7 @@ export interface CollectionOptions {
   description?: string;
   type?: DocumentType;
   store: string;
-  fields: Lume.CMS.Field[];
+  fields?: Lume.CMS.Field[];
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
@@ -327,7 +327,7 @@ export default class Cms {
     ) {
       content.collections[name] = new Collection({
         storage: this.#getStorage(store),
-        fields: this.#resolveFields(fields, content, type),
+        fields: fields ? this.#resolveFields(fields, content, type) : undefined,
         name,
         label: label ?? labelify(name),
         ...options,
@@ -340,7 +340,7 @@ export default class Cms {
     ) {
       content.documents[name] = new Document({
         entry: this.#getEntry(store),
-        fields: this.#resolveFields(fields, content, type),
+        fields: fields ? this.#resolveFields(fields, content, type) : undefined,
         name,
         label: label ?? labelify(name),
         ...options,

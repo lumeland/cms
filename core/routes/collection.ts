@@ -72,6 +72,12 @@ app.path(
 
         return next()
           .get(async ({ request }) => {
+            if (collection.fields === undefined) {
+              throw new Error(
+                "Create document without fields is not supported yet",
+              );
+            }
+
             const { searchParams } = new URL(request.url);
             const initViews = typeof collection.views === "function"
               ? collection.views() || []
@@ -129,8 +135,12 @@ app.path(
         return next()
           /* GET /collection/:name/:file/edit - Show edit form */
           .get("/edit", async () => {
-            let data: Data;
+            // If there are no fields defined, redirect to the code editor
+            if (collection.fields === undefined) {
+              return redirect(collection.name, document.name, "code");
+            }
 
+            let data: Data;
             try {
               data = await document.read();
             } catch (error) {

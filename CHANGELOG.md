@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - User-level permissions
 - Show EXIF data of some files in the uploads detail.
 - Allow to parse and show extra data per document in the collection and upload views.
+- Allow to create documents and collections without fields, to edit the raw content in the code editor.
 - New `type` option for documents and collections to indicate the root field. The available values:
   - `object`: The default value
   - `object-list`: To store an array of objects.
