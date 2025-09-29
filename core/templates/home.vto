@@ -84,7 +84,10 @@
     </header>
 
     <ul class="list">
-      {{ for version of versioning }}
+      {{
+        set versions = Array.from(versioning).sort((a, b) => a.name.localeCompare(b.name))
+      }}
+      {{ for version of versions }}
         <li>
           {{ if version.isCurrent }}
             <span class="list-item">
