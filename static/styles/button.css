@@ -96,13 +96,17 @@
 
 u-dropdown {
   > .button:not(:last-child),
-  > :not(:last-child) > .button {
+  > :not(:last-child) .button {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
   > .button:not(:first-child),
-  > :not(:first-child) > .button {
+  > :not(:first-child) .button {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+  }
+  .button {
+    display: flex;
+    width: 100%;
   }
 }

@@ -93,6 +93,9 @@
                 name="check-circle"
               ></u-icon>
               {{ version.name }}
+              <span class="tag">
+                {{ version.isProduction ? "Production" : "Dev" }}
+              </span>
             </span>
           {{ else }}
             <form
@@ -103,35 +106,72 @@
               <input type="hidden" name="name" value="{{ version.name }}">
               <button>
                 <u-icon name="circle"></u-icon> {{ version.name }}
+                <span class="tag">
+                  {{ version.isProduction ? "Production" : "Dev" }}
+                </span>
               </button>
             </form>
           {{ /if }}
 
-          {{ if !version.isProduction }}
-            <u-confirm data-message="Are you sure?">
-              <form method="post" action='{{ ["versions", "delete"] |> path }}'>
-                <input type="hidden" name="name" value="{{ version.name }}">
-                <button class="buttonIcon" aria-label="Delete">
-                  <u-icon name="trash"></u-icon>
-                </button>
-              </form>
-            </u-confirm>
-          {{ /if }}
-
-          <form method="post" action='{{ ["versions", "publish"] |> path }}'>
-            <input type="hidden" name="name" value="{{ version.name }}">
-            <u-busy
-              data-message="{{ version.isProduction ? 'Syncing…' : 'Publishing…' }}"
-            >
-              <button class="button is-secondary">
-                {{ if version.isProduction }}
+          {{ if version.isProduction }}
+            <form method="post" action='{{ ["versions", "publish"] |> path }}'>
+              <input type="hidden" name="name" value="{{ version.name }}">
+              <u-busy data-message="{{ 'Syncing…' }}">
+                <button class="button is-secondary">
                   <u-icon name="arrows-clockwise"></u-icon> Sync
-                {{ else }}
-                  <u-icon name="rocket-launch"></u-icon> Publish
-                {{ /if }}
-              </button>
-            </u-busy>
-          </form>
+                </button>
+              </u-busy>
+            </form>
+          {{ else }}
+            <u-dropdown>
+              <div slot="header">
+                <strong>{{ version.name }}</strong> (Dev version)
+              </div>
+
+              {{ if version.isCurrent }}
+                <form
+                  method="post"
+                  action='{{ ["versions", "change"] |> path }}'
+                >
+                  <input type="hidden" name="name" value="{{ version.name }}">
+                  <u-busy data-message="Syncing…">
+                    <button class="button is-secondary">
+                      <u-icon name="arrows-clockwise"></u-icon> Sync
+                    </button>
+                  </u-busy>
+                </form>
+              {{ /if }}
+
+              <form
+                method="post"
+                action='{{ ["versions", "publish"] |> path }}'
+              >
+                <input type="hidden" name="name" value="{{ version.name }}">
+                <u-busy data-message="Publishing…">
+                  <button class="button is-secondary">
+                    <u-icon name="rocket-launch"></u-icon> Publish
+                  </button>
+                </u-busy>
+              </form>
+
+              <u-confirm data-message="Are you sure?">
+                <form
+                  method="post"
+                  action='{{ ["versions", "delete"] |> path }}'
+                >
+                  <input type="hidden" name="name" value="{{ version.name }}">
+                  <button
+                    type="button"
+                    class="button is-secondary"
+                    aria-label="Delete"
+                  >
+                    <u-icon name="trash"></u-icon>
+                    Delete
+                  </button>
+                </form>
+              </u-confirm>
+            </u-dropdown>
+          {{ /if }}
         </li>
       {{ /for }}
     </ul>
