@@ -91,17 +91,17 @@ export class Git implements Versioning {
 
     const currentBranch = this.#gitCurrentBranch();
 
+    // If the current branch exists in the remote, pull changes
+    if (this.#gitRemoteBranchExists(currentBranch)) {
+      try {
+        this.#git("pull", this.remote, currentBranch);
+      } catch {
+        // Ignore.
+      }
+    }
+
     // If there are pending changes, commit them before changing the branch
     if (this.#gitPendingChanges()) {
-      // If the current branch exists in the remote, pull it before pushing
-      if (this.#gitRemoteBranchExists(currentBranch)) {
-        try {
-          this.#git("pull", this.remote, currentBranch);
-        } catch {
-          // Ignore. If the pull fails, we will push the changes anyway
-        }
-      }
-
       // Add and commit changes
       this.#git("add", ".");
       this.#git("commit", "-m", "Changes from CMS");
