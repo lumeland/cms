@@ -13,7 +13,7 @@ customElements.define(
         dom("dialog", {
           class: "u-busy",
           html: `<p>${message}</p>`,
-        }, this).showModal();
+        }, document.body).showModal();
       });
     }
   },
