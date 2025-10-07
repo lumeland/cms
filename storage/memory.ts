@@ -1,4 +1,4 @@
-import { normalizePath } from "../core/utils/path.ts";
+import { normalizeName, normalizePath } from "../core/utils/path.ts";
 import { slugify } from "../core/utils/string.ts";
 import { contentType, globToRegExp, posix } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
@@ -64,8 +64,7 @@ export default class Memory implements Storage {
         continue;
       }
       const src = normalizePath(entry);
-      const name = src.slice(root.length + path.length + 1);
-
+      const name = normalizeName(src.slice(root.length + path.length));
       yield {
         name,
         path: posix.join("/", path, name),
@@ -178,7 +177,7 @@ export class MemoryEntry implements Entry {
     }
     const type = contentType(posix.extname(src));
     const data = content instanceof Uint8Array
-      ? content
+      ? content as Uint8Array<ArrayBuffer>
       : new TextEncoder().encode(content);
 
     return Promise.resolve(new File([new Blob([data])], name, { type }));

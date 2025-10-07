@@ -3,6 +3,8 @@ import { posix, SEPARATOR } from "../../deps/std.ts";
 /**
  * Normalize the name of a file or directory
  */
+export function normalizeName(name: string): string;
+export function normalizeName(name?: string | null): undefined;
 export function normalizeName(name?: string | null): string | undefined {
   if (!name) {
     return;

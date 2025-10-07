@@ -1,4 +1,4 @@
-import { applyTextChanges } from "./utils.ts";
+import { transform } from "./utils.ts";
 import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for date values */
@@ -24,7 +24,21 @@ interface ResolvedDateField extends DateField, ResolvedField {
 export default {
   tag: "f-date",
   jsImport: "lume_cms/components/f-date.js",
-  applyChanges: applyTextChanges,
+  applyChanges(data, changes, field) {
+    try {
+      const value = typeof changes[field.name] === "string"
+        ? Temporal.PlainDate.from(changes[field.name] as string)
+        : null;
+
+      if (value) {
+        data[field.name] = transform(field, value);
+      } else {
+        delete data[field.name];
+      }
+    } catch {
+      delete data[field.name];
+    }
+  },
 } as FieldDefinition<ResolvedDateField>;
 
 declare global {

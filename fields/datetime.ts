@@ -25,16 +25,18 @@ export default {
   tag: "f-datetime",
   jsImport: "lume_cms/components/f-datetime.js",
   applyChanges(data, changes, field) {
-    const value = field.name in changes
-      ? new Date(String(changes[field.name]))
-      : null;
-
-    if (value && !isNaN(value.getTime())) {
-      data[field.name] = transform(field, value);
-      return;
+    try {
+      const value = typeof changes[field.name] === "string"
+        ? Temporal.PlainDateTime.from(changes[field.name] as string)
+        : null;
+      if (value) {
+        data[field.name] = transform(field, value);
+      } else {
+        delete data[field.name];
+      }
+    } catch {
+      delete data[field.name];
     }
-
-    delete data[field.name];
   },
 } as FieldDefinition<ResolvedDatetimeField>;
 

@@ -149,11 +149,11 @@ export function labelify(slug) {
   return slug;
 }
 
-/** Convert a Date to local timezone */
-export function toLocal(date) {
-  const offset = date.getTimezoneOffset();
-  date.setMinutes(date.getMinutes() - offset);
-  return date;
+/** Return the current data fixing the local timezone */
+export function getNow() {
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  return now;
 }
 
 export function updateField(field, schema, input) {

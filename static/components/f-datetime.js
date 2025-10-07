@@ -1,8 +1,8 @@
 import {
   getFieldName,
+  getNow,
   initField,
   oninvalid,
-  toLocal,
   updateField,
 } from "./utils.js";
 import { Component } from "./component.js";
@@ -17,13 +17,8 @@ export class Input extends Component {
     return "Now";
   }
 
-  // Get the value in the format "YYYY-MM-DDTHH:MM"
-  format(date) {
-    if (!(date instanceof Date)) {
-      date = new Date(date);
-    }
-
-    return toLocal(date).toISOString().slice(0, 16);
+  format(value) {
+    return value?.slice(0, 16);
   }
 
   init() {
@@ -43,34 +38,22 @@ export class Input extends Component {
       html: schema.description,
     }, this);
 
-    const input = dom("input", {
-      type: "hidden",
-      name,
-      value: isNew ? value ?? schema.value : value,
-    }, this);
-
     const div = dom("div", { class: "ly-rowStack" }, this);
-
-    const input2 = dom("input", {
+    const input = dom("input", {
       ...schema.attributes,
       id,
-      value: input.value ? this.format(input.value) : undefined,
+      name,
+      value: this.format(isNew ? value ?? schema.value : value),
       class: "input",
       ...this.inputAttributes,
       oninvalid,
-      oninput() {
-        input.value = new Date(this.value).toISOString();
-      },
     }, div);
 
     dom("button", {
       type: "button",
       html: this.nowButtonLabel,
       class: "button is-secondary",
-      onclick: () => {
-        input2.value = this.format(new Date());
-        input2.dispatchEvent(new Event("input", { bubbles: true }));
-      },
+      onclick: () => input.value = this.format(getNow().toISOString()),
     }, div);
   }
 
@@ -80,7 +63,7 @@ export class Input extends Component {
 
   update(schema, value) {
     const input = this.querySelector(".input");
-    input.value = value ? this.format(value) : null;
+    input.value = this.format(value);
     updateField(this, schema, input);
   }
 }

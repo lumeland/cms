@@ -1,4 +1,4 @@
-import { normalizePath } from "../core/utils/path.ts";
+import { normalizeName, normalizePath } from "../core/utils/path.ts";
 import { slugify } from "../core/utils/string.ts";
 import { contentType, ensureDir, expandGlob, posix } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
@@ -61,7 +61,7 @@ export default class Fs implements Storage {
 
     for await (const entry of iterable) {
       const src = normalizePath(entry.path);
-      const name = src.slice(root.length + path.length + 1);
+      const name = normalizeName(src.slice(root.length + path.length));
 
       yield {
         name,

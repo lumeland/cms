@@ -5,11 +5,12 @@
     "build-libs": "cd scripts && npm run build"
   },
   "imports": {
-    "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.9/dom.js",
+    "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.10/dom.js",
     "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.0.1/dist/cropper.esm.js"
   },
   "unstable": [
-    "fmt-component"
+    "fmt-component",
+    "temporal"
   ],
   "lint": {
     "rules": {

@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - `select` field: allow numbers as values.
+- `date` and `datetime` fields are no longer associated with a time zone.
 
 ## [0.12.6] - 2025-07-18
 ### Fixed

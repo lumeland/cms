@@ -1,4 +1,3 @@
-import { toLocal } from "./utils.js";
 import { Input } from "./f-datetime.js";
 
 customElements.define(
@@ -12,12 +11,8 @@ customElements.define(
       return "Today";
     }
 
-    // Get the value in the format "YYYY-MM-DD"
-    format(date) {
-      if (!(date instanceof Date)) {
-        date = new Date(date);
-      }
-      return toLocal(date).toISOString().split("T")[0];
+    format(value) {
+      return value?.slice(0, 10);
     }
   },
 );
