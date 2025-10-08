@@ -90,6 +90,9 @@ export class Git implements Versioning {
     }
 
     const currentBranch = this.#gitCurrentBranch();
+    if (currentBranch === branch) {
+      return;
+    }
 
     // If the current branch exists in the remote, pull changes
     if (this.#gitRemoteBranchExists(currentBranch)) {
@@ -140,6 +143,10 @@ export class Git implements Versioning {
       // Push changes to the remote before deleting the branch
       this.#git("push", this.remote, this.prodBranch);
       this.#git("branch", "-d", branch);
+      // If the branch exists in the remote, delete it there too
+      if (this.#gitRemoteBranchExists(branch)) {
+        this.#git("push", this.remote, "--delete", branch);
+      }
     } else {
       // Push changes to the remote
       this.#git("push", this.remote, this.prodBranch);

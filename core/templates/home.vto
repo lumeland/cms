@@ -91,14 +91,20 @@
         <li>
           {{ if version.isCurrent }}
             <span class="list-item">
-              <u-icon
-                class='is-version {{ version.isProduction ? "is-production" : "" }}'
-                name="check-circle"
-              ></u-icon>
-              {{ version.name }}
-              <span class="tag">
-                {{ version.isProduction ? "Production" : "Dev" }}
-              </span>
+              {{ if version.isProduction }}
+                <u-icon
+                  class="is-version is-production"
+                  name="check-circle"
+                ></u-icon>
+                Production
+              {{ else }}
+                <u-icon
+                  class="is-version"
+                  name="check-circle"
+                ></u-icon>
+                {{ version.name }}
+                <span class="tag">Draft</span>
+              {{ /if }}
             </span>
           {{ else }}
             <form
@@ -108,10 +114,12 @@
             >
               <input type="hidden" name="name" value="{{ version.name }}">
               <button>
-                <u-icon name="circle"></u-icon> {{ version.name }}
-                <span class="tag">
-                  {{ version.isProduction ? "Production" : "Dev" }}
-                </span>
+                {{ if version.isProduction }}
+                  <u-icon name="circle"></u-icon> Production
+                {{ else }}
+                  <u-icon name="circle"></u-icon> {{ version.name }}
+                  <span class="tag">Draft</span>
+                {{ /if }}
               </button>
             </form>
           {{ /if }}
@@ -128,7 +136,7 @@
           {{ else }}
             <u-dropdown>
               <div slot="header">
-                <strong>{{ version.name }}</strong> (Dev version)
+                <strong>{{ version.name }}</strong> (Draft)
               </div>
 
               {{ if version.isCurrent }}
@@ -157,22 +165,21 @@
                 </u-busy>
               </form>
 
-              <u-confirm data-message="Are you sure?">
-                <form
-                  method="post"
-                  action='{{ ["versions", "delete"] |> path }}'
-                >
-                  <input type="hidden" name="name" value="{{ version.name }}">
+              <form
+                method="post"
+                action='{{ ["versions", "delete"] |> path }}'
+              >
+                <input type="hidden" name="name" value="{{ version.name }}">
+                <u-confirm data-message="Are you sure?">
                   <button
-                    type="button"
                     class="button is-secondary"
                     aria-label="Delete"
                   >
                     <u-icon name="trash"></u-icon>
                     Delete
                   </button>
-                </form>
-              </u-confirm>
+                </u-confirm>
+              </form>
             </u-dropdown>
           {{ /if }}
         </li>
