@@ -90,9 +90,6 @@ export class Git implements Versioning {
     }
 
     const currentBranch = this.#gitCurrentBranch();
-    if (currentBranch === branch) {
-      return;
-    }
 
     // If the current branch exists in the remote, pull changes
     if (this.#gitRemoteBranchExists(currentBranch)) {
