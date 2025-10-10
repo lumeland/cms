@@ -10,6 +10,7 @@ customElements.define(
       trigger.addEventListener("click", (event) => {
         if (!confirm(this.dataset.message)) {
           event.preventDefault();
+          event.stopImmediatePropagation();
         }
       });
     }

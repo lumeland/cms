@@ -10,6 +10,9 @@ customElements.define(
       this.classList.add("ly-none");
 
       button.form.addEventListener("submit", () => {
+        document.querySelectorAll("dialog[open]").forEach((dialog) =>
+          dialog.close()
+        );
         dom("dialog", {
           class: "u-busy",
           html: `<p>${message}</p>`,

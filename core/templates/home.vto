@@ -85,7 +85,8 @@
 
     <ul class="list">
       {{
-        set versions = Array.from(versioning).sort((a, b) => a.name.localeCompare(b.name))
+        set versions = Array.from(versioning)
+          .sort((a, b) => a.isProduction ? -1 : a.name.localeCompare(b.name))
       }}
       {{ for version of versions }}
         <li>
@@ -170,15 +171,17 @@
                 action='{{ ["versions", "delete"] |> path }}'
               >
                 <input type="hidden" name="name" value="{{ version.name }}">
-                <u-confirm data-message="Are you sure?">
-                  <button
-                    class="button is-secondary"
-                    aria-label="Delete"
-                  >
-                    <u-icon name="trash"></u-icon>
-                    Delete
-                  </button>
-                </u-confirm>
+                <u-busy data-message="Deleting…">
+                  <u-confirm data-message="Are you sure?">
+                    <button
+                      class="button is-secondary"
+                      aria-label="Delete"
+                    >
+                      <u-icon name="trash"></u-icon>
+                      Delete
+                    </button>
+                  </u-confirm>
+                </u-busy>
               </form>
             </u-dropdown>
           {{ /if }}
@@ -207,7 +210,9 @@
           >
 
           <footer class="field-footer">
-            <button class="button is-primary">Create version</button>
+            <u-busy data-message="{{ 'Creating…' }}">
+              <button class="button is-primary">Create version</button>
+            </u-busy>
           </footer>
         </div>
       </form>
