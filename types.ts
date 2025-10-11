@@ -9,6 +9,7 @@ import type {
   UploadOptions,
 } from "./core/cms.ts";
 import type { Options as GitOptions } from "./core/git.ts";
+import type User from "./core/user.ts";
 
 /** Generic data to store */
 export type Data = Record<string, unknown>;
@@ -58,6 +59,7 @@ export interface Version {
 }
 
 export interface Versioning extends Iterable<Version> {
+  user?: User;
   current(): Version;
   create(id: string): void;
   change(id: string): void;
@@ -223,6 +225,7 @@ export interface CMSContent {
 export interface UserConfiguration {
   password: string;
   name?: string;
+  email?: string;
   permissions?: Record<string, Permissions>;
 }
 

@@ -8,6 +8,7 @@ type Subject = Collection | Document | Upload;
 
 export default class User {
   name?: string;
+  email?: string;
   permissions: Record<string, Permissions> = {};
 
   get isLogged(): boolean {
@@ -30,6 +31,7 @@ export default class User {
             this.name = name;
           } else {
             this.name = config.name ?? name;
+            this.email = config.email;
             this.permissions = config.permissions ?? {};
           }
           return true;

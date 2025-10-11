@@ -360,12 +360,17 @@ export default class Cms {
 
     filter("path", (args: string[]) => getPath(this.options.basePath, ...args));
     filter("asset", (url: string) => asset(this.options.basePath, url));
+    const user = new User();
+
+    if (this.versionManager) {
+      this.versionManager.user = user;
+    }
 
     const app = new Router<RouterData>({
       cms: content,
       previewUrl: this.options.previewUrl,
       sourcePath: this.options.sourcePath,
-      user: new User(),
+      user,
       render: (file: string, data?: Record<string, unknown>) =>
         render(file, {
           ...data,

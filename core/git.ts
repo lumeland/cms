@@ -1,5 +1,6 @@
 import { slugify } from "./utils/string.ts";
 
+import type User from "./user.ts";
 import type { Versioning } from "../types.ts";
 
 export interface Options {
@@ -18,6 +19,7 @@ export const defaults: Options = {
 };
 
 export class Git implements Versioning {
+  user?: User | undefined;
   root: string;
   prodBranch: string;
   command: string;
@@ -192,8 +194,20 @@ export class Git implements Versioning {
 
   /** Runs a git command and returns the stdout as string */
   #git(...args: string[]): string {
+    const [cmd, ...rest] = args;
+
+    // If the command is "commit", add the author if available
+    if (cmd === "commit") {
+      const name = this.user?.name;
+      const email = this.user?.email;
+
+      if (name) {
+        rest.unshift(`--author=${name}${email ? ` <${email}>` : "<>"}`);
+      }
+    }
+
     const command = new Deno.Command(this.command, {
-      args,
+      args: [cmd, ...rest],
       cwd: this.root,
       stdout: "piped",
       stderr: "piped",
