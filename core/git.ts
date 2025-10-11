@@ -77,7 +77,7 @@ export class Git implements Versioning {
       throw new Error(`Version ${name} already exists (${branch})`);
     }
 
-    this.#git("checkout", "-b", branch);
+    this.#git("checkout", "-b", branch, this.prodBranch);
   }
 
   /* Changes the current version */
