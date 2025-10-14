@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.13.0] - Unreleased
+## [0.13.0] - 2025-10-14
 ### Added
 - New option `previewUrl` to return the URL of a file. It can be defined globally or per document and collection.
 - New option `sourcePath` to return the file of a URL.
@@ -23,12 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   - `object-list`: To store an array of objects.
   - `choose`: To select between different objects
 
-### Removed
-- BREAKING: `url` configuration for documents and collections. Use `previewUrl` instead.
-- Float button to edit the current page in the preview. It was moved to Lume debugbar.
-- BREAKING: `cms:*` global events.
-- BREAKING: Ability to name the root field as `[]` to indicate that it's an array. Use the new `type` option.
-
 ### Changed
 - BREAKING: Replaced Hono with Galo.
 - Responsive layout to show the previews in small screens.
@@ -37,6 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Some changes to Git class:
   - `prefix` option was renamed to `branchPrefix`.
   - The branch with versions are pushed to the remote repo.
+
+### Removed
+- BREAKING: `url` configuration for documents and collections. Use `previewUrl` instead.
+- Float button to edit the current page in the preview. It was moved to Lume debugbar.
+- BREAKING: `cms:*` global events.
+- BREAKING: Ability to name the root field as `[]` to indicate that it's an array. Use the new `type` option.
 
 ### Fixed
 - `select` field: allow numbers as values.
@@ -755,7 +755,7 @@ First version
 [#62]: https://github.com/lumeland/cms/issues/62
 [#64]: https://github.com/lumeland/cms/issues/64
 
-[0.13.0]: https://github.com/lumeland/cms/compare/v0.12.6...HEAD
+[0.13.0]: https://github.com/lumeland/cms/compare/v0.12.6...v0.13.0
 [0.12.6]: https://github.com/lumeland/cms/compare/v0.12.5...v0.12.6
 [0.12.5]: https://github.com/lumeland/cms/compare/v0.12.4...v0.12.5
 [0.12.4]: https://github.com/lumeland/cms/compare/v0.12.3...v0.12.4
