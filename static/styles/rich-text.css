@@ -1,0 +1,25 @@
+.rich-text {
+  > .tiptap {
+    color: var(--color-input-text);
+    background: var(--color-input-bg);
+    border: solid 1px var(--color-line);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+
+    line-height: 1.6;
+
+    padding-inline: 0.5rem;
+    caret-color: var(--color-input-text);
+
+    &.ProseMirror-focused {
+      outline: 0;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px
+        color-mix(in hsl, var(--color-primary), transparent 75%);
+    }
+  }
+
+  /* !important to Override codemirror styles */
+  .cm-content {
+  }
+}

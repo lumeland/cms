@@ -48,14 +48,14 @@ customElements.define(
 
       const shadow = this.attachShadow({ mode: "open" });
       shadow.innerHTML = `
-      <link rel="stylesheet" href="${asset("styles", "code.css")}">
+      <link rel="stylesheet" href="${asset("styles", "rich-text.css")}">
       <slot></slot>
       `;
 
       const helpers = dom("div", { class: "tools is-sticky" }, this);
       const custom = dom("div", { class: "tools-group" }, helpers);
 
-      const editorContainer = dom("div", { id }, this);
+      const editorContainer = dom("div", { id, class: 'rich-text' }, shadow);
 
       if (schema.upload) {
         const name = schema.upload;
