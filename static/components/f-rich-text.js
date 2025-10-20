@@ -8,6 +8,7 @@ import {
   updateField,
   url,
 } from "./utils.js";
+import { isUrlLike } from "../libs/markup-util.js"
 import { Component } from "./component.js";
 import { Editor } from 'https://esm.sh/@tiptap/core';
 import StarterKit from 'https://esm.sh/@tiptap/starter-kit';
@@ -109,6 +110,24 @@ customElements.define(
             regex: /\$\$(([^\$]|\$[^\$])*)\$\$/gi,
           }),
         ],
+        onCreate: ({ editor }) => {
+          const dom = editor.view.dom;
+          dom.addEventListener('paste', async (event) => {
+            const clipboard = event.clipboardData; if (!clipboard) return;
+            const text = clipboard.getData('text/plain')?.trim()
+            if (text && isUrlLike(text) && fileType(text) == "image") {
+              event.preventDefault()
+              const state = editor.editorState;
+              const selectedText = state.doc.textBetween(state.selection.from, state.selection.to, ' ')
+              editor.chain()
+                .setImage({ src: text, alt: selectedText || undefined })
+                .setTextSelection(state.selection.to)
+                .run()
+              return
+            }
+          }, true);
+          editor.on('destroy', () => dom.removeEventListener('paste', onPaste));
+        },
         onUpdate: ({ editor }) => {
           hiddenInput.value = editor.getHTML();
         },

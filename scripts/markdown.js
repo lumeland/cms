@@ -23,6 +23,7 @@ import { languages } from "@codemirror/language-data";
 
 import theme from "./codemirror_theme.js";
 import * as ui from "./markdown_ui.js";
+import { isUrlLike } from "./markup_util.js"
 
 const makeBold = ui.toggleTag("**", "**");
 const makeItalic = ui.toggleTag("*", "*");
@@ -135,20 +136,6 @@ export function init(parent, textarea, pasteLink = createLink) {
     insertSnippet,
     editor,
   };
-}
-
-function isUrlLike(text) {
-  if (URL.canParse(text)) {
-    return true;
-  }
-
-  if (text.includes(" ")) {
-    return false;
-  }
-
-  // It's a path
-  return text.startsWith("./") || text.startsWith("/") ||
-    text.startsWith("#") || text.startsWith("?");
 }
 
 function createLink(url, selectedText) {
