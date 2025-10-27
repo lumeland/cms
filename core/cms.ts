@@ -41,6 +41,7 @@ export interface CmsOptions {
   basePath: string;
   auth?: AuthOptions;
   data: Record<string, unknown>;
+  staticFolders?: Record<string, string>;
   extraHead?: string;
   previewUrl?: PreviewUrl;
   sourcePath?: SourcePath;
@@ -423,6 +424,19 @@ export default class Cms {
 
     if (root.startsWith("file:")) {
       app.staticFiles(`${basePath}/*`, fromFileUrl(root));
+    }
+
+    const { staticFolders } = this.options;
+
+    if (staticFolders) {
+      for (const [prefix, path] of Object.entries(staticFolders)) {
+        const folder = normalizePath(basePath, prefix, "*");
+        if (path.startsWith("file:")) {
+          app.staticFiles(folder, fromFileUrl(path));
+        } else {
+          app.staticFiles(folder, path);
+        }
+      }
     }
 
     return app;

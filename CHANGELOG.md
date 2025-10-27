@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+### Added
+- New option `staticFolders` to configure folders to serve custom static files.
+
 ## [0.13.0] - 2025-10-14
 ### Added
 - New option `previewUrl` to return the URL of a file. It can be defined globally or per document and collection.
@@ -755,6 +759,7 @@ First version
 [#62]: https://github.com/lumeland/cms/issues/62
 [#64]: https://github.com/lumeland/cms/issues/64
 
+[Unreleased]: https://github.com/lumeland/cms/compare/v0.13.0...HEAD
 [0.13.0]: https://github.com/lumeland/cms/compare/v0.12.6...v0.13.0
 [0.12.6]: https://github.com/lumeland/cms/compare/v0.12.5...v0.12.6
 [0.12.5]: https://github.com/lumeland/cms/compare/v0.12.4...v0.12.5
