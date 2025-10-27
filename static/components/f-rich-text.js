@@ -67,22 +67,6 @@ customElements.define(
         }, custom);
       }
 
-      if (schema.snippets) {
-        const select = dom("select", {
-          class: "select is-secondary",
-          style: "width:7em",
-          html: "<option value=''>Insert…</option>",
-          onchange() {
-            if (this.value) {
-              md.insertSnippet(md.editor, this.value);
-              md.editor.focus();
-            }
-            this.value = "";
-          },
-        }, custom);
-        pushOptions(select, schema.snippets);
-      }
-
       this.editor = init({
         element: editorContainer,
         content: isNew ? value ?? schema.value : value,
@@ -160,19 +144,3 @@ customElements.define(
     }
   },
 );
-
-function pasteLink(url, selectedText = "") {
-  switch (fileType(url)) {
-    case "image":
-      return `![${selectedText || "Image"}](${url})`;
-
-    case "video":
-      return `<video src="${url}" controls>${selectedText}</video>`;
-
-    case "audio":
-      return `<audio src="${url}" controls>${selectedText}</audio>`;
-
-    default:
-      return `[${selectedText || "Link"}](${url})`;
-  }
-}

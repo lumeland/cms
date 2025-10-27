@@ -16,12 +16,6 @@ interface RichTextField extends InputField<ResolvedRichTextField> {
    * If it's false, no uploads are used.
    */
   upload?: string | false;
-
-  /**
-   * Custom snippets to insert in the code.
-   * The value can contain the {$} placeholder that will be replaced by the currently selected text.
-   */
-  snippets?: Option[];
 }
 
 interface ResolvedRichTextField extends RichTextField, ResolvedField {
