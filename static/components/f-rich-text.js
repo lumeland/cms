@@ -8,14 +8,8 @@ import {
   updateField,
   url,
 } from "./utils.js";
-import { isUrlLike } from "../libs/markup-util.js"
+import { init } from "../libs/tiptap.js";
 import { Component } from "./component.js";
-import { Editor } from 'https://esm.sh/@tiptap/core';
-import StarterKit from 'https://esm.sh/@tiptap/starter-kit';
-import Image from 'https://esm.sh/@tiptap/extension-image';
-import Placeholder from 'https://esm.sh/@tiptap/extension-placeholder';
-import Mathematics from 'https://esm.sh/@tiptap/extension-mathematics';
-import { Markdown } from 'https://esm.sh/tiptap-markdown';
 import dom from "dom";
 
 customElements.define(
@@ -89,44 +83,11 @@ customElements.define(
         pushOptions(select, schema.snippets);
       }
 
-      this.editor = new Editor({
+      this.editor = init({
         element: editorContainer,
         content: isNew ? value ?? schema.value : value,
         attributes: {
           "aria-labelledby": `${id}_label`,
-        },
-        extensions: [
-          StarterKit,
-          Image,
-          Placeholder.configure({
-            placeholder: 'Type something...',
-          }),
-          Markdown.configure({
-            linkify: true,
-            transformPastedText: true, // Allow to paste markdown text in the editor
-            transformCopiedText: true, // Copied text is transformed to markdown
-          }),
-          Mathematics.configure({
-            regex: /\$\$(([^\$]|\$[^\$])*)\$\$/gi,
-          }),
-        ],
-        onCreate: ({ editor }) => {
-          const dom = editor.view.dom;
-          dom.addEventListener('paste', async (event) => {
-            const clipboard = event.clipboardData; if (!clipboard) return;
-            const text = clipboard.getData('text/plain')?.trim()
-            if (text && isUrlLike(text) && fileType(text) == "image") {
-              event.preventDefault()
-              const state = editor.editorState;
-              const selectedText = state.doc.textBetween(state.selection.from, state.selection.to, ' ')
-              editor.chain()
-                .setImage({ src: text, alt: selectedText || undefined })
-                .setTextSelection(state.selection.to)
-                .run()
-              return
-            }
-          }, true);
-          editor.on('destroy', () => dom.removeEventListener('paste', onPaste));
         },
         onUpdate: ({ editor }) => {
           hiddenInput.value = editor.getHTML();

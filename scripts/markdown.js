@@ -23,7 +23,7 @@ import { languages } from "@codemirror/language-data";
 
 import theme from "./codemirror_theme.js";
 import * as ui from "./markdown_ui.js";
-import { isUrlLike } from "./markup_util.js"
+import { isUrlLike } from "./markup_util.js";
 
 const makeBold = ui.toggleTag("**", "**");
 const makeItalic = ui.toggleTag("*", "*");
