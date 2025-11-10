@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - New option `staticFolders` to configure folders to serve custom static files.
 
+### Fixed
+- Updated dependencies: `imagemagick`, `vento`, `cropper`.
+
 ## [0.13.0] - 2025-10-14
 ### Added
 - New option `previewUrl` to return the URL of a file. It can be defined globally or per document and collection.
