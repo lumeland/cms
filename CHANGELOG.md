@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New option `staticFolders` to configure folders to serve custom static files.
 
 ### Fixed
+- Don't trim the content returned by markdown files.
 - Updated dependencies: `imagemagick`, `vento`, `cropper`.
 
 ## [0.13.0] - 2025-10-14

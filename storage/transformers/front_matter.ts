@@ -13,7 +13,7 @@ export const FrontMatter: Transformer<string> = {
         const { attrs, body } = extractFrontMatter(content);
         const data = {} as Data;
         Object.assign(data, attrs);
-        data.content = body.trim();
+        data.content = body;
 
         return data;
       }
