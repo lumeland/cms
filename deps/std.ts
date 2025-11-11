@@ -52,7 +52,7 @@ export function parseYaml(yaml: string) {
   });
 }
 
-export function stringifyYaml(yaml: string) {
+export function stringifyYaml(yaml: Record<string, unknown>) {
   return stringify(yaml, {
     extraTypes: [date, datetime],
   });
