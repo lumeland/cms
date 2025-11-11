@@ -119,11 +119,12 @@ customElements.define(
       dom("button", {
         class: "buttonIcon",
         type: "button",
-        onclick() {
-          const url = prompt("URL to link to:");
+        onclick: () => {
+          const currentValue = this.editor.getAttributes('link').href || "";
+          const url = prompt("URL to link to:", currentValue);
 
           if (url) {
-            chain().toggleLink({ href: url }).run();
+            chain().setLink({ href: url }).run();
           } else {
             chain().unsetLink().run();
           }

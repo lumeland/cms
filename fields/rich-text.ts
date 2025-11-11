@@ -2,7 +2,6 @@ import { applyTextChanges } from "./utils.ts";
 import type {
   FieldDefinition,
   InputField,
-  Option,
   ResolvedField,
 } from "../types.ts";
 
@@ -24,11 +23,6 @@ interface ResolvedRichTextField extends RichTextField, ResolvedField {
 export default {
   tag: "f-rich-text",
   jsImport: "lume_cms/components/f-rich-text.js",
-  init(field, cmsContent) {
-    if (field.upload !== false) {
-      field.upload ??= Object.keys(cmsContent.uploads)[0];
-    }
-  },
   applyChanges: applyTextChanges,
 } as FieldDefinition<ResolvedRichTextField>;
 

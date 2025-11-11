@@ -33,6 +33,7 @@
 
     a {
       color: var(--color-primary);
+      pointer-events: none;
     }
   }
 }
