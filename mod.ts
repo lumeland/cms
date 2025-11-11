@@ -19,6 +19,7 @@ import objectList from "./fields/object-list.ts";
 import object from "./fields/object.ts";
 import radio from "./fields/radio.ts";
 import relationList from "./fields/relation-list.ts";
+import richText from "./fields/rich-text.ts";
 import relation from "./fields/relation.ts";
 import select from "./fields/select.ts";
 import text from "./fields/text.ts";
@@ -49,6 +50,7 @@ export default function (options?: Partial<CmsOptions>): Cms {
   cms.field("object", object);
   cms.field("radio", radio);
   cms.field("relation-list", relationList);
+  cms.field("rich-text", richText);
   cms.field("relation", relation);
   cms.field("select", select);
   cms.field("text", text);
