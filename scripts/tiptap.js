@@ -12,6 +12,7 @@ export function init({
   content,
   attributes,
   onUpdate,
+  pasteLink,
 }) {
   return new Editor({
     element, content, attributes, onUpdate,
@@ -34,8 +35,11 @@ export function init({
       const dom = editor.view.dom;
       dom.addEventListener('paste', async (event) => {
         const clipboard = event.clipboardData; if (!clipboard) return;
-        const text = clipboard.getData('text/plain')?.trim()
-        if (text && isUrlLike(text) && fileType(text) == "image") {
+        const text = clipboard.getData('text/plain')?.trim();
+        if (!text || !isUrlLike(text)) return;
+        const info = pasteLink(text);
+
+        if (info == "image") {
           event.preventDefault()
           const state = editor.editorState;
           const selectedText = state.doc.textBetween(state.selection.from, state.selection.to, ' ')

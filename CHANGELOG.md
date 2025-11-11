@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 ### Added
 - New option `staticFolders` to configure folders to serve custom static files.
+- New field `rich-text` [#66].
 
 ### Fixed
 - Don't trim the content returned by markdown files.
@@ -762,6 +763,7 @@ First version
 [#59]: https://github.com/lumeland/cms/issues/59
 [#62]: https://github.com/lumeland/cms/issues/62
 [#64]: https://github.com/lumeland/cms/issues/64
+[#66]: https://github.com/lumeland/cms/issues/66
 
 [Unreleased]: https://github.com/lumeland/cms/compare/v0.13.0...HEAD
 [0.13.0]: https://github.com/lumeland/cms/compare/v0.12.6...v0.13.0

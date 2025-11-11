@@ -5,11 +5,10 @@
     border: solid 1px var(--color-line);
     border-radius: var(--border-radius);
     overflow: hidden;
-
     line-height: 1.6;
-
-    padding-inline: 0.5rem;
+    padding: 0.5rem;
     caret-color: var(--color-input-text);
+    min-height: 70px;
 
     &.ProseMirror-focused {
       outline: 0;
@@ -17,9 +16,23 @@
       box-shadow: 0 0 0 3px
         color-mix(in hsl, var(--color-primary), transparent 75%);
     }
-  }
 
-  /* !important to Override codemirror styles */
-  .cm-content {
+    > :first-child {
+      margin-top: 0;
+    }
+    > :last-child {
+      margin-bottom: 0;
+    }
+
+    b, strong, h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+    }
+    h1, h2, h3, h4, h5, h6, p, ul, ol {
+      margin-block: .5rem;
+    }
+
+    a {
+      color: var(--color-primary);
+    }
   }
 }

@@ -4,7 +4,6 @@ import {
   initField,
   labelify,
   oninvalid,
-  pushOptions,
   updateField,
   url,
 } from "./utils.js";
@@ -23,7 +22,7 @@ customElements.define(
 
       initField(this);
       dom("label", {
-        id: `${id}_label`,
+        for: id,
         html: schema.label,
         onclick: () => this.editor.chain().focus().run(),
       }, this);
@@ -34,10 +33,11 @@ customElements.define(
         this,
       );
       
-      const hiddenInput = dom("input", {
+      const hiddenInput = dom("textarea", {
+        id,
         name,
-        type: "hidden",
         value: isNew ? value ?? schema.value : value,
+        hidden: true,
         oninvalid,
       }, this);
 
@@ -76,10 +76,11 @@ customElements.define(
         onUpdate: ({ editor }) => {
           hiddenInput.value = editor.getHTML();
         },
+        pasteLink: fileType,
       });
       
       let tools;
-      let chain = () => this.editor.chain().focus()
+      const chain = () => this.editor.chain().focus()
 
       tools = dom("div", { class: "tools-group" }, helpers);
       [
@@ -122,7 +123,9 @@ customElements.define(
           const url = prompt("URL to link to:");
 
           if (url) {
-            chain().setLink({ href: url }).run();
+            chain().toggleLink({ href: url }).run();
+          } else {
+            chain().unsetLink().run();
           }
         },
         html: `<u-icon name="link-simple"></u-icon>`,
@@ -134,7 +137,7 @@ customElements.define(
     }
 
     update(schema, value) {
-      const input = this.querySelector("input[type=hidden]");
+      const input = this.querySelector("textarea");
       if (input.value !== value) {
         input.value = value ?? null;
         const editor = this.editor;
