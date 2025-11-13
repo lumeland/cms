@@ -26,7 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New `edit` option to documents and collections to enable/disable edit permissions.
 - New `relation` field.
 - New `relation-list` field.
-- New storage for Gitlab.
 - Permissions options for uploads (`create`, `rename`, `edit`, and `delete`).
 - User-level permissions
 - Show EXIF data of some files in the uploads detail.
@@ -39,7 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - BREAKING: Replaced Hono with Galo.
-- BREAKING: changed the default export of GitHub
 - Responsive layout to show the previews in small screens.
 - `select` field: only allow defined values.
 - The `FieldDefinition.init` callback is run every time the field is initialized.
