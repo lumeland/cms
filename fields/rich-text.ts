@@ -1,9 +1,5 @@
 import { applyTextChanges } from "./utils.ts";
-import type {
-  FieldDefinition,
-  InputField,
-  ResolvedField,
-} from "../types.ts";
+import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
 /** Field for rich text values */
 interface RichTextField extends InputField<ResolvedRichTextField> {

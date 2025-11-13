@@ -4,26 +4,26 @@ import { BaseGitAPI, defaultCommitMessage } from "./_base_git.ts";
 
 import type { Storage } from "../types.ts";
 
-export default function create(repository: string, token: string): Codeberg {
-  const [owner, repo, ...path] = repository.split("/");
+export default class Codeberg extends BaseGitAPI<ForgejoAPI> {
+  static create(repository: string, token: string): Codeberg {
+    const [owner, repo, ...path] = repository.split("/");
 
-  const api = new ForgejoAPI("https://codeberg.org", {
-    token: token,
-    owner: owner,
-    repo: repo,
-    branch: "main",
-    commitMessage: defaultCommitMessage,
-  });
+    const api = new ForgejoAPI("https://codeberg.org", {
+      token: token,
+      owner: owner,
+      repo: repo,
+      branch: "main",
+      commitMessage: defaultCommitMessage,
+    });
 
-  return new Codeberg({
-    api,
-    owner,
-    repo,
-    path: path.join("/"),
-  });
-}
+    return new Codeberg({
+      api,
+      owner,
+      repo,
+      path: path.join("/"),
+    });
+  }
 
-export class Codeberg extends BaseGitAPI<ForgejoAPI> {
   directory(id: string): Storage {
     return new Codeberg({
       api: this.api,

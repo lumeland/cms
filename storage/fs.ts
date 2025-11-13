@@ -20,7 +20,7 @@ export default class Fs implements Storage {
   pattern: string;
   extension?: string;
 
-  static create(path: string) {
+  static create(path: string): Fs {
     return new Fs({ path });
   }
 

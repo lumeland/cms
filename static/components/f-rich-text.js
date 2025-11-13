@@ -32,7 +32,7 @@ customElements.define(
         { class: "field-description", html: schema.description },
         this,
       );
-      
+
       const hiddenInput = dom("textarea", {
         id,
         name,
@@ -50,7 +50,7 @@ customElements.define(
       const helpers = dom("div", { class: "tools is-sticky" }, this);
       const custom = dom("div", { class: "tools-group" }, helpers);
 
-      const editorContainer = dom("div", { id, class: 'rich-text' }, shadow);
+      const editorContainer = dom("div", { id, class: "rich-text" }, shadow);
 
       if (schema.upload) {
         const name = schema.upload;
@@ -78,9 +78,9 @@ customElements.define(
         },
         pasteLink: fileType,
       });
-      
+
       let tools;
-      const chain = () => this.editor.chain().focus()
+      const chain = () => this.editor.chain().focus();
 
       tools = dom("div", { class: "tools-group" }, helpers);
       [
@@ -120,7 +120,7 @@ customElements.define(
         class: "buttonIcon",
         type: "button",
         onclick: () => {
-          const currentValue = this.editor.getAttributes('link').href || "";
+          const currentValue = this.editor.getAttributes("link").href || "";
           const url = prompt("URL to link to:", currentValue);
 
           if (url) {

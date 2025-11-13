@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.14.0] - 2025-11-13
 ### Added
 - New option `staticFolders` to configure folders to serve custom static files.
 - New field `rich-text` [#66].
+
+### Changed
+- Reverted the default export of `GitHub` storage to return a class instead of a factory function.
 
 ### Fixed
 - Don't trim the content returned by markdown files.
@@ -15,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.13.0] - 2025-10-14
 ### Added
+- New `GitLab` and `Memory` storages.
 - New option `previewUrl` to return the URL of a file. It can be defined globally or per document and collection.
 - New option `sourcePath` to return the file of a URL.
 - New option `cssSelector` to highlight an element in the previewer related with a field.
@@ -22,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New `edit` option to documents and collections to enable/disable edit permissions.
 - New `relation` field.
 - New `relation-list` field.
+- New storage for Gitlab.
 - Permissions options for uploads (`create`, `rename`, `edit`, and `delete`).
 - User-level permissions
 - Show EXIF data of some files in the uploads detail.
@@ -34,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - BREAKING: Replaced Hono with Galo.
+- BREAKING: changed the default export of GitHub
 - Responsive layout to show the previews in small screens.
 - `select` field: only allow defined values.
 - The `FieldDefinition.init` callback is run every time the field is initialized.
@@ -50,9 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 - `select` field: allow numbers as values.
 - `date` and `datetime` fields are no longer associated with a time zone.
-
-## [0.12.6] - 2025-07-18
-### Fixed
 - Don't throw an error parsing empty JSON files [#64].
 - Updated dependencies `vento`, `hono`.
 
@@ -765,9 +768,8 @@ First version
 [#64]: https://github.com/lumeland/cms/issues/64
 [#66]: https://github.com/lumeland/cms/issues/66
 
-[Unreleased]: https://github.com/lumeland/cms/compare/v0.13.0...HEAD
-[0.13.0]: https://github.com/lumeland/cms/compare/v0.12.6...v0.13.0
-[0.12.6]: https://github.com/lumeland/cms/compare/v0.12.5...v0.12.6
+[0.14.0]: https://github.com/lumeland/cms/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/lumeland/cms/compare/v0.12.5...v0.13.0
 [0.12.5]: https://github.com/lumeland/cms/compare/v0.12.4...v0.12.5
 [0.12.4]: https://github.com/lumeland/cms/compare/v0.12.3...v0.12.4
 [0.12.3]: https://github.com/lumeland/cms/compare/v0.12.2...v0.12.3

@@ -110,7 +110,9 @@ export class GitLabAPI implements GitAPI {
   }
 
   /** Get the binary content of a file. */
-  async getBinaryContent(path = ""): Promise<Uint8Array | undefined> {
+  async getBinaryContent(
+    path = "",
+  ): Promise<Uint8Array<ArrayBuffer> | undefined> {
     if (path?.startsWith("/")) {
       path = path.slice(1);
     }

@@ -87,7 +87,9 @@ export class GitHubAPI implements GitAPI {
   }
 
   /** Get the binary content of a file. */
-  async getBinaryContent(path = ""): Promise<Uint8Array | undefined> {
+  async getBinaryContent(
+    path = "",
+  ): Promise<Uint8Array<ArrayBuffer> | undefined> {
     path = removeLeadingSlash(path);
 
     // https://github.com/octokit/rest.js/issues/14#issuecomment-584413497

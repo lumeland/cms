@@ -99,7 +99,9 @@ export class ForgejoAPI implements GitAPI {
   }
 
   /** Get the binary content of a file. */
-  async getBinaryContent(path = ""): Promise<Uint8Array | undefined> {
+  async getBinaryContent(
+    path = "",
+  ): Promise<Uint8Array<ArrayBuffer> | undefined> {
     try {
       const result = await this.#fetch(path);
       return decodeBase64(result.content);
