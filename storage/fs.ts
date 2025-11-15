@@ -14,7 +14,7 @@ export const defaults: Options = {
   path: "**",
 };
 
-export default class Fs implements Storage {
+export class Fs implements Storage {
   root: string;
   path: string;
   pattern: string;
@@ -109,6 +109,8 @@ export default class Fs implements Storage {
     await Deno.rename(src, dest);
   }
 }
+
+export default Fs;
 
 export class FsEntry implements Entry {
   source: EntrySource;

@@ -20,7 +20,7 @@ type MemoryStorage = Map<string, string | Uint8Array>;
  * This storage is similar to FS but stores the data in memory instead of the filesystem.
  * It is useful for testing purposes or when you want to avoid disk I/O.
  */
-export default class Memory implements Storage {
+export class Memory implements Storage {
   #storage: MemoryStorage;
   root: string;
   path: string;
@@ -120,6 +120,8 @@ export default class Memory implements Storage {
     return Promise.resolve();
   }
 }
+
+export default Memory;
 
 export class MemoryEntry implements Entry {
   source: EntrySource;

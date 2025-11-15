@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.14.1] - 2025-11-15
+### Fixed
+- Default and named exports for storages.
+
 ## [0.14.0] - 2025-11-13
 ### Added
 - New option `staticFolders` to configure folders to serve custom static files.
@@ -766,6 +770,7 @@ First version
 [#64]: https://github.com/lumeland/cms/issues/64
 [#66]: https://github.com/lumeland/cms/issues/66
 
+[0.14.1]: https://github.com/lumeland/cms/compare/v0.14.0...v0.14.1
 [0.14.0]: https://github.com/lumeland/cms/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/lumeland/cms/compare/v0.12.5...v0.13.0
 [0.12.5]: https://github.com/lumeland/cms/compare/v0.12.4...v0.12.5

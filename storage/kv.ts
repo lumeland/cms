@@ -7,7 +7,7 @@ export interface Options {
   kv: Deno.Kv;
 }
 
-export default class Kv implements Storage {
+export class Kv implements Storage {
   prefix: string[];
   kv: Deno.Kv;
 
@@ -76,6 +76,8 @@ export default class Kv implements Storage {
     await this.kv.delete(oldKey);
   }
 }
+
+export default Kv;
 
 export class KvEntry implements Entry {
   source: EntrySource;

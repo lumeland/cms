@@ -33,3 +33,5 @@ export class GitHub extends BaseGitAPI<GitHubAPI> {
     });
   }
 }
+
+export default GitHub;

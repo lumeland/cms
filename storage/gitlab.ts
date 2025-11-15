@@ -4,7 +4,7 @@ import { BaseGitAPI, defaultCommitMessage } from "./_base_git.ts";
 
 import type { Storage } from "../types.ts";
 
-export default class GitLab extends BaseGitAPI<GitLabAPI> {
+export class GitLab extends BaseGitAPI<GitLabAPI> {
   static create(repository: string, token: string): GitLab {
     const [owner, repo, ...path] = repository.split("/");
 
@@ -33,3 +33,5 @@ export default class GitLab extends BaseGitAPI<GitLabAPI> {
     });
   }
 }
+
+export default GitLab;

@@ -4,7 +4,7 @@ import { BaseGitAPI, defaultCommitMessage } from "./_base_git.ts";
 
 import type { Storage } from "../types.ts";
 
-export default class Codeberg extends BaseGitAPI<ForgejoAPI> {
+export class Codeberg extends BaseGitAPI<ForgejoAPI> {
   static create(repository: string, token: string): Codeberg {
     const [owner, repo, ...path] = repository.split("/");
 
@@ -33,3 +33,5 @@ export default class Codeberg extends BaseGitAPI<ForgejoAPI> {
     });
   }
 }
+
+export default Codeberg;
