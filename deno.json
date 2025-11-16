@@ -5,7 +5,7 @@
     "build-libs": "cd scripts && npm run build"
   },
   "imports": {
-    "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.1.10/dom.js",
+    "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.0/dom.js",
     "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
   },
   "unstable": [
