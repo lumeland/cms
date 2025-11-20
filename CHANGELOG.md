@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.14.2] - Unreleased
 ### Fixed
 - Removed unused `u-bar` component.
+- Ensure there's a single empty line at the end of files with front matter.
 - Updated dependencies.
 
 ## [0.14.1] - 2025-11-15

@@ -28,11 +28,12 @@ export const FrontMatter: Transformer<string> = {
 
   fromData(data) {
     const { content, ...attrs } = data;
+    const body = String(content || "").trimEnd() + "\n";
 
     if (Object.keys(attrs).length === 0) {
-      return `${content || ""}\n`;
+      return body;
     }
 
-    return `---\n${stringifyYaml(attrs)}---\n${content || ""}\n`;
+    return `---\n${stringifyYaml(attrs)}---\n${body}`;
   },
 };
