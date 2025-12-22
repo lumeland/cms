@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.14.3] - Unreleased
 ### Fixed
+- UI improvements and fixes.
 - Folders in the uploads view must be collapsed by default.
 - Overflow in object list with long titles.
 

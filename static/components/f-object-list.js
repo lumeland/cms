@@ -30,7 +30,7 @@ customElements.define(
         this,
       );
 
-      const div = dom("div", { class: "fieldset" }, this);
+      const div = dom("div", { class: "fieldset no-indent" }, this);
       let index = 0;
       const firstKey = schema.fields[0].name;
 

@@ -56,6 +56,10 @@
 .accordion-title {
   font: var(--font-ui-bold);
   text-transform: capitalize;
+  flex-basis: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .accordion-description {
   font: var(--font-small);

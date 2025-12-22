@@ -29,7 +29,7 @@ customElements.define(
         html: schema.description,
       }, this);
 
-      const div = dom("div", { class: "fieldset" }, this);
+      const div = dom("div", { class: "fieldset no-indent" }, this);
       let index = 0;
 
       function createOption(value, isNew = false) {

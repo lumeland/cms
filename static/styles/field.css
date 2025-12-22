@@ -114,6 +114,11 @@
       row-gap: 2em;
     }
   }
+  &.no-indent {
+    padding-left: 0;
+    margin-left: 0;
+    border-left: none;
+  }
 }
 
 f-hidden {
