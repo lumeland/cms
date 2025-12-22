@@ -34,6 +34,7 @@ customElements.define(
           position: absolute;
           right: 4px;
           top: 4px;
+          background-color: var(--color-background);
         }
       </style>
       <div class="root">
