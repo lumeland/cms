@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - UI improvements and fixes.
 - Folders in the uploads view must be collapsed by default.
 - Overflow in object list with long titles.
+- Types of `rich-text` field.
+- Updated dependencies.
 
 ## [0.14.2] - 2025-11-22
 ### Fixed
@@ -782,7 +784,11 @@ First version
 [#64]: https://github.com/lumeland/cms/issues/64
 [#66]: https://github.com/lumeland/cms/issues/66
 
+<<<<<<< HEAD
 [1.14.3]: https://github.com/lumeland/cms/compare/v0.14.2...HEAD
+=======
+[0.14.3]: https://github.com/lumeland/cms/compare/v0.14.2...HEAD
+>>>>>>> 0d3a009 (fix rich-text types)
 [0.14.2]: https://github.com/lumeland/cms/compare/v0.14.1...v0.14.2
 [0.14.1]: https://github.com/lumeland/cms/compare/v0.14.0...v0.14.1
 [0.14.0]: https://github.com/lumeland/cms/compare/v0.13.0...v0.14.0

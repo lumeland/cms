@@ -25,11 +25,11 @@ export default {
 declare global {
   namespace Lume.CMS {
     export interface Fields {
-      richText: RichTextField;
+      "rich-text": RichTextField;
     }
 
     export interface ResolvedFields {
-      richText: ResolvedRichTextField;
+      "rich-text": ResolvedRichTextField;
     }
   }
 }
