@@ -1,4 +1,4 @@
-import vento from "https://deno.land/x/vento@v2.2.0/web.ts";
+import vento from "https://deno.land/x/vento@v2.3.0/web.ts";
 import { normalizePath } from "../core/utils/path.ts";
 import { formatSupported } from "./imagick.ts";
 import { formatBytes } from "./std.ts";
