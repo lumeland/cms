@@ -60,6 +60,11 @@
   flex-grow: 1;
   overflow: hidden;
   white-space: nowrap;
+
+  em {
+    font: var(--font-ui);
+    color: var(--color-dim);
+  }
 }
 .accordion-description {
   font: var(--font-small);

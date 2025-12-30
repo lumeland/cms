@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.14.4] - 2025-12-30
+### Added
+- Show the value of the first element in the `choose-list` field.
+
 ## [0.14.3] - 2025-12-29
 ### Fixed
 - UI improvements and fixes.
@@ -784,6 +788,7 @@ First version
 [#64]: https://github.com/lumeland/cms/issues/64
 [#66]: https://github.com/lumeland/cms/issues/66
 
+[0.14.4]: https://github.com/lumeland/cms/compare/v0.14.3...v0.14.4
 [0.14.3]: https://github.com/lumeland/cms/compare/v0.14.2...v0.14.3
 [0.14.2]: https://github.com/lumeland/cms/compare/v0.14.1...v0.14.2
 [0.14.1]: https://github.com/lumeland/cms/compare/v0.14.0...v0.14.1

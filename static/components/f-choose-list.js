@@ -41,13 +41,16 @@ customElements.define(
         const open = field.attributes?.open ?? isNew;
         ++index;
 
+        const firstKey = field.fields[0].name;
+
         const item = dom(field.tag, {
           "data-type": value.type,
           ".schema": {
             ...field,
             attributes: { ...field.attributes, open },
             name: index,
-            label: field.label || field.name,
+            label: (field.label || field.name) +
+              `: <em>${value[firstKey] ?? "New item"}</em>`,
             fields: [
               {
                 name: "type",
