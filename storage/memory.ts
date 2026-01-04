@@ -91,7 +91,7 @@ export class Memory implements Storage {
 
   directory(path: string): Storage {
     return new Memory({
-      root: this.root,
+      root: posix.join(this.root, this.path),
       path,
     }, this.#storage);
   }

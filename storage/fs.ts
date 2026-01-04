@@ -89,7 +89,7 @@ export class Fs implements Storage {
 
   directory(path: string): Storage {
     return new Fs({
-      root: this.root,
+      root: posix.join(this.root, this.path),
       path,
     });
   }

@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.14.5] - Unreleased
+## [0.14.5] - 2026-01-04
 ### Fixed
 - Bold font weight on Windows.
+- Subdirectories instances from Fs storage had a wrong root path.
 
 ## [0.14.4] - 2025-12-30
 ### Added
@@ -792,7 +793,7 @@ First version
 [#64]: https://github.com/lumeland/cms/issues/64
 [#66]: https://github.com/lumeland/cms/issues/66
 
-[0.14.5]: https://github.com/lumeland/cms/compare/v0.14.4...HEAD
+[0.14.5]: https://github.com/lumeland/cms/compare/v0.14.4...v0.14.5
 [0.14.4]: https://github.com/lumeland/cms/compare/v0.14.3...v0.14.4
 [0.14.3]: https://github.com/lumeland/cms/compare/v0.14.2...v0.14.3
 [0.14.2]: https://github.com/lumeland/cms/compare/v0.14.1...v0.14.2
