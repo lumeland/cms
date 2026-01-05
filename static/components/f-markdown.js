@@ -81,12 +81,16 @@ customElements.define(
       const code = dom("div", { class: "code" }, shadow);
       const md = init(code, textarea, pasteLink);
       let tools;
+      dom(
+        "small",
+        '<a href="https://www.markdownguide.org/basic-syntax/" target="_blank">Markdown (?)</a>',
+        code,
+      );
 
       tools = dom("div", { class: "tools-group" }, helpers);
       [
         [md.makeBold, "text-b"],
         [md.makeItalic, "text-italic"],
-        [md.makeStrikethrough, "text-strikethrough"],
       ].forEach(([fn, icon]) => {
         dom("button", {
           class: "buttonIcon",
@@ -99,25 +103,6 @@ customElements.define(
         }, tools);
       });
 
-      tools = dom("div", { class: "tools-group" }, helpers);
-      [
-        [md.makeH1, "text-h-one"],
-        [md.makeH2, "text-h-two"],
-        [md.makeH3, "text-h-three"],
-        [md.makeH4, "text-h-four"],
-      ].forEach(([fn, icon]) => {
-        dom("button", {
-          class: "buttonIcon",
-          type: "button",
-          html: `<u-icon name="${icon}"></u-icon>`,
-          onclick() {
-            fn(md.editor);
-            md.editor.focus();
-          },
-        }, tools);
-      });
-
-      tools = dom("div", { class: "tools-group" }, helpers);
       dom("button", {
         class: "buttonIcon",
         type: "button",
@@ -132,12 +117,22 @@ customElements.define(
         html: `<u-icon name="link-simple"></u-icon>`,
       }, tools);
 
-      dom("a", {
-        class: "buttonIcon",
-        href: "https://www.markdownguide.org/basic-syntax/",
-        target: "_blank",
-        html: `<u-icon name="question"></u-icon>`,
-      }, tools);
+      tools = dom("div", { class: "tools-group" }, helpers);
+      [
+        [md.makeH2, "text-h-two"],
+        [md.makeH3, "text-h-three"],
+        [md.makeH4, "text-h-four"],
+      ].forEach(([fn, icon]) => {
+        dom("button", {
+          class: "buttonIcon",
+          type: "button",
+          html: `<u-icon name="${icon}"></u-icon>`,
+          onclick() {
+            fn(md.editor);
+            md.editor.focus();
+          },
+        }, tools);
+      });
 
       this.editor = md.editor;
     }
@@ -179,6 +174,10 @@ function pasteLink(url, selectedText = "") {
       return `<audio src="${url}" controls>${selectedText}</audio>`;
 
     default:
+      // avoid linking if the selected text is already a URL
+      if (URL.canParse(selectedText) || selectedText.match(/^[\w/.?#-]+$/)) {
+        return selectedText;
+      }
       return `[${selectedText || "Link"}](${url})`;
   }
 }

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.14.6] - Unreleased
+### Changed
+- Simplified the markdown field:
+  - Removed H1 button since the main title use to be in a different field
+  - Replaced help button with a small link at the bottom
+  - Moved the link button to bold and italic group
+  - Removed strikethrough text since it's not often used.
+- Moved the link button of the rich-text field
+
+### Fixed
+- The navbar is not visible if a toolbar is stuck.
+- Markdown field: don't create a link on paste if the selected text is already a URL.
+
 ## [0.14.5] - 2026-01-04
 ### Fixed
 - Bold font weight on Windows.
@@ -793,6 +806,7 @@ First version
 [#64]: https://github.com/lumeland/cms/issues/64
 [#66]: https://github.com/lumeland/cms/issues/66
 
+[0.14.6]: https://github.com/lumeland/cms/compare/v0.14.5...HEAD
 [0.14.5]: https://github.com/lumeland/cms/compare/v0.14.4...v0.14.5
 [0.14.4]: https://github.com/lumeland/cms/compare/v0.14.3...v0.14.4
 [0.14.3]: https://github.com/lumeland/cms/compare/v0.14.2...v0.14.3

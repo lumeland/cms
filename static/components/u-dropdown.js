@@ -53,7 +53,7 @@ customElements.define(
             gap: 0px;
             flex-direction: column;
             padding: var(--padding);
-            border-radius: calc(var(--border-radius) + var(--padding));
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             background: var(--color-line-light);
             width: 200px;

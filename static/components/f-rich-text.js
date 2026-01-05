@@ -98,6 +98,22 @@ customElements.define(
         }, tools);
       });
 
+      dom("button", {
+        class: "buttonIcon",
+        type: "button",
+        onclick: () => {
+          const currentValue = this.editor.getAttributes("link").href || "";
+          const url = prompt("URL to link to:", currentValue);
+
+          if (url) {
+            chain().setLink({ href: url }).run();
+          } else {
+            chain().unsetLink().run();
+          }
+        },
+        html: `<u-icon name="link-simple"></u-icon>`,
+      }, tools);
+
       tools = dom("div", { class: "tools-group" }, helpers);
       [
         [() => chain().toggleHeading({ level: 1 }), "text-h-one"],
@@ -114,23 +130,6 @@ customElements.define(
           },
         }, tools);
       });
-
-      tools = dom("div", { class: "tools-group" }, helpers);
-      dom("button", {
-        class: "buttonIcon",
-        type: "button",
-        onclick: () => {
-          const currentValue = this.editor.getAttributes("link").href || "";
-          const url = prompt("URL to link to:", currentValue);
-
-          if (url) {
-            chain().setLink({ href: url }).run();
-          } else {
-            chain().unsetLink().run();
-          }
-        },
-        html: `<u-icon name="link-simple"></u-icon>`,
-      }, tools);
     }
 
     get currentValue() {

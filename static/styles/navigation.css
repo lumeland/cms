@@ -1,13 +1,13 @@
 .navigation {
-  margin: 0;
+  margin: 0 -5px;
   background-color: var(--color-background);
   justify-items: start;
-  z-index: 2;
+  z-index: 3;
   position: sticky;
   top: 0;
   display: flex;
   gap: 0.5rem;
-  padding: 0.5rem 0;
+  padding: 5px;
   margin-bottom: var(--row-gap-normal);
 
   u-filter {

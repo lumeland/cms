@@ -9,6 +9,11 @@
     min-width: 100px;
     cursor: pointer;
 
+    a {
+      font-weight: normal;
+      color: var(--color-dim);
+    }
+
     &.is-secondary {
       font: var(--font-ui);
     }

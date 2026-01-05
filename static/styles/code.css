@@ -1,4 +1,19 @@
 .code {
+  > small {
+    display: block;
+    text-align: right;
+    margin-top: 0.3em;
+    font: var(--font-small);
+
+    a {
+      color: var(--color-dim);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
   > .cm-editor {
     color: var(--color-input-text);
     background: var(--color-input-bg);
