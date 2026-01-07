@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.14.9] - Unreleased
+## [0.14.9] - 2026-01-07
 ### Fixed
 - `documentName` is not required if `create` and `rename` permissions are false.
 
@@ -828,7 +828,7 @@ First version
 [#64]: https://github.com/lumeland/cms/issues/64
 [#66]: https://github.com/lumeland/cms/issues/66
 
-[0.14.9]: https://github.com/lumeland/cms/compare/v0.14.8...HEAD
+[0.14.9]: https://github.com/lumeland/cms/compare/v0.14.8...v0.14.9
 [0.14.8]: https://github.com/lumeland/cms/compare/v0.14.7...v0.14.8
 [0.14.7]: https://github.com/lumeland/cms/compare/v0.14.6...v0.14.7
 [0.14.6]: https://github.com/lumeland/cms/compare/v0.14.5...v0.14.6
