@@ -83,7 +83,7 @@ customElements.define(
       let tools;
       dom(
         "small",
-        '<a href="https://www.markdownguide.org/basic-syntax/" target="_blank">Markdown (?)</a>',
+        '<a href="https://github.com/lumeland/cms/wiki/Markdown-guide" target="_blank">Markdown (?)</a>',
         code,
       );
 
@@ -91,6 +91,7 @@ customElements.define(
       [
         [md.makeBold, "text-b"],
         [md.makeItalic, "text-italic"],
+        [md.makeStrikethrough, "text-strikethrough"],
       ].forEach(([fn, icon]) => {
         dom("button", {
           class: "buttonIcon",

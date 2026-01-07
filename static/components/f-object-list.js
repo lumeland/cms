@@ -35,8 +35,11 @@ customElements.define(
       const firstKey = schema.fields[0].name;
 
       function createOption(value) {
-        const label = (typeof value === "object" && value[firstKey]) ||
+        let label = (typeof value === "object" && value[firstKey]) ||
           "New item";
+        if (typeof label !== "string") {
+          label = index.toString();
+        }
         const attributes = schema.attributes || {};
         attributes.open ??= !value;
 

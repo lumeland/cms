@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.14.7] - 2026-01-07
+### Added
+- New `map` field to introduce key->value entries.
+- Restored strikethrough button of Markdown field removed in the previous version.
+
+### Changed
+- The link to the Markdown guide.
+
+### Fixed
+- Improved visualization of object-list and choose-list.
+- Update command of rich-text editor.
+- Don't capture the tab key in the markdown editor.
+
 ## [0.14.6] - 2026-01-05
 ### Changed
 - Simplified the markdown field:
@@ -807,6 +820,7 @@ First version
 [#64]: https://github.com/lumeland/cms/issues/64
 [#66]: https://github.com/lumeland/cms/issues/66
 
+[1.14.7]: https://github.com/lumeland/cms/compare/v0.14.6...v1.14.7
 [0.14.6]: https://github.com/lumeland/cms/compare/v0.14.5...v0.14.6
 [0.14.5]: https://github.com/lumeland/cms/compare/v0.14.4...v0.14.5
 [0.14.4]: https://github.com/lumeland/cms/compare/v0.14.3...v0.14.4

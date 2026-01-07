@@ -13,6 +13,7 @@ import fileList from "./fields/file-list.ts";
 import file from "./fields/file.ts";
 import hidden from "./fields/hidden.ts";
 import list from "./fields/list.ts";
+import map from "./fields/map.ts";
 import markdown from "./fields/markdown.ts";
 import number from "./fields/number.ts";
 import objectList from "./fields/object-list.ts";
@@ -44,6 +45,7 @@ export default function (options?: Partial<CmsOptions>): Cms {
   cms.field("file", file);
   cms.field("hidden", hidden);
   cms.field("list", list);
+  cms.field("map", map);
   cms.field("markdown", markdown);
   cms.field("number", number);
   cms.field("object-list", objectList);

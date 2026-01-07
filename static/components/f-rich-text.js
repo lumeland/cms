@@ -140,8 +140,7 @@ customElements.define(
       const input = this.querySelector("textarea");
       if (input.value !== value) {
         input.value = value ?? null;
-        const editor = this.editor;
-        editor.setHTML(value ?? "");
+        this.editor.commands.setContent(value ?? "");
       }
       updateField(this, schema, input);
     }

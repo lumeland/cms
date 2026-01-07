@@ -39,9 +39,13 @@ customElements.define(
         }
 
         const open = field.attributes?.open ?? isNew;
-        ++index;
-
         const firstKey = field.fields[0].name;
+        let firstValue = (typeof value === "object" && value[firstKey]) ||
+          "New item";
+        if (typeof firstValue !== "string") {
+          firstValue = index.toString();
+        }
+        ++index;
 
         const item = dom(field.tag, {
           "data-type": value.type,
@@ -49,8 +53,7 @@ customElements.define(
             ...field,
             attributes: { ...field.attributes, open },
             name: index,
-            label: (field.label || field.name) +
-              `: <em>${value[firstKey] ?? "New item"}</em>`,
+            label: `${field.label || field.name}: <em>${firstValue}</em>`,
             fields: [
               {
                 name: "type",
