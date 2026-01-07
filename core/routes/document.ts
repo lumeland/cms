@@ -108,7 +108,7 @@ app.path(
             type: "code",
             attributes: {
               data: {
-                language: getLanguageCode(document.name),
+                language: getLanguageCode(document.source.name),
               },
             },
           }],

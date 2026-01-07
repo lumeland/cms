@@ -63,7 +63,10 @@ export default class Collection {
       rename: options.rename ?? true,
     };
 
-    if (this.permissions.rename !== true && this.permissions.create && !this.documentName) {
+    if (
+      this.permissions.rename !== true && this.permissions.create &&
+      !this.documentName
+    ) {
       throw new Error(
         "The documentName option is required if the rename permission is false or auto.",
       );
