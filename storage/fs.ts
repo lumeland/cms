@@ -56,7 +56,7 @@ export class Fs implements Storage {
     const iterable = expandGlob(posix.join(path, pattern), {
       root,
       includeDirs: false,
-      exclude: ["_*", ".*"],
+      exclude: [".*"],
     });
 
     for await (const entry of iterable) {

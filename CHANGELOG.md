@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.14.8] - 2026-01-07
+### Fixed
+- Collections don't list files starting with `_`.
+
 ## [1.14.7] - 2026-01-07
 ### Added
 - New `map` field to introduce key->value entries.
@@ -820,6 +824,7 @@ First version
 [#64]: https://github.com/lumeland/cms/issues/64
 [#66]: https://github.com/lumeland/cms/issues/66
 
+[1.14.8]: https://github.com/lumeland/cms/compare/v1.14.7...v1.14.8
 [1.14.7]: https://github.com/lumeland/cms/compare/v0.14.6...v1.14.7
 [0.14.6]: https://github.com/lumeland/cms/compare/v0.14.5...v0.14.6
 [0.14.5]: https://github.com/lumeland/cms/compare/v0.14.4...v0.14.5
