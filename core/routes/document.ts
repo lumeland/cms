@@ -41,6 +41,7 @@ app.path(
       return (document.previewUrl ?? previewUrl)?.(
         document.source.path,
         cms,
+        document.storage,
         changed,
       );
     }

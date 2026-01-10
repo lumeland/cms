@@ -155,6 +155,7 @@ export interface ResolvedGroupField extends ResolvedField {
 export type PreviewUrl = (
   file: string,
   cms: CMSContent,
+  storage: Storage,
   changed?: boolean,
 ) => undefined | string | Promise<string | undefined>;
 

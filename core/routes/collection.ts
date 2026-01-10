@@ -51,6 +51,7 @@ app.path(
       return (collection.previewUrl ?? previewUrl)?.(
         document.source.path,
         cms,
+        document.storage,
         changed,
       );
     }
