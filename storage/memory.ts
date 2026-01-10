@@ -31,6 +31,10 @@ export class Memory implements Storage {
     return new Memory({ path });
   }
 
+  get storageMap() {
+    return this.#storage;
+  }
+
   constructor(userOptions?: Options, storage: MemoryStorage = new Map()) {
     this.#storage = storage;
     const options = { ...defaults, ...userOptions } as Required<Options>;
@@ -97,7 +101,7 @@ export class Memory implements Storage {
   }
 
   get(name: string): Entry {
-    return new MemoryEntry(this.source(name), this.#storage);
+    return new MemoryEntry(this.source(name), this);
   }
 
   delete(name: string) {
@@ -125,16 +129,20 @@ export default Memory;
 
 export class MemoryEntry implements Entry {
   source: EntrySource;
-  #storage: MemoryStorage;
+  #storage: Memory;
 
-  constructor(source: EntrySource, storage: MemoryStorage) {
+  constructor(source: EntrySource, storage: Memory) {
     this.source = source;
     this.#storage = storage;
   }
 
+  get storage() {
+    return this.#storage;
+  }
+
   readText(): Promise<string> {
     const { src } = this.source;
-    const content = this.#storage.get(src);
+    const content = this.#storage.storageMap.get(src);
 
     if (content === undefined) {
       throw new Error(`File not found: ${src}`);
@@ -149,7 +157,7 @@ export class MemoryEntry implements Entry {
 
   writeText(content: string): Promise<void> {
     const { src } = this.source;
-    this.#storage.set(src, content);
+    this.#storage.storageMap.set(src, content);
 
     return Promise.resolve();
   }
@@ -173,7 +181,7 @@ export class MemoryEntry implements Entry {
 
   readFile(): Promise<File> {
     const { src, name } = this.source;
-    const content = this.#storage.get(src);
+    const content = this.#storage.storageMap.get(src);
     if (content === undefined) {
       throw new Error(`File not found: ${src}`);
     }
@@ -188,6 +196,6 @@ export class MemoryEntry implements Entry {
   async writeFile(file: File) {
     const { src } = this.source;
     const content = await file.arrayBuffer();
-    this.#storage.set(src, new Uint8Array(content));
+    this.#storage.storageMap.set(src, new Uint8Array(content));
   }
 }

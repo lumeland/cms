@@ -56,7 +56,7 @@ export class Kv implements Storage {
   }
 
   get(name: string): Entry {
-    return new KvEntry(this.source(name), this.kv);
+    return new KvEntry(this.source(name), this);
   }
 
   async delete(name: string) {
@@ -81,11 +81,15 @@ export default Kv;
 
 export class KvEntry implements Entry {
   source: EntrySource;
-  kv: Deno.Kv;
+  #storage: Kv;
 
-  constructor(source: EntrySource, kv: Deno.Kv) {
-    this.kv = kv;
+  constructor(source: EntrySource, kv: Kv) {
+    this.#storage = kv;
     this.source = source;
+  }
+
+  get storage() {
+    return this.#storage;
   }
 
   async readText(): Promise<string> {
@@ -100,7 +104,7 @@ export class KvEntry implements Entry {
 
   async readData(): Promise<Data> {
     const { src } = this.source;
-    const item = await this.kv.get<Data>(src.split("/"));
+    const item = await this.#storage.kv.get<Data>(src.split("/"));
 
     if (!item.value) {
       throw new Error(`Item not found: ${src}`);
@@ -111,7 +115,7 @@ export class KvEntry implements Entry {
 
   async writeData(data: Data) {
     const { src } = this.source;
-    await this.kv.set(src.split("/"), data);
+    await this.#storage.kv.set(src.split("/"), data);
   }
 
   readFile(): Promise<File> {

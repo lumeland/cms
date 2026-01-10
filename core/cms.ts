@@ -458,6 +458,7 @@ export default class Cms {
 
     return src ? storage.directory(src) : storage;
   }
+
   #getEntry(path: string): Entry {
     const [name, src] = path.split(":");
     const storage = this.#getStorage(name + ":" + dirname(src));

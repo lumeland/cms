@@ -83,7 +83,7 @@ export abstract class BaseGitAPI<API extends GitAPI> implements Storage {
   abstract directory(id: string): Storage;
 
   get(name: string): Entry {
-    return new GitAPIEntry(this.source(name), this.api);
+    return new GitAPIEntry(this.source(name), this);
   }
 
   async delete(name: string) {
@@ -101,19 +101,23 @@ export abstract class BaseGitAPI<API extends GitAPI> implements Storage {
 
 export class GitAPIEntry implements Entry {
   readonly source: EntrySource;
-  readonly git: GitAPI;
+  #storage: BaseGitAPI<GitAPI>;
 
-  constructor(source: EntrySource, git: GitAPI) {
+  constructor(source: EntrySource, storage: BaseGitAPI<GitAPI>) {
     this.source = source;
-    this.git = git;
+    this.#storage = storage;
+  }
+
+  get storage() {
+    return this.#storage;
   }
 
   async readText(): Promise<string> {
-    return await this.git.getTextContent(this.source.path) || "";
+    return await this.#storage.api.getTextContent(this.source.path) || "";
   }
 
   async writeText(content: string): Promise<void> {
-    await this.git.setContent(this.source.path, content);
+    await this.#storage.api.setContent(this.source.path, content);
   }
 
   async readData(): Promise<Data> {
@@ -131,7 +135,7 @@ export class GitAPIEntry implements Entry {
   }
 
   async readFile(): Promise<File> {
-    const data = await this.git.getBinaryContent(this.source.path);
+    const data = await this.#storage.api.getBinaryContent(this.source.path);
 
     if (!data) {
       throw new Error(`File not found: ${this.source.path}`);
@@ -143,7 +147,10 @@ export class GitAPIEntry implements Entry {
   }
 
   async writeFile(file: File) {
-    await this.git.setContent(this.source.path, await file.arrayBuffer());
+    await this.#storage.api.setContent(
+      this.source.path,
+      await file.arrayBuffer(),
+    );
   }
 }
 

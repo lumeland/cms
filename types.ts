@@ -14,9 +14,15 @@ import type User from "./core/user.ts";
 /** Generic data to store */
 export type Data = Record<string, unknown>;
 
+/** A storage entry source information */
 export interface EntrySource {
+  /** The entry name (i.e: "index.md") */
   name: string;
+
+  /** The full path of the entry (i.e: "posts/index.md") */
   path: string;
+
+  /** The full location of the entry (i.e: the raw GitHub file URL) */
   src: string;
 }
 
@@ -40,7 +46,8 @@ export interface Storage extends AsyncIterable<EntrySource> {
 }
 
 export interface Entry {
-  source: EntrySource;
+  readonly storage: Storage;
+  readonly source: EntrySource;
 
   readData(): Promise<Data>;
   writeData(content: Data): Promise<void>;

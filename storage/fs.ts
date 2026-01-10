@@ -27,7 +27,6 @@ export class Fs implements Storage {
   constructor(userOptions?: Options) {
     const options = { ...defaults, ...userOptions } as Required<Options>;
     this.root = normalizePath(options.root ?? Deno.cwd());
-
     const pos = options.path.indexOf("*");
 
     if (pos === -1) {
@@ -95,7 +94,7 @@ export class Fs implements Storage {
   }
 
   get(name: string): Entry {
-    return new FsEntry(this.source(name));
+    return new FsEntry(this.source(name), this);
   }
 
   async delete(name: string) {
@@ -114,9 +113,15 @@ export default Fs;
 
 export class FsEntry implements Entry {
   source: EntrySource;
+  #storage: Fs;
 
-  constructor(source: EntrySource) {
+  constructor(source: EntrySource, storage: Fs) {
     this.source = source;
+    this.#storage = storage;
+  }
+
+  get storage() {
+    return this.#storage;
   }
 
   async readText(): Promise<string> {

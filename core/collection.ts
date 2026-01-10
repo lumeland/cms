@@ -77,6 +77,10 @@ export default class Collection {
     return this.#fields;
   }
 
+  get storage() {
+    return this.#storage;
+  }
+
   async *[Symbol.asyncIterator](): AsyncGenerator<EntryMetadata> {
     for await (const source of this.#storage) {
       yield getMetadata(source, this.documentLabel);

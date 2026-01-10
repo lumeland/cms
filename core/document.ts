@@ -56,6 +56,10 @@ export default class Document {
     return this.#entry.source;
   }
 
+  get storage() {
+    return this.#entry.storage;
+  }
+
   async readText(create = false): Promise<string> {
     try {
       return await this.#entry.readText();
