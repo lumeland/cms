@@ -124,7 +124,7 @@ export class ForgejoAPI implements GitAPI {
 
     // The file exists
     if (typeof sha === "string") {
-      await this.#fetch(posix.join("/contents", encodeURIComponent(path)), {
+      await this.#fetch(path, {
         method: "PUT",
         body: JSON.stringify({
           branch: this.branch,
@@ -136,7 +136,7 @@ export class ForgejoAPI implements GitAPI {
       return;
     }
 
-    await this.#fetch(posix.join("/contents", encodeURIComponent(path)), {
+    await this.#fetch(path, {
       method: "POST",
       body: JSON.stringify({
         branch: this.branch,
@@ -154,7 +154,7 @@ export class ForgejoAPI implements GitAPI {
       throw new Error(`File not found: ${path}`);
     }
 
-    await this.#fetch(posix.join("/contents", encodeURIComponent(path)), {
+    await this.#fetch(path, {
       method: "DELETE",
       body: JSON.stringify({
         message: this.commitMessage({ action: "delete", path }),
@@ -171,7 +171,7 @@ export class ForgejoAPI implements GitAPI {
       throw new Error(`File not found: ${path}`);
     }
 
-    await this.#fetch(posix.join("/contents", encodeURIComponent(newPath)), {
+    await this.#fetch(newPath, {
       method: "POST",
       body: JSON.stringify({
         content: encodeBase64(content),
