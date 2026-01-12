@@ -105,13 +105,11 @@ customElements.define(
       this.querySelector(".field-description").innerHTML = schema.description ??
         "";
       const items = Array.from(this.querySelector(".fieldset").children);
-      const firstKey = schema.fields[0].name;
 
-      for (const value of values) {
-        const label = value[firstKey];
+      for (const [index, value] of values.entries()) {
         items.shift()?.update({
           type: "object",
-          label,
+          label: getItemLabel(schema, value, index),
           fields: schema.fields,
         }, value);
       }
@@ -200,10 +198,10 @@ customElements.define(
     update(schema, values) {
       const items = Array.from(this.querySelector(".fieldset").children);
 
-      for (const value of values) {
+      for (const [index, value] of values.entries()) {
         items.shift()?.update({
           type: "object",
-          label: getItemLabel(schema, value),
+          label: getItemLabel(schema, value, index),
           fields: schema.fields,
         }, value);
       }

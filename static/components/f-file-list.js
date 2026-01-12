@@ -116,10 +116,10 @@ customElements.define(
         "";
       const items = Array.from(this.querySelector(".fieldset").children);
 
-      for (const value of values) {
+      for (const [index, value] of values.entries()) {
         items.shift()?.update({
           type: "object",
-          label: getItemLabel(schema, value),
+          label: getItemLabel(schema, value, index),
           fields: schema.fields,
         }, value);
       }

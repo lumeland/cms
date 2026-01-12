@@ -170,9 +170,24 @@ export function getFieldName(field) {
   return schema.name;
 }
 
+const allowedTypes = new Set([
+  "text",
+  "textarea",
+  "rich-text",
+  "email",
+  "tel",
+  "url",
+  "date",
+  "datetime",
+  "time",
+  "select",
+]);
+
 export function getItemLabel(field, value, defaultDescription) {
   const label = field.label || field.name;
-  const firstField = field.fields?.find((field) => field.type === "text");
+  const firstField = field.fields?.find((field) =>
+    allowedTypes.has(field.type)
+  );
 
   if (!firstField) {
     if (defaultDescription !== undefined) {
@@ -181,9 +196,24 @@ export function getItemLabel(field, value, defaultDescription) {
     return label;
   }
 
-  const description = String(
+  let description = cleanHtml(
     (typeof value === "object" && value[firstField.name]) ||
-      defaultDescription || "New item",
+      defaultDescription || "",
   );
+
+  if (!description) {
+    return label;
+  }
+
+  if (description.length > 50) {
+    description = description.slice(0, 50) + "…";
+  }
+
   return `${label}: <em>${description}</em>`;
+}
+
+const domParser = new DOMParser();
+function cleanHtml(html) {
+  return domParser.parseFromString(String(html), "text/html").body?.textContent
+    ?.trim() || "";
 }

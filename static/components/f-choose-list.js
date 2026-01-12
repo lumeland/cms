@@ -138,10 +138,11 @@ customElements.define(
         "";
       const items = Array.from(this.querySelector(".fieldset").children);
 
-      for (const value of values) {
+      for (const [index, value] of values.entries()) {
         const field = schema.fields.find((f) => f.name === value.type);
         items.shift()?.update({
           ...field,
+          label: getItemLabel(field, value, index),
           fields: [
             {
               name: "type",
