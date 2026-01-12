@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.15.0] - Unreleased
+## [0.15.0] - 2026-01-12
 ### Added
 - Property `storage` to `Document` and `Collection` instance to get the storage instance assigned.
 
@@ -841,7 +841,7 @@ First version
 [#66]: https://github.com/lumeland/cms/issues/66
 [#68]: https://github.com/lumeland/cms/issues/68
 
-[0.15.0]: https://github.com/lumeland/cms/compare/v0.14.9...HEAD
+[0.15.0]: https://github.com/lumeland/cms/compare/v0.14.9...v0.15.0
 [0.14.9]: https://github.com/lumeland/cms/compare/v0.14.8...v0.14.9
 [0.14.8]: https://github.com/lumeland/cms/compare/v0.14.7...v0.14.8
 [0.14.7]: https://github.com/lumeland/cms/compare/v0.14.6...v0.14.7
