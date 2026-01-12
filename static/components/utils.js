@@ -169,3 +169,21 @@ export function getFieldName(field) {
   }
   return schema.name;
 }
+
+export function getItemLabel(field, value, defaultDescription) {
+  const label = field.label || field.name;
+  const firstField = field.fields?.find((field) => field.type === "text");
+
+  if (!firstField) {
+    if (defaultDescription !== undefined) {
+      return `${label}: <em>${defaultDescription}</em>`;
+    }
+    return label;
+  }
+
+  const description = String(
+    (typeof value === "object" && value[firstField.name]) ||
+      defaultDescription || "New item",
+  );
+  return `${label}: <em>${description}</em>`;
+}

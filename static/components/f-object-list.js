@@ -1,4 +1,4 @@
-import { getFieldName, initField } from "./utils.js";
+import { getFieldName, getItemLabel, initField } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -32,14 +32,9 @@ customElements.define(
 
       const div = dom("div", { class: "fieldset no-indent" }, this);
       let index = 0;
-      const firstKey = schema.fields[0].name;
 
       function createOption(value) {
-        let label = (typeof value === "object" && value[firstKey]) ||
-          "New item";
-        if (typeof label !== "string") {
-          label = index.toString();
-        }
+        const label = getItemLabel(schema, value, index);
         const attributes = schema.attributes || {};
         attributes.open ??= !value;
 
@@ -134,11 +129,9 @@ customElements.define(
 
       const div = dom("div", { class: "fieldset is-root" }, this);
       let index = 0;
-      const firstKey = schema.fields[0].name;
 
       function createOption(value) {
-        const label = (typeof value === "object" && value[firstKey]) ||
-          "New item";
+        const label = getItemLabel(schema, value, index);
         const attributes = schema.attributes || {};
         attributes.open ??= !value;
 
@@ -206,13 +199,11 @@ customElements.define(
 
     update(schema, values) {
       const items = Array.from(this.querySelector(".fieldset").children);
-      const firstKey = schema.fields[0].name;
 
       for (const value of values) {
-        const label = value[firstKey];
         items.shift()?.update({
           type: "object",
-          label,
+          label: getItemLabel(schema, value),
           fields: schema.fields,
         }, value);
       }

@@ -1,4 +1,4 @@
-import { getFieldName, initField } from "./utils.js";
+import { getFieldName, getItemLabel, initField } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -38,22 +38,15 @@ customElements.define(
           throw new Error(`Unknown field type: ${value.type}`);
         }
 
-        const open = field.attributes?.open ?? isNew;
-        const firstKey = field.fields[0].name;
-        let firstValue = (typeof value === "object" && value[firstKey]) ||
-          "New item";
-        if (typeof firstValue !== "string") {
-          firstValue = index.toString();
-        }
         ++index;
-
+        const open = field.attributes?.open ?? isNew;
         const item = dom(field.tag, {
           "data-type": value.type,
           ".schema": {
             ...field,
             attributes: { ...field.attributes, open },
             name: index,
-            label: `${field.label || field.name}: <em>${firstValue}</em>`,
+            label: getItemLabel(field, value, index),
             fields: [
               {
                 name: "type",

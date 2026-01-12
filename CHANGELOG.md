@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 - Codeberg storage adapter [#68].
 - Detect language when editing the code of a document.
+- Fix label in `choose-list`, `object-list` and `file-list` fields.
 
 ## [0.14.9] - 2026-01-07
 ### Fixed
