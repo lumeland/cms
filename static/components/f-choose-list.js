@@ -47,6 +47,7 @@ customElements.define(
             attributes: { ...field.attributes, open },
             name: index,
             label: getItemLabel(field, value, index),
+            description: undefined,
             fields: [
               {
                 name: "type",

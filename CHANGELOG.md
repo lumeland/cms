@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.14.11] - 2026-01-13
+### Fixed
+- Duplicated description in `choose-list`, `object-list` and `file-list` fields.
+
 ## [0.14.10] - 2026-01-12
 ### Added
 - Property `storage` to `Document` and `Collection` instance to get the storage instance assigned.
@@ -839,6 +843,7 @@ First version
 [#66]: https://github.com/lumeland/cms/issues/66
 [#68]: https://github.com/lumeland/cms/issues/68
 
+[0.14.11]: https://github.com/lumeland/cms/compare/v0.14.10...v0.14.11
 [0.14.10]: https://github.com/lumeland/cms/compare/v0.14.9...v0.14.10
 [0.14.9]: https://github.com/lumeland/cms/compare/v0.14.8...v0.14.9
 [0.14.8]: https://github.com/lumeland/cms/compare/v0.14.7...v0.14.8

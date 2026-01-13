@@ -39,7 +39,13 @@ customElements.define(
         attributes.open ??= isNew;
 
         const item = dom("f-object", {
-          ".schema": { ...schema, attributes, name: index++, label },
+          ".schema": {
+            ...schema,
+            attributes,
+            name: index++,
+            label,
+            description: undefined,
+          },
           ".namePrefix": namePrefix,
           value,
           html: [
