@@ -32,11 +32,11 @@ interface ResolvedNumberField extends NumberField, ResolvedField {
 export default {
   tag: "f-number",
   jsImport: "lume_cms/components/f-number.js",
-  applyChanges(data, changes, field) {
+  applyChanges(data, changes, field, _, cmsContent) {
     const value = Number(field.name in changes ? changes[field.name] : null);
 
     if (!isNaN(value)) {
-      data[field.name] = transform(field, value);
+      data[field.name] = transform(field, value, cmsContent);
       return;
     }
 

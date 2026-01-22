@@ -1,5 +1,13 @@
 import { isEmpty } from "../core/utils/string.ts";
-import type { Data, Field, InputField, Option } from "../types.ts";
+import type Document from "../core/document.ts";
+import type {
+  CMSContent,
+  Data,
+  Field,
+  InputField,
+  Option,
+  ResolvedField,
+} from "../types.ts";
 
 export function applySelectChanges<
   T extends InputField & { options: Option[] },
@@ -7,6 +15,8 @@ export function applySelectChanges<
   data: Data,
   changes: Data,
   field: T,
+  _: Document,
+  content: CMSContent,
 ) {
   if (!(field.name in changes)) {
     return;
@@ -14,7 +24,7 @@ export function applySelectChanges<
   const value = getSelectValue(field.options, changes[field.name]);
 
   if (value !== undefined) {
-    data[field.name] = transform(field, value);
+    data[field.name] = transform(field, value, content);
     return;
   }
 
@@ -56,6 +66,8 @@ export function applyTextChanges<T extends InputField>(
   data: Data,
   changes: Data,
   field: T,
+  _: Document,
+  content: CMSContent,
 ) {
   if (!(field.name in changes)) {
     return;
@@ -64,7 +76,11 @@ export function applyTextChanges<T extends InputField>(
   const value = changes[field.name];
 
   if (typeof value === "string" && value.trim().length > 0) {
-    data[field.name] = transform(field, value.replaceAll("\r\n", "\n"));
+    data[field.name] = transform(
+      field,
+      value.replaceAll("\r\n", "\n"),
+      content,
+    );
     return;
   }
 
@@ -78,8 +94,11 @@ export function applyTextChanges<T extends InputField>(
 
 export function transform<V, T extends Field = Field>(
   field: T,
-  value?: V | null,
+  value: V | null | undefined,
+  content: CMSContent,
 ): V | undefined | null {
   const transform = field.transform;
-  return transform ? transform(value) : value;
+  return transform
+    ? transform(value, field as unknown as ResolvedField, content)
+    : value;
 }

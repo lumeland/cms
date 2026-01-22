@@ -13,7 +13,7 @@ export default {
   tag: "f-code",
   jsImport: "lume_cms/components/f-code.js",
   applyChanges: applyTextChanges,
-} as FieldDefinition<ResolvedCodeField>;
+} as FieldDefinition<ResolvedCodeField, CodeField>;
 
 declare global {
   namespace Lume.CMS {

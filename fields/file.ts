@@ -58,7 +58,7 @@ export default {
     const { current, uploaded } = value;
 
     if (!uploaded) {
-      data[field.name] = transform(field, current);
+      data[field.name] = transform(field, current, cmsContent);
       return;
     }
     const upload = field.upload || "default";
@@ -85,6 +85,7 @@ export default {
         uploadPath,
         uploaded.name,
       ),
+      cmsContent,
     );
   },
 } as FieldDefinition<ResolvedFileField>;

@@ -15,13 +15,13 @@ interface ResolvedCurrentDatetimeField
 export default {
   tag: "f-current-datetime",
   jsImport: "lume_cms/components/f-current-datetime.js",
-  applyChanges(data, changes, field) {
+  applyChanges(data, changes, field, _, cmsContent) {
     try {
       const value = typeof changes[field.name] === "string"
         ? Temporal.PlainDateTime.from(changes[field.name] as string)
         : null;
       if (value) {
-        data[field.name] = transform(field, value);
+        data[field.name] = transform(field, value, cmsContent);
       } else {
         delete data[field.name];
       }

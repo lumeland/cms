@@ -48,7 +48,7 @@ export default {
       ),
     );
 
-    data[field.name] = transform(field, value);
+    data[field.name] = transform(field, value, cmsContent);
   },
 } as FieldDefinition<ResolvedChooseListField>;
 

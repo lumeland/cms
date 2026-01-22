@@ -49,7 +49,7 @@ export default {
       );
     }
 
-    data[field.name] = transform(field, newValue);
+    data[field.name] = transform(field, newValue, cmsContent);
   },
 } as FieldDefinition<ResolvedChooseField>;
 

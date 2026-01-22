@@ -22,12 +22,12 @@ interface ResolvedMapField extends MapField, ResolvedField {
 export default {
   tag: "f-map",
   jsImport: "lume_cms/components/f-map.js",
-  applyChanges(data, changes, field) {
+  applyChanges(data, changes, field, _, cmsContent) {
     const value = Object.values(changes[field.name] || [])
       .filter((v) => !isEmpty(v.key))
       .map((v) => [v.key, v.value]);
 
-    data[field.name] = transform(field, Object.fromEntries(value));
+    data[field.name] = transform(field, Object.fromEntries(value), cmsContent);
   },
 } as FieldDefinition<ResolvedMapField>;
 
