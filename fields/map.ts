@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { transform } from "./utils.ts";
 import { isEmpty } from "../core/utils/string.ts";
 import type {
@@ -24,8 +25,8 @@ export default {
   jsImport: "lume_cms/components/f-map.js",
   applyChanges(data, changes, field) {
     const value = Object.values(changes[field.name] || [])
-      .filter((v) => !isEmpty(v.key))
-      .map((v) => [v.key, v.value]);
+      .filter((v: any) => !isEmpty(v.key))
+      .map((v: any) => [v.key, v.value]);
 
     data[field.name] = transform(field, Object.fromEntries(value));
   },

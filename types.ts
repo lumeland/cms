@@ -43,7 +43,7 @@ export interface SiteInfo {
 
 /** A storage mechanism for data */
 export interface Storage extends AsyncIterable<EntrySource> {
-  name(name: string): string;
+  name(name?: string): string;
   get(name: string): Entry;
   source(name: string): EntrySource;
   directory(name: string): Storage;

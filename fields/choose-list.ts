@@ -22,7 +22,8 @@ export default {
   async applyChanges(data, changes, field, document, cmsContent) {
     const value = await Promise.all(
       Object.values(changes[field.name] || {}).map(
-        async (subchanges) => {
+        // deno-lint-ignore no-explicit-any
+        async (subchanges: any) => {
           const type = subchanges.type as string;
           const value = { type } as Data;
           const chooseField = field.fields?.find((f) => f.name === type) as

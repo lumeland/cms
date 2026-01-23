@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New `sqlite` storage.
 - New option `transform` to documents and collections.
 
+### Changed
+- Document name is automatically generated if it's not provided. This removed the requirement of having a `documentLabel` option for collections if `rename` permission is `false`.
+
 ## [0.14.11] - 2026-01-13
 ### Fixed
 - Duplicated description in `choose-list`, `object-list` and `file-list` fields.

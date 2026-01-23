@@ -101,11 +101,8 @@ app.path(
 
             // Calculate the document name
             let name = normalizeName(body.get("_id") as string) ||
-              getDocumentName(collection, data, changes);
-
-            if (!name) {
-              throw new Error("Document name is required");
-            }
+              getDocumentName(collection, data, changes) ||
+              collection.storage.name();
 
             if (changes._prefix) {
               name = posix.join(

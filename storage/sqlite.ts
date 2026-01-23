@@ -33,7 +33,14 @@ export class Sqlite implements Storage {
     }
   }
 
-  name(name: string): string {
+  name(name?: string): string {
+    if (!name) {
+      const query = `SELECT max(id) as max_id FROM ${this.tableName}`;
+      const result = this.#db.prepare(query).get();
+      const maxId = (result?.max_id as number | undefined) ?? 0;
+      return `${maxId + 1}`;
+    }
+
     return name;
   }
 
@@ -144,12 +151,14 @@ export class SqliteEntry implements Entry {
     if (!row) {
       throw new Error(`Item not found: ${this.source.path}`);
     }
-    return row;
+    return Object.fromEntries(
+      Object.entries(row).map(([key, value]) => [key, unserialize(value)]),
+    );
   }
   writeData(content: Data): void {
     const [table, id] = this.#getTableAndId();
     const keys = Object.keys(content).join(", ");
-    const values = Object.values(content) as SQLOutputValue[];
+    const values = Object.values(content).map(serialize);
     const placeholders = values.map(() => "?").join(", ");
 
     const query =
@@ -164,5 +173,32 @@ export class SqliteEntry implements Entry {
 
   writeFile(): Promise<void> {
     throw new Error("Binary files not allowed in Sqlite storage");
+  }
+}
+
+function serialize(value: unknown): SQLOutputValue {
+  switch (typeof value) {
+    case "string":
+    case "number":
+    case "bigint":
+      return value;
+    case "boolean":
+      return value ? 1 : 0;
+    default:
+      if (value === null || value === undefined) {
+        return null;
+      }
+      return JSON.stringify(value);
+  }
+}
+
+function unserialize(value: SQLOutputValue): unknown {
+  if (typeof value !== "string") {
+    return value;
+  }
+  try {
+    return JSON.parse(value);
+  } catch {
+    return value;
   }
 }

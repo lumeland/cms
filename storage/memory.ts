@@ -1,5 +1,5 @@
 import { normalizeName, normalizePath } from "../core/utils/path.ts";
-import { slugify } from "../core/utils/string.ts";
+import { generateId, slugify } from "../core/utils/string.ts";
 import { contentType, globToRegExp, posix } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
 
@@ -85,8 +85,8 @@ export class Memory implements Storage {
     };
   }
 
-  name(name: string): string {
-    const newName = slugify(name);
+  name(name?: string): string {
+    const newName = name ? slugify(name) : generateId();
 
     return (this.extension && !newName.endsWith(this.extension))
       ? newName + this.extension

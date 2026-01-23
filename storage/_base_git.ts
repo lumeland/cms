@@ -1,6 +1,6 @@
 import { contentType, extname, globToRegExp, posix } from "../deps/std.ts";
 import { fromFilename } from "./transformers/mod.ts";
-import { slugify } from "../core/utils/string.ts";
+import { generateId, slugify } from "../core/utils/string.ts";
 import { normalizePath } from "../core/utils/path.ts";
 
 import type { CommitMessage, GitAPI } from "./apis/types.ts";
@@ -72,8 +72,8 @@ export abstract class BaseGitAPI<API extends GitAPI> implements Storage {
     };
   }
 
-  name(name: string): string {
-    const newName = slugify(name);
+  name(name?: string): string {
+    const newName = name ? slugify(name) : generateId();
 
     return (this.extension && !newName.endsWith(this.extension))
       ? newName + this.extension

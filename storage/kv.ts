@@ -1,4 +1,4 @@
-import { slugify } from "../core/utils/string.ts";
+import { generateId, slugify } from "../core/utils/string.ts";
 
 import type { Data, Entry, EntrySource, Storage } from "../types.ts";
 
@@ -34,8 +34,8 @@ export class Kv implements Storage {
     }
   }
 
-  name(name: string): string {
-    return slugify(name);
+  name(name?: string): string {
+    return name ? slugify(name) : generateId();
   }
 
   source(name: string): EntrySource {
