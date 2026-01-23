@@ -26,6 +26,12 @@ export interface EntrySource {
   src: string;
 }
 
+export interface DocumentLabel {
+  label: string;
+  icon?: string;
+  flags?: Record<string, any>;
+}
+
 export type EntryMetadata = EntrySource & DocumentLabel;
 
 export interface SiteInfo {
@@ -41,22 +47,22 @@ export interface Storage extends AsyncIterable<EntrySource> {
   get(name: string): Entry;
   source(name: string): EntrySource;
   directory(name: string): Storage;
-  delete(name: string): Promise<void>;
-  rename(name: string, newName: string): Promise<void>;
+  delete(name: string): void | Promise<void>;
+  rename(name: string, newName: string): void | Promise<void>;
 }
 
 export interface Entry {
   readonly storage: Storage;
   readonly source: EntrySource;
 
-  readData(): Promise<Data>;
-  writeData(content: Data): Promise<void>;
+  readData(): Data | Promise<Data>;
+  writeData(content: Data): void | Promise<void>;
 
-  readText(): Promise<string>;
-  writeText(content: string): Promise<void>;
+  readText(): string | Promise<string>;
+  writeText(content: string): void | Promise<void>;
 
-  readFile(): Promise<File>;
-  writeFile(content: File): Promise<void>;
+  readFile(): File | Promise<File>;
+  writeFile(content: File): void | Promise<void>;
 }
 
 export interface Version {
@@ -216,12 +222,6 @@ type Prettify<T> =
   }
   // deno-lint-ignore ban-types
   & {};
-
-export interface DocumentLabel {
-  label: string;
-  icon?: string;
-  flags?: Record<string, any>;
-}
 
 export type Labelizer = (name: string) => string | DocumentLabel;
 
