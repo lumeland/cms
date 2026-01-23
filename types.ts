@@ -104,7 +104,7 @@ export interface Field<T extends ResolvedField = ResolvedField, V = unknown> {
   ): void | Promise<void>;
 
   /** Function to transform the value before saved */
-  transform?(value: any, field: T, content: CMSContent): any;
+  transform?(value: any): any;
 }
 
 export interface ResolvedField {
@@ -123,8 +123,7 @@ export interface ResolvedField {
 
 /** A field definition to be used by the CMS */
 export type FieldDefinition<
-  T extends ResolvedField = ResolvedField,
-  F extends Field<T> = Field<T>,
+  T extends ResolvedField & Field = ResolvedField & Field,
 > = {
   /** The tagName used in the HTML for the custom element */
   tag: string;
@@ -147,11 +146,7 @@ export type FieldDefinition<
     content: CMSContent,
   ): void | Promise<void>;
 
-  transform?(
-    value: F["value"],
-    field: T,
-    content: CMSContent,
-  ): F["value"] | unknown;
+  transform?(value: T["value"]): T["value"] | unknown;
 };
 
 /** Option item for a select or datalist */

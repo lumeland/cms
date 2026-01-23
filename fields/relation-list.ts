@@ -53,13 +53,13 @@ export default {
       .map(createOption)
       .sort(compareOptions);
   },
-  applyChanges(data, changes, field, _, cmsContent) {
+  applyChanges(data, changes, field) {
     const options = field.options;
     const value = Object.values(changes[field.name] || {})
       .map((value) => getSelectValue(options, value))
       .filter((v) => !isEmpty(v));
 
-    data[field.name] = transform(field, value, cmsContent);
+    data[field.name] = transform(field, value);
   },
 } as FieldDefinition<ResolvedRelationListField>;
 

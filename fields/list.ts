@@ -22,10 +22,10 @@ interface ResolvedListField extends ListField, ResolvedField {
 export default {
   tag: "f-list",
   jsImport: "lume_cms/components/f-list.js",
-  applyChanges(data, changes, field, _, cmsContent) {
+  applyChanges(data, changes, field) {
     const value = Object.values(changes[field.name] || {})
       .filter((v) => !isEmpty(v));
-    data[field.name] = transform(field, value, cmsContent);
+    data[field.name] = transform(field, value);
   },
 } as FieldDefinition<ResolvedListField>;
 

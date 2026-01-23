@@ -40,7 +40,7 @@ export default {
       ),
     );
 
-    data[field.name] = transform(field, value, cmsContent);
+    data[field.name] = transform(field, value);
   },
 } as FieldDefinition<ResolvedObjectListField>;
 

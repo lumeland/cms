@@ -24,13 +24,13 @@ interface ResolvedDatetimeField extends DatetimeField, ResolvedField {
 export default {
   tag: "f-datetime",
   jsImport: "lume_cms/components/f-datetime.js",
-  applyChanges(data, changes, field, _, cmsContent) {
+  applyChanges(data, changes, field) {
     try {
       const value = typeof changes[field.name] === "string"
         ? Temporal.PlainDateTime.from(changes[field.name] as string)
         : null;
       if (value) {
-        data[field.name] = transform(field, value, cmsContent);
+        data[field.name] = transform(field, value);
       } else {
         delete data[field.name];
       }

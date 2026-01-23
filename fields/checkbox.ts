@@ -12,10 +12,10 @@ interface ResolvedCheckboxField extends CheckboxField, ResolvedField {
 export default {
   tag: "f-checkbox",
   jsImport: "lume_cms/components/f-checkbox.js",
-  applyChanges(data, changes, field, _, cmsContent) {
+  applyChanges(data, changes, field) {
     const value = field.name in changes ? changes[field.name] === "true" : null;
 
-    data[field.name] = transform(field, value, cmsContent);
+    data[field.name] = transform(field, value);
   },
 } as FieldDefinition<ResolvedCheckboxField>;
 
