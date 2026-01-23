@@ -77,6 +77,11 @@ export interface DocumentOptions {
   fields?: Lume.CMS.Field[];
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
+  transform?: (
+    data: Data,
+    CmsContent: CMSContent,
+    isNew: boolean,
+  ) => void | Promise<void>;
   edit?: boolean;
 }
 
@@ -91,6 +96,11 @@ export interface CollectionOptions {
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
+  transform?: (
+    data: Data,
+    CmsContent: CMSContent,
+    isNew: boolean,
+  ) => void | Promise<void>;
   create?: boolean;
   delete?: boolean;
   edit?: boolean;

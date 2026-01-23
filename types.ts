@@ -12,7 +12,7 @@ import type { Options as GitOptions } from "./core/git.ts";
 import type User from "./core/user.ts";
 
 /** Generic data to store */
-export type Data = Record<string, unknown>;
+export type Data = Record<string, any>;
 
 /** A storage entry source information */
 export interface EntrySource {

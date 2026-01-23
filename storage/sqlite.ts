@@ -1,5 +1,5 @@
 import type { Data, Entry, EntrySource, Storage } from "../types.ts";
-import { DatabaseSync, type SQLOutputValue } from 'node:sqlite';
+import { DatabaseSync, type SQLOutputValue } from "node:sqlite";
 
 export interface Options {
   db: DatabaseSync;
@@ -76,7 +76,7 @@ export class Sqlite implements Storage {
   }
 
   #getIdFromName(name: string): string {
-    const [ id ] = name.split("_");
+    const [id] = name.split("_");
     return id.trim();
   }
 
@@ -121,8 +121,8 @@ export class SqliteEntry implements Entry {
   }
 
   #getTableAndId(): [string, string] {
-    const {src} = this.source;
-    const [ table, id ] = src.split("/");
+    const { src } = this.source;
+    const [table, id] = src.split("/");
     return [table.trim(), id.trim()];
   }
 
@@ -137,22 +137,23 @@ export class SqliteEntry implements Entry {
   }
 
   readData(): Data {
-    const [ table, id ] = this.#getTableAndId();
+    const [table, id] = this.#getTableAndId();
     const query = `SELECT * FROM ${table} WHERE id = ?`;
     const stmt = this.#storage.db.prepare(query);
     const row = stmt.get(id);
     if (!row) {
       throw new Error(`Item not found: ${this.source.path}`);
     }
-    return row
+    return row;
   }
   writeData(content: Data): void {
-    const [ table, id ] = this.#getTableAndId();
+    const [table, id] = this.#getTableAndId();
     const keys = Object.keys(content).join(", ");
     const values = Object.values(content) as SQLOutputValue[];
     const placeholders = values.map(() => "?").join(", ");
 
-    const query = `INSERT OR REPLACE INTO ${table} (id, ${keys}) VALUES (?, ${placeholders})`;
+    const query =
+      `INSERT OR REPLACE INTO ${table} (id, ${keys}) VALUES (?, ${placeholders})`;
     const stmt = this.#storage.db.prepare(query);
     stmt.run(id, ...values);
   }

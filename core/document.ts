@@ -10,6 +10,11 @@ export interface DocumentOptions {
   fields?: Lume.CMS.ResolvedField;
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
+  transform?: (
+    data: Data,
+    CmsContent: CMSContent,
+    isNew: boolean,
+  ) => void | Promise<void>;
   edit?: boolean;
 }
 
@@ -26,6 +31,11 @@ export default class Document {
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   permissions: Permissions;
+  transform?: (
+    data: Data,
+    CmsContent: CMSContent,
+    isNew: boolean,
+  ) => void | Promise<void>;
 
   constructor(options: DocumentOptions) {
     this.#name = options.name;
@@ -35,6 +45,7 @@ export default class Document {
     this.#fields = options.fields;
     this.previewUrl = options.previewUrl;
     this.views = options.views;
+    this.transform = options.transform;
     this.permissions = {
       edit: options.edit ?? true,
     };
@@ -96,6 +107,12 @@ export default class Document {
     const currentData = await this.read(create);
     const fields = await prepareField(this.fields, cms, currentData);
     await this.fields.applyChanges(currentData, data, fields, this, cms);
-    await this.#entry.writeData(currentData.root);
+    const dataToSave = currentData.root;
+
+    if (this.transform) {
+      await this.transform(dataToSave, cms, create);
+    }
+
+    await this.#entry.writeData(dataToSave);
   }
 }
