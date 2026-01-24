@@ -14,21 +14,21 @@
     <h1 class="header-title">Editing document from {{ collection.label }}</h1>
   </header>
 
-  <nav class="navigation">
-    <label class="input-file">
-      <input
-        class="input"
-        id="_id"
-        type="{{ user.canRename(collection) ? 'text' : 'hidden' }}"
-        name="_id"
-        value="{{document.name}}"
-        placeholder="Rename the file…"
-        form="form-edit"
-        aria-label="File name"
-        required
-      >
-    </label>
+  <label class="input-file">
+    <input
+      class="input"
+      id="_id"
+      type="{{ user.canRename(collection) ? 'text' : 'hidden' }}"
+      name="_id"
+      value="{{document.name}}"
+      placeholder="Rename the file…"
+      form="form-edit"
+      aria-label="File name"
+      required
+    >
+  </label>
 
+  <nav class="navigation">
     {{ if user.canEdit(collection) }}
       <button
         class="button is-primary"

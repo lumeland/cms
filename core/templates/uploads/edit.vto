@@ -17,21 +17,21 @@
     </h1>
   </header>
 
-  <nav class="navigation">
-    <label class="input-file">
-      <input
-        class="input is-inline"
-        id="_id"
-        type="{{ user.canRename(upload) ? 'text' : 'hidden' }}"
-        name="_id"
-        value="{{ file }}"
-        placeholder="Rename the file…"
-        form="form-edit"
-        aria-label="File name"
-        required
-      >
-    </label>
+  <label class="input-file">
+    <input
+      class="input is-inline"
+      id="_id"
+      type="{{ user.canRename(upload) ? 'text' : 'hidden' }}"
+      name="_id"
+      value="{{ file }}"
+      placeholder="Rename the file…"
+      form="form-edit"
+      aria-label="File name"
+      required
+    >
+  </label>
 
+  <nav class="navigation">
     {{ if user.canEdit(upload) }}
       <button
         class="button is-primary"

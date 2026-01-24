@@ -1,12 +1,14 @@
-{{ layout "layout.vto" }}
-  {{ function folder(upload, tree) }}
-    {{
-      set content = Array.from([
-        ...tree.folders?.entries() || [],
-        ...tree.files?.entries() || [],
-      ]).sort(([a], [b]) => a.localeCompare(b))
-    }}
+{{>
+function treeToContent(tree) {
+return Array.from([
+    ...tree.folders?.entries() || [],
+    ...tree.files?.entries() || [],
+  ]).sort(([a], [b]) => a.localeCompare(b))
+}
+}}
 
+{{ layout "layout.vto" }}
+  {{ function folder(upload, content) }}
     {{ for entry of content }}
       {{> const [name, child] = entry }}
 
@@ -45,10 +47,11 @@
         </li>
       {{ else }}
         <li>
-          <details class="accordion">
-            <summary>{{ name }}</summary>
+          {{ set subContent = treeToContent(child) }}
+          <details {{ subContent.length < 10 ? "open" : "" }} class="accordion">
+            <summary title="{{ subContent.length }} item(s)">{{ name }}</summary>
             <ul>
-              {{ folder(upload, child) }}
+              {{ folder(upload, subContent) }}
             </ul>
           </details>
           <div class="list-actions">
@@ -75,17 +78,17 @@
     {{ /if }}
   </header>
 
-  {{ set content = folder(upload, tree).trim() }}
+  {{ set content = folder(upload, treeToContent(tree)).trim() }}
+
+  {{ if content }}
+    <u-filter
+      data-placeholder="Search files in {{upload.label}}"
+      data-selector="#list li"
+    >
+    </u-filter>
+  {{ /if }}
 
   <nav class="navigation">
-    {{ if content }}
-      <u-filter
-        data-placeholder="Search files in {{upload.label}}"
-        data-selector="#list li"
-      >
-      </u-filter>
-    {{ /if }}
-
     {{ if user.canCreate(upload) }}
       <a
         href='{{ ["uploads", upload.name, "create"] |> path }}'

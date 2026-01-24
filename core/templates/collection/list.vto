@@ -1,12 +1,14 @@
-{{ layout "layout.vto" }}
-  {{ function folder(collection, tree) }}
-    {{
-      set content = Array.from([
-        ...tree.folders?.entries() || [],
-        ...tree.files?.entries() || [],
-      ]).sort(([a], [b]) => a.localeCompare(b))
-    }}
+{{>
+function treeToContent(tree) {
+return Array.from([
+    ...tree.folders?.entries() || [],
+    ...tree.files?.entries() || [],
+  ]).sort(([a], [b]) => a.localeCompare(b))
+}
+}}
 
+{{ layout "layout.vto" }}
+  {{ function folder(collection, content) }}
     {{ for entry of content }}
       {{> const [name, child] = entry }}
 
@@ -28,10 +30,11 @@
         </li>
       {{ else }}
         <li>
-          <details open class="accordion">
-            <summary>{{ name }}</summary>
+          {{ set subContent = treeToContent(child) }}
+          <details {{ subContent.length < 10 ? "open" : "" }} class="accordion">
+            <summary title="{{ subContent.length }} item(s)">{{ name }}</summary>
             <ul>
-              {{ folder(collection, child) }}
+              {{ folder(collection, subContent) }}
             </ul>
           </details>
           <div class="list-actions">
@@ -58,17 +61,17 @@
     {{ /if }}
   </header>
 
-  {{ set content = folder(collection, tree).trim() }}
+  {{ set content = folder(collection, treeToContent(tree)).trim() }}
+
+  {{ if content }}
+    <u-filter
+      data-placeholder="Filter {{ collection.label }}"
+      data-selector="#list > li"
+    >
+    </u-filter>
+  {{ /if }}
 
   <nav class="navigation">
-    {{ if content }}
-      <u-filter
-        data-placeholder="Filter {{ collection.label }}"
-        data-selector="#list > li"
-      >
-      </u-filter>
-    {{ /if }}
-
     {{ if user.canCreate(collection) }}
       <a
         href='{{ ["collection", collection.name, "create"] |> path }}'
