@@ -4,13 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.14.12] - Unreleased
+## [0.14.12] - 2026-01-24
 ### Added
 - New `sqlite` storage.
 - New option `transform` to documents and collections.
 
 ### Changed
 - Document name is automatically generated if it's not provided. This removed the requirement of having a `documentLabel` option for collections if `rename` permission is `false`.
+- Some UI tweaks.
 
 ### Fixed
 - Filter automatically opens the closed elements containing results
@@ -854,7 +855,7 @@ First version
 [#66]: https://github.com/lumeland/cms/issues/66
 [#68]: https://github.com/lumeland/cms/issues/68
 
-[0.14.12]: https://github.com/lumeland/cms/compare/v0.14.11...HEAD
+[0.14.12]: https://github.com/lumeland/cms/compare/v0.14.11...v0.14.12
 [0.14.11]: https://github.com/lumeland/cms/compare/v0.14.10...v0.14.11
 [0.14.10]: https://github.com/lumeland/cms/compare/v0.14.9...v0.14.10
 [0.14.9]: https://github.com/lumeland/cms/compare/v0.14.8...v0.14.9
