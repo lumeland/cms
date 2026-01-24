@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 - Document name is automatically generated if it's not provided. This removed the requirement of having a `documentLabel` option for collections if `rename` permission is `false`.
 
+### Fixed
+- Filter automatically opens the closed elements containing results
+
 ## [0.14.11] - 2026-01-13
 ### Fixed
 - Duplicated description in `choose-list`, `object-list` and `file-list` fields.

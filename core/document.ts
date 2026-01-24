@@ -99,7 +99,7 @@ export default class Document {
     }
   }
 
-  async write(data: Data, cms: CMSContent, create = false) {
+  async write(data: Data, cms: CMSContent, create = false): Promise<Data> {
     if (!this.fields) {
       throw new Error("Cannot write data without fields");
     }
@@ -114,5 +114,6 @@ export default class Document {
     }
 
     await this.#entry.writeData(dataToSave);
+    return dataToSave;
   }
 }

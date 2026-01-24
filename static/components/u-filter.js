@@ -28,6 +28,14 @@ customElements.define(
           const value = tokenize(this.value);
           results.forEach(([node, content]) => {
             node.hidden = !content.includes(value);
+
+            if (!node.hidden) {
+              let el = node.closest("details:not([open])");
+              while (el) {
+                el.open = true;
+                el = el.closest("details:not([open])");
+              }
+            }
           });
           history.replaceState({}, "", `#filter=${value}`);
         },
@@ -37,6 +45,7 @@ customElements.define(
         input.dispatchEvent(new Event("focus"));
         input.dispatchEvent(new Event("input"));
       }
+      
     }
   },
 );

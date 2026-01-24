@@ -97,12 +97,10 @@ app.path(
           .post(async ({ request }) => {
             const body = await request.formData();
             const changes = Object.fromEntries(body);
-            const data = changesToData(changes);
+            let data = changesToData(changes);
 
             // Calculate the document name
-            let name = normalizeName(body.get("_id") as string) ||
-              getDocumentName(collection, data, changes) ||
-              collection.storage.name();
+            let name = normalizeName(body.get("_id") as string) || collection.storage.name();
 
             if (changes._prefix) {
               name = posix.join(
@@ -113,12 +111,21 @@ app.path(
 
             // Write the document
             const document = collection.create(name);
-            await document.write(data, cms, true);
+            data = await document.write(data, cms, true);
+
+            // Recalculate the document name if it wasn't manually defined
+            if (!body.get("_id")) {
+              name = getDocumentName(collection, data) || name;
+            }
+
+            if (document.name !== name) {
+              name = await collection.rename(document.name, name);
+            }
 
             // Wait for the preview URL to be ready before redirecting
             await getPreviewUrl(document, true);
 
-            return redirect(collection.name, document.name, "edit");
+            return redirect(collection.name, name, "edit");
           });
       })
       /* /collection/:name/:file/* - Document actions */
@@ -168,38 +175,35 @@ app.path(
           /* POST /collection/:name/:file/edit - Save edit data */
           .post("/edit", async () => {
             const body = await request.formData();
-            let newName = normalizeName(body.get("_id") as string);
+            let name = normalizeName(body.get("_id") as string);
             let finalDocument = document;
 
-            if (!newName) {
+            if (!name) {
               throw new Error("Document name is required");
             }
 
-            if (document.name === newName && !user.canEdit(collection)) {
+            if (document.name === name && !user.canEdit(collection)) {
               throw new Error("Permission denied to edit document");
             }
 
-            if (
-              document.name !== newName &&
-              !user.canRename(collection)
-            ) {
+            if (document.name !== name && !user.canRename(collection)) {
               throw new Error("Permission denied to rename document");
             }
+
             const changes = Object.fromEntries(body);
-            const data = changesToData(changes);
+
+            // Save changes
+            const data = await document.write(changesToData(changes), cms);
 
             // Recalculate the document name automatically
             if (collection.permissions.rename === "auto") {
-              newName = getDocumentName(collection, data, changes) ||
-                newName;
+              name = getDocumentName(collection, data) || name;
             }
 
-            if (document.name !== newName) {
-              newName = await collection.rename(document.name, newName);
-              finalDocument = collection.get(newName);
+            if (document.name !== name) {
+              name = await collection.rename(document.name, name);
+              finalDocument = collection.get(name);
             }
-
-            await finalDocument.write(data, cms);
 
             // Wait for the preview URL to be ready
             await getPreviewUrl(finalDocument, true);
@@ -319,22 +323,38 @@ export default app;
 function getDocumentName(
   collection: Collection,
   data: Data,
-  changes: Record<string, unknown>,
 ) {
   switch (typeof collection.documentName) {
     case "string":
       return collection.documentName.replaceAll(
         /\{([^}\s]+)\}/g,
         (_, key) => {
-          const value = changes[`root.${key}`];
+          const value = getValue(key, data);
           if (typeof value === "string") {
             return value.replaceAll("/", "").trim();
           }
-          return "";
+          return typeof value === "number" ? value.toString() : "";
         },
       ).trim();
 
     case "function":
-      return collection.documentName((data.root ?? {}) as Data);
+      return collection.documentName((data) as Data);
+  }
+}
+
+function getValue(key: string, data: Data) {
+  if (!key.includes(".")) {
+    return data[key];
+  }
+
+  const [, firstPart, rest] = key.match(/^([^.])\.(.*)$/)!
+  const value = data[firstPart];
+
+  if (!value) {
+    return value;
+  }
+
+  if (typeof value === "object" && rest) {
+    return getValue(rest, value);
   }
 }
