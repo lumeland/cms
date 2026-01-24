@@ -100,7 +100,8 @@ app.path(
             let data = changesToData(changes);
 
             // Calculate the document name
-            let name = normalizeName(body.get("_id") as string) || collection.storage.name();
+            let name = normalizeName(body.get("_id") as string) ||
+              collection.storage.name();
 
             if (changes._prefix) {
               name = posix.join(
@@ -338,7 +339,7 @@ function getDocumentName(
       ).trim();
 
     case "function":
-      return collection.documentName((data) as Data);
+      return collection.documentName(data as Data);
   }
 }
 
@@ -347,7 +348,7 @@ function getValue(key: string, data: Data) {
     return data[key];
   }
 
-  const [, firstPart, rest] = key.match(/^([^.])\.(.*)$/)!
+  const [, firstPart, rest] = key.match(/^([^.])\.(.*)$/)!;
   const value = data[firstPart];
 
   if (!value) {

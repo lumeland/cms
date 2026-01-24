@@ -1,10 +1,10 @@
 {{>
-function treeToContent(tree) {
-return Array.from([
-    ...tree.folders?.entries() || [],
-    ...tree.files?.entries() || [],
-  ]).sort(([a], [b]) => a.localeCompare(b))
-}
+  function treeToContent(tree) {
+    return Array.from([
+      ...tree.folders?.entries() || [],
+      ...tree.files?.entries() || [],
+    ]).sort(([a], [b]) => a.localeCompare(b));
+  }
 }}
 
 {{ layout "layout.vto" }}
@@ -32,7 +32,9 @@ return Array.from([
         <li>
           {{ set subContent = treeToContent(child) }}
           <details {{ subContent.length < 10 ? "open" : "" }} class="accordion">
-            <summary title="{{ subContent.length }} item(s)">{{ name }}</summary>
+            <summary title="{{ subContent.length }} item(s)">
+              {{ name }}
+            </summary>
             <ul>
               {{ folder(collection, subContent) }}
             </ul>

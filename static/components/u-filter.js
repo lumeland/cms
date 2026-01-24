@@ -45,7 +45,6 @@ customElements.define(
         input.dispatchEvent(new Event("focus"));
         input.dispatchEvent(new Event("input"));
       }
-      
     }
   },
 );

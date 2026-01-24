@@ -188,14 +188,21 @@ function serialize(value: unknown): SQLOutputValue {
       if (value === null || value === undefined) {
         return null;
       }
+      if (typeof value === "object" && typeof value.toString === "function") {
+        return value.toString();
+      }
+
       return JSON.stringify(value);
   }
 }
 
+const MAYBE_JSON = /^[\[{"].*[\]}"]$/;
+
 function unserialize(value: SQLOutputValue): unknown {
-  if (typeof value !== "string") {
+  if (typeof value !== "string" || !MAYBE_JSON.test(value)) {
     return value;
   }
+
   try {
     return JSON.parse(value);
   } catch {
