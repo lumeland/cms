@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.14.13] - Unreleased
+### Fixed
+- Array serialization for `sqlite`.
+
 ## [0.14.12] - 2026-01-24
 ### Added
 - New `sqlite` storage.
@@ -855,6 +859,7 @@ First version
 [#66]: https://github.com/lumeland/cms/issues/66
 [#68]: https://github.com/lumeland/cms/issues/68
 
+[0.14.13]: https://github.com/lumeland/cms/compare/v0.14.12...HEAD
 [0.14.12]: https://github.com/lumeland/cms/compare/v0.14.11...v0.14.12
 [0.14.11]: https://github.com/lumeland/cms/compare/v0.14.10...v0.14.11
 [0.14.10]: https://github.com/lumeland/cms/compare/v0.14.9...v0.14.10

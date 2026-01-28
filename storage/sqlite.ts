@@ -188,7 +188,11 @@ function serialize(value: unknown): SQLOutputValue {
       if (value === null || value === undefined) {
         return null;
       }
-      if (typeof value === "object" && typeof value.toString === "function") {
+
+      if (
+        !Array.isArray(value) && typeof value === "object" &&
+        typeof value.toString === "function"
+      ) {
         return value.toString();
       }
 
