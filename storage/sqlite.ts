@@ -176,6 +176,8 @@ export class SqliteEntry implements Entry {
   }
 }
 
+const objectConstructor = {}.constructor;
+
 function serialize(value: unknown): SQLOutputValue {
   switch (typeof value) {
     case "string":
@@ -190,13 +192,13 @@ function serialize(value: unknown): SQLOutputValue {
       }
 
       if (
-        !Array.isArray(value) && typeof value === "object" &&
-        typeof value.toString === "function"
+        Array.isArray(value) ||
+        (typeof value === "object" && value.constructor === objectConstructor)
       ) {
-        return value.toString();
+        return JSON.stringify(value);
       }
 
-      return JSON.stringify(value);
+      return String(value);
   }
 }
 
