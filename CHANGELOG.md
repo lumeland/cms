@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.14.15] - 2026-02-07
+### Fixed
+- Names of duplicated documents.
+
 ## [0.14.14] - 2026-02-03
 ### Fixed
 - `sqlite` serialization.
@@ -864,6 +868,7 @@ First version
 [#66]: https://github.com/lumeland/cms/issues/66
 [#68]: https://github.com/lumeland/cms/issues/68
 
+[0.14.15]: https://github.com/lumeland/cms/compare/v0.14.14...v0.14.15
 [0.14.14]: https://github.com/lumeland/cms/compare/v0.14.13...v0.14.14
 [0.14.13]: https://github.com/lumeland/cms/compare/v0.14.12...v0.14.13
 [0.14.12]: https://github.com/lumeland/cms/compare/v0.14.11...v0.14.12

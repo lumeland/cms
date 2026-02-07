@@ -1,10 +1,5 @@
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
-import {
-  getExtension,
-  getLanguageCode,
-  getPath,
-  normalizeName,
-} from "../utils/path.ts";
+import { getLanguageCode, getPath, normalizeName } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
 import { Router } from "../../deps/galo.ts";
 import createTree from "../templates/tree.ts";
@@ -282,16 +277,9 @@ app.path(
               throw new Error("Document name is required");
             }
 
-            // If the name is already used, append "-copy" to it
+            // If the name is already used, generate one
             if (document.name === name) {
-              const ext = getExtension(name);
-              if (ext) {
-                name = name.substring(0, name.length - ext.length - 1) +
-                  "-copy." +
-                  ext;
-              } else {
-                name = `${name}-copy`;
-              }
+              name = collection.storage.name();
             }
 
             const duplicate = collection.create(name);
