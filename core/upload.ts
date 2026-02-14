@@ -14,6 +14,7 @@ export interface UploadOptions {
   publicPath: string;
   documentLabel?: Labelizer;
   listed?: boolean;
+  preferRelativePaths?: boolean;
   create?: boolean;
   delete?: boolean;
   edit?: boolean;
@@ -34,6 +35,7 @@ export default class Upload {
   #storage: Storage;
   publicPath: string;
   listed: boolean;
+  preferRelativePaths: boolean;
   documentLabel?: Labelizer;
   permissions: Permissions;
 
@@ -44,6 +46,7 @@ export default class Upload {
     this.#storage = options.storage;
     this.publicPath = options.publicPath;
     this.listed = options.listed ?? true;
+    this.preferRelativePaths = options.preferRelativePaths ?? false;
     this.documentLabel = options.documentLabel;
     this.permissions = {
       edit: options.edit ?? true,

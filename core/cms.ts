@@ -45,6 +45,19 @@ export interface CmsOptions {
   extraHead?: string;
   previewUrl?: PreviewUrl;
   sourcePath?: SourcePath;
+
+  /**
+   * Attempt to use relative paths for uploaded files (e.g., `../assets/image.png`).
+   *
+   * This improves document portability, for instance rendering images correctly in 
+   * an editor that has no further context (like a GitHub preview).
+   *
+   * **Note**: This is a "best effort" setting. Absolute paths may still be used 
+   * if the document's location is unknown (e.g., when creating a new entry).
+   *
+   * @default false
+   */
+  preferRelativePaths?: boolean;
 }
 
 export interface AuthOptions {
@@ -328,6 +341,7 @@ export default class Cms {
         storage: this.#getStorage(store),
         publicPath: publicPath ?? "/",
         listed: listed ?? true,
+        preferRelativePaths: this.options.preferRelativePaths,
       });
     }
 

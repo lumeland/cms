@@ -24,6 +24,9 @@ export interface EntrySource {
 
   /** The full location of the entry (i.e: the raw GitHub file URL) */
   src: string;
+
+  /** The relative path of the entry from a given path */
+  relativePath?: string;
 }
 
 export interface DocumentLabel {

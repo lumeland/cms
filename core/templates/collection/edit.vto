@@ -104,6 +104,7 @@
       id="form-edit"
     >
       <u-fields
+        data-document-path-dir="{{ documentPathDir }}"
         data-fields="{{ fields |> JSON.stringify |> escape  }}"
         data-value="{{ data |> JSON.stringify |> escape  }}"
       ></u-fields>

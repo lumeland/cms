@@ -1,5 +1,5 @@
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
-import { getLanguageCode, getPath, normalizeName } from "../utils/path.ts";
+import { getLanguageCode, getPath, normalizeName, normalizePath } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
 import { Router } from "../../deps/galo.ts";
 import createTree from "../templates/tree.ts";
@@ -79,13 +79,15 @@ app.path(
               ? collection.views() || []
               : collection.views || [];
 
+            const folder = normalizeName(searchParams.get("folder")) ?? '';
             return render("collection/create.vto", {
               defaults: Object.fromEntries(searchParams),
               collection,
               fields: await prepareField(collection.fields, cms),
               initViews,
               views: Array.from(getViews(collection.fields)),
-              folder: normalizeName(searchParams.get("folder")),
+              folder,
+              documentPathDir: normalizePath(posix.join(collection.storage.path, folder)),
               user,
             });
           })
@@ -165,6 +167,7 @@ app.path(
               url: await getPreviewUrl(document),
               views: Array.from(getViews(collection.fields)),
               document,
+              documentPathDir: posix.dirname(document.source.path),
               user,
             });
           })

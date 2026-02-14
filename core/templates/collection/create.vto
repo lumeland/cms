@@ -63,6 +63,7 @@
   >
     <input type="hidden" name="_prefix" value="{{ folder }}">
     <u-fields
+      data-document-path-dir="{{ documentPathDir }}"
       data-fields="{{ fields |> JSON.stringify |> escape }}"
       data-new="true"
       data-value="{{ defaults |> JSON.stringify |> escape }}"

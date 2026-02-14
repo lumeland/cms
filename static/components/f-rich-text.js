@@ -16,7 +16,7 @@ customElements.define(
   class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, isNew, namePrefix } = this;
+      const { schema, value, isNew, namePrefix, documentPathDir } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
@@ -59,8 +59,9 @@ customElements.define(
           class: "button is-secondary",
           type: "button",
           onclick() {
+            const parentParam = documentPathDir ? `?parent=${encodeURIComponent(documentPathDir)}` : '';
             dom("u-modal", {
-              data: { src: url("uploads", name) },
+              data: { src: url("uploads", name) + parentParam },
             }, document.body);
           },
           html: `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`,

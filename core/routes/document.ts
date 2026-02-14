@@ -1,5 +1,6 @@
 import { getLanguageCode, getPath } from "../utils/path.ts";
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
+import { posix } from "../../deps/std.ts";
 import { Router } from "../../deps/galo.ts";
 
 import type Document from "../document.ts";
@@ -71,6 +72,7 @@ app.path(
 
         return render("document/edit.vto", {
           document,
+          documentPathDir: posix.dirname(document.source.path),
           fields: await prepareField(document.fields, cms, data),
           views: Array.from(getViews(document.fields)),
           initViews,

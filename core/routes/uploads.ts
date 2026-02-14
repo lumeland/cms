@@ -1,5 +1,5 @@
 import { slugify } from "../utils/string.ts";
-import { getPath, normalizeName } from "../utils/path.ts";
+import { getPath, getRelativePath, normalizeName } from "../utils/path.ts";
 import {
   formatSupported,
   MagickGeometry,
@@ -47,10 +47,14 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
 
   return next()
     /* GET /uploads/:name/ - List files in the upload */
-    .get("/", async () => {
+    .get("/", async ({ request }) => {
+      let parentPathDir: string | undefined;
+      if (upload.preferRelativePaths) {
+        parentPathDir = getParentPathDir(request);
+      }
       return render("uploads/list.vto", {
         upload,
-        tree: createTree(await Array.fromAsync(upload)),
+        tree: createTree(await Array.fromAsync(upload), parentPathDir),
         user,
       });
     })
@@ -101,7 +105,7 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
       return redirect(upload.name);
     })
     /* GET /uploads/:name/:file/* - File actions */
-    .path("/:file/*", ({ file, next }) => {
+    .path("/:file/*", ({ request, file, next }) => {
       const name = normalizeName(file);
 
       if (!name) {
@@ -112,9 +116,17 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
         /* GET /uploads/:name/:file - Get raw file content */
         .get("/", () => upload.get(name).readFile())
         /* GET /uploads/:name/:file/edit - Show the file edit form */
-        .get("/edit", async () => {
+        .get("/edit", async ({ request }) => {
           const entry = upload.get(name);
           const fileData = await entry.readFile();
+
+          let relativePath: string | undefined;
+          if (upload.preferRelativePaths) {
+            relativePath = getRelativePath(
+              getParentPathDir(request),
+              entry.source.path,
+            );
+          }
 
           return render("uploads/edit.vto", {
             type: fileData.type,
@@ -122,6 +134,7 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
             exif: await parseExif(fileData),
             upload,
             file: name,
+            relativePath,
             user,
           });
         })
@@ -220,5 +233,21 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
         });
     });
 });
+
+function getParentPathDir(request: { url: string; headers?: Headers }): string | undefined {
+  const { searchParams } = new URL(request.url);
+  const value = searchParams.get('parent');
+  if (value) {
+      return value;
+  }
+
+  // Fallback to extract the "parent" param from the referer
+  const dest = request.headers?.get("sec-fetch-dest");
+  const site = request.headers?.get("sec-fetch-site");
+  const referer = request.headers?.get("referer");
+  if (dest === "iframe" && site === "same-origin" && referer) {
+      return getParentPathDir({ url: referer });
+  }
+}
 
 export default app;

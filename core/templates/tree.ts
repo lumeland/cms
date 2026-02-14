@@ -1,4 +1,6 @@
+import { posix } from "../../deps/std.ts";
 import type { EntryMetadata } from "../../types.ts";
+import { getRelativePath } from "../utils/path.ts";
 
 export interface Tree {
   path: string;
@@ -6,13 +8,14 @@ export interface Tree {
   files?: Map<string, EntryMetadata>;
 }
 
-export default function createTree(files: EntryMetadata[]): Tree {
+export default function createTree(files: EntryMetadata[], relativeFrom?: string): Tree {
   const tree: Tree = {
     path: "",
   };
 
   for (const metadata of files) {
-    const { label, name } = metadata;
+    const { label, name, path } = metadata;
+    metadata.relativePath = getRelativePath(relativeFrom, path);
     placeFile(tree, metadata, label.split("/"), name.split("/"));
   }
   return tree;

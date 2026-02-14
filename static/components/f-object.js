@@ -7,7 +7,7 @@ customElements.define(
   class extends Component {
     init() {
       this.classList.add("field", "is-group");
-      const { schema, value, isNew } = this;
+      const { schema, value, isNew, documentPathDir } = this;
       initField(this);
       const namePrefix = getFieldName(this);
       const details = dom("details", {
@@ -62,6 +62,7 @@ customElements.define(
           ".schema": field,
           ".namePrefix": namePrefix,
           ".isNew": isNew,
+          ".documentPathDir": documentPathDir,
           value: value?.[field.name] ?? null,
         }, div);
       }
@@ -94,7 +95,7 @@ customElements.define(
   "f-object-root",
   class extends Component {
     init() {
-      const { schema, value, isNew } = this;
+      const { schema, value, isNew, documentPathDir } = this;
       const namePrefix = getFieldName(this);
 
       const div = dom("div", {
@@ -106,6 +107,7 @@ customElements.define(
           ".schema": field,
           ".namePrefix": namePrefix,
           ".isNew": isNew,
+          ".documentPathDir": documentPathDir,
           value: value?.[field.name] ?? null,
         }, div);
       }

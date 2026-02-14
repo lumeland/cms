@@ -1,5 +1,5 @@
 import { transform } from "./utils.ts";
-import { normalizePath } from "../core/utils/path.ts";
+import { getRelativePath, normalizePath } from "../core/utils/path.ts";
 import { posix } from "../deps/std.ts";
 import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
@@ -80,11 +80,16 @@ export default {
     await entry.writeFile(uploaded);
     data[field.name] = transform(
       field,
-      normalizePath(
-        uploads.publicPath,
-        uploadPath,
-        uploaded.name,
-      ),
+      uploads.preferRelativePaths
+        ? getRelativePath(
+          posix.dirname(document.source.path),
+          entry.source.path,
+        )
+        : normalizePath(
+          uploads.publicPath,
+          uploadPath,
+          uploaded.name,
+        ),
     );
   },
 } as FieldDefinition<ResolvedFileField>;

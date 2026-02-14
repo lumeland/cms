@@ -14,6 +14,7 @@ customElements.define(
       dom(fields.tag, {
         ".schema": fields,
         ".isNew": isNew,
+        ".documentPathDir": this.dataset.documentPathDir,
         value: value?.[fields.name] ?? null,
       }, this);
     }

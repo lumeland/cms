@@ -88,6 +88,28 @@
           document.body.innerHTML =
             '<p class="emptyState is-fullscreen">Logged out.</p>';
         }, false);
+
+        // Inherit the "parent" param on the Uploads modal
+        const paramName = "parent";
+        try {
+          (function() {
+            // Only on (the modal) iframe
+            if (window.self === window.top) return;
+            // Only if we have access to the referrer
+            if (!document.referrer) return;
+          
+            const currentUrl = new URL(window.location.href);
+            const referrerUrl = new URL(document.referrer);
+
+            // Limit to same origin
+            if (referrerUrl.origin !== currentUrl.origin) return;
+
+            if (!currentUrl.searchParams.has(paramName) && referrerUrl.searchParams.has(paramName)) {
+              currentUrl.searchParams.set(paramName, referrerUrl.searchParams.get(paramName));
+              window.history.replaceState(null, '', currentUrl.toString());
+            }
+          })();
+        } catch (_) {}
     </script>
   </body>
 </html>

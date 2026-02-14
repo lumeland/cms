@@ -7,7 +7,7 @@ customElements.define(
   class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, isNew } = this;
+      const { schema, value, isNew, documentPathDir } = this;
       const namePrefix = getFieldName(this);
       let open = true;
 
@@ -48,6 +48,7 @@ customElements.define(
           },
           ".namePrefix": namePrefix,
           ".isNew": value === undefined,
+          ".documentPathDir": documentPathDir,
           value,
           html: [
             dom("button", {
@@ -128,7 +129,7 @@ customElements.define(
   "f-object-list-root",
   class extends Component {
     init() {
-      const { schema, value, isNew } = this;
+      const { schema, value, isNew, documentPathDir } = this;
       const namePrefix = getFieldName(this);
 
       const div = dom("div", { class: "fieldset is-root" }, this);
@@ -143,6 +144,7 @@ customElements.define(
           ".schema": { ...schema, attributes, name: index++, label },
           ".namePrefix": namePrefix,
           ".isNew": value === undefined,
+          ".documentPathDir": documentPathDir,
           value,
           html: [
             dom("button", {

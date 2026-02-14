@@ -41,8 +41,13 @@
               </u-preview>
             </template>
           </u-popover>
+          {{ if child.relativePath /* With preferRelativePath + parent document */ }}
+            {{ set publicUrl = child.relativePath }}
+          {{ else }}
+            {{ set publicUrl = [upload.publicPath, child.name] |> normalizePath }}
+          {{ /if }}
           <u-copy
-            text="{{ [upload.publicPath, child.name] |> normalizePath }}"
+            text="{{ publicUrl }}"
           ></u-copy>
         </li>
       {{ else }}

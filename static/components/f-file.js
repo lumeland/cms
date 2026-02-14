@@ -1,13 +1,14 @@
 import { Component } from "./component.js";
 import { initField, oninvalid, updateField, url } from "./utils.js";
 import dom from "dom";
+import { join } from "std/path/posix/join.js";
 
 customElements.define(
   "f-file",
   class extends Component {
     init() {
       this.classList.add("field");
-      const { schema, value, namePrefix, isNew } = this;
+      const { schema, value, namePrefix, isNew, documentPathDir } = this;
       const name = `${namePrefix}.${schema.name}`;
       const id = `field_${name}`;
 
@@ -35,21 +36,29 @@ customElements.define(
         html: '<u-icon name="magnifying-glass"></u-icon>',
         onclick() {
           const upload = schema.upload.split(":").shift();
+          const parentParam = documentPathDir ? `?parent=${encodeURIComponent(documentPathDir)}` : '';
 
           if (curr.value && !curr.value.match(/^https?:\/\//)) {
-            let filename = curr.value.startsWith(schema.publicPath || "")
-              ? curr.value.substring(schema.publicPath.length)
-              : curr.value;
+            let filename = curr.value;
+            if (
+              filename.startsWith("./") ||
+              filename.startsWith("../")
+            ) {
+              filename = join(documentPathDir, filename)
+            }
+            if (filename.startsWith(schema.publicPath || "")) {
+              filename = filename.substring(schema.publicPath.length);
+            }
             if (filename.startsWith("/")) {
               filename = filename.substring(1);
             }
 
             dom("u-modal", {
-              data: { src: url("uploads", upload, filename, "edit") },
+              data: { src: url("uploads", upload, filename, "edit") + parentParam },
             }, document.body);
           } else {
             dom("u-modal", {
-              data: { src: url("uploads", upload) },
+              data: { src: url("uploads", upload) + parentParam },
             }, document.body);
           }
         },

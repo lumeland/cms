@@ -106,7 +106,11 @@
   <figure class="preview">
     <dl class="definition">
       <dt>Public URL:</dt>
-      {{ set publicUrl = [upload.publicPath, file] |> normalizePath }}
+      {{ if relativePath /* With preferRelativePath + parent document */ }}
+        {{ set publicUrl = relativePath }}
+      {{ else }}
+        {{ set publicUrl = [upload.publicPath, file] |> normalizePath }}
+      {{ /if }}
       <dd>
         {{ publicUrl }}
         <u-copy text="{{ publicUrl }}"></u-copy>
