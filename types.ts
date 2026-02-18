@@ -101,6 +101,7 @@ export interface Field<T extends ResolvedField = ResolvedField, V = unknown> {
     field: T,
     content: CMSContent,
     data?: Data,
+    document?: Document,
   ): void | Promise<void>;
 
   /** Function to transform the value before saved */
@@ -135,6 +136,8 @@ export type FieldDefinition<
   init?(
     field: T,
     content: CMSContent,
+    data?: Data,
+    document?: Document,
   ): void | Promise<void>;
 
   /** Function to apply the changes in the data object */
