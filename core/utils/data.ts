@@ -1,4 +1,5 @@
 import type { CMSContent, Data } from "../../types.ts";
+import type Document from "../document.ts";
 
 /**
  * Converts a list of changes to an object:
@@ -57,18 +58,19 @@ export async function prepareField(
   field: Lume.CMS.ResolvedField,
   content: CMSContent,
   data?: Data,
+  document?: Document,
 ): Promise<Lume.CMS.ResolvedField> {
   const json = { ...field } as Lume.CMS.ResolvedFields[typeof field.type];
 
   if ("fields" in json) {
     json.fields = await Promise.all(
-      json.fields.map((f) => prepareField(f, content, data)),
+      json.fields.map((f) => prepareField(f, content, data?.[field.name], document)),
     );
   }
 
   if (json.init) {
     // deno-lint-ignore no-explicit-any
-    await json.init(json as any, content, data);
+    await json.init(json as any, content, data, document);
   }
 
   return json;

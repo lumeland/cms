@@ -105,7 +105,7 @@ export default class Document {
     }
 
     const currentData = await this.read(create);
-    const fields = await prepareField(this.fields, cms, currentData);
+    const fields = await prepareField(this.fields, cms, currentData, this);
     await this.fields.applyChanges(currentData, data, fields, this, cms);
     const dataToSave = currentData.root;
 

@@ -86,3 +86,18 @@ export function getExtension(name: string) {
   const parts = name.split(".");
   return parts.length > 1 ? parts.pop() : undefined;
 }
+
+/**
+ * Return the relative path from `from` to `to` and ensure it starts with a dot.
+ *
+ * @example Usage
+ * ```ts
+ * const path = getRelativePath("/data/foobar", "/data/foobar/asset.jpg");
+ * assertEquals(path, "./asset.jpg");
+ * ```
+ */
+export function getRelativePath(from?: string, to?: string): string | undefined {
+    if (!from || !to) return;
+    const relativePath = posix.relative(from, to);
+    return relativePath.startsWith("./") || relativePath.startsWith("../") ? relativePath : `./${relativePath}`;
+}
