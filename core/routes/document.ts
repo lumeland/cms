@@ -71,7 +71,7 @@ app.path(
 
         return render("document/edit.vto", {
           document,
-          fields: await prepareField(document.fields, cms, data),
+          fields: await prepareField(document.fields, cms, data, document),
           views: Array.from(getViews(document.fields)),
           initViews,
           url: getPreviewUrl(document),
