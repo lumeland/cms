@@ -1,5 +1,5 @@
-import { transform } from "./utils.ts";
-import { normalizePath } from "../core/utils/path.ts";
+import { toRelativePaths, toAbsolutePaths, transform } from "./utils.ts";
+import { getRelativePath, normalizePath } from "../core/utils/path.ts";
 import { posix } from "../deps/std.ts";
 import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
 
@@ -13,6 +13,12 @@ interface FileField extends InputField<ResolvedFileField> {
 
   /** The public path to the uploads */
   publicPath?: string;
+
+  /**
+   * Prefer to store the value as a relative path to the owner document.
+   * @default false
+   */
+  relativePath?: boolean;
 }
 
 interface ResolvedFileField extends FileField, ResolvedField {
@@ -21,7 +27,7 @@ interface ResolvedFileField extends FileField, ResolvedField {
 export default {
   tag: "f-file",
   jsImport: "lume_cms/components/f-file.js",
-  init(field, cmsContent) {
+  init(field, cmsContent, data, document) {
     if (!field.upload) {
       field.upload = Object.keys(cmsContent.uploads)[0];
 
@@ -45,6 +51,14 @@ export default {
       const { publicPath } = upload;
       field.publicPath = publicPath;
     }
+
+    if (field.relativePath && data && document) {
+      // Convert back to an absolute path
+      data[field.name] = toAbsolutePaths(
+        data[field.name],
+        posix.join.bind(posix, posix.dirname(document.source.path)),
+      );
+    }
   },
   async applyChanges(data, changes, field, document, cmsContent) {
     const value = changes[field.name] as
@@ -56,9 +70,15 @@ export default {
     }
 
     const { current, uploaded } = value;
-
+    // To store the path as relative if needed
+    const getRelativePathBound = getRelativePath.bind(null, posix.dirname(document.source.path));
     if (!uploaded) {
-      data[field.name] = transform(field, current);
+      data[field.name] = transform(
+        field,
+        field.relativePath
+          ? toRelativePaths(current ?? '', getRelativePathBound)
+          : current,
+      );
       return;
     }
     const upload = field.upload || "default";
@@ -80,11 +100,13 @@ export default {
     await entry.writeFile(uploaded);
     data[field.name] = transform(
       field,
-      normalizePath(
-        uploads.publicPath,
-        uploadPath,
-        uploaded.name,
-      ),
+      field.relativePath
+        ? toRelativePaths(entry.source.path, getRelativePathBound)
+        : normalizePath(
+            uploads.publicPath,
+            uploadPath,
+            uploaded.name,
+        ),
     );
   },
 } as FieldDefinition<ResolvedFileField>;
