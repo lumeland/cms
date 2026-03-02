@@ -2,7 +2,7 @@ import { changesToData, getViews, prepareField } from "../utils/data.ts";
 import { getLanguageCode, getPath, normalizeName } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
 import { Router } from "../../deps/galo.ts";
-import createTree from "../templates/tree.ts";
+import createTree from "../usecases/tree.ts";
 
 import type Document from "../document.ts";
 import type Collection from "../collection.ts";

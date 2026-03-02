@@ -6,7 +6,7 @@ import {
   transform,
 } from "../../deps/imagick.ts";
 import { posix } from "../../deps/std.ts";
-import createTree from "../templates/tree.ts";
+import createTree from "../usecases/tree.ts";
 import { Router } from "../../deps/galo.ts";
 import { parseExif } from "../../deps/exifr.ts";
 
