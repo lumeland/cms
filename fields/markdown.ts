@@ -45,7 +45,7 @@ export default {
     if (field.relativePath && data && document) {
       // Convert back to absolute paths
       data[field.name] = toAbsolutePaths(
-        data[field.name], 
+        data[field.name],
         posix.join.bind(posix, posix.dirname(document.source.path)),
       );
     }

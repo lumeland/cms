@@ -8,7 +8,7 @@ Deno.test("toAbsolutePaths: Basic Markdown", () => {
     Check [Link](./pages/about.html)
     And image ![](../assets/logo.png)
   `;
-  
+
   const output = toAbsolutePaths(input, (path) => {
     // Basic logic: Remove dots and prepend domain
     const clean = path.replace(/^\.{1,2}/, "");
@@ -22,7 +22,7 @@ Deno.test("toAbsolutePaths: Basic Markdown", () => {
 
 Deno.test("toAbsolutePaths: JSON & Quotes", () => {
   const input = `{ "src": "./data/config.json" }`;
-  
+
   const output = toAbsolutePaths(input, (path) => {
     return "/root" + path.substring(1);
   });
@@ -38,9 +38,9 @@ Deno.test("Ignores Markdown Code Blocks", () => {
     const x = "./fake.png"; // Should not change
     \`\`\`
   `;
-  
+
   const output = toAbsolutePaths(input, (path) => "CHANGED");
-  
+
   // Real one changed
   assertEquals(output.includes("![](CHANGED)"), true);
   // Fake one inside code block UNCHANGED
@@ -61,11 +61,11 @@ Deno.test("Ignores HTML <script> and <pre>", () => {
     <pre>Do not click ./link.html</pre>
     But click <a href="./real.html">here</a>
   `;
-  
+
   const output = toAbsolutePaths(input, (p) => "ABS" + p.substring(1));
-  
+
   assertEquals(output.includes('const path = "./hidden.js"'), true);
-  assertEquals(output.includes('Do not click ./link.html'), true);
+  assertEquals(output.includes("Do not click ./link.html"), true);
   assertEquals(output.includes('href="ABS/real.html"'), true);
 });
 
@@ -76,25 +76,42 @@ Deno.test("Ignores Full URLs (https://)", () => {
     Another external: <img src="http://example.com/image.png">
   `;
 
-  const output = toAbsolutePaths(input, (path) => "/PREFIX" + path.replace(/^\./, ''));
+  const output = toAbsolutePaths(
+    input,
+    (path) => "/PREFIX" + path.replace(/^\./, ""),
+  );
 
   // Local path SHOULD change
-  assertEquals(output.includes("](/PREFIX/local-page.html)"), true, "Failed to convert local path");
+  assertEquals(
+    output.includes("](/PREFIX/local-page.html)"),
+    true,
+    "Failed to convert local path",
+  );
 
   // External HTTPS link should remain EXACTLY the same
-  assertEquals(output.includes("(https://www.domestic-wild.com/itinerari-la-pletera-pnmm-cat)"), true, "Accidentally modified https URL!");
+  assertEquals(
+    output.includes(
+      "(https://www.domestic-wild.com/itinerari-la-pletera-pnmm-cat)",
+    ),
+    true,
+    "Accidentally modified https URL!",
+  );
 
   // External HTTP image should remain EXACTLY the same
-  assertEquals(output.includes('"http://example.com/image.png"'), true, "Accidentally modified http URL!");
+  assertEquals(
+    output.includes('"http://example.com/image.png"'),
+    true,
+    "Accidentally modified http URL!",
+  );
 });
 
 Deno.test("toRelativePaths: Logic Check", () => {
   const input = `Go to [Home](/index.html) or [Rel](./other.html)`;
-  
+
   const output = toRelativePaths(input, (path) => {
     return "." + path; // Simple conversion /index -> ./index
   });
-  
+
   // /index.html should become ./index.html
   assertEquals(output.includes("[Home](./index.html)"), true);
   // ./other.html should remain untouched (it was already relative)
@@ -106,9 +123,9 @@ Deno.test("Path at start/end of line (No quotes)", () => {
 ./start.png is at the start.
 file is at ./end.json
   `;
-  
+
   const output = toAbsolutePaths(input, () => "/ABS");
-  
+
   assertEquals(output.includes("/ABS is at the start"), true);
   assertEquals(output.includes("file is at /ABS"), true);
 });

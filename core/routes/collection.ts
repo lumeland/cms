@@ -159,7 +159,12 @@ app.path(
 
             return render("collection/edit.vto", {
               collection,
-              fields: await prepareField(collection.fields, cms, data, document),
+              fields: await prepareField(
+                collection.fields,
+                cms,
+                data,
+                document,
+              ),
               data,
               initViews,
               url: await getPreviewUrl(document),

@@ -1,4 +1,4 @@
-import { toRelativePaths, toAbsolutePaths, transform } from "./utils.ts";
+import { toAbsolutePaths, toRelativePaths, transform } from "./utils.ts";
 import { getRelativePath, normalizePath } from "../core/utils/path.ts";
 import { posix } from "../deps/std.ts";
 import type { FieldDefinition, InputField, ResolvedField } from "../types.ts";
@@ -71,12 +71,15 @@ export default {
 
     const { current, uploaded } = value;
     // To store the path as relative if needed
-    const getRelativePathBound = getRelativePath.bind(null, posix.dirname(document.source.path));
+    const getRelativePathBound = getRelativePath.bind(
+      null,
+      posix.dirname(document.source.path),
+    );
     if (!uploaded) {
       data[field.name] = transform(
         field,
         field.relativePath
-          ? toRelativePaths(current ?? '', getRelativePathBound)
+          ? toRelativePaths(current ?? "", getRelativePathBound)
           : current,
       );
       return;
@@ -103,9 +106,9 @@ export default {
       field.relativePath
         ? toRelativePaths(entry.source.path, getRelativePathBound)
         : normalizePath(
-            uploads.publicPath,
-            uploadPath,
-            uploaded.name,
+          uploads.publicPath,
+          uploadPath,
+          uploaded.name,
         ),
     );
   },

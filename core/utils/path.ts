@@ -96,8 +96,13 @@ export function getExtension(name: string) {
  * assertEquals(path, "./asset.jpg");
  * ```
  */
-export function getRelativePath(from?: string, to?: string): string | undefined {
-    if (!from || !to) return;
-    const relativePath = posix.relative(from, to);
-    return relativePath.startsWith("./") || relativePath.startsWith("../") ? relativePath : `./${relativePath}`;
+export function getRelativePath(
+  from?: string,
+  to?: string,
+): string | undefined {
+  if (!from || !to) return;
+  const relativePath = posix.relative(from, to);
+  return relativePath.startsWith("./") || relativePath.startsWith("../")
+    ? relativePath
+    : `./${relativePath}`;
 }

@@ -86,25 +86,29 @@ export function transform<V, T extends Field = Field>(
 
 // Matches content we want to ignore when searching for paths
 const skipPattern = [
-  /```[\s\S]*?```/.source,                // MD Block
-  /`[^`]*`/.source,                       // MD Inline
-  /<pre\b[^>]*>[\s\S]*?<\/pre>/.source,   // HTML <pre>
+  /```[\s\S]*?```/.source, // MD Block
+  /`[^`]*`/.source, // MD Inline
+  /<pre\b[^>]*>[\s\S]*?<\/pre>/.source, // HTML <pre>
   /<code\b[^>]*>[\s\S]*?<\/code>/.source, // HTML <code>
   /<script\b[^>]*>[\s\S]*?<\/script>/.source, // HTML <script>
   /[a-z]+:\/\/[^\s"'\)]+/.source, // Full URLs
-].join('|');
+].join("|");
 
 // Matches content we want to detect as paths.
 // Requires dot-slash (./ or ../) OR slash (/), and must end with .extension
-const targetPattern = /(?:(?:\.{1,2}\/)|(?:\/))[^"'\)\s\]]+\.[a-zA-Z0-9]+/.source;
+const targetPattern =
+  /(?:(?:\.{1,2}\/)|(?:\/))[^"'\)\s\]]+\.[a-zA-Z0-9]+/.source;
 
 // Combined RegExp
-const combinedPattern = new RegExp(`(${skipPattern})|(${targetPattern})`, 'gi');
+const combinedPattern = new RegExp(`(${skipPattern})|(${targetPattern})`, "gi");
 
 /**
  * Core function to traverse text and replace paths while respecting code blocks.
  */
-function replacePaths(text: string, transformFn: (path: string) => string | undefined): string {
+function replacePaths(
+  text: string,
+  transformFn: (path: string) => string | undefined,
+): string {
   return text.replace(combinedPattern, (match, skippedContent, foundPath) => {
     // We matched a protected block (Shield): return as is.
     if (skippedContent) {
@@ -125,9 +129,12 @@ function replacePaths(text: string, transformFn: (path: string) => string | unde
  * Convert _relative_ paths (./xxx) to _absolute_ paths using the transformFn.
  * Ignores paths that are already absolute (start with /).
  */
-export function toAbsolutePaths(text: string, transformFn: (relativePath: string) => string | undefined): string {
+export function toAbsolutePaths(
+  text: string,
+  transformFn: (relativePath: string) => string | undefined,
+): string {
   return replacePaths(text, (path) => {
-    if (path.startsWith('/')) return path; // Already absolute
+    if (path.startsWith("/")) return path; // Already absolute
     return transformFn(path);
   });
 }
@@ -136,9 +143,12 @@ export function toAbsolutePaths(text: string, transformFn: (relativePath: string
  * Convert _absolute_ paths (/xxx) to _relative_ paths using the transformFn.
  * Ignores paths that are already relative (start with .).
  */
-export function toRelativePaths(text: string, transformFn: (absPath: string) => string | undefined): string {
+export function toRelativePaths(
+  text: string,
+  transformFn: (absPath: string) => string | undefined,
+): string {
   return replacePaths(text, (path) => {
-    if (path.startsWith('.')) return path; // Already relative
+    if (path.startsWith(".")) return path; // Already relative
     return transformFn(path);
   });
 }

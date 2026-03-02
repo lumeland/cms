@@ -64,7 +64,9 @@ export async function prepareField(
 
   if ("fields" in json) {
     json.fields = await Promise.all(
-      json.fields.map((f) => prepareField(f, content, data?.[field.name], document)),
+      json.fields.map((f) =>
+        prepareField(f, content, data?.[field.name], document)
+      ),
     );
   }
 
