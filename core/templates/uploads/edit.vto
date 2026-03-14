@@ -17,32 +17,15 @@
     </h1>
   </header>
 
-  <label class="input-file">
-    <input
-      class="input is-inline"
-      id="_id"
-      type="{{ user.canRename(upload) ? 'text' : 'hidden' }}"
-      name="_id"
-      value="{{ file }}"
-      placeholder="Rename the file…"
-      form="form-edit"
-      aria-label="File name"
-      required
-    >
-  </label>
-
   <nav class="navigation">
-    {{ if user.canEdit(upload) }}
-      <button
-        class="button is-primary"
-        type="submit"
-        form="form-edit"
-        tabindex="1"
-      >
-        <u-icon name="floppy-disk"></u-icon>
-        Update file
-      </button>
-    {{ /if }}
+    <a
+      href="{{src}}"
+      download="{{file}}"
+      class="button is-primary"
+    >
+      <u-icon name="download-simple"></u-icon>
+      Download file
+    </a>
 
     <button
       class="buttonIcon is-secondary"
@@ -56,6 +39,96 @@
     <div popover="auto" class="menu" id="edit-menu">
       <p class="menu-header">File options</p>
 
+      {{ if user.canRename(upload) }}
+        <button
+          command="show-modal"
+          commandfor="modal-rename"
+          class="button is-secondary"
+          type="button"
+        >
+          <u-icon name="textbox"></u-icon>
+          Move file
+        </button>
+
+        <dialog class="modal is-center" id="modal-rename">
+          <button
+            type="button"
+            class="buttonIcon modal-close"
+            command="close"
+            commandfor="modal-rename"
+          >
+            <u-icon name="x"></u-icon>
+          </button>
+
+          <form
+            method="post"
+            action='{{ ["uploads", upload.name, file, "move"] |> path }}'
+          >
+            <div class="field">
+              <label for="file-name">New path</label>
+              <input
+                id="file-name"
+                class="input"
+                type="text"
+                required
+                autofocus
+                value="{{ file }}"
+                name="name"
+              >
+
+              <footer class="field-footer">
+                <button class="button is-primary">Move file</button>
+              </footer>
+            </div>
+          </form>
+        </dialog>
+      {{ /if }}
+
+      {{ if user.canCreate(upload) }}
+        <button
+          command="show-modal"
+          commandfor="modal-duplicate"
+          class="button is-secondary"
+          type="button"
+        >
+          <u-icon name="copy"></u-icon>
+          Duplicate file
+        </button>
+
+        <dialog class="modal is-center" id="modal-duplicate">
+          <button
+            type="button"
+            class="buttonIcon modal-close"
+            command="close"
+            commandfor="modal-duplicate"
+          >
+            <u-icon name="x"></u-icon>
+          </button>
+
+          <form
+            method="post"
+            action='{{ ["uploads", upload.name, file, "duplicate"] |> path }}'
+          >
+            <div class="field">
+              <label for="file-name">Copy name</label>
+              <input
+                id="file-name"
+                class="input"
+                type="text"
+                required
+                autofocus
+                value="{{ file }}"
+                name="name"
+              >
+
+              <footer class="field-footer">
+                <button class="button is-primary">Duplicate file</button>
+              </footer>
+            </div>
+          </form>
+        </dialog>
+      {{ /if }}
+
       {{ set format = file |> formatSupported }}
       {{ if format && user.canEdit(upload) }}
         <a
@@ -66,15 +139,6 @@
           Crop image
         </a>
       {{ /if }}
-
-      <a
-        href="{{src}}"
-        download="{{file}}"
-        class="button is-secondary"
-      >
-        <u-icon name="download-simple"></u-icon>
-        Download file
-      </a>
 
       {{ if user.canDelete(upload) }}
         <u-confirm data-message="Delete this file?">
@@ -90,25 +154,6 @@
       {{ /if }}
     </div>
   </nav>
-
-  <form
-    method="post"
-    class="form"
-    enctype="multipart/form-data"
-    id="form-edit"
-  >
-    {{ if user.canEdit(upload) }}
-      <div class="field">
-        <input
-          aria-label="Update"
-          id="new-file"
-          type="file"
-          name="file"
-          class="inputFile"
-        >
-      </div>
-    {{ /if }}
-  </form>
 
   <figure class="preview">
     <dl class="definition">

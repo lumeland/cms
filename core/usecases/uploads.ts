@@ -19,13 +19,13 @@ export async function getUpload(upload: Upload) {
 export function getNewDocument(
   user: User,
   upload: Upload,
-  params: URLSearchParams,
+  folder: string,
 ) {
   if (!user.canCreate(upload)) {
     throw new Error("Permission denied to create files in this upload");
   }
 
-  const folder = normalizeName(params.get("folder"));
+  folder = normalizeName(folder);
 
   return { folder };
 }
@@ -33,21 +33,20 @@ export function getNewDocument(
 export async function saveNewDocument(
   user: User,
   upload: Upload,
-  body: FormData,
+  files: File[],
+  folder?: string,
 ) {
   if (!user.canCreate(upload)) {
     throw new Error("Permission denied to create files in this upload");
   }
 
-  const files = body.getAll("files") as File[];
   const names: string[] = [];
 
   for (const file of files) {
     let name = file.name as string | undefined;
-    const folder = body.get("_id") as string | undefined;
 
     if (folder) {
-      name = folder.endsWith("/") ? posix.join(folder, name!) : folder;
+      name = posix.join(folder, name!);
     }
 
     name = normalizeName(slugify(name!));
@@ -74,41 +73,43 @@ export async function getDocument(upload: Upload, name: string) {
   return { type, size, exif };
 }
 
-export async function saveDocument(
+export async function moveDocument(
   user: User,
   upload: Upload,
   name: string,
-  body: FormData,
+  newName: string,
+  copy = false,
 ) {
   if (!user.canEdit(upload)) {
     throw new Error("Permission denied to edit this file");
   }
 
-  const newName = normalizeName(body.get("_id") as string);
+  newName = normalizeName(newName);
 
   if (!newName) {
     throw new Error("Invalid file name");
   }
 
-  // Rename the file if the name has changed
-  if (name !== newName) {
+  if (name === newName) {
+    return { newName };
+  }
+
+  if (copy) {
+    const file = await upload.get(name).readFile();
+    const newFile = upload.get(newName);
+    await newFile.writeFile(file);
+  } else {
     await upload.rename(name, newName);
   }
 
-  const file = body.get("file") as File | undefined;
-  const entry = upload.get(newName);
-
-  if (file) {
-    await entry.writeFile(file);
-  }
-
-  // Convert format if the extension has changed (e.g., from .jpg to .png)
+  // Transform images (i.e. renaming from jpg to png)
   const format = formatSupported(newName);
-  if (name !== newName && formatSupported(name) && format) {
-    const extFrom = name.split(".").pop();
-    const extTo = newName.split(".").pop();
+  if (format && formatSupported(name)) {
+    const extFrom = name.split(".").pop()?.toLowerCase();
+    const extTo = newName.split(".").pop()?.toLowerCase();
 
     if (extTo && extFrom !== extTo) {
+      const entry = upload.get(newName);
       const img = await transform(await entry.readFile(), (img) => {
         img.format = format;
       });
@@ -127,20 +128,24 @@ export function canCropDocument(user: User, upload: Upload, name: string) {
   return formatSupported(name);
 }
 
+interface Crop {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export async function saveCropDocument(
   user: User,
   upload: Upload,
   name: string,
-  body: FormData,
+  crop: Crop,
 ) {
   if (!user.canEdit(upload)) {
     throw new Error("Permission denied to edit this file");
   }
 
-  const x = parseInt(body.get("x") as string);
-  const y = parseInt(body.get("y") as string);
-  const width = parseInt(body.get("width") as string);
-  const height = parseInt(body.get("height") as string);
+  const { x, y, width, height } = crop;
 
   if (
     Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(width) ||

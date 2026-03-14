@@ -8,21 +8,14 @@ import {
   getDocument,
   getNewDocument,
   getUpload,
+  moveDocument,
   saveCropDocument,
-  saveDocument,
   saveNewDocument,
 } from "../usecases/uploads.ts";
 
 /**
  * Route for managing file uploads in the CMS.
- * Handles listing, creating, viewing, editing, cropping, and deleting files.
- *
- * /uploads/:name/ - List files in the upload
- * /uploads/:name/create - Create a new file or folder
- * /uploads/:name/:file - Get raw file content
- * /uploads/:name/:file/edit - Edit a file
- * /uploads/:name/:file/crop - Crop an image file
- * /uploads/:name/:file/delete - Delete a file
+ * Handles listing, creating, viewing, editing, and deleting files.
  */
 
 const app = new Router<RouterData>();
@@ -60,7 +53,11 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
     /* GET /uploads/:name/create - Show the file upload form */
     .get("/create", ({ request }) => {
       const { searchParams } = new URL(request.url);
-      const { folder } = getNewDocument(user, upload, searchParams);
+      const { folder } = getNewDocument(
+        user,
+        upload,
+        searchParams.get("folder") as string,
+      );
 
       return render("uploads/create.vto", {
         upload,
@@ -70,10 +67,14 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
     })
     /* POST /uploads/:name/create - Upload a new file */
     .post("/create", async ({ request }) => {
+      const data = await request.formData();
+      const files = data.getAll("files") as File[];
+      const folder = data.get("_id") as string | undefined;
       const { names } = await saveNewDocument(
         user,
         upload,
-        await request.formData(),
+        files,
+        folder,
       );
 
       // If only one file is uploaded, redirect to its details
@@ -106,17 +107,6 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
             user,
           });
         })
-        /* POST /uploads/:name/:file/edit - Edit the file */
-        .post("/edit", async ({ request }) => {
-          const { newName } = await saveDocument(
-            user,
-            upload,
-            name,
-            await request.formData(),
-          );
-
-          return redirect(upload.name, newName, "edit");
-        })
         /* GET /uploads/:name/:file/crop - Show the crop form for images */
         .get("/crop", () => {
           if (!canCropDocument(user, upload, name)) {
@@ -131,13 +121,42 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
         })
         /* POST /uploads/:name/:file/crop - Crop the image */
         .post("/crop", async ({ request }) => {
-          await saveCropDocument(user, upload, name, await request.formData());
+          const data = await request.formData();
+          const x = parseInt(data.get("x") as string);
+          const y = parseInt(data.get("y") as string);
+          const width = parseInt(data.get("width") as string);
+          const height = parseInt(data.get("height") as string);
+
+          await saveCropDocument(user, upload, name, { x, y, width, height });
           return redirect(upload.name, name, "edit");
         })
         /* POST /uploads/:name/:file/delete - Delete the file */
         .post("/delete", async () => {
           await deleteDocument(user, upload, name);
           return redirect(upload.name);
+        })
+        /* POST /uploads/:name/:file/move - Move the file */
+        .post("/move", async ({ request }) => {
+          const data = await request.formData();
+          const { newName } = await moveDocument(
+            user,
+            upload,
+            name,
+            data.get("name") as string,
+          );
+          return redirect(upload.name, newName, "edit");
+        })
+        /* POST /uploads/:name/:file/duplicate - Duplicate the file */
+        .post("/duplicate", async ({ request }) => {
+          const data = await request.formData();
+          const { newName } = await moveDocument(
+            user,
+            upload,
+            name,
+            data.get("name") as string,
+            true,
+          );
+          return redirect(upload.name, newName, "edit");
         });
     });
 });
