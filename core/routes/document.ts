@@ -1,10 +1,14 @@
-import { getLanguageCode, getPath } from "../utils/path.ts";
-import { changesToData, getViews, prepareField } from "../utils/data.ts";
+import { getPath } from "../utils/path.ts";
 import { Router } from "../../deps/galo.ts";
 
 import type Document from "../document.ts";
 import type { RouterData } from "../cms.ts";
-import type { Data } from "../../types.ts";
+import {
+  getDocument,
+  getDocumentCode,
+  saveDocument,
+  saveDocumentCode,
+} from "../usecases/documents.ts";
 
 /**
  * Route for managing document editing in the CMS.
@@ -54,9 +58,21 @@ app.path(
           return redirect(document.name, "code");
         }
 
-        let data: Data;
         try {
-          data = await document.read(true);
+          const { fields, views, initViews, data } = await getDocument(
+            document,
+            cms,
+          );
+
+          return render("document/edit.vto", {
+            document,
+            fields,
+            views,
+            initViews,
+            url: getPreviewUrl(document),
+            data,
+            user,
+          });
         } catch (error) {
           return render("document/edit-error.vto", {
             error: (error as Error).message,
@@ -64,32 +80,10 @@ app.path(
             user,
           });
         }
-
-        const initViews = typeof document.views === "function"
-          ? document.views() || []
-          : document.views || [];
-
-        return render("document/edit.vto", {
-          document,
-          fields: await prepareField(document.fields, cms, data, document),
-          views: Array.from(getViews(document.fields)),
-          initViews,
-          url: getPreviewUrl(document),
-          data,
-          user,
-        });
       })
       /* POST /document/:name/edit - Save the document */
       .post("/edit", async ({ request }) => {
-        if (!user.canEdit(document)) {
-          throw new Error("Permission denied to edit this document");
-        }
-        const body = await request.formData();
-        await document.write(
-          changesToData(Object.fromEntries(body)),
-          cms,
-          true,
-        );
+        await saveDocument(user, document, cms, await request.formData());
 
         // Wait for the preview URL to be ready
         await getPreviewUrl(document, true);
@@ -98,22 +92,7 @@ app.path(
       })
       /* GET /document/:name/code - Show the code editor */
       .get("/code", async () => {
-        const data = { root: { code: await document.readText(true) } };
-        const fields = {
-          tag: "f-object-root",
-          name: "root",
-          fields: [{
-            tag: "f-code",
-            name: "code",
-            label: "Code",
-            type: "code",
-            attributes: {
-              data: {
-                language: getLanguageCode(document.source.name),
-              },
-            },
-          }],
-        };
+        const { data, fields } = await getDocumentCode(document);
 
         return render("document/code.vto", {
           fields,
@@ -125,12 +104,7 @@ app.path(
       })
       /* POST /document/:name/code - Save the code */
       .post("/code", async ({ request }) => {
-        if (!user.canEdit(document)) {
-          throw new Error("Permission denied to edit this document");
-        }
-        const body = await request.formData();
-        const code = body.get("root.code") as string | undefined;
-        document.writeText(code ?? "");
+        await saveDocumentCode(user, document, await request.formData());
 
         // Wait for the preview URL to be ready
         await getPreviewUrl(document, true);
