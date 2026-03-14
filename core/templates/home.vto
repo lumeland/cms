@@ -189,33 +189,48 @@
       {{ /for }}
     </ul>
 
-    <u-modal-trigger data-target="modal-new-version">
-      <button class="button is-secondary">New version</button>
-    </u-modal-trigger>
-
-    <dialog class="modal is-center" id="modal-new-version">
-      <form
-        method="post"
-        action='{{ ["versions", "create"] |> path }}'
+    <div>
+      <button
+        command="show-modal"
+        commandfor="modal-new-version"
+        class="button is-secondary"
       >
-        <div class="field">
-          <label for="version-name">Name of the new version</label>
-          <input
-            id="version-name"
-            class="input"
-            type="text"
-            required
-            autofocus
-            name="name"
-          >
+        New version
+      </button>
 
-          <footer class="field-footer">
-            <u-busy data-message="{{ 'Creating…' }}">
-              <button class="button is-primary">Create version</button>
-            </u-busy>
-          </footer>
-        </div>
-      </form>
-    </dialog>
+      <dialog class="modal is-center" id="modal-new-version">
+        <button
+          type="button"
+          class="buttonIcon modal-close"
+          command="close"
+          commandfor="modal-new-version"
+        >
+          <u-icon name="x"></u-icon>
+        </button>
+
+        <form
+          method="post"
+          action='{{ ["versions", "create"] |> path }}'
+        >
+          <div class="field">
+            <label for="version-name">Name of the new version</label>
+            <input
+              id="version-name"
+              class="input"
+              type="text"
+              required
+              autofocus
+              name="name"
+            >
+
+            <footer class="field-footer">
+              <u-busy data-message="{{ 'Creating…' }}">
+                <button class="button is-primary">Create version</button>
+              </u-busy>
+            </footer>
+          </div>
+        </form>
+      </dialog>
+    </div>
   {{ /if }}
 {{ /layout }}

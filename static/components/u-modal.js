@@ -28,36 +28,6 @@ customElements.define(
   },
 );
 
-customElements.define(
-  "u-modal-trigger",
-  class Modal extends Component {
-    init() {
-      const button = this.querySelector("button");
-      const { target } = this.dataset;
-      if (!target) {
-        throw new Error("No target found");
-      }
-      const modal = document.getElementById(target);
-
-      if (modal?.tagName !== "DIALOG") {
-        throw new Error(`No modal found with id '${target}'`);
-      }
-
-      modal.addEventListener("click", closeOnClickOutside);
-
-      button.addEventListener("click", () => {
-        modal.showModal();
-      });
-
-      dom("button", {
-        class: "buttonIcon modal-close",
-        onclick: () => modal.close(),
-        html: "<u-icon name='x'></u-icon>",
-      }, modal);
-    }
-  },
-);
-
 function closeOnClickOutside(e) {
   if (e.target.tagName !== "DIALOG") {
     return;
