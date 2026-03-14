@@ -12,5 +12,4 @@ import "./u-pagepreview.js";
 import "./u-confirm.js";
 import "./u-upload.js";
 import "./u-cropper.js";
-import "./u-dropdown.js";
 import "./u-busy.js";

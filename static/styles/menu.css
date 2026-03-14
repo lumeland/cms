@@ -1,0 +1,91 @@
+.menu:popover-open {
+  --padding: 6px;
+
+  margin: 0;
+  border: none;
+  display: flex;
+  gap: 0px;
+  flex-direction: column;
+  padding: var(--padding);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  background: var(--color-line-light);
+  width: 200px;
+  margin-top: 4px;
+  top: anchor(bottom);
+  left: anchor(left);
+  position-try-fallbacks:
+    --anchor-bottom-left,
+    --anchor-top-left,
+    --anchor-bottom-right,
+    --anchor-top-right,
+    --anchor-bottom-center,
+    --anchor-top-center,
+    --anchor-left,
+    --anchor-right;
+}
+.menu-header {
+  padding: 0.5em;
+  margin: 0 0 0.5em 0;
+  font: var(--font-small);
+  color: var(--color-dim);
+  border-bottom: 1px solid var(--color-line);
+}
+@position-try --anchor-bottom-left {
+  margin-top: 4px;
+  top: anchor(bottom);
+  bottom: auto;
+  left: anchor(left);
+  right: auto;
+}
+@position-try --anchor-top-left {
+  margin-bottom: 4px;
+  top: auto;
+  bottom: anchor(top);
+  left: anchor(left);
+  right: auto;
+}
+@position-try --anchor-bottom-right {
+  margin-top: 4px;
+  top: anchor(bottom);
+  bottom: auto;
+  left: auto;
+  right: anchor(right);
+}
+@position-try --anchor-top-right {
+  margin-bottom: 4px;
+  top: auto;
+  bottom: anchor(top);
+  left: auto;
+  right: anchor(right);
+}
+@position-try --anchor-bottom-center {
+  margin-top: 4px;
+  top: anchor(bottom);
+  bottom: auto;
+  left: calc(50vw - var(--_width) / 2);
+  right: auto;
+}
+@position-try --anchor-top-center {
+  margin-bottom: 4px;
+  top: auto;
+  bottom: anchor(top);
+  left: calc(50vw - var(--_width) / 2);
+  right: auto;
+}
+@position-try --anchor-right {
+  margin-top: 0;
+  margin-left: 4px;
+  top: anchor(top);
+  bottom: auto;
+  left: anchor(right);
+  right: auto;
+}
+@position-try --anchor-left {
+  margin-top: 0;
+  margin-right: 4px;
+  top: anchor(top);
+  bottom: auto;
+  left: auto;
+  right: anchor(left);
+}

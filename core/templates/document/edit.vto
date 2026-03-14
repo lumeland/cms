@@ -24,10 +24,18 @@
       Save changes
     </button>
 
-    <u-dropdown>
-      <div slot="header">
-        Edit options
-      </div>
+    <button
+      class="buttonIcon is-secondary"
+      type="button"
+      command="toggle-popover"
+      commandfor="edit-menu"
+    >
+      <u-icon name="dots-three-vertical"></u-icon>
+    </button>
+
+    <div popover="auto" class="menu" id="edit-menu">
+      <p class="menu-header">Edit options</p>
+
       <a
         class="button is-secondary"
         href='{{ ["document", document.name, "code"] |> path }}'
@@ -35,7 +43,7 @@
         <u-icon name="code"></u-icon>
         Edit code
       </a>
-    </u-dropdown>
+    </div>
   </nav>
 
   <u-form>

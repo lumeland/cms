@@ -44,10 +44,17 @@
       </button>
     {{ /if }}
 
-    <u-dropdown>
-      <div slot="header">
-        File options
-      </div>
+    <button
+      class="buttonIcon is-secondary"
+      type="button"
+      command="toggle-popover"
+      commandfor="edit-menu"
+    >
+      <u-icon name="dots-three-vertical"></u-icon>
+    </button>
+
+    <div popover="auto" class="menu" id="edit-menu">
+      <p class="menu-header">File options</p>
 
       {{ set format = file |> formatSupported }}
       {{ if format && user.canEdit(upload) }}
@@ -81,7 +88,7 @@
           </button>
         </u-confirm>
       {{ /if }}
-    </u-dropdown>
+    </div>
   </nav>
 
   <form
