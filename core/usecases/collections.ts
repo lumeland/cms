@@ -93,23 +93,15 @@ export async function saveDocument(
   cms: CMSContent,
   changes: Record<string, unknown>,
 ) {
-  let name = normalizeName(changes._id as string);
-  let finalDocument = document;
-
-  if (!name) {
-    throw new Error("Document name is required");
-  }
-
-  if (document.name === name && !user.canEdit(collection)) {
+  if (!user.canEdit(collection)) {
     throw new Error("Permission denied to edit document");
-  }
-
-  if (document.name !== name && !user.canRename(collection)) {
-    throw new Error("Permission denied to rename document");
   }
 
   // Save changes
   const data = await document.write(changesToData(changes), cms);
+
+  let name = document.name;
+  let finalDocument = document;
 
   // Recalculate the document name automatically
   if (collection.permissions.rename === "auto") {
