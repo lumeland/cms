@@ -2,6 +2,12 @@ import { getPath } from "../utils/path.ts";
 import { Router } from "../../deps/galo.ts";
 
 import type { RouterData } from "../cms.ts";
+import {
+  changeVersion,
+  createVersion,
+  deleteVersion,
+  publishVersion,
+} from "../usecases/versions.ts";
 
 const app = new Router<RouterData>();
 
@@ -35,23 +41,22 @@ app.post("/*", async ({ request, cms, next }) => {
   return next()
     /* POST /versions/create - Create a new version */
     .post("/create", () => {
-      versioning.create(name);
-      versioning.change(name);
+      createVersion(versioning, name);
       return response;
     })
     /* POST /versions/change - Change the current version */
     .post("/change", () => {
-      versioning.change(name);
+      changeVersion(versioning, name);
       return response;
     })
     /* POST /versions/publish - Publish the current version */
     .post("/publish", () => {
-      versioning.publish(name);
+      publishVersion(versioning, name);
       return response;
     })
     /* POST /versions/delete - Delete a version */
     .post("/delete", () => {
-      versioning.delete(name);
+      deleteVersion(versioning, name);
       return response;
     });
 });
