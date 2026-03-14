@@ -9,6 +9,7 @@ import {
   getCollection,
   getDocument,
   getNewDocument,
+  moveDocument,
   saveDocument,
   saveDocumentCode,
   saveNewDocument,
@@ -77,8 +78,12 @@ app.path(
         return next()
           .get(async ({ request }) => {
             const { searchParams } = new URL(request.url);
-            const { defaults, initViews, views, fields, folder } =
-              await getNewDocument(collection, cms, searchParams);
+            const defaults = Object.fromEntries(searchParams);
+            const { initViews, views, fields, folder } = await getNewDocument(
+              collection,
+              cms,
+              defaults,
+            );
 
             return render("collection/create.vto", {
               defaults,
@@ -91,10 +96,12 @@ app.path(
             });
           })
           .post(async ({ request }) => {
+            const data = await request.formData();
+            const changes = Object.fromEntries(data);
             const { name, document } = await saveNewDocument(
               collection,
               cms,
-              await request.formData(),
+              changes,
             );
 
             // Wait for the preview URL to be ready before redirecting
@@ -148,12 +155,15 @@ app.path(
           })
           /* POST /collection/:name/:file/edit - Save edit data */
           .post("/edit", async () => {
+            const data = await request.formData();
+            const changes = Object.fromEntries(data);
+
             const { finalDocument } = await saveDocument(
               user,
               collection,
               document,
               cms,
-              await request.formData(),
+              changes,
             );
 
             // Wait for the preview URL to be ready
@@ -176,11 +186,14 @@ app.path(
           })
           /* POST /collection/:name/:file/code - Save code changes */
           .post("/code", async ({ request }) => {
+            const data = await request.formData();
+            const changes = Object.fromEntries(data);
+
             const { finalDocument } = await saveDocumentCode(
               user,
               collection,
               document,
-              await request.formData(),
+              changes,
             );
 
             // Wait for the preview URL to be ready
@@ -190,12 +203,34 @@ app.path(
           })
           /* POST /collection/:name/:file/duplicate - Duplicate the document */
           .post("/duplicate", async ({ request }) => {
+            const data = await request.formData();
+            const changes = Object.fromEntries(data);
+            const newName = data.get("name") as string;
+
             const { newDocument } = await duplicateDocument(
               user,
               collection,
               document,
               cms,
-              await request.formData(),
+              newName,
+              changes,
+            );
+
+            // Wait for the preview URL to be ready
+            await getPreviewUrl(newDocument, true);
+
+            return redirect(collection.name, newDocument.name, "edit");
+          })
+          /* POST /collection/:name/:file/move - Move (rename) the document */
+          .post("/move", async ({ request }) => {
+            const data = await request.formData();
+            const newName = data.get("name") as string;
+
+            const { newDocument } = await moveDocument(
+              user,
+              collection,
+              document,
+              newName,
             );
 
             // Wait for the preview URL to be ready

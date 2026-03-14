@@ -42,14 +42,14 @@ export async function saveDocument(
   user: User,
   document: Document,
   cms: CMSContent,
-  body: FormData,
+  changes: Record<string, unknown>,
 ) {
   if (!user.canEdit(document)) {
     throw new Error("Permission denied to edit this document");
   }
 
   await document.write(
-    changesToData(Object.fromEntries(body)),
+    changesToData(changes),
     cms,
     true,
   );
@@ -58,12 +58,11 @@ export async function saveDocument(
 export async function saveDocumentCode(
   user: User,
   document: Document,
-  body: FormData,
+  changes: Record<string, unknown>,
 ) {
   if (!user.canEdit(document)) {
     throw new Error("Permission denied to edit this document");
   }
-
-  const code = body.get("root.code") as string | undefined;
+  const code = changes["root.code"] as string | undefined;
   await document.writeText(code ?? "");
 }

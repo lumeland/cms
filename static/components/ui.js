@@ -8,6 +8,7 @@ import "./u-popover.js";
 import "./u-preview.js";
 import "./u-views.js";
 import "./u-form.js";
+import "./u-form-join.js";
 import "./u-pagepreview.js";
 import "./u-confirm.js";
 import "./u-upload.js";

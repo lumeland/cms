@@ -14,20 +14,6 @@
     <h1 class="header-title">Editing document from {{ collection.label }}</h1>
   </header>
 
-  <label class="input-file">
-    <input
-      class="input"
-      id="_id"
-      type="{{ user.canRename(collection) ? 'text' : 'hidden' }}"
-      name="_id"
-      value="{{document.name}}"
-      placeholder="Rename the file…"
-      form="form-edit"
-      aria-label="File name"
-      required
-    >
-  </label>
-
   <nav class="navigation">
     {{ if user.canEdit(collection) }}
       <button
@@ -63,18 +49,98 @@
         </a>
       {{ /if }}
 
-      {{ if user.canCreate(collection) }}
-        <u-confirm data-message="Duplicate this file?">
+      {{ if user.canRename(collection) }}
+        <button
+          command="show-modal"
+          commandfor="modal-rename"
+          class="button is-secondary"
+          type="button"
+        >
+          <u-icon name="textbox"></u-icon>
+          Move file
+        </button>
+
+        <dialog class="modal is-center" id="modal-rename">
           <button
-            class="button is-secondary"
-            type="submit"
-            form="form-edit"
-            formAction='{{ ["collection", collection.name, document.name, "duplicate"] |> path }}'
+            type="button"
+            class="buttonIcon modal-close"
+            command="close"
+            commandfor="modal-rename"
           >
-            <u-icon name="files"></u-icon>
-            Duplicate
+            <u-icon name="x"></u-icon>
           </button>
-        </u-confirm>
+
+          <form
+            method="post"
+            action='{{ ["collection", collection.name, document.name, "move"] |> path }}'
+          >
+            <div class="field">
+              <label for="file-name">New path</label>
+              <input
+                id="file-name"
+                class="input"
+                type="text"
+                required
+                autofocus
+                value="{{ document.name }}"
+                name="name"
+              >
+
+              <footer class="field-footer">
+                <button class="button is-primary">Move file</button>
+              </footer>
+            </div>
+          </form>
+        </dialog>
+      {{ /if }}
+
+      {{ if user.canCreate(collection) }}
+        <button
+          command="show-modal"
+          commandfor="modal-duplicate"
+          class="button is-secondary"
+          type="button"
+        >
+          <u-icon name="copy"></u-icon>
+          Save as...
+        </button>
+
+        <dialog class="modal is-center" id="modal-duplicate">
+          <button
+            type="button"
+            class="buttonIcon modal-close"
+            command="close"
+            commandfor="modal-duplicate"
+          >
+            <u-icon name="x"></u-icon>
+          </button>
+
+          <u-form-join data-form="form-edit">
+            <form
+              method="post"
+              action='{{ ["collection", collection.name, document.name, "duplicate"] |> path }}'
+            >
+              {{ if user.canRename(collection) }}
+                <div class="field">
+                  <label for="file-name">Document name</label>
+                  <input
+                    id="file-name"
+                    class="input"
+                    type="text"
+                    required
+                    autofocus
+                    value="{{ document.name }}"
+                    name="name"
+                  >
+                </div>
+              {{ /if }}
+
+              <footer class="field-footer">
+                <button class="button is-primary">Save copy</button>
+              </footer>
+            </form>
+          </u-form-join>
+        </dialog>
       {{ /if }}
 
       {{ if user.canDelete(collection) }}

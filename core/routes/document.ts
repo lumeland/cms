@@ -83,7 +83,9 @@ app.path(
       })
       /* POST /document/:name/edit - Save the document */
       .post("/edit", async ({ request }) => {
-        await saveDocument(user, document, cms, await request.formData());
+        const data = await request.formData();
+        const changes = Object.fromEntries(data);
+        await saveDocument(user, document, cms, changes);
 
         // Wait for the preview URL to be ready
         await getPreviewUrl(document, true);
@@ -104,7 +106,9 @@ app.path(
       })
       /* POST /document/:name/code - Save the code */
       .post("/code", async ({ request }) => {
-        await saveDocumentCode(user, document, await request.formData());
+        const data = await request.formData();
+        const changes = Object.fromEntries(data);
+        await saveDocumentCode(user, document, changes);
 
         // Wait for the preview URL to be ready
         await getPreviewUrl(document, true);

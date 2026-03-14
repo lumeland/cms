@@ -16,7 +16,7 @@ export async function getCollection(collection: Collection) {
 export async function getNewDocument(
   collection: Collection,
   cms: CMSContent,
-  params: URLSearchParams,
+  defaults: Record<string, string>,
 ) {
   if (collection.fields === undefined) {
     throw new Error(
@@ -28,24 +28,22 @@ export async function getNewDocument(
     ? collection.views() || []
     : collection.views || [];
 
-  const defaults = Object.fromEntries(params);
   const fields = await prepareField(collection.fields, cms);
   const views = Array.from(getViews(collection.fields));
-  const folder = normalizeName(params.get("folder"));
+  const folder = normalizeName(defaults.folder);
 
-  return { initViews, fields, views, folder, defaults };
+  return { initViews, fields, views, folder };
 }
 
 export async function saveNewDocument(
   collection: Collection,
   cms: CMSContent,
-  body: FormData,
+  changes: Record<string, unknown>,
 ) {
-  const changes = Object.fromEntries(body);
   let data = changesToData(changes);
 
   // Calculate the document name
-  let name = normalizeName(body.get("_id") as string) ||
+  let name = normalizeName(changes._id as string) ||
     collection.storage.name();
 
   if (changes._prefix) {
@@ -60,7 +58,7 @@ export async function saveNewDocument(
   data = await document.write(data, cms, true);
 
   // Recalculate the document name if it wasn't manually defined
-  if (!body.get("_id")) {
+  if (!changes._id) {
     name = getDocumentName(collection, data) || name;
   }
 
@@ -93,9 +91,9 @@ export async function saveDocument(
   collection: Collection,
   document: Document,
   cms: CMSContent,
-  body: FormData,
+  changes: Record<string, unknown>,
 ) {
-  let name = normalizeName(body.get("_id") as string);
+  let name = normalizeName(changes._id as string);
   let finalDocument = document;
 
   if (!name) {
@@ -109,8 +107,6 @@ export async function saveDocument(
   if (document.name !== name && !user.canRename(collection)) {
     throw new Error("Permission denied to rename document");
   }
-
-  const changes = Object.fromEntries(body);
 
   // Save changes
   const data = await document.write(changesToData(changes), cms);
@@ -132,9 +128,9 @@ export async function saveDocumentCode(
   user: User,
   collection: Collection,
   document: Document,
-  body: FormData,
+  changes: Record<string, unknown>,
 ) {
-  let name = normalizeName(body.get("_id") as string);
+  let name = normalizeName(changes._id as string);
   let finalDocument = document;
 
   if (!name) {
@@ -153,7 +149,7 @@ export async function saveDocumentCode(
     finalDocument = collection.get(name);
   }
 
-  const code = body.get("root.code") as string | undefined;
+  const code = changes["root.code"] as string | undefined;
   finalDocument.writeText(code ?? "");
 
   return { finalDocument };
@@ -164,30 +160,51 @@ export async function duplicateDocument(
   collection: Collection,
   document: Document,
   cms: CMSContent,
-  body: FormData,
+  newName: string,
+  changes: Record<string, unknown>,
 ) {
   if (!user.canCreate(collection)) {
     throw new Error("Permission denied");
   }
 
-  let name = normalizeName(body.get("_id") as string);
+  newName = normalizeName(newName);
+  const newDocument = collection.create(newName);
 
-  if (!name) {
-    throw new Error("Document name is required");
+  if (document.name === newDocument.name) {
+    return { newDocument: document };
   }
 
-  // If the name is already used, generate one
-  if (document.name === name) {
-    name = collection.storage.name();
-  }
-
-  const newDocument = collection.create(name);
   await newDocument.write(
-    changesToData(Object.fromEntries(body)),
+    changesToData(changes),
     cms,
     true,
   );
 
+  return { newDocument };
+}
+
+export async function moveDocument(
+  user: User,
+  collection: Collection,
+  document: Document,
+  newName: string,
+) {
+  if (!user.canRename(collection)) {
+    throw new Error("Permission denied to rename document");
+  }
+
+  newName = normalizeName(newName);
+
+  if (!newName) {
+    throw new Error("Invalid file name");
+  }
+
+  if (document.name === newName) {
+    return { newDocument: document };
+  }
+
+  newName = await collection.rename(document.name, newName);
+  const newDocument = collection.get(newName);
   return { newDocument };
 }
 
