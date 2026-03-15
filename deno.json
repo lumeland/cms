@@ -7,7 +7,7 @@
   "imports": {
     "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
     "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js",
-    "@std/assert": "jsr:@std/assert@1.0.18"
+    "@std/assert": "jsr:@std/assert@1.0.19"
   },
   "unstable": [
     "fmt-component",

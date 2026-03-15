@@ -1,10 +1,10 @@
 export { escape } from "jsr:@std/html@1.0.5/entities";
-import { type ImplicitType, parse } from "jsr:@std/yaml@1.0.11/unstable-parse";
-import { stringify } from "jsr:@std/yaml@1.0.11/unstable-stringify";
+import { type ImplicitType, parse } from "jsr:@std/yaml@1.0.12/unstable-parse";
+import { stringify } from "jsr:@std/yaml@1.0.12/unstable-stringify";
 
 export { test as testFrontMatter } from "jsr:@std/front-matter@1.0.9";
 export { extract as extractFrontMatter } from "jsr:@std/front-matter@1.0.9/yaml";
-export { emptyDir, ensureDir, expandGlob } from "jsr:@std/fs@1.0.22";
+export { emptyDir, ensureDir, expandGlob } from "jsr:@std/fs@1.0.23";
 export * as posix from "jsr:@std/path@1.1.4/posix";
 export {
   basename,

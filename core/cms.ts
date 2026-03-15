@@ -372,16 +372,10 @@ export default class Cms {
 
     filter("path", (args: string[]) => getPath(this.options.basePath, ...args));
     filter("asset", (url: string) => asset(this.options.basePath, url));
-    const user = new User();
 
-    if (this.versionManager) {
-      this.versionManager.user = user;
-    }
-
-    const app = new Router<RouterData>({
+    const app = new Router({
       cms: content,
       sourcePath: this.options.sourcePath,
-      user,
       render: (file: string, data?: Record<string, unknown>) =>
         render(file, {
           ...data,
@@ -389,18 +383,18 @@ export default class Cms {
           extraHead: this.options.extraHead,
           cmsVersion: getCurrentVersion(),
         }),
-    });
+    }, this.options.basePath);
 
-    const { basePath } = this.options;
-
-    app.get(`${basePath}/logout`, () =>
+    app.get("/logout", () =>
       new Response("Unauthorized", {
         status: 401,
         headers: {
           "WWW-Authenticate": 'Basic realm="Secure Area"',
         },
       }))
-      .path(`${basePath}/*`, ({ request, next, _, user }) => {
+      .path("/*", ({ request, next, _ }) => {
+        const user = new User();
+
         // Basic authentication
         if (this.options.auth && _.join("/") !== "logout") {
           const authorization = request.headers.get("authorization");
@@ -414,7 +408,11 @@ export default class Cms {
           }
         }
 
-        return next()
+        if (this.versionManager) {
+          this.versionManager.user = user;
+        }
+
+        return next({ user })
           .path("/", indexRoute)
           .path("/document/*", documentRoute)
           .path("/collection/*", collectionRoute)
@@ -433,14 +431,14 @@ export default class Cms {
     const root = import.meta.resolve("../static/");
 
     if (root.startsWith("file:")) {
-      app.staticFiles(`${basePath}/*`, fromFileUrl(root));
+      app.staticFiles("/*", fromFileUrl(root));
     }
 
     const { staticFolders } = this.options;
 
     if (staticFolders) {
       for (const [prefix, path] of Object.entries(staticFolders)) {
-        const folder = normalizePath(basePath, prefix, "*");
+        const folder = normalizePath(prefix, "*");
         if (path.startsWith("file:")) {
           app.staticFiles(folder, fromFileUrl(path));
         } else {

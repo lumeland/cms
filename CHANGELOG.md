@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.15.0] - Unreleased
+### Changed
+- Better code architecture.
+- Move the ability to rename documents to a separate action.
+- Redesigned the ability to duplicate documents.
+- Use CSS anchor positioning for the dropdown menus.
+
+### Removed
+- Ability to edit an uploaded file.
+
+### Fixed
+- Some bugs in the permissions layer.
+- Updated dependencies
+
 ## [0.14.16] - 2026-03-03
 ### Added
 - New `relativePath` option for uploaded files [#69]
@@ -873,6 +887,7 @@ First version
 [#68]: https://github.com/lumeland/cms/issues/68
 [#69]: https://github.com/lumeland/cms/issues/69
 
+[0.15.0]: https://github.com/lumeland/cms/compare/v0.14.16...HEAD
 [0.14.16]: https://github.com/lumeland/cms/compare/v0.14.15...v0.14.16
 [0.14.15]: https://github.com/lumeland/cms/compare/v0.14.14...v0.14.15
 [0.14.14]: https://github.com/lumeland/cms/compare/v0.14.13...v0.14.14
