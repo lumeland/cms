@@ -41,7 +41,16 @@ export default class User {
     return false;
   }
 
+  // TO-DO: Implement view permissions
+  canView(_subject: Subject): boolean {
+    return true;
+  }
+
   canCreate(subject: Subject): boolean {
+    if (!this.canView(subject)) {
+      return false;
+    }
+
     // Document has no create permission. Use edit instead.
     if (subject instanceof Document) {
       return this.#getUserPermission(subject)?.edit ?? subject.permissions.edit;
@@ -52,6 +61,10 @@ export default class User {
   }
 
   canDelete(subject: Subject): boolean {
+    if (!this.canView(subject)) {
+      return false;
+    }
+
     // Documents can't be deleted
     if (subject instanceof Document) {
       return false;
@@ -62,10 +75,18 @@ export default class User {
   }
 
   canEdit(subject: Subject): boolean {
+    if (!this.canView(subject)) {
+      return false;
+    }
+
     return this.#getUserPermission(subject)?.edit ?? subject.permissions.edit;
   }
 
   canRename(subject: Subject): boolean {
+    if (!this.canView(subject)) {
+      return false;
+    }
+
     // Documents can't be renamed
     if (subject instanceof Document) {
       return false;

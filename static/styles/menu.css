@@ -23,6 +23,10 @@
     --anchor-top-center,
     --anchor-left,
     --anchor-right;
+
+  .button {
+    width: 100%;
+  }
 }
 .menu-header {
   padding: 0.5em;

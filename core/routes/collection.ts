@@ -1,33 +1,23 @@
 import { getPath, normalizeName } from "../utils/path.ts";
 import { Router } from "../../deps/galo.ts";
 
-import type Document from "../document.ts";
 import type { RouterData } from "../cms.ts";
 import {
   deleteDocument,
   duplicateDocument,
   getCollection,
   getDocument,
+  getDocumentCode,
   getNewDocument,
   moveDocument,
   saveDocument,
   saveDocumentCode,
   saveNewDocument,
 } from "../usecases/collections.ts";
-import { getDocumentCode } from "../usecases/documents.ts";
 
 /**
  * Route for managing collections in the CMS.
- * Handles viewing, editing, creating, and deleting documents within a collection.
- *
- * /collection/:name - View the collection
- * /collection/:name/create - Create a new document in the collection
- * /collection/:name/:file/edit - Edit a document in the collection
- * /collection/:name/:file/code - Edit the code of a document in the collection
- * /collection/:name/:file/duplicate - Duplicate a document in the collection
- * /collection/:name/:file/delete - Delete a document in the collection
  */
-
 const app = new Router<RouterData>();
 
 app.path(
@@ -49,19 +39,10 @@ app.path(
       });
     }
 
-    function getPreviewUrl(document: Document, changed = false) {
-      return collection.previewUrl?.(
-        document.source.path,
-        cms,
-        changed,
-        document.storage,
-      );
-    }
-
     return next()
-      /* /collection/:name - View the collection */
+      /* GET /collection/:name */
       .get("/", async () => {
-        const { tree } = await getCollection(collection);
+        const { tree } = await getCollection(user, collection);
 
         return render("collection/list.vto", {
           collection,
@@ -69,48 +50,31 @@ app.path(
           user,
         });
       })
-      /* /collection/:name/create - Create a new document in the collection */
-      .path("/create", ({ next }) => {
-        if (!user.canCreate(collection)) {
-          throw new Error("Permission denied");
-        }
+      /* GET /collection/:name/create */
+      .get("/create", async ({ request }) => {
+        const { searchParams } = new URL(request.url);
+        const defaults = Object.fromEntries(searchParams);
+        const data = await getNewDocument(user, collection, cms, defaults);
 
-        return next()
-          .get(async ({ request }) => {
-            const { searchParams } = new URL(request.url);
-            const defaults = Object.fromEntries(searchParams);
-            const { initViews, views, fields, folder } = await getNewDocument(
-              collection,
-              cms,
-              defaults,
-            );
-
-            return render("collection/create.vto", {
-              defaults,
-              collection,
-              fields,
-              initViews,
-              views,
-              folder,
-              user,
-            });
-          })
-          .post(async ({ request }) => {
-            const data = await request.formData();
-            const changes = Object.fromEntries(data);
-            const { name, document } = await saveNewDocument(
-              collection,
-              cms,
-              changes,
-            );
-
-            // Wait for the preview URL to be ready before redirecting
-            await getPreviewUrl(document, true);
-
-            return redirect(collection.name, name, "edit");
-          });
+        return render("collection/create.vto", {
+          user,
+          collection,
+          defaults,
+          ...data,
+        });
       })
-      /* /collection/:name/:file/* - Document actions */
+      /* POST /collection/:name/create */
+      .post("/create", async ({ request }) => {
+        const changes = Object.fromEntries(await request.formData());
+        const { document } = await saveNewDocument(
+          user,
+          collection,
+          cms,
+          changes,
+        );
+
+        return redirect(collection.name, document.name, "edit");
+      })
       .path("/:file/*", ({ file, next }) => {
         file = normalizeName(file);
         const document = collection?.get(file);
@@ -120,7 +84,7 @@ app.path(
         }
 
         return next()
-          /* GET /collection/:name/:file/edit - Show edit form */
+          /* GET /collection/:name/:file/edit */
           .get("/edit", async () => {
             // If there are no fields defined, redirect to the code editor
             if (collection.fields === undefined) {
@@ -128,36 +92,26 @@ app.path(
             }
 
             try {
-              const { data, initViews, views, fields } = await getDocument(
-                collection,
-                document,
-                cms,
-              );
+              const data = await getDocument(user, collection, document, cms);
 
               return render("collection/edit.vto", {
-                collection,
-                fields,
-                data,
-                initViews,
-                url: await getPreviewUrl(document),
-                views,
-                document,
                 user,
+                collection,
+                document,
+                ...data,
               });
             } catch (error) {
               return render("collection/edit-error.vto", {
-                error: (error as Error).message,
+                user,
                 collection,
                 document,
-                user,
+                error: (error as Error).message,
               });
             }
           })
-          /* POST /collection/:name/:file/edit - Save edit data */
+          /* POST /collection/:name/:file/edit */
           .post("/edit", async () => {
-            const data = await request.formData();
-            const changes = Object.fromEntries(data);
-
+            const changes = Object.fromEntries(await request.formData());
             const { finalDocument } = await saveDocument(
               user,
               collection,
@@ -166,46 +120,36 @@ app.path(
               changes,
             );
 
-            // Wait for the preview URL to be ready
-            await getPreviewUrl(finalDocument, true);
-
             return redirect(collection.name, finalDocument.name, "edit");
           })
-          /* GET /collection/:name/:file/code - Show the code editor */
+          /* GET /collection/:name/:file/code */
           .get("/code", async () => {
-            const { data, fields } = await getDocumentCode(document);
+            const data = await getDocumentCode(user, collection, document, cms);
 
             return render("collection/code.vto", {
-              collection,
-              fields,
-              data,
-              url: await getPreviewUrl(document),
-              document,
               user,
+              collection,
+              document,
+              ...data,
             });
           })
-          /* POST /collection/:name/:file/code - Save code changes */
+          /* POST /collection/:name/:file/code */
           .post("/code", async ({ request }) => {
-            const data = await request.formData();
-            const changes = Object.fromEntries(data);
-
+            const changes = Object.fromEntries(await request.formData());
             const { finalDocument } = await saveDocumentCode(
               user,
               collection,
               document,
+              cms,
               changes,
             );
 
-            // Wait for the preview URL to be ready
-            await getPreviewUrl(finalDocument, true);
-
             return redirect(collection.name, finalDocument.name, "code");
           })
-          /* POST /collection/:name/:file/duplicate - Duplicate the document */
+          /* POST /collection/:name/:file/duplicate */
           .post("/duplicate", async ({ request }) => {
-            const data = await request.formData();
-            const changes = Object.fromEntries(data);
-            const newName = data.get("name") as string;
+            const changes = Object.fromEntries(await request.formData());
+            const newName = changes.name as string;
 
             const { newDocument } = await duplicateDocument(
               user,
@@ -216,12 +160,9 @@ app.path(
               changes,
             );
 
-            // Wait for the preview URL to be ready
-            await getPreviewUrl(newDocument, true);
-
             return redirect(collection.name, newDocument.name, "edit");
           })
-          /* POST /collection/:name/:file/move - Move (rename) the document */
+          /* POST /collection/:name/:file/move */
           .post("/move", async ({ request }) => {
             const data = await request.formData();
             const newName = data.get("name") as string;
@@ -230,15 +171,13 @@ app.path(
               user,
               collection,
               document,
+              cms,
               newName,
             );
 
-            // Wait for the preview URL to be ready
-            await getPreviewUrl(newDocument, true);
-
             return redirect(collection.name, newDocument.name, "edit");
           })
-          /* POST /collection/:name/:file/delete - Delete the document */
+          /* POST /collection/:name/:file/delete */
           .post("/delete", async () => {
             await deleteDocument(user, collection, document);
             return redirect(collection.name);

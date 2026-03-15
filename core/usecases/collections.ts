@@ -1,23 +1,32 @@
 import { posix } from "../../deps/std.ts";
 import { CMSContent, Data } from "../../types.ts";
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
-import { normalizeName } from "../utils/path.ts";
+import { getLanguageCode, normalizeName } from "../utils/path.ts";
 import createTree from "./tree.ts";
+import { getPreviewUrl } from "./documents.ts";
 import type Collection from "../collection.ts";
 import type Document from "../document.ts";
 import type User from "../user.ts";
 
-export async function getCollection(collection: Collection) {
-  const tree = createTree(await Array.fromAsync(collection));
+export async function getCollection(user: User, collection: Collection) {
+  if (!user.canView(collection)) {
+    throw new Error("Permission denied");
+  }
 
+  const tree = createTree(await Array.fromAsync(collection));
   return { tree };
 }
 
 export async function getNewDocument(
+  user: User,
   collection: Collection,
   cms: CMSContent,
   defaults: Record<string, string>,
 ) {
+  if (!user.canCreate(collection)) {
+    throw new Error("Permission denied");
+  }
+
   if (collection.fields === undefined) {
     throw new Error(
       "Create document without fields is not supported yet",
@@ -36,10 +45,15 @@ export async function getNewDocument(
 }
 
 export async function saveNewDocument(
+  user: User,
   collection: Collection,
   cms: CMSContent,
   changes: Record<string, unknown>,
 ) {
+  if (!user.canCreate(collection)) {
+    throw new Error("Permission denied");
+  }
+
   let data = changesToData(changes);
 
   // Calculate the document name
@@ -54,7 +68,7 @@ export async function saveNewDocument(
   }
 
   // Write the document
-  const document = collection.create(name);
+  let document = collection.create(name);
   data = await document.write(data, cms, true);
 
   // Recalculate the document name if it wasn't manually defined
@@ -64,16 +78,25 @@ export async function saveNewDocument(
 
   if (document.name !== name) {
     name = await collection.rename(document.name, name);
+    document = collection.get(name);
   }
 
-  return { name, document };
+  // Wait for the preview URL to be ready before redirecting
+  await getPreviewUrl(document, cms, true);
+
+  return { document };
 }
 
 export async function getDocument(
+  user: User,
   collection: Collection,
   document: Document,
   cms: CMSContent,
 ) {
+  if (!user.canView(collection)) {
+    throw new Error("Permission denied");
+  }
+
   const data = await document.read();
 
   const initViews = typeof collection.views === "function"
@@ -82,8 +105,9 @@ export async function getDocument(
 
   const fields = await prepareField(collection.fields!, cms, data, document);
   const views = Array.from(getViews(collection.fields!));
+  const url = await getPreviewUrl(document, cms);
 
-  return { data, initViews, fields, views };
+  return { data, initViews, fields, views, url };
 }
 
 export async function saveDocument(
@@ -113,36 +137,74 @@ export async function saveDocument(
     finalDocument = collection.get(name);
   }
 
+  // Wait for the preview URL to be ready
+  await getPreviewUrl(finalDocument, cms, true);
+
   return { finalDocument };
+}
+
+export async function getDocumentCode(
+  user: User,
+  collection: Collection,
+  document: Document,
+  cms: CMSContent,
+) {
+  if (!user.canView(collection)) {
+    throw new Error("Permission denied to view this document");
+  }
+
+  const data = { root: { code: await document.readText(true) } };
+  const url = await getPreviewUrl(document, cms);
+  const fields = {
+    tag: "f-object-root",
+    name: "root",
+    fields: [{
+      tag: "f-code",
+      name: "code",
+      label: "Code",
+      type: "code",
+      attributes: {
+        data: {
+          language: getLanguageCode(document.source.name),
+        },
+      },
+    }],
+  };
+
+  return { data, fields, url };
 }
 
 export async function saveDocumentCode(
   user: User,
   collection: Collection,
   document: Document,
+  cms: CMSContent,
   changes: Record<string, unknown>,
 ) {
-  let name = normalizeName(changes._id as string);
-  let finalDocument = document;
-
-  if (!name) {
-    throw new Error("Document name is required");
-  }
-
-  if (document.name === name && !user.canEdit(collection)) {
+  if (!user.canEdit(collection)) {
     throw new Error("Permission denied to edit document");
   }
 
+  // Save changes
+  const code = changes["root.code"] as string | undefined;
+  document.writeText(code ?? "");
+
+  let name = document.name;
+  let finalDocument = document;
+
+  // Recalculate the document name automatically
+  if (collection.permissions.rename === "auto") {
+    const data = await document.read();
+    name = getDocumentName(collection, data.root) || name;
+  }
+
   if (document.name !== name) {
-    if (!user.canRename(collection)) {
-      throw new Error("Permission denied to rename document");
-    }
     name = await collection.rename(document.name, name);
     finalDocument = collection.get(name);
   }
 
-  const code = changes["root.code"] as string | undefined;
-  finalDocument.writeText(code ?? "");
+  // Wait for the preview URL to be ready
+  await getPreviewUrl(finalDocument, cms, true);
 
   return { finalDocument };
 }
@@ -172,6 +234,9 @@ export async function duplicateDocument(
     true,
   );
 
+  // Wait for the preview URL to be ready
+  await getPreviewUrl(newDocument, cms, true);
+
   return { newDocument };
 }
 
@@ -179,6 +244,7 @@ export async function moveDocument(
   user: User,
   collection: Collection,
   document: Document,
+  cms: CMSContent,
   newName: string,
 ) {
   if (!user.canRename(collection)) {
@@ -197,6 +263,10 @@ export async function moveDocument(
 
   newName = await collection.rename(document.name, newName);
   const newDocument = collection.get(newName);
+
+  // Wait for the preview URL to be ready
+  await getPreviewUrl(newDocument, cms, true);
+
   return { newDocument };
 }
 

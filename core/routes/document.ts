@@ -1,7 +1,6 @@
 import { getPath } from "../utils/path.ts";
 import { Router } from "../../deps/galo.ts";
 
-import type Document from "../document.ts";
 import type { RouterData } from "../cms.ts";
 import {
   getDocument,
@@ -36,84 +35,51 @@ app.path(
       return new Response(null, {
         status: 302,
         headers: new Headers({
-          "Location": getPath(basePath, "document", ...paths),
+          "Location": getPath(basePath, "document", document.name, ...paths),
         }),
       });
     }
 
-    function getPreviewUrl(document: Document, changed = false) {
-      return document.previewUrl?.(
-        document.source.path,
-        cms,
-        changed,
-        document.storage,
-      );
-    }
-
     return next()
-      /* GET /document/:name/edit - Show the document editor */
+      /* GET /document/:name/edit */
       .get("/edit", async () => {
         // If there are no fields defined, redirect to the code editor
         if (document.fields === undefined) {
-          return redirect(document.name, "code");
+          return redirect("code");
         }
 
         try {
-          const { fields, views, initViews, data } = await getDocument(
-            document,
-            cms,
-          );
+          const data = await getDocument(user, document, cms);
 
           return render("document/edit.vto", {
-            document,
-            fields,
-            views,
-            initViews,
-            url: getPreviewUrl(document),
-            data,
             user,
+            document,
+            ...data,
           });
         } catch (error) {
           return render("document/edit-error.vto", {
-            error: (error as Error).message,
-            document,
             user,
+            document,
+            error: (error as Error).message,
           });
         }
       })
-      /* POST /document/:name/edit - Save the document */
+      /* POST /document/:name/edit */
       .post("/edit", async ({ request }) => {
-        const data = await request.formData();
-        const changes = Object.fromEntries(data);
+        const changes = Object.fromEntries(await request.formData());
         await saveDocument(user, document, cms, changes);
-
-        // Wait for the preview URL to be ready
-        await getPreviewUrl(document, true);
-
-        return redirect(document.name, "edit");
+        return redirect("edit");
       })
-      /* GET /document/:name/code - Show the code editor */
+      /* GET /document/:name/code */
       .get("/code", async () => {
-        const { data, fields } = await getDocumentCode(document);
-
-        return render("document/code.vto", {
-          fields,
-          data,
-          url: getPreviewUrl(document),
-          document,
-          user,
-        });
+        const data = await getDocumentCode(user, document, cms);
+        return render("document/code.vto", { user, document, ...data });
       })
-      /* POST /document/:name/code - Save the code */
+      /* POST /document/:name/code */
       .post("/code", async ({ request }) => {
-        const data = await request.formData();
-        const changes = Object.fromEntries(data);
-        await saveDocumentCode(user, document, changes);
-
-        // Wait for the preview URL to be ready
-        await getPreviewUrl(document, true);
-
-        return redirect(document.name, "code");
+        const changes = Object.fromEntries(await request.formData());
+        await saveDocumentCode(user, document, cms, changes);
+        return redirect("code");
       });
   },
 );
