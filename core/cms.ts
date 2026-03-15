@@ -55,7 +55,6 @@ export interface AuthOptions {
 export interface RouterData {
   cms: CMSContent;
   render: (file: string, data?: Record<string, unknown>) => Promise<string>;
-  previewUrl?: PreviewUrl;
   sourcePath?: SourcePath;
   user: User;
 }
@@ -341,6 +340,7 @@ export default class Cms {
         fields: fields ? this.#resolveFields(fields, content, type) : undefined,
         name,
         label: label ?? labelify(name),
+        previewUrl: this.options.previewUrl,
         ...options,
       });
     }
@@ -354,6 +354,7 @@ export default class Cms {
         fields: fields ? this.#resolveFields(fields, content, type) : undefined,
         name,
         label: label ?? labelify(name),
+        previewUrl: this.options.previewUrl,
         ...options,
       });
     }
@@ -379,7 +380,6 @@ export default class Cms {
 
     const app = new Router<RouterData>({
       cms: content,
-      previewUrl: this.options.previewUrl,
       sourcePath: this.options.sourcePath,
       user,
       render: (file: string, data?: Record<string, unknown>) =>

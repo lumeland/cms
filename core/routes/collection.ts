@@ -32,7 +32,7 @@ const app = new Router<RouterData>();
 
 app.path(
   "/:name/*",
-  ({ request, cms, render, name, next, previewUrl, user }) => {
+  ({ request, cms, render, name, next, user }) => {
     const { collections, basePath } = cms;
     const collection = collections[name];
 
@@ -50,7 +50,7 @@ app.path(
     }
 
     function getPreviewUrl(document: Document, changed = false) {
-      return (collection.previewUrl ?? previewUrl)?.(
+      return collection.previewUrl?.(
         document.source.path,
         cms,
         changed,

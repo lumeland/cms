@@ -22,7 +22,7 @@ const app = new Router<RouterData>();
 
 app.path(
   "/:name/*",
-  ({ cms, name, render, next, previewUrl, user }) => {
+  ({ cms, name, render, next, user }) => {
     const { documents, basePath } = cms;
 
     // Check if the document exists
@@ -42,7 +42,7 @@ app.path(
     }
 
     function getPreviewUrl(document: Document, changed = false) {
-      return (document.previewUrl ?? previewUrl)?.(
+      return document.previewUrl?.(
         document.source.path,
         cms,
         changed,
