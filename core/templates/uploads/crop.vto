@@ -6,12 +6,14 @@
         links: [
           [upload.label, ["uploads", upload.name]],
           ["File details", ["uploads", upload.name, file, "edit"]],
-          "Crop image",
+          t("uploads.crop.title"),
         ],
       }
     }}
 
-    <h1 class="header-title">Edit {{ file }}</h1>
+    <h1 class="header-title">
+      {{ t("uploads.crop.title.long", { file }) }}
+    </h1>
   </header>
 
   <nav class="navigation">
@@ -19,11 +21,11 @@
       class="button is-secondary"
       href='{{ ["uploads", upload.name, file, "edit"] |> path }}'
     >
-      Cancel
+      {{ t("uploads.crop.action.cancel") }}
     </a>
     <button class="button is-primary" type="submit" form="form-edit">
       <u-icon name="check"></u-icon>
-      Crop image
+      {{ t("uploads.crop.action.save") }}
     </button>
   </nav>
 

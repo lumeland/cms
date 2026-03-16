@@ -7,13 +7,13 @@
         version,
         links: [
           [upload.label, ["uploads", upload.name]],
-          "File details",
+          t("uploads.edit.title")
         ],
       }
     }}
 
     <h1 class="header-title">
-      File details
+      {{ t("uploads.edit.title") }}
     </h1>
   </header>
 
@@ -24,7 +24,7 @@
       class="button is-primary"
     >
       <u-icon name="download-simple"></u-icon>
-      Download file
+      {{ t("uploads.edit.action.download") }}
     </a>
 
     {{ layout "components/menu.vto" { id: "edit-menu", header: "File options" } }}
@@ -32,7 +32,7 @@
         {{ layout "components/dialog.vto" { id: "modal-rename" } }}
           {{ slot button }}
             <u-icon name="textbox"></u-icon>
-            Move file
+            {{ t("uploads.edit.action.move") }}
           {{ /slot }}
 
           <form
@@ -40,7 +40,7 @@
             action='{{ ["uploads", upload.name, file, "move"] |> path }}'
           >
             <div class="field">
-              <label for="file-name">New path</label>
+              <label for="file-name">{{ t("uploads.edit.action.move.name") }}</label>
               <input
                 id="file-name"
                 class="input"
@@ -53,7 +53,7 @@
             </div>
 
             <footer class="field-footer">
-              <button class="button is-primary">Move file</button>
+              <button class="button is-primary">{{ t("uploads.edit.action.move.submit") }}</button>
             </footer>
           </form>
         {{ /layout }}
@@ -63,7 +63,7 @@
         {{ layout "components/dialog.vto" { id: "modal-duplicate" } }}
           {{ slot button }}
             <u-icon name="copy"></u-icon>
-            Duplicate
+            {{ t("uploads.edit.action.duplicate") }}
           {{ /slot }}
 
           <form
@@ -71,7 +71,7 @@
             action='{{ ["uploads", upload.name, file, "duplicate"] |> path }}'
           >
             <div class="field">
-              <label for="file-name">Copy name</label>
+              <label for="file-name">{{ t("uploads.edit.action.duplicate.name") }}</label>
               <input
                 id="file-name"
                 class="input"
@@ -84,7 +84,7 @@
             </div>
 
             <footer class="field-footer">
-              <button class="button is-primary">Duplicate</button>
+              <button class="button is-primary">{{ t("uploads.edit.action.duplicate.submit") }}</button>
             </footer>
           </form>
         {{ /layout }}
@@ -97,19 +97,19 @@
           class="button is-secondary"
         >
           <u-icon name="crop"></u-icon>
-          Crop image
+          {{ t("uploads.edit.action.crop") }}
         </a>
       {{ /if }}
 
       {{ if user.canDelete(upload) }}
-        <u-confirm data-message="Delete this file?">
+        <u-confirm data-message="{{ t("uploads.edit.action.delete.confirm") |> escape }}">
           <button
             class="button is-secondary"
             form="form-edit"
             formAction='{{ ["uploads", upload.name, file, "delete"] |> path }}'
           >
             <u-icon name="trash"></u-icon>
-            Delete file
+            {{ t("uploads.edit.action.delete") }}
           </button>
         </u-confirm>
       {{ /if }}
@@ -118,22 +118,22 @@
 
   <figure class="preview">
     <dl class="definition">
-      <dt>Public URL:</dt>
+      <dt>{{ t("uploads.details.url") }}:</dt>
       {{ set publicUrl = [upload.publicPath, file] |> normalizePath }}
       <dd>
         {{ publicUrl }}
         <u-copy text="{{ publicUrl }}"></u-copy>
       </dd>
-      <dt>Type:</dt>
+      <dt>{{ t("uploads.details.type") }}:</dt>
       <dd>{{ type }}</dd>
-      <dt>Size:</dt>
+      <dt>{{ t("uploads.details.size") }}:</dt>
       <dd>{{ size |> formatBytes }}</dd>
     </dl>
 
     <u-preview class="preview-media" data-src="{{src}}"></u-preview>
     {{ if exif }}
       <details class="accordion is-button">
-        <summary>Show EXIF data</summary>
+        <summary>{{ t("uploads.details.exif") }}</summary>
         <dl class="definition">
           {{ for key, value of exif }}
             <dt>{{ key }}:</dt>

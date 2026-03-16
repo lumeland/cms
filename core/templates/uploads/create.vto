@@ -5,11 +5,13 @@
         version,
         links: [
           [upload.label, ["uploads", upload.name]],
-          "Upload file",
+          t("uploads.create.title"),
         ],
       }
     }}
-    <h1 class="header-title">Upload files</h1>
+    <h1 class="header-title">
+      {{ t("uploads.create.title") }}
+    </h1>
   </header>
 
   <nav class="navigation">
@@ -19,9 +21,9 @@
         id="_id"
         type="text"
         name="_id"
-        placeholder="subfolder…"
+        placeholder="{{ t("uploads.create.placeholder") }}"
         form="form-create"
-        aria-label="File name"
+        aria-label="{{ t("uploads.create.label") }}"
         value="{{ folder }}"
       >
     </label>
@@ -33,7 +35,7 @@
       tabindex="1"
     >
       <u-icon name="upload-simple"></u-icon>
-      Upload files
+      {{ t("uploads.create.title") }}
     </button>
   </nav>
 
@@ -47,7 +49,7 @@
     <div class="field">
       <u-upload>
         <input
-          aria-label="Upload file"
+          aria-label="{{ t("uploads.create.file.label") |> escape }}"
           id="new-file"
           type="file"
           name="files"

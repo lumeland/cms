@@ -59,7 +59,7 @@
           <div class="list-actions">
             <a
               href='{{ ["uploads", upload.name, "create"] |> path }}?folder={{child.path}}'
-              title="Upload file inside ${name}"
+              title="{{ t("uploads.list.action.create", { folder: name }) }}"
               class="buttonIcon"
             >
               <u-icon name="plus-circle"></u-icon>
@@ -97,7 +97,7 @@
         class="button is-primary"
       >
         <u-icon name="plus-circle"></u-icon>
-        Add files
+        {{ t("uploads.list.action.add") }}
       </a>
     {{ /if }}
   </nav>
@@ -105,6 +105,6 @@
   {{ if content }}
     <ul id="list" class="list">{{ content }}</ul>
   {{ else }}
-    <p class="emptyState">This is empty</p>
+    <p class="emptyState">{{ t("uploads.list.empty") }}</p>
   {{ /if }}
 {{ /layout }}
