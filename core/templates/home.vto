@@ -80,7 +80,7 @@
 
   {{ if versioning }}
     <header class="subheader" id="versions">
-      <h2>Available versions</h2>
+      <h2>{{ t("versions.title") }}</h2>
     </header>
 
     <ul class="list">
@@ -193,7 +193,7 @@
     <div>
       {{ layout "components/dialog.vto" { id: "modal-new-version" } }}
         {{ slot button }}
-          New version
+          {{ t("versions.action.new") }}
         {{ /slot }}
 
         <form
@@ -201,7 +201,7 @@
           action='{{ ["versions", "create"] |> path }}'
         >
           <div class="field">
-            <label for="version-name">Name of the new version</label>
+            <label for="version-name">{{ t("versions.action.new.label") }}</label>
             <input
               id="version-name"
               class="input"
@@ -214,7 +214,7 @@
 
           <footer class="field-footer">
             <u-busy data-message="{{ 'Creating…' }}">
-              <button class="button is-primary">Create version</button>
+              <button class="button is-primary">{{ t("versions.action.new.submit") }}</button>
             </u-busy>
           </footer>
         </form>

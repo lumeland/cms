@@ -11,7 +11,12 @@ import Upload from "./upload.ts";
 import FsStorage from "../storage/fs.ts";
 import { asset, getPath, normalizePath } from "./utils/path.ts";
 import { Router } from "../deps/galo.ts";
-import { basename, dirname, fromFileUrl } from "../deps/std.ts";
+import {
+  acceptsLanguages,
+  basename,
+  dirname,
+  fromFileUrl,
+} from "../deps/std.ts";
 import { filter } from "../deps/vento.ts";
 import { labelify } from "./utils/string.ts";
 import { Git, Options as GitOptions } from "./git.ts";
@@ -54,6 +59,8 @@ export interface AuthOptions {
 
 export interface RouterData {
   cms: CMSContent;
+  lang: "en";
+  locale: Record<string, string>;
   render: (file: string, data?: Record<string, unknown>) => Promise<string>;
   sourcePath?: SourcePath;
   user: User;
@@ -376,13 +383,6 @@ export default class Cms {
     const app = new Router({
       cms: content,
       sourcePath: this.options.sourcePath,
-      render: (file: string, data?: Record<string, unknown>) =>
-        render(file, {
-          ...data,
-          jsImports: Array.from(this.#jsImports),
-          extraHead: this.options.extraHead,
-          cmsVersion: getCurrentVersion(),
-        }),
     }, this.options.basePath);
 
     app.get("/logout", () =>
@@ -392,7 +392,7 @@ export default class Cms {
           "WWW-Authenticate": 'Basic realm="Secure Area"',
         },
       }))
-      .path("/*", ({ request, next, _ }) => {
+      .path("/*", async ({ request, next, _ }) => {
         const user = new User();
 
         // Basic authentication
@@ -412,7 +412,23 @@ export default class Cms {
           this.versionManager.user = user;
         }
 
-        return next({ user })
+        // Detect the language
+        const lang = acceptsLanguages(request, "en") ?? "en";
+        const { default: locale } = await import(`../locale/${lang}.json`, {
+          with: { type: "json" },
+        });
+
+        // Template renderer
+        const renderTemplate = (file: string, data?: Record<string, unknown>) =>
+          render(file, {
+            ...data,
+            t: (key: string) => locale[key] ?? key,
+            jsImports: Array.from(this.#jsImports),
+            extraHead: this.options.extraHead,
+            cmsVersion: getCurrentVersion(),
+          });
+
+        return next({ user, lang, locale, render: renderTemplate })
           .path("/", indexRoute)
           .path("/document/*", documentRoute)
           .path("/collection/*", collectionRoute)

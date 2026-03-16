@@ -1,0 +1,7 @@
+{
+  "home.title": "Home",
+  "versions.title": "Available versions",
+  "versions.action.new": "New version",
+  "versions.action.new.label": "Name of the new version",
+  "versions.action.new.submit": "Create version"
+}
