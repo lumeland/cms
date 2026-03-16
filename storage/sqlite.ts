@@ -114,6 +114,8 @@ export class Sqlite implements Storage {
   }
 }
 
+export default Sqlite;
+
 export class SqliteEntry implements Entry {
   source: EntrySource;
   #storage: Sqlite;
