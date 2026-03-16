@@ -2,7 +2,9 @@
   <header class="header">
     {{ include "breadcrumb.vto" { version, links: [document.label] } }}
 
-    <h1 class="header-title">Editing {{ document.label }}</h1>
+    <h1 class="header-title">
+      {{ t("document.code.title.long", { document: document.label }) }}
+    </h1>
 
     {{ if document.description }}
       <div class="header-description">
@@ -13,13 +15,13 @@
 
   <section class="emptyState is-error">
     <u-icon class="errorState-icon" name="warning"></u-icon>
-    <h1>Error loading the document:<br><code>{{ error }}</code></h1>
+    <h1>{{ t("document.error") }}:<br><code>{{ error }}</code></h1>
     <a
       class="button is-primary"
       href='{{ ["document", document.name, "code"] |> path }}'
     >
       <u-icon name="code"></u-icon>
-      Edit raw code
+      {{ t("document.edit.action.code") }}
     </a>
   </section>
 {{ /layout }}

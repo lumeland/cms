@@ -7,12 +7,14 @@
         version,
         links: [
           [document.label, ["document", document.name, "edit"]],
-          "Editing code",
+          t("document.code.title"),
         ],
       }
     }}
 
-    <h1 class="header-title">Editing {{ document.label }}</h1>
+    <h1 class="header-title">
+      {{ t("document.code.title.long", { document: document.label }) }}
+    </h1>
 
     {{ if document.description }}
       <div class="header-description">
@@ -24,7 +26,7 @@
   <nav class="navigation">
     <button id="form-edit" class="button is-primary" type="submit" tabindex="1">
       <u-icon name="floppy-disk"></u-icon>
-      Save changes
+      {{ t("document.code.action.save") }}
     </button>
 
     {{
@@ -36,7 +38,7 @@
           href='{{ ["document", document.name, "edit"] |> path }}'
         >
           <u-icon name="textbox"></u-icon>
-          Edit form
+          {{ t("document.code.action.form") }}
         </a>
       {{ /if }}
     {{ /layout }}

@@ -5,16 +5,18 @@
         version,
         links: [
           [collection.label, ["collection", collection.name]],
-          "Editing document",
+          t("document.edit.title"),
         ],
       }
     }}
-    <h1 class="header-title">Editing item of {{ collection.label }}</h1>
+    <h1 class="header-title">
+      {{ t("document.edit.title.long", { collection: collection.label }) }}
+    </h1>
   </header>
 
   <section class="emptyState is-error">
     <u-icon class="errorState-icon" name="warning"></u-icon>
-    <h1>Error loading the document:<br><code>{{ error }}</code></h1>
+    <h1>{{ t("document.error") }}:<br><code>{{ error }}</code></h1>
 
     <div class="ly-rowStack">
       <a
@@ -22,18 +24,20 @@
         href='{{ ["collection", collection.name, document.name, "code"] |> path }}'
       >
         <u-icon name="code"></u-icon>
-        Edit raw code
+        {{ t("document.edit.action.code") }}
       </a>
 
       {{ if user.canDelete(collection) }}
-        <u-confirm data-message="Are you sure?">
+        <u-confirm
+          data-message='{{ t("document.edit.action.delete.confirm") |> escape }}'
+        >
           <button
             class="button is-secondary"
             type="submit"
             formAction='{{ ["collection", collection.name, document.name, "delete"] |> path }}'
           >
             <u-icon name="trash"></u-icon>
-            Delete
+            {{ t("document.edit.action.delete") }}
           </button>
         </u-confirm>
       {{ /if }}

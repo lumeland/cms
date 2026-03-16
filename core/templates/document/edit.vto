@@ -4,7 +4,9 @@
   <header class="header">
     {{ include "breadcrumb.vto" { version, links: [document.label] } }}
 
-    <h1 class="header-title">Editing {{ document.label }}</h1>
+    <h1 class="header-title">
+      {{ t("document.edit.title.long", { document: document.label }) }}
+    </h1>
 
     {{ if document.description }}
       <div class="header-description">
@@ -21,18 +23,18 @@
       tabindex="1"
     >
       <u-icon name="floppy-disk"></u-icon>
-      Save changes
+      {{ t("document.edit.action.save") }}
     </button>
 
     {{
-      layout "components/menu.vto" { id: "edit-menu", header: "Edit options" }
+      layout "components/menu.vto" { id: "edit-menu", header: t("document.edit.menu") }
     }}
       <a
         class="button is-secondary"
         href='{{ ["document", document.name, "code"] |> path }}'
       >
         <u-icon name="code"></u-icon>
-        Edit code
+        {{ t("document.edit.action.code") }}
       </a>
     {{ /layout }}
   </nav>
@@ -44,7 +46,7 @@
         data-state="{{ initViews |> JSON.stringify |> escape }}"
         data-views="{{ views |> JSON.stringify |> escape }}"
       >
-        <strong class="field-label">View:</strong>
+        <strong class="field-label">{{ t("document.views") }}:</strong>
       </u-views>
     {{ /if }}
 

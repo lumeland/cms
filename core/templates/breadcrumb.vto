@@ -11,7 +11,7 @@
     {{ /if }}
 
     <li>
-      <a href="{{ [] |> path }}"><u-icon name="house-fill"></u-icon> Home</a>
+      <a href="{{ [] |> path }}"><u-icon name="house-fill"></u-icon> {{ t("home.title") }}</a>
     </li>
 
     {{ for link  of links }}
@@ -26,9 +26,9 @@
   {{ layout "components/menu.vto" { id: "user-menu", icon: "user-circle" } }}
     {{ slot header }}
       {{ if user.isLogged }}
-        Logged as <strong>{{ user.name }}</strong>
+        {{ t("user.logged") }} <strong>{{ user.name }}</strong>
       {{ else }}
-        No authentication
+        {{ t("user.not_logged") }}
       {{ /if }}
     {{ /slot }}
 
@@ -39,7 +39,7 @@
       aria-label="toggle-theme"
     >
       <u-icon name="paint-roller"></u-icon>
-      Switch theme
+      {{ t("user.action.theme") }}
     </button>
 
     {{ if user.isLogged }}
@@ -49,7 +49,7 @@
         type="button"
       >
         <u-icon name="sign-out"></u-icon>
-        Logout
+        {{ t("user.action.logout") }}
       </button>
     {{ /if }}
   {{ /layout }}

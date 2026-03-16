@@ -5,13 +5,13 @@
         version,
         links: [
           [collection.label, ["collection", collection.name]],
-          "New document",
+          t("document.create.title"),
         ],
       }
     }}
 
     <h1 class="header-title">
-      New document
+      {{ t("document.create.title") }}
     </h1>
   </header>
 
@@ -25,9 +25,9 @@
           type="text"
           name="_id"
           value="{{ defaults._id }}"
-          placeholder="Name your file…"
+          placeholder='{{ t("document.create.name.placeholder") |> escape }}'
           form="form-create"
-          aria-label="File name"
+          aria-label='{{ t("document.create.name.label") |> escape }}'
           {{ if !collection.documentName }}required autofocus{{ /if }}
         >
       </label>
@@ -40,7 +40,7 @@
       tabindex="1"
     >
       <u-icon name="plus-circle"></u-icon>
-      Create document
+      {{ t("document.create.submit") }}
     </button>
   </nav>
 
@@ -50,7 +50,7 @@
       data-state="{{ initViews |> JSON.stringify |> escape }}"
       data-views="{{ views |> JSON.stringify |> escape }}"
     >
-      <strong class="field-label">View:</strong>
+      <strong class="field-label">{{ t("document.views") }}:</strong>
     </u-views>
   {{ /if }}
 

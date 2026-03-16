@@ -7,11 +7,11 @@
         version,
         links: [
           [collection.label, ["collection", collection.name]],
-          "Editing file code",
+          t("document.code.title"),
         ],
       }
     }}
-    <h1 class="header-title">Editing file code</h1>
+    <h1 class="header-title">{{ t("document.code.title") }}</h1>
   </header>
 
   <nav class="navigation">
@@ -23,12 +23,12 @@
         tabindex="1"
       >
         <u-icon name="floppy-disk"></u-icon>
-        Save changes
+        {{ t("document.code.action.save") }}
       </button>
     {{ /if }}
 
     {{
-      layout "components/menu.vto" { id: "edit-menu", header: "Edit options" }
+      layout "components/menu.vto" { id: "edit-menu", header: t("document.code.menu") }
     }}
       {{ if collection.fields !== undefined }}
         <a
@@ -36,19 +36,21 @@
           href='{{ ["collection", collection.name, document.name, "edit"] |> path }}'
         >
           <u-icon name="textbox"></u-icon>
-          Edit form
+          {{ t("document.code.action.form") }}
         </a>
       {{ /if }}
 
       {{ if user.canDelete(collection) }}
-        <u-confirm data-message="Are you sure?">
+        <u-confirm
+          data-message='{{ t("document.code.action.delete.confirm") |> escape }}'
+        >
           <button
             class="button is-secondary"
             type="submit"
             formAction='{{ ["collection", collection.name, document.name, "delete"] |> path }}'
           >
             <u-icon name="trash"></u-icon>
-            Delete
+            {{ t("document.code.action.delete") }}
           </button>
         </u-confirm>
       {{ /if }}

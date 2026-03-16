@@ -7,11 +7,13 @@
         version,
         links: [
           [collection.label, ["collection", collection.name]],
-          "Editing document",
+          t("document.edit.title"),
         ],
       }
     }}
-    <h1 class="header-title">Editing document from {{ collection.label }}</h1>
+    <h1 class="header-title">
+      {{ t("document.edit.title.collection", { collection: collection.label }) }}
+    </h1>
   </header>
 
   <nav class="navigation">
@@ -23,18 +25,18 @@
         tabindex="1"
       >
         <u-icon name="floppy-disk"></u-icon>
-        Save changes
+        {{ t("document.edit.action.save") }}
       </button>
     {{ /if }}
 
-    {{ layout "components/menu.vto" { id: "edit-menu", header: "Edit options" } }}
+    {{ layout "components/menu.vto" { id: "edit-menu", header: t("document.edit.menu") } }}
       {{ if user.canEdit(collection) }}
         <a
           class="button is-secondary"
           href='{{ ["collection", collection.name, document.name, "code"] |> path }}'
         >
           <u-icon name="code"></u-icon>
-          Edit code
+          {{ t("document.edit.action.code") }}
         </a>
       {{ /if }}
 
@@ -42,7 +44,7 @@
         {{ layout "components/dialog.vto" { id: "modal-rename" } }}
           {{ slot button }}
             <u-icon name="textbox"></u-icon>
-            Move file
+            {{ t("document.edit.action.move") }}
           {{ /slot }}
 
           <form
@@ -50,7 +52,7 @@
             action='{{ ["collection", collection.name, document.name, "move"] |> path }}'
           >
             <div class="field">
-              <label for="file-name">New path</label>
+              <label for="file-name">{{ t("document.edit.action.move.name") }}</label>
               <input
                 id="file-name"
                 class="input"
@@ -63,7 +65,7 @@
             </div>
 
             <footer class="field-footer">
-              <button class="button is-primary">Move file</button>
+              <button class="button is-primary">{{ t("document.edit.action.move.submit") }}</button>
             </footer>
           </form>
         {{ /layout }}
@@ -73,7 +75,7 @@
         {{ layout "components/dialog.vto" { id: "modal-duplicate" } }}
           {{ slot button }}
             <u-icon name="copy"></u-icon>
-            Save as...
+            {{ t("document.edit.action.duplicate") }}
           {{ /slot }}
 
           <u-form-join data-form="form-edit">
@@ -83,7 +85,7 @@
             >
               {{ if user.canRename(collection) }}
                 <div class="field">
-                  <label for="file-name">Document name</label>
+                  <label for="file-name">{{ t("document.edit.action.duplicate.name") }}</label>
                   <input
                     id="file-name"
                     class="input"
@@ -97,7 +99,7 @@
               {{ /if }}
 
               <footer class="field-footer">
-                <button class="button is-primary">Save copy</button>
+                <button class="button is-primary">{{ t("document.edit.action.duplicate.submit") }}</button>
               </footer>
             </form>
           </u-form-join>
@@ -105,7 +107,7 @@
       {{ /if }}
 
       {{ if user.canDelete(collection) }}
-        <u-confirm data-message="Are you sure?">
+        <u-confirm data-message="{{ t("document.edit.action.delete.confirm") |> escape }}">
           <button
             class="button is-secondary"
             type="submit"
@@ -113,7 +115,7 @@
             formAction='{{ ["collection", collection.name, document.name, "delete"] |> path }}'
           >
             <u-icon name="trash"></u-icon>
-            Delete
+            {{ t("document.edit.action.delete") }}
           </button>
         </u-confirm>
       {{ /if }}
@@ -127,7 +129,7 @@
         data-state="{{ initViews |> JSON.stringify |> escape }}"
         data-views="{{ views |> JSON.stringify |> escape }}"
       >
-        <strong class="field-label">View:</strong>
+        <strong class="field-label">{{ t("document.views") }}:</strong>
       </u-views>
     {{ /if }}
 

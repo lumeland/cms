@@ -418,11 +418,24 @@ export default class Cms {
           with: { type: "json" },
         });
 
+        function replace(
+          text: string,
+          replacements?: Record<string, string>,
+        ): string {
+          if (replacements) {
+            for (const [key, value] of Object.entries(replacements)) {
+              text = text.replaceAll(`{${key}}`, value);
+            }
+          }
+          return text;
+        }
+
         // Template renderer
         const renderTemplate = (file: string, data?: Record<string, unknown>) =>
           render(file, {
             ...data,
-            t: (key: string) => locale[key] ?? key,
+            t: (key: string, data?: Record<string, string>) =>
+              replace(locale[key] ?? key, data),
             jsImports: Array.from(this.#jsImports),
             extraHead: this.options.extraHead,
             cmsVersion: getCurrentVersion(),

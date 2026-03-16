@@ -97,14 +97,14 @@
                   class="is-version is-production"
                   name="check-circle"
                 ></u-icon>
-                Production
+                {{ t("versions.type.production") }}
               {{ else }}
                 <u-icon
                   class="is-version"
                   name="check-circle"
                 ></u-icon>
                 {{ version.name }}
-                <span class="tag">Draft</span>
+                <span class="tag">{{ t("versions.type.draft") }}</span>
               {{ /if }}
             </span>
           {{ else }}
@@ -116,10 +116,10 @@
               <input type="hidden" name="name" value="{{ version.name }}">
               <button>
                 {{ if version.isProduction }}
-                  <u-icon name="circle"></u-icon> Production
+                  <u-icon name="circle"></u-icon> {{ t("versions.type.production") }}
                 {{ else }}
                   <u-icon name="circle"></u-icon> {{ version.name }}
-                  <span class="tag">Draft</span>
+                  <span class="tag">{{ t("versions.type.draft") }}</span>
                 {{ /if }}
               </button>
             </form>
@@ -130,7 +130,8 @@
               <input type="hidden" name="name" value="{{ version.name }}">
               <u-busy data-message="{{ 'Syncing…' }}">
                 <button class="button is-secondary">
-                  <u-icon name="arrows-clockwise"></u-icon> Sync
+                  <u-icon name="arrows-clockwise"></u-icon>
+                  {{ t("versions.action.sync") }}
                 </button>
               </u-busy>
             </form>
@@ -138,7 +139,7 @@
 
             {{ layout "components/menu.vto" { id: `version-${index}-menu` } }}
               {{ slot header }}
-                <strong>{{ version.name }}</strong> (Draft)
+                <strong>{{ version.name }}</strong> ({{ t("versions.type.draft") }})
               {{ /slot }}
 
               {{ if version.isCurrent }}
@@ -149,7 +150,8 @@
                   <input type="hidden" name="name" value="{{ version.name }}">
                   <u-busy data-message="Syncing…">
                     <button class="button is-secondary">
-                      <u-icon name="arrows-clockwise"></u-icon> Sync
+                      <u-icon name="arrows-clockwise"></u-icon>
+                      {{ t("versions.action.sync") }}
                     </button>
                   </u-busy>
                 </form>
@@ -160,9 +162,10 @@
                 action='{{ ["versions", "publish"] |> path }}'
               >
                 <input type="hidden" name="name" value="{{ version.name }}">
-                <u-busy data-message="Publishing…">
+                <u-busy data-message="{{ t("versions.action.publish.busy") |> escape }}">
                   <button class="button is-secondary">
-                    <u-icon name="rocket-launch"></u-icon> Publish
+                    <u-icon name="rocket-launch"></u-icon>
+                    {{ t("versions.action.publish") }}
                   </button>
                 </u-busy>
               </form>
@@ -172,14 +175,14 @@
                 action='{{ ["versions", "delete"] |> path }}'
               >
                 <input type="hidden" name="name" value="{{ version.name }}">
-                <u-busy data-message="Deleting…">
-                  <u-confirm data-message="Are you sure?">
+                <u-busy data-message="{{ t("versions.action.delete.busy") |> escape }}">
+                  <u-confirm data-message="{{ t("versions.action.delete.confirm") |> escape }}">
                     <button
                       class="button is-secondary"
                       aria-label="Delete"
                     >
                       <u-icon name="trash"></u-icon>
-                      Delete
+                      {{ t("versions.action.delete") }}
                     </button>
                   </u-confirm>
                 </u-busy>

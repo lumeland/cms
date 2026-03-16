@@ -80,7 +80,7 @@
         class="button is-primary"
       >
         <u-icon name="plus-circle"></u-icon>
-        Create new
+        {{ t("document.list.action.create") }}
       </a>
     {{ /if }}
   </nav>
@@ -88,6 +88,6 @@
   {{ if content }}
     <ul id="list" class="list">{{ content }}</ul>
   {{ else }}
-    <p class="emptyState">This is empty</p>
+    <p class="emptyState">{{ t("document.list.empty") }}</p>
   {{ /if }}
 {{ /layout }}
