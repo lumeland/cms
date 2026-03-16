@@ -28,7 +28,7 @@ export default {
   tag: "f-rich-text",
   jsImport: "lume_cms/components/f-rich-text.js",
   init(field, _cmsContent, data, document) {
-    if (field.relativePath && data && document) {
+    if (field.relativePath && data?.[field.name] && document) {
       // Convert back to absolute paths
       data[field.name] = toAbsolutePaths(
         data[field.name],
