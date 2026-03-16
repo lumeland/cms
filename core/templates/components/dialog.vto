@@ -1,0 +1,21 @@
+<button
+  command="show-modal"
+  commandfor="{{ id }}"
+  class="button is-secondary"
+  type="button"
+>
+  {{ button }}
+</button>
+
+<dialog class="modal is-center" id="{{ id }}">
+  <button
+    type="button"
+    class="buttonIcon modal-close"
+    command="close"
+    commandfor="{{ id }}"
+  >
+    <u-icon name="x"></u-icon>
+  </button>
+
+  {{ content }}
+</dialog>

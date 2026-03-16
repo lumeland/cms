@@ -27,38 +27,13 @@
       Download file
     </a>
 
-    <button
-      class="buttonIcon is-secondary"
-      type="button"
-      command="toggle-popover"
-      commandfor="edit-menu"
-    >
-      <u-icon name="dots-three-vertical"></u-icon>
-    </button>
-
-    <div popover="auto" class="menu" id="edit-menu">
-      <p class="menu-header">File options</p>
-
+    {{ layout "components/menu.vto" { id: "edit-menu", header: "File options" } }}
       {{ if user.canRename(upload) }}
-        <button
-          command="show-modal"
-          commandfor="modal-rename"
-          class="button is-secondary"
-          type="button"
-        >
-          <u-icon name="textbox"></u-icon>
-          Move file
-        </button>
-
-        <dialog class="modal is-center" id="modal-rename">
-          <button
-            type="button"
-            class="buttonIcon modal-close"
-            command="close"
-            commandfor="modal-rename"
-          >
-            <u-icon name="x"></u-icon>
-          </button>
+        {{ layout "components/dialog.vto" { id: "modal-rename" } }}
+          {{ slot button }}
+            <u-icon name="textbox"></u-icon>
+            Move file
+          {{ /slot }}
 
           <form
             method="post"
@@ -75,35 +50,21 @@
                 value="{{ file }}"
                 name="name"
               >
-
-              <footer class="field-footer">
-                <button class="button is-primary">Move file</button>
-              </footer>
             </div>
+
+            <footer class="field-footer">
+              <button class="button is-primary">Move file</button>
+            </footer>
           </form>
-        </dialog>
+        {{ /layout }}
       {{ /if }}
 
       {{ if user.canCreate(upload) }}
-        <button
-          command="show-modal"
-          commandfor="modal-duplicate"
-          class="button is-secondary"
-          type="button"
-        >
-          <u-icon name="copy"></u-icon>
-          Duplicate
-        </button>
-
-        <dialog class="modal is-center" id="modal-duplicate">
-          <button
-            type="button"
-            class="buttonIcon modal-close"
-            command="close"
-            commandfor="modal-duplicate"
-          >
-            <u-icon name="x"></u-icon>
-          </button>
+        {{ layout "components/dialog.vto" { id: "modal-duplicate" } }}
+          {{ slot button }}
+            <u-icon name="copy"></u-icon>
+            Duplicate
+          {{ /slot }}
 
           <form
             method="post"
@@ -126,7 +87,7 @@
               <button class="button is-primary">Duplicate</button>
             </footer>
           </form>
-        </dialog>
+        {{ /layout }}
       {{ /if }}
 
       {{ set format = file |> formatSupported }}
@@ -152,7 +113,7 @@
           </button>
         </u-confirm>
       {{ /if }}
-    </div>
+    {{ /layout }}
   </nav>
 
   <figure class="preview">

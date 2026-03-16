@@ -23,7 +23,8 @@
     --anchor-top-center,
     --anchor-left,
     --anchor-right;
-
+}
+@scope (.menu) to (dialog) {
   .button {
     width: 100%;
   }

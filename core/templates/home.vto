@@ -135,19 +135,11 @@
               </u-busy>
             </form>
           {{ else }}
-            <button
-              class="buttonIcon is-secondary"
-              type="button"
-              command="toggle-popover"
-              commandfor="version-{{ index }}-menu"
-            >
-              <u-icon name="dots-three-vertical"></u-icon>
-            </button>
 
-            <div popover="auto" class="menu" id="version-{{ index }}-menu">
-              <p class="menu-header">
+            {{ layout "components/menu.vto" { id: `version-${index}-menu` } }}
+              {{ slot header }}
                 <strong>{{ version.name }}</strong> (Draft)
-              </p>
+              {{ /slot }}
 
               {{ if version.isCurrent }}
                 <form
@@ -192,30 +184,17 @@
                   </u-confirm>
                 </u-busy>
               </form>
-            </div>
+            {{ /layout }}
           {{ /if }}
         </li>
       {{ /for }}
     </ul>
 
     <div>
-      <button
-        command="show-modal"
-        commandfor="modal-new-version"
-        class="button is-secondary"
-      >
-        New version
-      </button>
-
-      <dialog class="modal is-center" id="modal-new-version">
-        <button
-          type="button"
-          class="buttonIcon modal-close"
-          command="close"
-          commandfor="modal-new-version"
-        >
-          <u-icon name="x"></u-icon>
-        </button>
+      {{ layout "components/dialog.vto" { id: "modal-new-version" } }}
+        {{ slot button }}
+          New version
+        {{ /slot }}
 
         <form
           method="post"
@@ -231,15 +210,15 @@
               autofocus
               name="name"
             >
-
-            <footer class="field-footer">
-              <u-busy data-message="{{ 'Creating…' }}">
-                <button class="button is-primary">Create version</button>
-              </u-busy>
-            </footer>
           </div>
+
+          <footer class="field-footer">
+            <u-busy data-message="{{ 'Creating…' }}">
+              <button class="button is-primary">Create version</button>
+            </u-busy>
+          </footer>
         </form>
-      </dialog>
+      {{ /layout }}
     </div>
   {{ /if }}
 {{ /layout }}

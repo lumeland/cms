@@ -1,0 +1,18 @@
+{{ if content?.trim() }}
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="{{ id }}"
+  >
+    <u-icon name='{{ icon || "dots-three-vertical" }}'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="{{ id }}">
+    <p class="menu-header">
+      {{ header }}
+    </p>
+
+    {{ content }}
+  </div>
+{{ /if }}

@@ -27,7 +27,9 @@
       </button>
     {{ /if }}
 
-    {{ set editOptions }}
+    {{
+      layout "components/menu.vto" { id: "edit-menu", header: "Edit options" }
+    }}
       {{ if collection.fields !== undefined }}
         <a
           class="button is-secondary"
@@ -50,23 +52,7 @@
           </button>
         </u-confirm>
       {{ /if }}
-    {{ /set }}
-
-    {{ if editOptions.trim() }}
-      <button
-        class="buttonIcon is-secondary"
-        type="button"
-        command="toggle-popover"
-        commandfor="edit-menu"
-      >
-        <u-icon name="dots-three-vertical"></u-icon>
-      </button>
-
-      <div popover="auto" class="menu" id="edit-menu">
-        <p class="menu-header">Edit options</p>
-        {{ editOptions }}
-      </div>
-    {{ /if }}
+    {{ /layout }}
   </nav>
 
   <u-form>

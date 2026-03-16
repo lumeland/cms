@@ -23,23 +23,14 @@
     {{ /for }}
   </ul>
 
-  <button
-    class="buttonIcon is-secondary"
-    type="button"
-    command="toggle-popover"
-    commandfor="user-menu"
-  >
-    <u-icon name="user-circle"></u-icon>
-  </button>
-
-  <div popover="auto" class="menu" id="user-menu">
-    <p class="menu-header">
+  {{ layout "components/menu.vto" { id: "user-menu", icon: "user-circle" } }}
+    {{ slot header }}
       {{ if user.isLogged }}
         Logged as <strong>{{ user.name }}</strong>
       {{ else }}
         No authentication
       {{ /if }}
-    </p>
+    {{ /slot }}
 
     <button
       class="button is-secondary"
@@ -61,5 +52,5 @@
         Logout
       </button>
     {{ /if }}
-  </div>
+  {{ /layout }}
 </nav>
