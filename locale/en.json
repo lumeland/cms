@@ -1,23 +1,19 @@
 {
   "home.title": "Home",
   "footer.copy": "Powered by",
-
   "user.logged": "Logged as",
   "user.not_logged": "No authentication",
   "user.action.theme": "Switch theme",
   "user.action.logout": "Log out",
-
   "notfound.title": "Not found",
   "notfound.description": "The page you are looking for does not exist.",
   "notfound.action.back": "Back home",
-
   "document.list.action.create": "Create new",
   "document.list.empty": "This is empty",
-
   "document.edit.title": "Editing document",
   "document.edit.menu": "Edit options",
   "document.edit.title.collection": "Editing document from {collection}",
-  "document.edit.title.long": "Editing {documenºt}",
+  "document.edit.title.long": "Editing {document}",
   "document.edit.action.save": "Save changes",
   "document.edit.action.code": "Edit code",
   "document.edit.action.move": "Move file",
@@ -28,14 +24,12 @@
   "document.edit.action.duplicate.submit": "Save copy",
   "document.edit.action.delete": "Delete",
   "document.edit.action.delete.confirm": "Are you sure?",
-
   "document.create.title": "New document",
   "document.create.name.label": "File name",
   "document.create.name.placeholder": "Name your file…",
   "document.create.submit": "Create document",
   "document.views": "View",
   "document.error": "Error loading the document",
-
   "document.code.title": "Editing file code",
   "document.code.title.long": "Editing {document}",
   "document.code.menu": "Edit options",
@@ -43,11 +37,9 @@
   "document.code.action.form": "Edit form",
   "document.code.action.delete": "Delete",
   "document.code.action.delete.confirm": "Are you sure?",
-
   "uploads.list.action.create": "Upload file inside {folder}",
   "uploads.list.action.add": "Add file(s)",
   "uploads.list.empty": "This is empty",
-
   "uploads.edit.title": "File details",
   "uploads.edit.action.download": "Download file",
   "uploads.edit.action.move": "Move file",
@@ -63,18 +55,15 @@
   "uploads.details.type": "Type",
   "uploads.details.size": "Size",
   "uploads.details.exif": "EXIF data",
-
   "uploads.crop.title": "Crop image",
   "uploads.crop.title.long": "Edit {file}",
   "uploads.crop.action.cancel": "Cancel",
   "uploads.crop.action.save": "Crop image",
-
   "uploads.create.title": "Upload files",
   "uploads.create.action.save": "Upload files",
   "uploads.create.folder.label": "Folder",
   "uploads.create.folder.placeholder": "folder",
   "uploads.create.file.label": "Upload file",
-
   "versions.title": "Available versions",
   "versions.type.production": "Production",
   "versions.type.draft": "Draft",

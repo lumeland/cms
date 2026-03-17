@@ -89,12 +89,13 @@ customElements.define(
 
       tools = dom("div", { class: "tools-group" }, helpers);
       [
-        [md.makeBold, "text-b"],
-        [md.makeItalic, "text-italic"],
-        [md.makeStrikethrough, "text-strikethrough"],
-      ].forEach(([fn, icon]) => {
+        [md.makeBold, "text-b", "Bold"],
+        [md.makeItalic, "text-italic", "Italic"],
+        [md.makeStrikethrough, "text-strikethrough", "Strikethrough"],
+      ].forEach(([fn, icon, label]) => {
         dom("button", {
           class: "buttonIcon",
+          ariaLabel: label,
           type: "button",
           html: `<u-icon name="${icon}"></u-icon>`,
           onclick() {
@@ -107,6 +108,7 @@ customElements.define(
       dom("button", {
         class: "buttonIcon",
         type: "button",
+        ariaLabel: "Link",
         onclick() {
           const url = prompt("URL to link to:");
 
@@ -120,13 +122,14 @@ customElements.define(
 
       tools = dom("div", { class: "tools-group" }, helpers);
       [
-        [md.makeH2, "text-h-two"],
-        [md.makeH3, "text-h-three"],
-        [md.makeH4, "text-h-four"],
-      ].forEach(([fn, icon]) => {
+        [md.makeH2, "text-h-two", "Heading 2"],
+        [md.makeH3, "text-h-three", "Heading 3"],
+        [md.makeH4, "text-h-four", "Heading 4"],
+      ].forEach(([fn, icon, label]) => {
         dom("button", {
           class: "buttonIcon",
           type: "button",
+          ariaLabel: label,
           html: `<u-icon name="${icon}"></u-icon>`,
           onclick() {
             fn(md.editor);
