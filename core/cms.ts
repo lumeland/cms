@@ -21,6 +21,7 @@ import { filter } from "../deps/vento.ts";
 import { labelify } from "./utils/string.ts";
 import { Git, Options as GitOptions } from "./git.ts";
 import User from "./user.ts";
+import { setLocale, t } from "../static/common/locale.js";
 
 import type {
   CMSContent,
@@ -414,28 +415,16 @@ export default class Cms {
 
         // Detect the language
         const lang = acceptsLanguages(request, "en") ?? "en";
-        const { default: locale } = await import(`../locale/${lang}.json`, {
+        const { default: locale } = await import(`../static/common/locale/${lang}.json`, {
           with: { type: "json" },
         });
-
-        function replace(
-          text: string,
-          replacements?: Record<string, string>,
-        ): string {
-          if (replacements) {
-            for (const [key, value] of Object.entries(replacements)) {
-              text = text.replaceAll(`{${key}}`, value);
-            }
-          }
-          return text;
-        }
+        setLocale(locale);
 
         // Template renderer
         const renderTemplate = (file: string, data?: Record<string, unknown>) =>
           render(file, {
             ...data,
-            t: (key: string, data?: Record<string, string>) =>
-              replace(locale[key] ?? key, data),
+            t,
             jsImports: Array.from(this.#jsImports),
             extraHead: this.options.extraHead,
             cmsVersion: getCurrentVersion(),

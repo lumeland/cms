@@ -1,4 +1,19 @@
 import dom from "dom";
+import { setLocale, t } from "../common/locale.js";
+
+const availableLanguages = ["en"];
+
+const language = navigator.languages
+  .map((lang) => lang.split("-")[0])
+  .find((lang) => availableLanguages.includes(lang)) || "en";
+
+const locale = await import(`../common/locale/${language}.json`, {
+  with: { type: "json" },
+});
+
+setLocale(locale.default);
+
+export { t };
 
 /** Push options to an element like select or datalist */
 export function pushOptions(el, options) {

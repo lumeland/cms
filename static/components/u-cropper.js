@@ -7,6 +7,7 @@ import {
   CropperHandle,
   CropperImage,
 } from "cropper";
+import { t } from "./utils.js";
 
 CropperCanvas.$define();
 CropperImage.$define();
@@ -131,7 +132,7 @@ customElements.define(
       dom("button", {
         type: "button",
         class: "buttonIcon",
-        title: "Square",
+        title: t("cropped.action.square"),
         onclick: () => {
           const min = Math.min(selection.width, selection.height);
           selection.$change(selection.x, selection.y, min, min);
@@ -141,7 +142,7 @@ customElements.define(
       dom("button", {
         type: "button",
         class: "buttonIcon",
-        title: "Center",
+        title: t("cropped.action.center"),
         onclick: () => {
           selection.$center();
         },

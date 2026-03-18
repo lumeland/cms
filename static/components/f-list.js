@@ -1,5 +1,5 @@
 import { Component } from "./component.js";
-import { getFieldName, initField, pushOptions } from "./utils.js";
+import { getFieldName, initField, pushOptions, t } from "./utils.js";
 import dom from "dom";
 
 customElements.define(
@@ -69,7 +69,7 @@ customElements.define(
         class: "button is-secondary",
         html: [
           '<u-icon name="plus-circle"></u-icon>',
-          `Add ${schema.label}`,
+          t("list.action.add", { label: schema.label }),
         ],
       }, footer);
     }

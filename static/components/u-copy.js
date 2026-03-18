@@ -1,5 +1,6 @@
 import { Component } from "./component.js";
 import dom from "dom";
+import { t } from "./utils.js";
 
 customElements.define(
   "u-copy",
@@ -17,7 +18,7 @@ customElements.define(
           icon.setAttribute("name", "check");
           const tooltip = dom("div", {
             class: "tooltip",
-            html: "URL copied!",
+            html: t("copy.copied"),
           }, this);
           setTimeout(() => {
             icon.setAttribute("name", "link-simple");

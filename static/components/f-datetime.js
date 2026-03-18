@@ -3,6 +3,7 @@ import {
   getNow,
   initField,
   oninvalid,
+  t,
   updateField,
 } from "./utils.js";
 import { Component } from "./component.js";
@@ -14,7 +15,7 @@ export class Input extends Component {
   }
 
   get nowButtonLabel() {
-    return "Now";
+    return t("datetime.action.now");
   }
 
   format(value) {

@@ -1,4 +1,4 @@
-import { fileType } from "./utils.js";
+import { fileType, t } from "./utils.js";
 import { Component } from "./component.js";
 
 customElements.define(
@@ -10,7 +10,9 @@ customElements.define(
 
     init() {
       const { src } = this.dataset;
-      const download = `<a href="${src}" download>Download file</a>`;
+      const download = `<a href="${src}" download>${
+        t("preview.action.download")
+      }</a>`;
 
       switch (fileType(src)) {
         case "image":
@@ -30,7 +32,7 @@ customElements.define(
           break;
 
         default:
-          this.innerHTML = `<p>Cannot preview. ${download}</p>`;
+          this.innerHTML = `<p>${t("preview.action.error")} ${download}</p>`;
           break;
       }
     }

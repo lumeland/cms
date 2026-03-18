@@ -1,4 +1,5 @@
 import { Input } from "./f-datetime.js";
+import { t } from "./utils.js";
 
 customElements.define(
   "f-date",
@@ -8,7 +9,7 @@ customElements.define(
     }
 
     get nowButtonLabel() {
-      return "Today";
+      return t("date.action.today");
     }
 
     format(value) {

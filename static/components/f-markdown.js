@@ -5,6 +5,7 @@ import {
   labelify,
   oninvalid,
   pushOptions,
+  t,
   updateField,
   url,
 } from "./utils.js";
@@ -66,7 +67,7 @@ customElements.define(
         const select = dom("select", {
           class: "select is-secondary",
           style: "width:7em",
-          html: "<option value=''>Insert…</option>",
+          html: `<option value=''>${t("markdown.action.insert")}</option>`,
           onchange() {
             if (this.value) {
               md.insertSnippet(md.editor, this.value);
@@ -89,9 +90,13 @@ customElements.define(
 
       tools = dom("div", { class: "tools-group" }, helpers);
       [
-        [md.makeBold, "text-b", "Bold"],
-        [md.makeItalic, "text-italic", "Italic"],
-        [md.makeStrikethrough, "text-strikethrough", "Strikethrough"],
+        [md.makeBold, "text-b", t("markdown.action.bold")],
+        [md.makeItalic, "text-italic", t("markdown.action.italic")],
+        [
+          md.makeStrikethrough,
+          "text-strikethrough",
+          t("markdown.action.strikethrough"),
+        ],
       ].forEach(([fn, icon, label]) => {
         dom("button", {
           class: "buttonIcon",
@@ -108,9 +113,9 @@ customElements.define(
       dom("button", {
         class: "buttonIcon",
         type: "button",
-        ariaLabel: "Link",
+        ariaLabel: t("markdown.action.link"),
         onclick() {
-          const url = prompt("URL to link to:");
+          const url = prompt(t("markdown.action.link.url"));
 
           if (url) {
             md.insertLink(md.editor, url);
@@ -122,9 +127,9 @@ customElements.define(
 
       tools = dom("div", { class: "tools-group" }, helpers);
       [
-        [md.makeH2, "text-h-two", "Heading 2"],
-        [md.makeH3, "text-h-three", "Heading 3"],
-        [md.makeH4, "text-h-four", "Heading 4"],
+        [md.makeH2, "text-h-two", t("markdown.action.h2")],
+        [md.makeH3, "text-h-three", t("markdown.action.h3")],
+        [md.makeH4, "text-h-four", t("markdown.action.h4")],
       ].forEach(([fn, icon, label]) => {
         dom("button", {
           class: "buttonIcon",
@@ -169,7 +174,7 @@ customElements.define(
 function pasteLink(url, selectedText = "") {
   switch (fileType(url)) {
     case "image":
-      return `![${selectedText || "Image"}](${url})`;
+      return `![${selectedText || t("markdown.placeholder.image")}](${url})`;
 
     case "video":
       return `<video src="${url}" controls>${selectedText}</video>`;
@@ -182,6 +187,6 @@ function pasteLink(url, selectedText = "") {
       if (URL.canParse(selectedText) || selectedText.match(/^[\w/.?#-]+$/)) {
         return selectedText;
       }
-      return `[${selectedText || "Link"}](${url})`;
+      return `[${selectedText || t("markdown.placeholder.link")}](${url})`;
   }
 }

@@ -1,4 +1,4 @@
-import { getFieldName, getItemLabel, initField } from "./utils.js";
+import { getFieldName, getItemLabel, initField, t } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -66,9 +66,9 @@ customElements.define(
               class: "buttonIcon",
               slot: "buttons",
               html: '<u-icon name="trash"></u-icon>',
-              title: "Delete",
+              title: t("choose-list.action.delete"),
               onclick() {
-                if (confirm("Are you sure you want to delete this item?")) {
+                if (confirm(t("choose-list.action.delete.confirm"))) {
                   this.parentElement.remove();
                 }
               },
@@ -78,7 +78,7 @@ customElements.define(
               class: "buttonIcon",
               slot: "buttons",
               html: '<u-icon name="copy"></u-icon>',
-              title: "Duplicate",
+              title: t("choose-list.action.duplicate"),
               onclick() {
                 item.after(createOption(item.currentValue, true));
               },
@@ -110,7 +110,7 @@ customElements.define(
 
       dom("option", {
         value: "",
-        text: "Add new...",
+        text: t("choose-list.action.add"),
       }, select);
 
       dom("hr", select);

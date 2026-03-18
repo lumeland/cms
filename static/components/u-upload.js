@@ -1,5 +1,6 @@
 import { Component } from "./component.js";
 import dom from "dom";
+import { t } from "./utils.js";
 
 customElements.define(
   "u-upload",
@@ -7,7 +8,7 @@ customElements.define(
     init() {
       this.prepend(dom("button", {
         class: "buttonIcon is-secondary",
-        title: "Paste image from clipboard",
+        title: t("upload.action.paste"),
         type: "button",
         html: "<u-icon name='clipboard'></u-icon>",
         onclick: async () => {
@@ -25,7 +26,7 @@ customElements.define(
               if (item.types.includes("image/png")) {
                 const blob = await item.getType("image/png");
                 let name = prompt(
-                  "Enter a name for the image",
+                  t("upload.action.paste.name"),
                   "clipboard.png",
                 );
                 if (!name.endsWith(".png")) {
@@ -47,7 +48,7 @@ customElements.define(
                 if (URL.canParse(url)) {
                   const response = await fetch(url);
                   if (!response.ok) {
-                    alert("Failed to fetch image the URL." + url);
+                    alert(t("upload.error.fetch", url));
                     return;
                   }
                   const blob = await response.blob();
@@ -69,7 +70,7 @@ customElements.define(
             }
           } catch {
             alert(
-              "Failed to read clipboard. Copy an image or URL and try again.",
+              t("upload.error.paste"),
             );
           }
         },

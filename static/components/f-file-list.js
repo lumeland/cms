@@ -1,4 +1,4 @@
-import { getFieldName, getItemLabel, initField } from "./utils.js";
+import { getFieldName, getItemLabel, initField, t } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -54,9 +54,9 @@ customElements.define(
               class: "buttonIcon",
               slot: "buttons",
               html: '<u-icon name="trash"></u-icon>',
-              title: "Delete",
+              title: t("file-list.action.delete"),
               onclick() {
-                if (confirm("Are you sure you want to delete this item?")) {
+                if (confirm(t("file-list.action.delete.confirm"))) {
                   this.parentElement.remove();
                 }
               },
@@ -66,7 +66,7 @@ customElements.define(
               class: "buttonIcon",
               slot: "buttons",
               html: '<u-icon name="copy"></u-icon>',
-              title: "Duplicate",
+              title: t("file-list.action.duplicate"),
               onclick() {
                 item.after(createOption(item.currentValue));
               },
@@ -89,7 +89,7 @@ customElements.define(
         class: "button is-secondary",
         html: [
           '<u-icon name="plus-circle"></u-icon>',
-          `Add files to ${schema.label}`,
+          t("file-list.action.add", { label: schema.label }),
         ],
       }, footer);
 

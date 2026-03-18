@@ -1,5 +1,6 @@
 import { Component } from "./component.js";
 import dom from "dom";
+import { t } from "./utils.js";
 
 customElements.define(
   "u-form",
@@ -24,12 +25,12 @@ customElements.define(
 
         const tooltip = dom("div", {
           class: "tooltip is-toast",
-          html: "Saving...",
+          html: t("form.saving"),
         }, this);
 
         setTimeout(async () => {
           await this.sendForm(form);
-          tooltip.innerText = "Saved";
+          tooltip.innerText = t("form.saved");
           setTimeout(() => tooltip.remove(), 2000);
         }, 1);
       });
