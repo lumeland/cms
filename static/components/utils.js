@@ -1,13 +1,9 @@
 import dom from "dom";
 import { setLocale, t } from "../common/locale.js";
 
-const availableLanguages = ["en"];
+const lang = document.documentElement.getAttribute("lang");
 
-const language = navigator.languages
-  .map((lang) => lang.split("-")[0])
-  .find((lang) => availableLanguages.includes(lang)) || "en";
-
-const locale = await import(`../common/locale/${language}.json`, {
+const locale = await import(`../common/locale/${lang}.json`, {
   with: { type: "json" },
 });
 

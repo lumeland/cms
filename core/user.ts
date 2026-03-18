@@ -10,6 +10,7 @@ export default class User {
   name?: string;
   email?: string;
   permissions: Record<string, Permissions> = {};
+  language?: string;
 
   get isLogged(): boolean {
     return !!this.name;
@@ -33,6 +34,7 @@ export default class User {
             this.name = config.name ?? name;
             this.email = config.email;
             this.permissions = config.permissions ?? {};
+            this.language = config.language;
           }
           return true;
         }

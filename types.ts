@@ -237,6 +237,7 @@ export interface UserConfiguration {
   password: string;
   name?: string;
   email?: string;
+  language?: string;
   permissions?: Record<string, Permissions>;
 }
 

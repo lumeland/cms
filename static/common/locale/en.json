@@ -112,6 +112,7 @@
   "upload.action.paste": "Paste image from clipboard",
   "upload.action.paste.name": "Enter a name for the image",
   "upload.error.fetch": "Failed to fetch the URL {url}",
+  "upload.error.paste": "Failed to read clipboard. Copy an image or URL and try again.",
   "preview.action.error": "Cannot preview",
   "preview.action.download": "Download file"
 }

@@ -414,10 +414,13 @@ export default class Cms {
         }
 
         // Detect the language
-        const lang = acceptsLanguages(request, "en") ?? "en";
-        const { default: locale } = await import(`../static/common/locale/${lang}.json`, {
-          with: { type: "json" },
-        });
+        const lang = user.language ?? acceptsLanguages(request, "en") ?? "en";
+        const { default: locale } = await import(
+          `../static/common/locale/${lang}.json`,
+          {
+            with: { type: "json" },
+          }
+        );
         setLocale(locale);
 
         // Template renderer
