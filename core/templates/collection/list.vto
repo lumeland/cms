@@ -42,7 +42,7 @@
           <div class="list-actions">
             <a
               href='{{ ["collection", collection.name, "create"] |> path }}?folder={{child.path}}'
-              title="Create new item inside this folder"
+              title="{{ t("document.list.action.create") |> escape }}"
               class="buttonIcon"
             >
               <u-icon name="plus-circle"></u-icon>
@@ -80,7 +80,7 @@
         class="button is-primary"
       >
         <u-icon name="plus-circle"></u-icon>
-        {{ t("document.list.action.create") }}
+        {{ t("document.list.action.add") }}
       </a>
     {{ /if }}
   </nav>
