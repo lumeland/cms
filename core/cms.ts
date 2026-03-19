@@ -59,7 +59,6 @@ export interface AuthOptions {
 export interface RouterData {
   cms: CMSContent;
   lang: "en";
-  locale: Record<string, string>;
   render: (file: string, data?: Record<string, unknown>) => Promise<string>;
   sourcePath?: SourcePath;
   user: User;
@@ -409,13 +408,7 @@ export default class Cms {
 
         // Detect the language
         const lang = user.language ?? acceptsLanguages(request, "en") ?? "en";
-        const { default: locale } = await import(
-          `../static/common/locale/${lang}.json`,
-          {
-            with: { type: "json" },
-          }
-        );
-        setLocale(locale);
+        await setLocale(lang);
 
         // Template renderer
         const renderTemplate = (file: string, data?: Record<string, unknown>) =>
@@ -427,7 +420,7 @@ export default class Cms {
             cmsVersion: getCurrentVersion(),
           });
 
-        return next({ user, lang, locale, render: renderTemplate })
+        return next({ user, lang, render: renderTemplate })
           .path("/", indexRoute)
           .path("/document/*", documentRoute)
           .path("/collection/*", collectionRoute)

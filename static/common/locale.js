@@ -1,6 +1,12 @@
 const locale = new Map();
 
-export function setLocale(entries) {
+export async function setLocale(lang) {
+  const { default: entries } = await import(
+    `./locale/${lang}.json`,
+    { with: { type: "json" } }
+  );
+
+  locale.clear();
   for (const [key, value] of Object.entries(entries)) {
     locale.set(key, value);
   }

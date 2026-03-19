@@ -3,11 +3,7 @@ import { setLocale, t } from "../common/locale.js";
 
 const lang = document.documentElement.getAttribute("lang");
 
-const locale = await import(`../common/locale/${lang}.json`, {
-  with: { type: "json" },
-});
-
-setLocale(locale.default);
+await setLocale(lang);
 
 export { t };
 
