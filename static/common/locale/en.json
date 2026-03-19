@@ -23,6 +23,7 @@
   "document.edit.action.duplicate": "Save as…",
   "document.edit.action.duplicate.name": "Document name",
   "document.edit.action.duplicate.submit": "Save copy",
+  "document.edit.action.preview": "Open page",
   "document.edit.action.delete": "Delete",
   "document.edit.action.delete.confirm": "Are you sure?",
   "document.create.title": "New document",

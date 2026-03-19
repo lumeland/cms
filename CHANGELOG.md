@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Ability to pull the production branch without pushing.
 - Ability to sync the draft branches.
+- Button to open the preview page of documents in a new tab
 - Localization
 
 ### Changed

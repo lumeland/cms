@@ -50,6 +50,7 @@
   "uploads.edit.action.duplicate.name": "Ruta da copia",
   "uploads.edit.action.duplicate.submit": "Duplicar",
   "uploads.edit.action.crop": "Recortar imaxe",
+  "document.edit.action.preview": "Abrir páxina",
   "uploads.edit.action.delete": "Eliminar arquivo",
   "uploads.edit.action.delete.confirm": "Eliminar este arquivo?",
   "uploads.details.url": "URL pública",

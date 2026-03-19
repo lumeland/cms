@@ -31,7 +31,7 @@
       {{ if user.canRename(upload) }}
         {{ layout "components/dialog.vto" { id: "modal-rename" } }}
           {{ slot button }}
-            <u-icon name="textbox"></u-icon>
+            <u-icon name="arrow-square-right"></u-icon>
             {{ t("uploads.edit.action.move") }}
           {{ /slot }}
 

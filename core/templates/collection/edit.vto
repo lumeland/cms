@@ -30,6 +30,16 @@
     {{ /if }}
 
     {{ layout "components/menu.vto" { id: "edit-menu", header: t("document.edit.menu") } }}
+      {{ if url }}
+        <a
+          class="button is-secondary"
+          href="{{ url }}"
+          target="_blank"
+        >
+          <u-icon name="arrow-square-out"></u-icon>
+          {{ t("document.edit.action.preview") }}
+        </a>
+      {{ /if }}
       {{ if user.canEdit(collection) }}
         <a
           class="button is-secondary"
@@ -43,7 +53,7 @@
       {{ if user.canRename(collection) }}
         {{ layout "components/dialog.vto" { id: "modal-rename" } }}
           {{ slot button }}
-            <u-icon name="textbox"></u-icon>
+            <u-icon name="arrow-square-right"></u-icon>
             {{ t("document.edit.action.move") }}
           {{ /slot }}
 

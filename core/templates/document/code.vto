@@ -32,6 +32,17 @@
     {{
       layout "components/menu.vto" { id: "edit-menu", header: "Edit options" }
     }}
+      {{ if url }}
+        <a
+          class="button is-secondary"
+          href="{{ url }}"
+          target="_blank"
+        >
+          <u-icon name="arrow-square-out"></u-icon>
+          {{ t("document.edit.action.preview") }}
+        </a>
+      {{ /if }}
+
       {{ if document.fields !== undefined }}
         <a
           class="button is-secondary"

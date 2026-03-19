@@ -29,6 +29,16 @@
     {{
       layout "components/menu.vto" { id: "edit-menu", header: t("document.edit.menu") }
     }}
+      {{ if url }}
+        <a
+          class="button is-secondary"
+          href="{{ url }}"
+          target="_blank"
+        >
+          <u-icon name="arrow-square-out"></u-icon>
+          {{ t("document.edit.action.preview") }}
+        </a>
+      {{ /if }}
       <a
         class="button is-secondary"
         href='{{ ["document", document.name, "code"] |> path }}'
