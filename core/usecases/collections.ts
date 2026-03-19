@@ -3,7 +3,6 @@ import { CMSContent, Data } from "../../types.ts";
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
 import { getLanguageCode, normalizeName } from "../utils/path.ts";
 import createTree from "./tree.ts";
-import { getPreviewUrl } from "./documents.ts";
 import type Collection from "../collection.ts";
 import type Document from "../document.ts";
 import type User from "../user.ts";
@@ -82,7 +81,7 @@ export async function saveNewDocument(
   }
 
   // Wait for the preview URL to be ready before redirecting
-  await getPreviewUrl(document, cms, true);
+  await getPreviewUrl(collection, document, cms, true);
 
   return { document };
 }
@@ -105,7 +104,7 @@ export async function getDocument(
 
   const fields = await prepareField(collection.fields!, cms, data, document);
   const views = Array.from(getViews(collection.fields!));
-  const url = await getPreviewUrl(document, cms);
+  const url = await getPreviewUrl(collection, document, cms);
 
   return { data, initViews, fields, views, url };
 }
@@ -138,7 +137,7 @@ export async function saveDocument(
   }
 
   // Wait for the preview URL to be ready
-  await getPreviewUrl(finalDocument, cms, true);
+  await getPreviewUrl(collection, finalDocument, cms, true);
 
   return { finalDocument };
 }
@@ -154,7 +153,7 @@ export async function getDocumentCode(
   }
 
   const data = { root: { code: await document.readText(true) } };
-  const url = await getPreviewUrl(document, cms);
+  const url = await getPreviewUrl(collection, document, cms);
   const fields = {
     tag: "f-object-root",
     name: "root",
@@ -204,7 +203,7 @@ export async function saveDocumentCode(
   }
 
   // Wait for the preview URL to be ready
-  await getPreviewUrl(finalDocument, cms, true);
+  await getPreviewUrl(collection, finalDocument, cms, true);
 
   return { finalDocument };
 }
@@ -235,7 +234,7 @@ export async function duplicateDocument(
   );
 
   // Wait for the preview URL to be ready
-  await getPreviewUrl(newDocument, cms, true);
+  await getPreviewUrl(collection, newDocument, cms, true);
 
   return { newDocument };
 }
@@ -265,7 +264,7 @@ export async function moveDocument(
   const newDocument = collection.get(newName);
 
   // Wait for the preview URL to be ready
-  await getPreviewUrl(newDocument, cms, true);
+  await getPreviewUrl(collection, newDocument, cms, true);
 
   return { newDocument };
 }
@@ -318,5 +317,21 @@ function getValue(key: string, data: Data) {
 
   if (typeof value === "object" && rest) {
     return getValue(rest, value);
+  }
+}
+
+export function getPreviewUrl(
+  collection: Collection,
+  document: Document,
+  cms: CMSContent,
+  changed = false,
+) {
+  if (collection.previewUrl) {
+    return collection.previewUrl(
+      document.source.path,
+      cms,
+      changed,
+      document.storage,
+    );
   }
 }
