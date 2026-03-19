@@ -18,7 +18,6 @@ import {
   fromFileUrl,
 } from "../deps/std.ts";
 import { filter } from "../deps/vento.ts";
-import { labelify } from "./utils/string.ts";
 import Git, { Options as GitOptions } from "./git.ts";
 import User from "./user.ts";
 import { setLocale, t } from "../static/common/locale.js";
@@ -328,7 +327,7 @@ export default class Cms {
     ) {
       content.uploads[name] = new Upload({
         name,
-        label: label ?? labelify(name),
+        label: label ?? name,
         description,
         documentLabel,
         storage: this.#getStorage(store),
@@ -347,7 +346,7 @@ export default class Cms {
         storage: this.#getStorage(store),
         fields: fields ? this.#resolveFields(fields, content, type) : undefined,
         name,
-        label: label ?? labelify(name),
+        label: label ?? name,
         previewUrl: this.options.previewUrl,
         ...options,
       });
@@ -361,7 +360,7 @@ export default class Cms {
         entry: this.#getEntry(store),
         fields: fields ? this.#resolveFields(fields, content, type) : undefined,
         name,
-        label: label ?? labelify(name),
+        label: label ?? name,
         previewUrl: this.options.previewUrl,
         ...options,
       });
@@ -544,7 +543,7 @@ export default class Cms {
 
     resolvedField = {
       tag: type.tag,
-      label: resolvedField.label ?? labelify(resolvedField.name),
+      label: resolvedField.label ?? resolvedField.name,
       applyChanges: type.applyChanges,
       ...resolvedField,
     };

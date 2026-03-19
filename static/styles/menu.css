@@ -10,7 +10,8 @@
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   background: var(--color-line-light);
-  width: 200px;
+  min-width: 200px;
+  max-width: 300px;
   margin-top: 4px;
   top: anchor(bottom);
   left: anchor(left);

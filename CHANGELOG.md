@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Removed
 - Ability to edit an uploaded file.
+- The labelizer applied by default.
 
 ### Fixed
 - Some bugs in the permissions layer.

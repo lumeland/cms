@@ -1,6 +1,4 @@
 import Document from "./document.ts";
-import { getExtension } from "./utils/path.ts";
-import { labelify } from "./utils/string.ts";
 
 import type {
   CMSContent,
@@ -146,11 +144,8 @@ function getMetadata(
     };
   }
 
-  const extension = getExtension(source.name);
-
   return {
     ...source,
-    label: labelify(source.name),
-    flags: extension ? { extension } : undefined,
+    label: source.name,
   };
 }
