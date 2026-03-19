@@ -1,6 +1,6 @@
 {{ layout "layout.vto" }}
   <header class="header">
-    {{ include "breadcrumb.vto" { version: versioning?.current() } }}
+    {{ include "breadcrumb.vto" { version: git?.current() } }}
 
     <h1 class="header-title">
       {{ site.name ?? "Lume CMS" }}
@@ -78,14 +78,14 @@
     <div class="body">{{ site.body }}</div>
   {{ /if }}
 
-  {{ if versioning }}
+  {{ if git }}
     <header class="subheader" id="versions">
       <h2>{{ t("versions.title") }}</h2>
     </header>
 
     <ul class="list">
       {{
-        set versions = Array.from(versioning)
+        set versions = Array.from(git)
           .sort((a, b) => a.isProduction ? -1 : a.name.localeCompare(b.name))
       }}
       {{ for index, version of versions }}
@@ -114,7 +114,7 @@
               action='{{ ["versions", "change"] |> path }}'
             >
               <input type="hidden" name="name" value="{{ version.name }}">
-              <button>
+              <button type="submit">
                 {{ if version.isProduction }}
                   <u-icon name="circle"></u-icon> {{ t("versions.type.production") }}
                 {{ else }}
@@ -125,70 +125,74 @@
             </form>
           {{ /if }}
 
-          {{ if version.isProduction }}
-            <form method="post" action='{{ ["versions", "publish"] |> path }}'>
-              <input type="hidden" name="name" value="{{ version.name }}">
-              <u-busy data-message="{{ 'Syncing…' }}">
-                <button class="button is-secondary">
-                  <u-icon name="arrows-clockwise"></u-icon>
-                  {{ t("versions.action.sync") }}
-                </button>
-              </u-busy>
-            </form>
-          {{ else }}
+          {{ layout "components/menu.vto" { id: `version-${index}-menu` } }}
+            {{ slot header }}
+              <strong>{{ version.name }}</strong> ({{ version.isProduction ? t("versions.type.production") : t("versions.type.draft") }})
+            {{ /slot }}
 
-            {{ layout "components/menu.vto" { id: `version-${index}-menu` } }}
-              {{ slot header }}
-                <strong>{{ version.name }}</strong> ({{ t("versions.type.draft") }})
-              {{ /slot }}
-
-              {{ if version.isCurrent }}
-                <form
-                  method="post"
-                  action='{{ ["versions", "change"] |> path }}'
-                >
-                  <input type="hidden" name="name" value="{{ version.name }}">
-                  <u-busy data-message="Syncing…">
-                    <button class="button is-secondary">
-                      <u-icon name="arrows-clockwise"></u-icon>
-                      {{ t("versions.action.sync") }}
-                    </button>
-                  </u-busy>
-                </form>
-              {{ /if }}
-
+            {{ if version.isCurrent }}
               <form
                 method="post"
-                action='{{ ["versions", "publish"] |> path }}'
+                action='{{ ["versions", "sync"] |> path }}'
               >
                 <input type="hidden" name="name" value="{{ version.name }}">
-                <u-busy data-message="{{ t("versions.action.publish.busy") |> escape }}">
+                <u-busy data-message="{{ t("versions.action.sync.busy") }}">
                   <button class="button is-secondary">
-                    <u-icon name="rocket-launch"></u-icon>
-                    {{ t("versions.action.publish") }}
+                    {{ if version.isProduction }}
+                      <u-icon name="rocket-launch"></u-icon>
+                      {{ t("versions.action.publish") }}
+                    {{ else }}
+                      <u-icon name="arrows-down-up"></u-icon>
+                      {{ t("versions.action.sync") }}
+                    {{ /if }}
                   </button>
                 </u-busy>
               </form>
+            {{ /if }}
 
-              <form
-                method="post"
-                action='{{ ["versions", "delete"] |> path }}'
-              >
-                <input type="hidden" name="name" value="{{ version.name }}">
-                <u-busy data-message="{{ t("versions.action.delete.busy") |> escape }}">
-                  <u-confirm data-message="{{ t("versions.action.delete.confirm") |> escape }}">
-                    <button
-                      class="button is-secondary"
-                      aria-label="Delete"
-                    >
-                      <u-icon name="trash"></u-icon>
-                      {{ t("versions.action.delete") }}
-                    </button>
-                  </u-confirm>
-                </u-busy>
-              </form>
-            {{ /layout }}
-          {{ /if }}
+            {{ if !version.isProduction }}
+            <form
+              method="post"
+              action='{{ ["versions", "publish"] |> path }}'
+            >
+              <input type="hidden" name="name" value="{{ version.name }}">
+              <u-busy data-message="{{ t("versions.action.publish.busy") |> escape }}">
+                <button class="button is-secondary">
+                  <u-icon name="rocket-launch"></u-icon>
+                  {{ t("versions.action.publish") }}
+                </button>
+              </u-busy>
+            </form>
+
+            <form
+              method="post"
+              action='{{ ["versions", "delete"] |> path }}'
+            >
+              <input type="hidden" name="name" value="{{ version.name }}">
+              <u-busy data-message="{{ t("versions.action.delete.busy") |> escape }}">
+                <u-confirm data-message="{{ t("versions.action.delete.confirm") |> escape }}">
+                  <button class="button is-secondary">
+                    <u-icon name="trash"></u-icon>
+                    {{ t("versions.action.delete") }}
+                  </button>
+                </u-confirm>
+              </u-busy>
+            </form>
+            {{ else }}
+            <form
+              method="post"
+              action='{{ ["versions", "update"] |> path }}'
+            >
+              <input type="hidden" name="name" value="{{ version.name }}">
+              <u-busy data-message="{{ t("versions.action.update.busy") |> escape }}">
+                <button class="button is-secondary">
+                  <u-icon name="download-simple"></u-icon>
+                  {{ t("versions.action.update") }}
+                </button>
+              </u-busy>
+            </form>
+            {{ /if }}
+          {{ /layout }}
         </li>
       {{ /for }}
     </ul>

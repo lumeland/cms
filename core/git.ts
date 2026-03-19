@@ -1,7 +1,6 @@
 import { slugify } from "./utils/string.ts";
 
 import type User from "./user.ts";
-import type { Versioning } from "../types.ts";
 
 export interface Options {
   root?: string;
@@ -18,8 +17,7 @@ export const defaults: Options = {
   remote: "origin",
 };
 
-export class Git implements Versioning {
-  user?: User | undefined;
+export default class Git {
   root: string;
   prodBranch: string;
   command: string;
@@ -83,7 +81,7 @@ export class Git implements Versioning {
   }
 
   /* Changes the current version */
-  change(name: string) {
+  change(user: User, name: string) {
     const branch = this.#nameToBranch(name);
 
     // Check if the version exists
@@ -93,67 +91,39 @@ export class Git implements Versioning {
 
     const currentBranch = this.#gitCurrentBranch();
 
-    // If the current branch exists in the remote, pull changes
-    if (this.#gitRemoteBranchExists(currentBranch)) {
-      try {
-        this.#git("pull", this.remote, currentBranch);
-      } catch {
-        // Ignore.
-      }
-    }
-
-    // If there are pending changes, commit them before changing the branch
-    if (this.#gitPendingChanges()) {
-      // Add and commit changes
-      this.#git("add", ".");
-      this.#git("commit", "-m", "Changes from CMS");
-    }
-
-    // If the current branch is not the production branch, push changes to the remote
+    // Update the current branch before changing
     if (currentBranch !== this.prodBranch) {
-      this.#git("push", this.remote, currentBranch);
+      this.sync(user);
+    } else {
+      this.#gitCommit(user);
     }
 
-    // Checkout to the new branch
+    // Checkout to the new branch and update
     this.#git("checkout", branch);
-
-    // Pull changes from the remote if exists
-    if (this.#gitRemoteBranchExists(branch)) {
-      this.#git("pull", this.remote, branch);
-    }
+    this.update();
   }
 
   /* Publishes a version */
-  publish(name: string): void {
+  publish(user: User, name: string): void {
     const branch = this.#nameToBranch(name);
 
-    // Check if the version exists
     if (!this.#gitLocalBranchExists(branch)) {
       throw new Error(`Version ${name} does not exist`);
     }
 
-    // Change to the production branch
-    this.change(this.prodBranch);
+    this.change(user, this.prodBranch);
 
-    // If the version to publish is not production,
-    // merge it into the production branch and remove it
     if (branch !== this.prodBranch) {
       this.#git("merge", branch);
-      // Push changes to the remote before deleting the branch
-      this.#git("push", this.remote, this.prodBranch);
-      this.#git("branch", "-d", branch);
-      // If the branch exists in the remote, delete it there too
-      if (this.#gitRemoteBranchExists(branch)) {
-        this.#git("push", this.remote, "--delete", branch);
-      }
+      this.sync(user);
+      this.delete(user, name);
     } else {
-      // Push changes to the remote
-      this.#git("push", this.remote, this.prodBranch);
+      this.sync(user);
     }
   }
 
   /* Delete a version */
-  delete(name: string): void {
+  delete(user: User, name: string): void {
     const branch = this.#nameToBranch(name);
 
     if (branch === this.prodBranch) {
@@ -163,7 +133,7 @@ export class Git implements Versioning {
     // If the current branch is the one to be deleted,
     // change to the production branch
     if (branch === this.#gitCurrentBranch()) {
-      this.change(this.prodBranch);
+      this.change(user, this.prodBranch);
     }
 
     this.#git("branch", "-D", branch);
@@ -172,6 +142,26 @@ export class Git implements Versioning {
     if (this.#gitRemoteBranchExists(branch)) {
       this.#git("push", this.remote, "--delete", branch);
     }
+  }
+
+  /** Updates the current branch (pull) */
+  update(): void {
+    const branch = this.#gitCurrentBranch();
+
+    if (this.#gitRemoteBranchExists(branch)) {
+      try {
+        this.#git("pull", this.remote, branch);
+      } catch {
+        // Ignore.
+      }
+    }
+  }
+
+  /* Sync the current branch (pull & push) */
+  sync(user: User): void {
+    this.update();
+    this.#gitCommit(user);
+    this.#git("push", this.remote, this.#gitCurrentBranch());
   }
 
   /** Converts a version name to a branch name */
@@ -195,16 +185,6 @@ export class Git implements Versioning {
   /** Runs a git command and returns the stdout as string */
   #git(...args: string[]): string {
     const [cmd, ...rest] = args;
-
-    // If the command is "commit", add the author if available
-    if (cmd === "commit") {
-      const name = this.user?.name;
-      const email = this.user?.email;
-
-      if (name) {
-        rest.unshift(`--author=${name}${email ? ` <${email}>` : "<>"}`);
-      }
-    }
 
     const command = new Deno.Command(this.command, {
       args: [cmd, ...rest],
@@ -235,11 +215,25 @@ ${decoder.decode(result.stderr)}
   #gitRemoteBranchExists(branch: string): boolean {
     return this.#git("ls-remote", "--heads", this.remote, branch) !== "";
   }
-  #gitPendingChanges(): boolean {
-    return this.#git("status", "--porcelain") !== "";
-  }
   #gitCurrentBranch(): string {
     return this.#git("branch", "--show-current");
+  }
+  #gitCommit(user: User): void {
+    const pendingChanges = this.#git("status", "--porcelain") !== "";
+
+    if (pendingChanges) {
+      this.#git("add", ".");
+
+      // Add the current user as author
+      const name = user.name;
+      const email = user.email;
+      this.#git(
+        "commit",
+        `--author=${name}${email ? ` <${email}>` : "<>"}`,
+        "-m",
+        "Changes from CMS",
+      );
+    }
   }
 }
 

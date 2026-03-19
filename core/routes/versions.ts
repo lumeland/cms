@@ -7,6 +7,8 @@ import {
   createVersion,
   deleteVersion,
   publishVersion,
+  syncVersion,
+  updateVersion,
 } from "../usecases/versions.ts";
 
 const app = new Router<RouterData>();
@@ -14,17 +16,12 @@ const app = new Router<RouterData>();
 /**
  * Route for handling versioning actions.
  * It supports creating, changing, publishing, and deleting versions.
- *
- * /versions/create - Create a new version
- * /versions/change - Change the current version
- * /versions/publish - Publish the current version
- * /versions/delete - Delete a version
  */
-app.post("/*", async ({ request, cms, next }) => {
-  const { versioning, basePath } = cms;
+app.post("/*", async ({ request, cms, user, next }) => {
+  const { git, basePath } = cms;
 
-  if (!versioning) {
-    throw new Error("No versioning method available");
+  if (!git) {
+    throw new Error("Git not enabled");
   }
 
   const body = await request.formData();
@@ -39,24 +36,34 @@ app.post("/*", async ({ request, cms, next }) => {
   });
 
   return next()
-    /* POST /versions/create - Create a new version */
+    /* POST /versions/create */
     .post("/create", () => {
-      createVersion(versioning, name);
+      createVersion(user, git, name);
       return response;
     })
-    /* POST /versions/change - Change the current version */
+    /* POST /versions/change */
     .post("/change", () => {
-      changeVersion(versioning, name);
+      changeVersion(user, git, name);
       return response;
     })
-    /* POST /versions/publish - Publish the current version */
+    /* POST /versions/publish */
     .post("/publish", () => {
-      publishVersion(versioning, name);
+      publishVersion(user, git, name);
       return response;
     })
-    /* POST /versions/delete - Delete a version */
+    /* POST /versions/delete */
     .post("/delete", () => {
-      deleteVersion(versioning, name);
+      deleteVersion(user, git, name);
+      return response;
+    })
+    /* POST /versions/update */
+    .post("/update", () => {
+      updateVersion(git, name);
+      return response;
+    })
+    /* POST /versions/sync */
+    .post("/sync", () => {
+      syncVersion(user, git, name);
       return response;
     });
 });

@@ -19,7 +19,7 @@ import {
 } from "../deps/std.ts";
 import { filter } from "../deps/vento.ts";
 import { labelify } from "./utils/string.ts";
-import { Git, Options as GitOptions } from "./git.ts";
+import Git, { Options as GitOptions } from "./git.ts";
 import User from "./user.ts";
 import { setLocale, t } from "../static/common/locale.js";
 
@@ -33,7 +33,6 @@ import type {
   SiteInfo,
   Storage,
   UserConfiguration,
-  Versioning,
 } from "../types.ts";
 
 type SourcePath = (
@@ -144,7 +143,7 @@ export default class Cms {
   fields = new Map<string, FieldDefinition>();
   collections = new Map<string, CollectionOptions>();
   documents = new Map<string, DocumentOptions>();
-  versionManager: Versioning | undefined;
+  gitRepo: Git | undefined;
 
   constructor(options?: Partial<CmsOptions>) {
     this.options = {
@@ -168,7 +167,7 @@ export default class Cms {
 
   /** Setup the Git repository */
   git(options?: GitOptions): this {
-    this.versionManager = new Git({
+    this.gitRepo = new Git({
       ...options,
     });
 
@@ -308,7 +307,7 @@ export default class Cms {
       basePath: this.options.basePath,
       site: this.options.site ?? {},
       data: this.options.data ?? {},
-      versioning: this.versionManager,
+      git: this.gitRepo,
       collections: {},
       documents: {},
       uploads: {},
@@ -407,10 +406,6 @@ export default class Cms {
               },
             });
           }
-        }
-
-        if (this.versionManager) {
-          this.versionManager.user = user;
         }
 
         // Detect the language

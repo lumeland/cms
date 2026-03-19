@@ -2,6 +2,7 @@
 import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
+import type Git from "./core/git.ts";
 import type {
   CmsOptions,
   CollectionOptions,
@@ -9,7 +10,6 @@ import type {
   UploadOptions,
 } from "./core/cms.ts";
 import type { Options as GitOptions } from "./core/git.ts";
-import type User from "./core/user.ts";
 
 /** Generic data to store */
 export type Data = Record<string, any>;
@@ -69,15 +69,6 @@ export interface Version {
   name: string;
   isCurrent: boolean;
   isProduction: boolean;
-}
-
-export interface Versioning extends Iterable<Version> {
-  user?: User;
-  current(): Version;
-  create(id: string): void;
-  change(id: string): void;
-  publish(id: string): void;
-  delete(id: string): void;
 }
 
 /** A transformer to convert from/to Data */
@@ -229,7 +220,7 @@ export interface CMSContent {
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
   uploads: Record<string, Upload>;
-  versioning?: Versioning;
+  git?: Git;
   data: Record<string, any>;
 }
 

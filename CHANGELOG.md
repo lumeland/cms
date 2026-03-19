@@ -5,11 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.15.0] - Unreleased
+### Added
+- Ability to pull the production branch without pushing.
+- Ability to sync the draft branches.
+- Localization
+
 ### Changed
 - Better code architecture.
 - Move the ability to rename documents to a separate action.
 - Redesigned the ability to duplicate documents.
 - Use CSS anchor positioning for the dropdown menus.
+- Refactor Git utilities.
 
 ### Removed
 - Ability to edit an uploaded file.

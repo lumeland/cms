@@ -1,18 +1,33 @@
-import { Versioning } from "../../types.ts";
+import type Git from "../git.ts";
+import type User from "../user.ts";
 
-export function createVersion(versioning: Versioning, name: string) {
-  versioning.create(name);
-  versioning.change(name);
+export function createVersion(user: User, git: Git, name: string) {
+  git.create(name);
+  git.change(user, name);
 }
 
-export function changeVersion(versioning: Versioning, name: string) {
-  versioning.change(name);
+export function changeVersion(user: User, git: Git, name: string) {
+  git.change(user, name);
 }
 
-export function publishVersion(versioning: Versioning, name: string) {
-  versioning.publish(name);
+export function syncVersion(user: User, git: Git, name: string) {
+  if (git.current().name !== name) {
+    throw new Error("The current version doesn't match");
+  }
+  git.sync(user);
 }
 
-export function deleteVersion(versioning: Versioning, name: string) {
-  versioning.delete(name);
+export function updateVersion(git: Git, name: string) {
+  if (git.current().name !== name) {
+    throw new Error("The current version doesn't match");
+  }
+  git.update();
+}
+
+export function publishVersion(user: User, git: Git, name: string) {
+  git.publish(user, name);
+}
+
+export function deleteVersion(user: User, git: Git, name: string) {
+  git.delete(user, name);
 }
