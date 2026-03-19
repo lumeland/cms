@@ -178,7 +178,7 @@
                 </u-confirm>
               </u-busy>
             </form>
-            {{ else }}
+            {{ else if version.isCurrent }}
             <form
               method="post"
               action='{{ ["versions", "update"] |> path }}'
