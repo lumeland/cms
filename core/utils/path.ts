@@ -82,11 +82,6 @@ export function getLanguageCode(path: string): string {
   }
 }
 
-export function getExtension(name: string) {
-  const parts = name.split(".");
-  return parts.length > 1 ? parts.pop() : undefined;
-}
-
 /**
  * Return the relative path from `from` to `to` and ensure it starts with a dot.
  *
