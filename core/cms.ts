@@ -415,6 +415,7 @@ export default class Cms {
           render(file, {
             ...data,
             t,
+            lang,
             jsImports: Array.from(this.#jsImports),
             extraHead: this.options.extraHead,
             cmsVersion: getCurrentVersion(),
