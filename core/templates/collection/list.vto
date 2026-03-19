@@ -21,7 +21,7 @@
           >
             <u-icon name='{{ child.icon ?? "file" }}'></u-icon>
             <div class="list-item-header">
-              <strong>{{ name }}</strong>
+              {{ name }}
               {{ for key, value of child.flags }}
                 <span title="{{ key }}" class="tag">{{ value }}</span>
               {{ /for }}
@@ -31,7 +31,7 @@
       {{ else }}
         <li>
           {{ set subContent = treeToContent(child) }}
-          <details {{ subContent.length < 10 ? "open" : "" }} class="accordion">
+          <details class="accordion">
             <summary title="{{ subContent.length }} item(s)">
               {{ name }}
             </summary>
@@ -86,7 +86,9 @@
   </nav>
 
   {{ if content }}
-    <ul id="list" class="list">{{ content }}</ul>
+    <u-tree data-name="collection-{{ collection.name}}">
+      <ul id="list" class="list">{{ content }}</ul>
+    </u-tree>
   {{ else }}
     <p class="emptyState">{{ t("document.list.empty") }}</p>
   {{ /if }}

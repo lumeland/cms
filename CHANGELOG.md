@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Ability to sync the draft branches.
 - Button to open the preview page of documents in a new tab
 - Localization
+- Saved the open/closed state of the trees in the local storage
 
 ### Changed
 - Better code architecture.
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Redesigned the ability to duplicate documents.
 - Use CSS anchor positioning for the dropdown menus.
 - Refactor Git utilities.
+- UI tweaks
 
 ### Removed
 - Ability to edit an uploaded file.

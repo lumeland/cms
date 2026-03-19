@@ -9,16 +9,13 @@
   min-height: 3rem;
   text-decoration: none;
   color: var(--color-text);
-  background: var(--color-line-light);
   cursor: pointer;
   list-style: none;
   border-radius: inherit;
   border-radius: var(--border-radius);
-  transition-property: background;
-  transition-duration: var(--animation-duration);
 
   &:hover {
-    background: var(--color-line);
+    background: var(--color-line-light);
   }
 
   &.is-header {

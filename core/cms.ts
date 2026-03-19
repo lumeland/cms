@@ -341,7 +341,6 @@ export default class Cms {
         .collections
         .values()
     ) {
-
       content.collections[name] = new Collection({
         storage: this.#getStorage(store),
         fields: fields ? this.#resolveFields(fields, content, type) : undefined,

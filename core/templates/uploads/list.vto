@@ -48,7 +48,7 @@
       {{ else }}
         <li>
           {{ set subContent = treeToContent(child) }}
-          <details {{ subContent.length < 10 ? "open" : "" }} class="accordion">
+          <details class="accordion">
             <summary title="{{ subContent.length }} item(s)">
               {{ name }}
             </summary>
@@ -103,7 +103,9 @@
   </nav>
 
   {{ if content }}
-    <ul id="list" class="list">{{ content }}</ul>
+    <u-tree data-name="upload-{{ upload.name}}">
+      <ul id="list" class="list">{{ content }}</ul>
+    </u-tree>
   {{ else }}
     <p class="emptyState">{{ t("uploads.list.empty") }}</p>
   {{ /if }}
