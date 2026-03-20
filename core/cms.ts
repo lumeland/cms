@@ -1,26 +1,12 @@
-import { render } from "../deps/vento.ts";
-import { getCurrentVersion } from "./utils/env.ts";
-import documentRoute from "./routes/document.ts";
-import collectionRoute from "./routes/collection.ts";
-import versionsRoute from "./routes/versions.ts";
-import indexRoute from "./routes/index.ts";
-import uploadsRoute from "./routes/uploads.ts";
 import Collection from "./collection.ts";
 import Document from "./document.ts";
 import Upload from "./upload.ts";
 import FsStorage from "../storage/fs.ts";
-import { asset, getPath, normalizePath } from "./utils/path.ts";
+import { normalizePath } from "./utils/path.ts";
 import { Router } from "../deps/galo.ts";
-import {
-  acceptsLanguages,
-  basename,
-  dirname,
-  fromFileUrl,
-} from "../deps/std.ts";
-import { filter } from "../deps/vento.ts";
+import { basename, dirname } from "../deps/std.ts";
 import Git, { Options as GitOptions } from "./git.ts";
 import User from "./user.ts";
-import { setLocale, t } from "../static/common/locale.js";
 
 import type {
   CMSContent,
@@ -33,8 +19,9 @@ import type {
   Storage,
   UserConfiguration,
 } from "../types.ts";
+import init from "./routes/main.ts";
 
-type SourcePath = (
+export type SourcePath = (
   url: string,
   cms: CMSContent,
 ) => string | undefined | Promise<string | undefined>;
@@ -132,8 +119,6 @@ const defaults: Partial<CmsOptions> = {
 };
 
 export default class Cms {
-  #jsImports = new Set<string>();
-
   fetch: (request: Request) => Response | Promise<Response>;
   options: CmsOptions;
   storages = new Map<string, Storage | string>();
@@ -299,8 +284,8 @@ export default class Cms {
     return this;
   }
 
-  /** Initialize the CMS */
-  initContent(): CMSContent {
+  /** Start the CMS */
+  init(): Router<RouterData> {
     const content: CMSContent = {
       basePath: this.options.basePath,
       site: this.options.site ?? {},
@@ -364,99 +349,18 @@ export default class Cms {
       });
     }
 
-    return content;
-  }
+    const jsImports = new Set(
+      this.fields.values().map((field) => field.jsImport),
+    );
 
-  /** Start the CMS */
-  init(): Router<{ cms: CMSContent }> {
-    const content = this.initContent();
-
-    for (const type of this.fields.values()) {
-      this.#jsImports.add(type.jsImport);
-    }
-
-    filter("path", (args: string[]) => getPath(this.options.basePath, ...args));
-    filter("asset", (url: string) => asset(this.options.basePath, url));
-
-    const app = new Router({
-      cms: content,
-      sourcePath: this.options.sourcePath,
-    }, this.options.basePath);
-
-    app.get("/logout", () =>
-      new Response("Unauthorized", {
-        status: 401,
-        headers: {
-          "WWW-Authenticate": 'Basic realm="Secure Area"',
-        },
-      }))
-      .path("/*", async ({ request, next, _ }) => {
-        const user = new User();
-
-        // Basic authentication
-        if (this.options.auth && _.join("/") !== "logout") {
-          const authorization = request.headers.get("authorization");
-          if (!user.authenticate(this.options.auth.users, authorization)) {
-            return new Response("Unauthorized", {
-              status: 401,
-              headers: {
-                "WWW-Authenticate": 'Basic realm="Secure Area"',
-              },
-            });
-          }
-        }
-
-        // Detect the language
-        const lang = user.language ?? acceptsLanguages(request, "en") ?? "en";
-        await setLocale(lang);
-
-        // Template renderer
-        const renderTemplate = (file: string, data?: Record<string, unknown>) =>
-          render(file, {
-            ...data,
-            t,
-            lang,
-            jsImports: Array.from(this.#jsImports),
-            extraHead: this.options.extraHead,
-            cmsVersion: getCurrentVersion(),
-          });
-
-        return next({ user, lang, render: renderTemplate })
-          .path("/", indexRoute)
-          .path("/document/*", documentRoute)
-          .path("/collection/*", collectionRoute)
-          .path("/uploads/*", uploadsRoute)
-          .path("/versions/*", versionsRoute)
-          .get("/logout", () =>
-            new Response("Logged out", {
-              status: 401,
-              headers: {
-                "WWW-Authenticate": 'Basic realm="Secure Area"',
-              },
-            }));
-      });
-
-    // Serve static files from local directory
-    const root = import.meta.resolve("../static/");
-
-    if (root.startsWith("file:")) {
-      app.staticFiles("/*", fromFileUrl(root));
-    }
-
-    const { staticFolders } = this.options;
-
-    if (staticFolders) {
-      for (const [prefix, path] of Object.entries(staticFolders)) {
-        const folder = normalizePath(prefix, "*");
-        if (path.startsWith("file:")) {
-          app.staticFiles(folder, fromFileUrl(path));
-        } else {
-          app.staticFiles(folder, path);
-        }
-      }
-    }
-
-    return app;
+    return init({
+      content,
+      jsImports: Array.from(jsImports),
+      auth: this.options.auth,
+      basePath: this.options.basePath,
+      extraHead: this.options.extraHead,
+      staticFolders: this.options.staticFolders,
+    });
   }
 
   #getStorage(path: string): Storage {
