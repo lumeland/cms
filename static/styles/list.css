@@ -30,6 +30,10 @@
     & summary {
       font: var(--font-ui-bold);
       max-width: none;
+
+      &::before {
+        display: none;
+      }
     }
   }
 
@@ -44,7 +48,7 @@
   padding: 0.25rem 0.5rem;
   display: flex;
   align-items: center;
-  column-gap: 1rem;
+  column-gap: .5rem;
   text-decoration: none;
   font: var(--font-ui);
   border-radius: var(--border-radius);
