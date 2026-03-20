@@ -52,7 +52,7 @@ export default {
       field.publicPath = publicPath;
     }
 
-    if (field.relativePath && data && document) {
+    if (field.relativePath && data?.[field.name] && document) {
       // Convert back to an absolute path
       data[field.name] = toAbsolutePaths(
         data[field.name],

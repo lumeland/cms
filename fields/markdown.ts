@@ -42,7 +42,7 @@ export default {
     if (field.upload !== false) {
       field.upload ??= Object.keys(cmsContent.uploads)[0];
     }
-    if (field.relativePath && data && document) {
+    if (field.relativePath && data?.[field.name] && document) {
       // Convert back to absolute paths
       data[field.name] = toAbsolutePaths(
         data[field.name],
