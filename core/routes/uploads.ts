@@ -69,7 +69,7 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
     .post("/create", async ({ request }) => {
       const data = await request.formData();
       const files = data.getAll("files") as File[];
-      const folder = data.get("_id") as string | undefined;
+      const folder = data.get("folder") as string | undefined;
       const { names } = await saveNewDocument(
         user,
         upload,

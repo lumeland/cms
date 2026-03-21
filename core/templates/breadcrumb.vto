@@ -1,6 +1,7 @@
 <nav class="app-nav" aria-label="You are here:">
   <ul class="breadcrumb">
-    {{ if version }}
+    {{ if git }}
+    {{ set version = git.current() }}
       <li
         class='breadcrumb-version {{ version.isProduction ? "is-production" : "" }}'
       >

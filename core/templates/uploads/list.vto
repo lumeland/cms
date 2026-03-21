@@ -7,7 +7,7 @@
   }
 }}
 
-{{ layout "layout.vto" }}
+{{ layout "layout.vto" { title: upload.label } }}
   {{ function folder(upload, content) }}
     {{ for entry of content }}
       {{> const [name, child] = entry }}
@@ -48,9 +48,8 @@
       {{ else }}
         <li>
           {{ set subContent = treeToContent(child) }}
-          <details class="accordion">
+          <details class="accordion is-folder">
             <summary title="{{ subContent.length }} item(s)">
-              <u-icon name="folder-fill"></u-icon>
               {{ name }}
             </summary>
             <ul>
@@ -72,7 +71,7 @@
   {{ /function }}
 
   <header class="header">
-    {{ include "breadcrumb.vto" { version, links: [upload.label] } }}
+    {{ include "breadcrumb.vto" { version } }}
 
     <h1 class="header-title">{{ upload.label }}</h1>
 

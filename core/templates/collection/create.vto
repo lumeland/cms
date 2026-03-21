@@ -1,11 +1,10 @@
-{{ layout "layout.vto" }}
+{{ layout "layout.vto" { title: t("document.create.title") } }}
   <header class="header">
     {{
       include "breadcrumb.vto" {
         version,
         links: [
           [collection.label, ["collection", collection.name]],
-          t("document.create.title"),
         ],
       }
     }}

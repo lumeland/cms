@@ -1,11 +1,10 @@
-{{ layout "layout.vto" }}
+{{ layout "layout.vto" { title: t("uploads.create.title") } }}
   <header class="header">
     {{
       include "breadcrumb.vto" {
         version,
         links: [
           [upload.label, ["uploads", upload.name]],
-          t("uploads.create.title"),
         ],
       }
     }}
@@ -18,12 +17,11 @@
     <label class="input-file">
       <input
         class="input"
-        id="_id"
         type="text"
-        name="_id"
-        placeholder='{{ t("uploads.create.placeholder") }}'
+        name="folder"
+        placeholder='{{ t("uploads.create.folder.placeholder") }}'
         form="form-create"
-        aria-label='{{ t("uploads.create.label") }}'
+        aria-label='{{ t("uploads.create.folder.label") }}'
         value="{{ folder }}"
       >
     </label>

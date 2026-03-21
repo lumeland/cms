@@ -129,8 +129,24 @@ export function fileType(path) {
     case "aiff":
       return "audio";
 
-    case "pdf":
-      return "pdf";
+    case "md":
+    case "yml":
+    case "yaml":
+    case "txt":
+      return "text";
+
+    case "html":
+    case "js":
+    case "jsx":
+    case "ts":
+    case "tsx":
+    case "css":
+    case "json":
+    case "vue":
+      return "code";
+
+    default:
+      return extension;
   }
 }
 

@@ -1,9 +1,9 @@
-{{ layout "layout.vto" }}
+{{ layout "layout.vto" { title: document.label } }}
   <header class="header">
-    {{ include "breadcrumb.vto" { version, links: [document.label] } }}
+    {{ include "breadcrumb.vto" { version } }}
 
     <h1 class="header-title">
-      {{ t("document.code.title.long", { document: document.label }) }}
+      {{ document.label }}
     </h1>
 
     {{ if document.description }}

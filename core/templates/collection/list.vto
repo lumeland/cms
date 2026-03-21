@@ -7,7 +7,7 @@
   }
 }}
 
-{{ layout "layout.vto" }}
+{{ layout "layout.vto" { title: collection.label } }}
   {{ function folder(collection, content) }}
     {{ for entry of content }}
       {{> const [name, child] = entry }}
@@ -19,7 +19,11 @@
             class="list-item"
             title="{{ child.label |> escape }}"
           >
-            <u-icon name='{{ child.icon ?? "file" }}'></u-icon>
+            {{ if child.icon }}
+              <u-icon name="{{ child.icon }}"></u-icon>
+            {{ else }}
+              <u-icon-file path="{{child.name}}"></u-icon-file>
+            {{ /if }}
             <div class="list-item-header">
               {{ name }}
               {{ for key, value of child.flags }}
@@ -31,9 +35,8 @@
       {{ else }}
         <li>
           {{ set subContent = treeToContent(child) }}
-          <details class="accordion">
+          <details class="accordion is-folder">
             <summary title="{{ subContent.length }} item(s)">
-              <u-icon name="folder-fill"></u-icon>
               {{ name }}
             </summary>
             <ul>
@@ -55,7 +58,7 @@
   {{ /function }}
 
   <header class="header">
-    {{ include "breadcrumb.vto" { version, links: [collection.label] } }}
+    {{ include "breadcrumb.vto" { version } }}
 
     <h1 class="header-title">{{ collection.label }}</h1>
 

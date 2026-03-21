@@ -1,4 +1,4 @@
-{{ layout "layout.vto" }}
+{{ layout "layout.vto" { title: document.label } }}
   <u-pagepreview data-url="{{ url }}"></u-pagepreview>
 
   <header class="header">
@@ -7,12 +7,11 @@
         version,
         links: [
           [collection.label, ["collection", collection.name]],
-          t("document.edit.title"),
         ],
       }
     }}
     <h1 class="header-title">
-      {{ t("document.edit.title.collection", { collection: collection.label }) }}
+      {{ document.label }}
     </h1>
   </header>
 

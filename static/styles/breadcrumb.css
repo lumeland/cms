@@ -7,7 +7,7 @@
   flex-wrap: wrap;
   font: var(--font-small);
 
-  & > li:not(:last-child)::after {
+  & > li::after {
     content: "/";
     display: inline-block;
     padding: 0 0.5em;

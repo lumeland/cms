@@ -48,8 +48,9 @@ customElements.define(
   "u-icon-file",
   class Icon extends Component {
     init() {
-      const path = this.getAttribute("path");
-      switch (fileType(path)) {
+      const type = fileType(this.getAttribute("path"));
+
+      switch (type) {
         case "image":
           dom("u-icon", { name: "image-square-fill" }, this);
           break;
@@ -62,8 +63,17 @@ customElements.define(
           dom("u-icon", { name: "headphones-fill" }, this);
           break;
 
+        case "text":
+          dom("u-icon", { name: "file-text" }, this);
+          break;
+
+        case "code":
+          dom("u-icon", { name: "file-code" }, this);
+          break;
+
         case "pdf":
-          dom("u-icon", { name: "file-pdf-fill" }, this);
+        case "zip":
+          dom("u-icon", { name: `file-${type}` }, this);
           break;
 
         default:

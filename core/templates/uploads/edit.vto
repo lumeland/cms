@@ -1,4 +1,4 @@
-{{ layout "layout.vto" }}
+{{ layout "layout.vto" { title: file } }}
   {{ set src = ["uploads", upload.name, file] |> path }}
 
   <header class="header">
@@ -7,13 +7,12 @@
         version,
         links: [
           [upload.label, ["uploads", upload.name]],
-          t("uploads.edit.title")
         ],
       }
     }}
 
     <h1 class="header-title">
-      {{ t("uploads.edit.title") }}
+      {{ file }}
     </h1>
   </header>
 

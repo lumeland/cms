@@ -1,4 +1,4 @@
-{{ layout "layout.vto" }}
+{{ layout "layout.vto" { title: t("home.title") } }}
   <header class="header">
     {{ include "breadcrumb.vto" { version: git?.current() } }}
 

@@ -1,18 +1,17 @@
-{{ layout "layout.vto" }}
+{{ layout "layout.vto" { title: file } }}
   <header class="header">
     {{
       include "breadcrumb.vto" {
         version,
         links: [
           [upload.label, ["uploads", upload.name]],
-          ["File details", ["uploads", upload.name, file, "edit"]],
-          t("uploads.crop.title"),
+          [file, ["uploads", upload.name, file, "edit"]],
         ],
       }
     }}
 
     <h1 class="header-title">
-      {{ t("uploads.crop.title.long", { file }) }}
+      {{ file }}
     </h1>
   </header>
 

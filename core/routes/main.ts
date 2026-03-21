@@ -77,6 +77,7 @@ export default function init(options: InitOptions): Router<RouterData> {
           jsImports: options.jsImports,
           extraHead: options.extraHead,
           cmsVersion: getCurrentVersion(),
+          git: options.content.git,
         });
 
       return next({ user, lang, render: renderTemplate })

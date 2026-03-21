@@ -1,19 +1,20 @@
-{{ layout "layout.vto" }}
+{{ layout "layout.vto" { title: document.label } }}
   <u-pagepreview data-url="{{ url }}"></u-pagepreview>
 
   <header class="header">
     {{
       include "breadcrumb.vto" {
         version,
-        links: [
-          [document.label, ["document", document.name, "edit"]],
-          t("document.code.title"),
-        ],
+        links: document.fields !== undefined
+          ? [
+            [document.label, ["document", document.name, "edit"]],
+          ]
+          : undefined,
       }
     }}
 
     <h1 class="header-title">
-      {{ t("document.code.title.long", { document: document.label }) }}
+      {{ document.label }}
     </h1>
 
     {{ if document.description }}
