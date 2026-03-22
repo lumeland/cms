@@ -7,6 +7,10 @@ import type Collection from "../collection.ts";
 import type Document from "../document.ts";
 import type User from "../user.ts";
 
+export function getCollections(user: User, collections: Collection[]): Collection[] {
+  return collections.filter((collection) => user.canView(collection));
+}
+
 export async function getCollection(user: User, collection: Collection) {
   if (!user.canView(collection)) {
     throw new Error("Permission denied");

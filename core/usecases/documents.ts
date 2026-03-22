@@ -5,6 +5,10 @@ import type { CMSContent } from "../../types.ts";
 import type Document from "../document.ts";
 import type User from "../user.ts";
 
+export function getDocuments(user: User, documents: Document[]): Document[] {
+  return documents.filter((document) => user.canView(document));
+}
+
 export async function getDocument(
   user: User,
   document: Document,

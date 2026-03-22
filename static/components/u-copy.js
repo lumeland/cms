@@ -29,3 +29,33 @@ customElements.define(
     }
   },
 );
+
+customElements.define(
+  "u-copy-inline",
+  class CopyInline extends Component {
+    init() {
+      const icon = dom("u-icon", { name: "link-simple" });
+      const text = this.innerText.trim();
+      this.innerText = "";
+      dom("button", {
+        type: "button",
+        html: [
+          text,
+          icon,
+        ],
+        onclick: async () => {
+          await navigator.clipboard.writeText(text);
+          icon.setAttribute("name", "check");
+          const tooltip = dom("div", {
+            class: "tooltip",
+            html: t("copy.copied"),
+          }, this);
+          setTimeout(() => {
+            icon.setAttribute("name", "link-simple");
+            tooltip.remove();
+          }, 2000);
+        },
+      }, this);
+    }
+  },
+);

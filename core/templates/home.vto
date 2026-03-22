@@ -55,10 +55,7 @@
       </li>
     {{ /for }}
 
-    {{
-      for upload of Object.values(uploads)
-      |> filter((upload) => upload.listed)
-    }}
+    {{ for upload of uploads }}
       <li>
         <a href='{{ ["uploads", upload.name] |> path }}' class="list-item">
           <u-icon name="images-square-fill"></u-icon>

@@ -5,3 +5,28 @@ u-copy {
   width: 40px;
   height: 40px;
 }
+u-copy-inline {
+  display: inline-block;
+  position: relative;
+
+  button {
+    background: none;
+    border: none;
+    padding: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    column-gap: .5em;
+    align-items: center;
+    text-align: left;
+
+    &:hover {
+      opacity: .5;
+    }
+  }
+  u-icon {
+    width: 1.2em;
+    height: 1.2em;
+  }
+}

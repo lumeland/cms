@@ -120,8 +120,7 @@
       <dt>{{ t("uploads.details.url") }}:</dt>
       {{ set publicUrl = [upload.publicPath, file] |> normalizePath }}
       <dd>
-        {{ publicUrl }}
-        <u-copy text="{{ publicUrl }}"></u-copy>
+        <u-copy-inline>{{ publicUrl }}</u-copy-inline>
       </dd>
       <dt>{{ t("uploads.details.type") }}:</dt>
       <dd>{{ type }}</dd>

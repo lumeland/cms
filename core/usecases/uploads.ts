@@ -11,6 +11,10 @@ import {
   transform,
 } from "../../deps/imagick.ts";
 
+export function getUploads(user: User, uploads: Upload[]): Upload[] {
+  return uploads.filter((upload) => upload.listed && user.canView(upload));
+}
+
 export async function getUpload(upload: Upload) {
   const tree = createTree(await Array.fromAsync(upload));
   return { tree };
