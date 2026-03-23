@@ -145,6 +145,17 @@
                   </button>
                 </u-busy>
               </form>
+
+              <form
+                method="post"
+                action='{{ ["versions", "save"] |> path }}'
+              >
+                <input type="hidden" name="name" value="{{ version.name }}">
+                <button class="button is-secondary">
+                  <u-icon name="floppy-disk"></u-icon>
+                  {{ t("versions.action.save") }}
+                </button>
+              </form>
             {{ /if }}
 
             {{ if !version.isProduction }}

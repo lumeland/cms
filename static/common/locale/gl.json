@@ -73,6 +73,7 @@
   "versions.action.new": "Nova versión",
   "versions.action.new.label": "Nome da nova versión",
   "versions.action.new.submit": "Crear versión",
+  "versions.action.save": "Gardar estado",
   "choose-list.action.add": "Engadir…",
   "choose-list.action.duplicate": "Duplicar",
   "choose-list.action.delete": "Eliminar",

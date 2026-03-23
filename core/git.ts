@@ -69,12 +69,21 @@ export default class Git {
   }
 
   /* Creates a new version */
-  create(name: string): void {
+  create(user: User, name: string): void {
     const branch = this.#nameToBranch(name);
 
     // Check if the version already exists
     if (this.#gitLocalBranchExists(branch)) {
       throw new Error(`Version ${name} already exists (${branch})`);
+    }
+
+    const currentBranch = this.#gitCurrentBranch();
+
+    // Update the current branch before changing
+    if (currentBranch !== this.prodBranch) {
+      this.sync(user);
+    } else {
+      this.save(user);
     }
 
     this.#git("checkout", "-b", branch, this.prodBranch);
@@ -95,12 +104,31 @@ export default class Git {
     if (currentBranch !== this.prodBranch) {
       this.sync(user);
     } else {
-      this.#gitCommit(user);
+      this.save(user);
     }
 
     // Checkout to the new branch and update
     this.#git("checkout", branch);
     this.update();
+  }
+
+  /* Save the current changes (git commit) */
+  save(user: User) {
+    const pendingChanges = this.#git("status", "--porcelain") !== "";
+
+    if (pendingChanges) {
+      this.#git("add", ".");
+
+      // Add the current user as author
+      const name = user.name;
+      const email = user.email;
+      this.#git(
+        "commit",
+        `--author=${name}${email ? ` <${email}>` : "<>"}`,
+        "-m",
+        "Changes from CMS",
+      );
+    }
   }
 
   /* Publishes a version */
@@ -160,7 +188,7 @@ export default class Git {
   /* Sync the current branch (pull & push) */
   sync(user: User): void {
     this.update();
-    this.#gitCommit(user);
+    this.save(user);
     this.#git("push", this.remote, this.#gitCurrentBranch());
   }
 
@@ -217,23 +245,6 @@ ${decoder.decode(result.stderr)}
   }
   #gitCurrentBranch(): string {
     return this.#git("branch", "--show-current");
-  }
-  #gitCommit(user: User): void {
-    const pendingChanges = this.#git("status", "--porcelain") !== "";
-
-    if (pendingChanges) {
-      this.#git("add", ".");
-
-      // Add the current user as author
-      const name = user.name;
-      const email = user.email;
-      this.#git(
-        "commit",
-        `--author=${name}${email ? ` <${email}>` : "<>"}`,
-        "-m",
-        "Changes from CMS",
-      );
-    }
   }
 }
 

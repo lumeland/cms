@@ -6,8 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.15.0] - Unreleased
 ### Added
-- Ability to pull the production branch without pushing.
-- Ability to sync the draft branches.
+- New git actions:
+  - Update: to pull the production branch without pushing.
+  - Sync: to pull & push the draft branches.
+  - Save: to commit the current changes without push.
 - Button to open the preview page of documents in a new tab
 - Localization
 - Saved the open/closed state of the trees in the local storage
