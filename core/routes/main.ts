@@ -29,7 +29,7 @@ interface InitOptions {
   auth?: AuthOptions;
   extraHead?: string;
   staticFolders?: Record<string, string>;
-  sourcePath?: string;
+  sourcePath?: SourcePath;
 }
 
 export default function init(options: InitOptions): Router<RouterData> {

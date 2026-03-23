@@ -360,6 +360,7 @@ export default class Cms {
       basePath: this.options.basePath,
       extraHead: this.options.extraHead,
       staticFolders: this.options.staticFolders,
+      sourcePath: this.options.sourcePath,
     });
   }
 
