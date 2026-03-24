@@ -9,6 +9,7 @@ import Git, { Options as GitOptions } from "./git.ts";
 import User from "./user.ts";
 
 import type {
+  AuthProvider,
   CMSContent,
   Data,
   Entry,
@@ -20,6 +21,7 @@ import type {
   UserConfiguration,
 } from "../types.ts";
 import init from "./routes/main.ts";
+import { Basic } from "../auth/Basic.ts";
 
 export type SourcePath = (
   url: string,
@@ -39,7 +41,7 @@ export interface CmsOptions {
 }
 
 export interface AuthOptions {
-  method: "basic";
+  method: AuthProvider | "basic";
   users: Record<string, string | UserConfiguration>;
 }
 
@@ -127,6 +129,7 @@ export default class Cms {
   collections = new Map<string, CollectionOptions>();
   documents = new Map<string, DocumentOptions>();
   gitRepo: Git | undefined;
+  authentication?: AuthProvider;
 
   constructor(options?: Partial<CmsOptions>) {
     this.options = {
@@ -157,10 +160,13 @@ export default class Cms {
     return this;
   }
 
-  /** Setup the basic auth */
-  auth(users: Record<string, string | UserConfiguration>): this {
+  /** Setup the auth */
+  auth(
+    users: Record<string, string | UserConfiguration>,
+    method: "basic" | AuthProvider = "basic",
+  ): this {
     this.options.auth = {
-      method: "basic",
+      method,
       users,
     };
 
@@ -296,7 +302,8 @@ export default class Cms {
       uploads: {},
     };
 
-    for (
+    // Initialize uploads
+    for (const entry of this.uploads.values()) {
       const {
         name,
         label,
@@ -305,10 +312,8 @@ export default class Cms {
         store,
         publicPath,
         listed,
-      } of this
-        .uploads
-        .values()
-    ) {
+      } = entry;
+
       content.uploads[name] = new Upload({
         name,
         label: label ?? name,
@@ -320,11 +325,10 @@ export default class Cms {
       });
     }
 
-    for (
-      const { name, label, store, fields, type, ...options } of this
-        .collections
-        .values()
-    ) {
+    // Initialize collections
+    for (const entry of this.collections.values()) {
+      const { name, label, store, fields, type, ...options } = entry;
+
       content.collections[name] = new Collection({
         storage: this.#getStorage(store),
         fields: fields ? this.#resolveFields(fields, content, type) : undefined,
@@ -335,10 +339,10 @@ export default class Cms {
       });
     }
 
-    for (
-      const { name, label, store, fields, type, ...options } of this.documents
-        .values()
-    ) {
+    // Initialize documents
+    for (const entry of this.documents.values()) {
+      const { name, label, store, fields, type, ...options } = entry;
+
       content.documents[name] = new Document({
         entry: this.#getEntry(store),
         fields: fields ? this.#resolveFields(fields, content, type) : undefined,
@@ -349,9 +353,22 @@ export default class Cms {
       });
     }
 
+    // JavaScript files to import
     const jsImports = new Set(
       this.fields.values().map((field) => field.jsImport),
     );
+
+    // Authentication method
+    const { auth } = this.options;
+    const users = new Map<string, UserConfiguration>();
+    let authMethod: AuthProvider | undefined;
+
+    if (auth) {
+      for (const [user, password] of Object.entries(auth.users)) {
+        users.set(user, typeof password === "string" ? { password } : password);
+      }
+      authMethod = auth.method === "basic" ? new Basic() : auth.method;
+    }
 
     return init({
       content,
@@ -361,6 +378,8 @@ export default class Cms {
       extraHead: this.options.extraHead,
       staticFolders: this.options.staticFolders,
       sourcePath: this.options.sourcePath,
+      users,
+      authMethod,
     });
   }
 

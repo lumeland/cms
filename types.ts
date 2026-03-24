@@ -41,6 +41,16 @@ export interface SiteInfo {
   body?: string;
 }
 
+/** The interface to implement different auth providers */
+export interface AuthProvider {
+  getUsername(
+    request: Request,
+    users: Map<string, UserConfiguration>,
+  ): string | undefined;
+  login(request: Request): Response;
+  logout(request: Request): Response;
+}
+
 /** A storage mechanism for data */
 export interface Storage extends AsyncIterable<EntrySource> {
   name(name?: string): string;

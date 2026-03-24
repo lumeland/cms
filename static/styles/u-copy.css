@@ -17,12 +17,12 @@ u-copy-inline {
     color: inherit;
     cursor: pointer;
     display: inline-flex;
-    column-gap: .5em;
+    column-gap: 0.5em;
     align-items: center;
     text-align: left;
 
     &:hover {
-      opacity: .5;
+      opacity: 0.5;
     }
   }
   u-icon {

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   - Save: to commit the current changes without push.
 - Button to open the preview page of documents in a new tab
 - Localization
+- New AuthProvider interface to implement other authentication methods.
 - Saved the open/closed state of the trees in the local storage
 
 ### Changed

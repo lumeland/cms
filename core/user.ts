@@ -16,31 +16,11 @@ export default class User {
     return !!this.name;
   }
 
-  authenticate(
-    users: Record<string, string | UserConfiguration>,
-    header: string | null,
-  ): boolean {
-    const match = header?.match(/^Basic\s+(.*)$/);
-    if (match) {
-      const [user, pw] = atob(match[1]).split(":");
-
-      for (const [name, config] of Object.entries(users)) {
-        const password = typeof config === "string" ? config : config.password;
-        if (user === name && pw == password) {
-          // Save user data and permissions
-          if (typeof config === "string") {
-            this.name = name;
-          } else {
-            this.name = config.name ?? name;
-            this.email = config.email;
-            this.permissions = config.permissions ?? {};
-            this.language = config.language;
-          }
-          return true;
-        }
-      }
-    }
-    return false;
+  constructor(name?: string, config?: UserConfiguration) {
+    this.name = config?.name ?? name;
+    this.email = config?.email;
+    this.permissions = config?.permissions ?? {};
+    this.language = config?.language;
   }
 
   // TO-DO: Implement view permissions

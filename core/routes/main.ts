@@ -12,7 +12,11 @@ import indexRoute from "./index.ts";
 import uploadsRoute from "./uploads.ts";
 
 import type { AuthOptions, SourcePath } from "../cms.ts";
-import type { CMSContent } from "../../types.ts";
+import type {
+  AuthProvider,
+  CMSContent,
+  UserConfiguration,
+} from "../../types.ts";
 
 export interface RouterData {
   cms: CMSContent;
@@ -30,6 +34,8 @@ interface InitOptions {
   extraHead?: string;
   staticFolders?: Record<string, string>;
   sourcePath?: SourcePath;
+  users: Map<string, UserConfiguration>;
+  authMethod?: AuthProvider;
 }
 
 export default function init(options: InitOptions): Router<RouterData> {
@@ -41,27 +47,28 @@ export default function init(options: InitOptions): Router<RouterData> {
     sourcePath: options.sourcePath,
   }, options.basePath);
 
-  app.get("/logout", () =>
-    new Response("Unauthorized", {
-      status: 401,
-      headers: {
-        "WWW-Authenticate": 'Basic realm="Secure Area"',
-      },
-    }))
+  app.get("/logout", ({ request }) => options.authMethod?.logout(request))
     .path("/*", async ({ request, next, _ }) => {
-      const user = new User();
+      let user: User;
 
       // Basic authentication
       if (options.auth && _.join("/") !== "logout") {
-        const authorization = request.headers.get("authorization");
-        if (!user.authenticate(options.auth.users, authorization)) {
-          return new Response("Unauthorized", {
-            status: 401,
-            headers: {
-              "WWW-Authenticate": 'Basic realm="Secure Area"',
-            },
-          });
+        if (!options.authMethod || !options.users.size) {
+          user = new User(); // anonymous user
+        } else {
+          const username = options.authMethod.getUsername(
+            request,
+            options.users,
+          );
+          if (username) {
+            const config = options.users.get(username)!;
+            user = new User(username, config);
+          } else {
+            return options.authMethod.login(request);
+          }
         }
+      } else {
+        user = new User(); // anonymous user
       }
 
       // Detect the language
@@ -86,13 +93,7 @@ export default function init(options: InitOptions): Router<RouterData> {
         .path("/collection/*", collectionRoute)
         .path("/uploads/*", uploadsRoute)
         .path("/versions/*", versionsRoute)
-        .get("/logout", () =>
-          new Response("Logged out", {
-            status: 401,
-            headers: {
-              "WWW-Authenticate": 'Basic realm="Secure Area"',
-            },
-          }));
+        .get("/logout", ({ request }) => options.authMethod?.logout(request));
     });
 
   // Serve static files from local directory
