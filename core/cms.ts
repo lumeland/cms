@@ -373,7 +373,6 @@ export default class Cms {
     return init({
       content,
       jsImports: Array.from(jsImports),
-      auth: this.options.auth,
       basePath: this.options.basePath,
       extraHead: this.options.extraHead,
       staticFolders: this.options.staticFolders,

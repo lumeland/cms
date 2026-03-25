@@ -11,7 +11,7 @@ import versionsRoute from "./versions.ts";
 import indexRoute from "./index.ts";
 import uploadsRoute from "./uploads.ts";
 
-import type { AuthOptions, SourcePath } from "../cms.ts";
+import type { SourcePath } from "../cms.ts";
 import type {
   AuthProvider,
   CMSContent,
@@ -30,7 +30,6 @@ interface InitOptions {
   content: CMSContent;
   basePath: string;
   jsImports: string[];
-  auth?: AuthOptions;
   extraHead?: string;
   staticFolders?: Record<string, string>;
   sourcePath?: SourcePath;
@@ -47,25 +46,22 @@ export default function init(options: InitOptions): Router<RouterData> {
     sourcePath: options.sourcePath,
   }, options.basePath);
 
-  app.get("/logout", ({ request }) => options.authMethod?.logout(request))
+  app
+    .get("/logout", ({ request }) => options.authMethod?.logout(request))
     .path("/*", async ({ request, next, _ }) => {
       let user: User;
 
-      // Basic authentication
-      if (options.auth && _.join("/") !== "logout") {
-        if (!options.authMethod || !options.users.size) {
-          user = new User(); // anonymous user
+      // Authentication
+      if (options.authMethod && options.users.size && _.join("/") !== "logout") {
+        const username = options.authMethod.getUsername(
+          request,
+          options.users,
+        );
+        if (username) {
+          const config = options.users.get(username)!;
+          user = new User(username, config);
         } else {
-          const username = options.authMethod.getUsername(
-            request,
-            options.users,
-          );
-          if (username) {
-            const config = options.users.get(username)!;
-            user = new User(username, config);
-          } else {
-            return options.authMethod.login(request);
-          }
+          return options.authMethod.login(request);
         }
       } else {
         user = new User(); // anonymous user
