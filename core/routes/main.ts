@@ -53,8 +53,8 @@ export default function init(options: InitOptions): Router<RouterData> {
         return new Response("Not found", { status: 404 });
       }
       return next()
-        .post("/logout", authMethod.logout)
-        .default(authMethod.fetch);
+        .post("/logout", ({ request }) => authMethod.logout(request))
+        .default(({ request }) => authMethod.fetch(request));
     })
     .path("/*", async ({ request, next }) => {
       let user: User;
