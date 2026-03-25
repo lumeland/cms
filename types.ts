@@ -49,6 +49,7 @@ export interface AuthProvider {
   ): string | undefined;
   login(request: Request): Response;
   logout(request: Request): Response;
+  fetch(request: Request): Response | Promise<Response>;
 }
 
 /** A storage mechanism for data */

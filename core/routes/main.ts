@@ -47,12 +47,20 @@ export default function init(options: InitOptions): Router<RouterData> {
   }, options.basePath);
 
   app
-    .get("/logout", ({ request }) => options.authMethod?.logout(request))
-    .path("/*", async ({ request, next, _ }) => {
+    .path("auth", ({ request, next }) => {
+      const { authMethod } = options;
+      if (!authMethod) {
+        return new Response("Not found", { status: 404 });
+      }
+      return next()
+        .get("logout", () => authMethod.logout(request))
+        .default(authMethod.fetch);
+    })
+    .path("/*", async ({ request, next }) => {
       let user: User;
 
       // Authentication
-      if (options.authMethod && options.users.size && _.join("/") !== "logout") {
+      if (options.authMethod && options.users.size) {
         const username = options.authMethod.getUsername(
           request,
           options.users,
@@ -88,8 +96,7 @@ export default function init(options: InitOptions): Router<RouterData> {
         .path("/document/*", documentRoute)
         .path("/collection/*", collectionRoute)
         .path("/uploads/*", uploadsRoute)
-        .path("/versions/*", versionsRoute)
-        .get("/logout", ({ request }) => options.authMethod?.logout(request));
+        .path("/versions/*", versionsRoute);
     });
 
   // Serve static files from local directory

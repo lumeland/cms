@@ -25,7 +25,7 @@ export class Basic implements AuthProvider {
     }
   }
 
-  login(): Response {
+  login() {
     return new Response("Unauthorized", {
       status: 401,
       headers: {
@@ -34,12 +34,16 @@ export class Basic implements AuthProvider {
     });
   }
 
-  logout(): Response {
+  logout() {
     return new Response("Logged out", {
       status: 401,
       headers: {
         "WWW-Authenticate": 'Basic realm="Secure Area"',
       },
     });
+  }
+
+  fetch() {
+    return new Response("Not found", { status: 404 });
   }
 }
