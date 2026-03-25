@@ -96,7 +96,15 @@ export default function init(options: InitOptions): Router<RouterData> {
         .path("/document/*", documentRoute)
         .path("/collection/*", collectionRoute)
         .path("/uploads/*", uploadsRoute)
-        .path("/versions/*", versionsRoute);
+        .path("/versions/*", versionsRoute)
+        .catch((params) => {
+          return renderTemplate("error.vto", {
+            t,
+            user,
+            errorType: "stack",
+            error: params.error?.stack || '?',
+          });
+        });
     });
 
   // Serve static files from local directory
