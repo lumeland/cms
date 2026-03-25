@@ -91,7 +91,7 @@
 
       document.querySelector("#logoutButton")
         ?.addEventListener("click", function () {
-          const logoutUrl = '{{ ["logout"] |> path }}';
+          const logoutUrl = '{{ ["auth", "logout"] |> path }}';
           const xmlHttp = new XMLHttpRequest();
           xmlHttp.open("POST", logoutUrl, true, "logout");
           xmlHttp.send();

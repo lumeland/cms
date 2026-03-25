@@ -47,13 +47,13 @@ export default function init(options: InitOptions): Router<RouterData> {
   }, options.basePath);
 
   app
-    .path("auth", ({ request, next }) => {
+    .path("auth", ({ next }) => {
       const { authMethod } = options;
       if (!authMethod) {
         return new Response("Not found", { status: 404 });
       }
       return next()
-        .get("logout", () => authMethod.logout(request))
+        .post("/logout", authMethod.logout)
         .default(authMethod.fetch);
     })
     .path("/*", async ({ request, next }) => {
