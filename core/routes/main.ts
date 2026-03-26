@@ -2,7 +2,7 @@ import { Router } from "../../deps/galo.ts";
 import User from "../user.ts";
 import { getCurrentVersion } from "../utils/env.ts";
 import { asset, getPath, normalizePath } from "../utils/path.ts";
-import { acceptsLanguages, fromFileUrl } from "../../deps/std.ts";
+import { acceptsLanguages, fromFileUrl, posix } from "../../deps/std.ts";
 import { filter, render } from "../../deps/vento.ts";
 import { setLocale, t } from "../../static/common/locale.js";
 import documentRoute from "./document.ts";
@@ -47,13 +47,14 @@ export default function init(options: InitOptions): Router<RouterData> {
   }, options.basePath);
 
   app
-    .path("auth", ({ next }) => {
+    .path("/auth/*", ({ next }) => {
       const { authMethod } = options;
       if (!authMethod) {
         return new Response("Not found", { status: 404 });
       }
       return next()
         .post("/logout", ({ request }) => authMethod.logout(request))
+        .path("/login", ({ request }) => authMethod.login(request))
         .default(({ request }) => authMethod.fetch(request));
     })
     .path("/*", async ({ request, next }) => {
@@ -61,16 +62,24 @@ export default function init(options: InitOptions): Router<RouterData> {
 
       // Authentication
       if (options.authMethod && options.users.size) {
-        const username = options.authMethod.getUsername(
-          request,
+        const username = await options.authMethod.getUsername(
+          request.headers,
           options.users,
         );
-        if (username) {
-          const config = options.users.get(username)!;
-          user = new User(username, config);
-        } else {
-          return options.authMethod.login(request);
+        if (!username) {
+          return new Response(null, {
+            status: 302,
+            headers: {
+              location: posix.join(options.basePath, "/auth/login") +
+                "?redirect_uri=" + encodeURIComponent(request.url),
+            },
+          });
         }
+        const config = options.users.get(username);
+        if (!config) {
+          return new Response("Forbidden", { status: 403 });
+        }
+        user = new User(username, config);
       } else {
         user = new User(); // anonymous user
       }
