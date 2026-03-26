@@ -47,7 +47,7 @@ export default function init(options: InitOptions): Router<RouterData> {
   }, options.basePath);
 
   app
-    .path("auth", ({ next }) => {
+    .path("/auth/*", ({ next }) => {
       const { authMethod } = options;
       if (!authMethod) {
         return new Response("Not found", { status: 404 });
@@ -61,15 +61,15 @@ export default function init(options: InitOptions): Router<RouterData> {
 
       // Authentication
       if (options.authMethod && options.users.size) {
-        const username = options.authMethod.getUsername(
-          request,
-          options.users,
-        );
-        if (username) {
-          const config = options.users.get(username)!;
-          user = new User(username, config);
+        const result = await options.authMethod.login(request);
+        if (result instanceof Response) {
+          return result;
         } else {
-          return options.authMethod.login(request);
+          const config = options.users.get(result);
+          if (!config) {
+            throw new Error("AuthProvider resolved with an invalid user.");
+          }
+          user = new User(result, config);
         }
       } else {
         user = new User(); // anonymous user

@@ -43,12 +43,11 @@ export interface SiteInfo {
 
 /** The interface to implement different auth providers */
 export interface AuthProvider {
-  getUsername(
-    request: Request,
-    users: Map<string, UserConfiguration>,
-  ): string | undefined;
-  login(request: Request): Response;
-  logout(request: Request): Response;
+  init(
+    options: { basePath: string; users: Map<string, UserConfiguration> },
+  ): void;
+  login(request: Request): Response | string | Promise<Response | string>;
+  logout(request: Request): Response | Promise<Response>;
   fetch(request: Request): Response | Promise<Response>;
 }
 

@@ -358,28 +358,30 @@ export default class Cms {
       this.fields.values().map((field) => field.jsImport),
     );
 
-    // Authentication method
-    const { auth } = this.options;
-    const users = new Map<string, UserConfiguration>();
-    let authMethod: AuthProvider | undefined;
-
-    if (auth) {
-      for (const [user, password] of Object.entries(auth.users)) {
-        users.set(user, typeof password === "string" ? { password } : password);
-      }
-      authMethod = auth.method === "basic" ? new Basic() : auth.method;
-    }
-
-    return init({
+    const initOptions: Parameters<typeof init>[0] = {
       content,
       jsImports: Array.from(jsImports),
       basePath: this.options.basePath,
       extraHead: this.options.extraHead,
       staticFolders: this.options.staticFolders,
       sourcePath: this.options.sourcePath,
-      users,
-      authMethod,
-    });
+      users: new Map<string, UserConfiguration>(),
+    };
+
+    // Authentication method
+    const { auth } = this.options;
+    let authMethod: AuthProvider | undefined;
+
+    if (auth) {
+      for (const [user, password] of Object.entries(auth.users)) {
+        initOptions.users.set(user, typeof password === "string" ? { password } : password);
+      }
+      authMethod = auth.method === "basic" ? Basic.create() : auth.method;
+      authMethod.init(initOptions);
+      initOptions.authMethod = authMethod;
+    }
+
+    return init(initOptions);
   }
 
   #getStorage(path: string): Storage {
