@@ -44,11 +44,11 @@ export interface SiteInfo {
 /** The interface to implement different auth providers */
 export interface AuthProvider {
   getUsername(
-    request: Request,
+    headers: Headers,
     users: Map<string, UserConfiguration>,
-  ): string | undefined;
-  login(request: Request): Response;
-  logout(request: Request): Response;
+  ): string | undefined | Promise<string | undefined>;
+  login(request: Request): Response | Promise<Response>;
+  logout(request: Request): Response | Promise<Response>;
   fetch(request: Request): Response | Promise<Response>;
 }
 
