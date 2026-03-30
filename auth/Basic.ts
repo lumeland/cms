@@ -1,20 +1,20 @@
-import type { AuthProvider } from "../types.ts";
+import type { AuthProvider, AuthProviderOptions } from "../types.ts";
 
 /** Basic auth provider */
 export class Basic implements AuthProvider {
   #challengeHeader = ["WWW-Authenticate", 'Basic realm="Secure Area"'];
 
-  options: Parameters<AuthProvider["init"]>[0] | undefined;
+  options: AuthProviderOptions | undefined;
 
   static create(): Basic {
     return new Basic();
   }
 
-  init(options: NonNullable<Basic["options"]>) {
+  init(options: AuthProviderOptions) {
     this.options = options;
   }
 
-  async login(request: Request) {
+  login(request: Request) {
     this.#assertOptions();
 
     const value = request.headers.get("authorization");
@@ -36,14 +36,14 @@ export class Basic implements AuthProvider {
     });
   }
 
-  async logout(_request: Request) {
+  logout() {
     return new Response("Logged out", {
       headers: [this.#challengeHeader],
       status: 401,
     });
   }
 
-  async fetch(_request: Request) {
+  fetch() {
     return new Response("Not found", { status: 404 });
   }
 
@@ -60,7 +60,7 @@ export class Basic implements AuthProvider {
     return [user, passwordParts.join(":")];
   }
 
-  #assertOptions(): asserts this is { options: NonNullable<Basic["options"]> } {
+  #assertOptions(): asserts this is { options: AuthProviderOptions } {
     if (!this.options) {
       throw new Error("AuthProvider not initialized");
     }

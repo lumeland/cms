@@ -41,11 +41,14 @@ export interface SiteInfo {
   body?: string;
 }
 
+export interface AuthProviderOptions {
+  basePath: string;
+  users: Map<string, UserConfiguration>;
+}
+
 /** The interface to implement different auth providers */
 export interface AuthProvider {
-  init(
-    options: { basePath: string; users: Map<string, UserConfiguration> },
-  ): void;
+  init(options: AuthProviderOptions): void;
   login(request: Request): Response | string | Promise<Response | string>;
   logout(request: Request): Response | Promise<Response>;
   fetch(request: Request): Response | Promise<Response>;
