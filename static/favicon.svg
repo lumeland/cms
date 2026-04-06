@@ -5,16 +5,14 @@
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
 >
-  <style>
-  .shape {
+  <style>.shape {
     fill: black;
   }
   @media (prefers-color-scheme: dark) {
     .shape {
       fill: white;
     }
-  }
-  </style>
+  }</style>
   <path
     fill="#D06B57"
     d="M281.777 255.5C281.777 322.603 221.277 377 221.277 377C221.277 377 160.777 322.603 160.777 255.5C160.777 188.397 221.277 134 221.277 134C221.277 134 281.777 188.397 281.777 255.5Z"

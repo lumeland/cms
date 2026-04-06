@@ -85,11 +85,24 @@ customElements.define(
       const footer = dom("footer", { class: "field-footer" }, this);
       const fileField = schema.fields.find((f) => f.type === "file");
 
-      const btn = dom("label", {
+      dom("button", {
         class: "button is-secondary",
+        type: "button",
         html: [
           '<u-icon name="plus-circle"></u-icon>',
           t("file-list.action.add", { label: schema.label }),
+        ],
+        onclick() {
+          div.append(createOption({}, true));
+          this.value = null;
+        },
+      }, footer);
+
+      const btn = dom("label", {
+        class: "button is-secondary",
+        html: [
+          '<u-icon name="upload-simple"></u-icon>',
+          t("file-list.action.upload", { label: schema.label }),
         ],
       }, footer);
 

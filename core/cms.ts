@@ -374,7 +374,10 @@ export default class Cms {
 
     if (auth) {
       for (const [user, password] of Object.entries(auth.users)) {
-        initOptions.users.set(user, typeof password === "string" ? { password } : password);
+        initOptions.users.set(
+          user,
+          typeof password === "string" ? { password } : password,
+        );
       }
       authMethod = auth.method === "basic" ? Basic.create() : auth.method;
       authMethod.init(initOptions);

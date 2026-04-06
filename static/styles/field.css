@@ -91,6 +91,9 @@
 }
 
 .field-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
   margin-top: 0.5em;
 }
 
