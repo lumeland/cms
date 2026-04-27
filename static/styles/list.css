@@ -71,16 +71,16 @@ form.list-item {
   & button {
     border: none;
     background: none;
-    display: inherit;
-    align-items: inherit;
-    column-gap: inherit;
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
     text-decoration: inherit;
     font: inherit;
     padding: 0.25rem 0.5rem;
     color: inherit;
     cursor: pointer;
     width: 100%;
-    border-radius: inherit;
+    border-radius: var(--border-radius);
 
     &:hover {
       background-color: var(--color-line-light);

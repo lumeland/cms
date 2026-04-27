@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.15.1] - Unreleased
 ### Changed
 - Use AJAX to submit Git forms.
+- Display the production branch name in the list of versions.
 
 ## [0.15.0] - 2026-04-06
 ### Added

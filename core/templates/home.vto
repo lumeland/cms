@@ -94,7 +94,8 @@
                   class="is-version is-production"
                   name="check-circle"
                 ></u-icon>
-                {{ t("versions.type.production") }}
+                {{ version.name }}
+                <span class="tag">{{ t("versions.type.production") }}</span>
               {{ else }}
                 <u-icon
                   class="is-version"
