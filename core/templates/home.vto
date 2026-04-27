@@ -111,14 +111,16 @@
               action='{{ ["versions", "change"] |> path }}'
             >
               <input type="hidden" name="name" value="{{ version.name }}">
-              <button type="submit">
-                {{ if version.isProduction }}
-                  <u-icon name="circle"></u-icon> {{ t("versions.type.production") }}
-                {{ else }}
-                  <u-icon name="circle"></u-icon> {{ version.name }}
-                  <span class="tag">{{ t("versions.type.draft") }}</span>
-                {{ /if }}
-              </button>
+              <u-form-restart>
+                <button type="submit">
+                  {{ if version.isProduction }}
+                    <u-icon name="circle"></u-icon> {{ t("versions.type.production") }}
+                  {{ else }}
+                    <u-icon name="circle"></u-icon> {{ version.name }}
+                    <span class="tag">{{ t("versions.type.draft") }}</span>
+                  {{ /if }}
+                </button>
+              </u-form-restart>
             </form>
           {{ /if }}
 
@@ -133,7 +135,7 @@
                 action='{{ ["versions", "sync"] |> path }}'
               >
                 <input type="hidden" name="name" value="{{ version.name }}">
-                <u-busy data-message="{{ t("versions.action.sync.busy") }}">
+                <u-form-restart data-message="{{ t("versions.action.sync.busy") }}">
                   <button class="button is-secondary">
                     {{ if version.isProduction }}
                       <u-icon name="rocket-launch"></u-icon>
@@ -143,7 +145,7 @@
                       {{ t("versions.action.sync") }}
                     {{ /if }}
                   </button>
-                </u-busy>
+                </u-form-restart>
               </form>
 
               <form
@@ -164,12 +166,12 @@
               action='{{ ["versions", "publish"] |> path }}'
             >
               <input type="hidden" name="name" value="{{ version.name }}">
-              <u-busy data-message="{{ t("versions.action.publish.busy") |> escape }}">
+              <u-form-restart data-message="{{ t("versions.action.publish.busy") |> escape }}">
                 <button class="button is-secondary">
                   <u-icon name="rocket-launch"></u-icon>
                   {{ t("versions.action.publish") }}
                 </button>
-              </u-busy>
+              </u-form-restart>
             </form>
 
             <form
@@ -177,14 +179,14 @@
               action='{{ ["versions", "delete"] |> path }}'
             >
               <input type="hidden" name="name" value="{{ version.name }}">
-              <u-busy data-message="{{ t("versions.action.delete.busy") |> escape }}">
+              <u-form-restart data-message="{{ t("versions.action.delete.busy") |> escape }}">
                 <u-confirm data-message="{{ t("versions.action.delete.confirm") |> escape }}">
                   <button class="button is-secondary">
                     <u-icon name="trash"></u-icon>
                     {{ t("versions.action.delete") }}
                   </button>
                 </u-confirm>
-              </u-busy>
+              </u-form-restart>
             </form>
             {{ else if version.isCurrent }}
             <form
@@ -192,12 +194,12 @@
               action='{{ ["versions", "update"] |> path }}'
             >
               <input type="hidden" name="name" value="{{ version.name }}">
-              <u-busy data-message="{{ t("versions.action.update.busy") |> escape }}">
+              <u-form-restart data-message="{{ t("versions.action.update.busy") |> escape }}">
                 <button class="button is-secondary">
                   <u-icon name="download-simple"></u-icon>
                   {{ t("versions.action.update") }}
                 </button>
-              </u-busy>
+              </u-form-restart>
             </form>
             {{ /if }}
           {{ /layout }}
@@ -228,9 +230,9 @@
           </div>
 
           <footer class="field-footer">
-            <u-busy data-message="{{ 'Creating…' }}">
+            <u-form-restart data-message="{{ 'Creating…' }}">
               <button class="button is-primary">{{ t("versions.action.new.submit") }}</button>
-            </u-busy>
+            </u-form-restart>
           </footer>
         </form>
       {{ /layout }}

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.15.1] - Unreleased
+### Changed
+- Use AJAX to submit Git forms.
+
 ## [0.15.0] - 2026-04-06
 ### Added
 - New git actions:
@@ -900,6 +904,7 @@ First version
 [#68]: https://github.com/lumeland/cms/issues/68
 [#69]: https://github.com/lumeland/cms/issues/69
 
+[0.15.1]: https://github.com/lumeland/cms/compare/v0.15.0...HEAD
 [0.15.0]: https://github.com/lumeland/cms/compare/v0.14.16...v0.15.0
 [0.14.16]: https://github.com/lumeland/cms/compare/v0.14.15...v0.14.16
 [0.14.15]: https://github.com/lumeland/cms/compare/v0.14.14...v0.14.15
