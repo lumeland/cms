@@ -1,6 +1,4 @@
 {{ layout "layout.vto" { title: document.label } }}
-  <u-pagepreview data-url="{{ url }}"></u-pagepreview>
-
   <header class="header">
     {{
       include "breadcrumb.vto" {
@@ -69,4 +67,5 @@
       ></u-fields>
     </form>
   </u-form>
+  <u-pagepreview data-url="{{ url }}"></u-pagepreview>
 {{ /layout }}
