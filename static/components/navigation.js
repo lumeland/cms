@@ -1,10 +1,10 @@
 navigation.addEventListener("navigate", (event) => {
-  if (!event.canIntercept || event.hashChange || event.downloadRequest !== null) {
+  if (!event.canIntercept || event.hashChange || event.downloadRequest !== null || event.formData) {
     return;
   }
 
   const url = new URL(event.destination.url);
-  console.log(event)
+
   event.intercept({
     async handler() {
       const response = await fetch(url);

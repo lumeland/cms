@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 - Use AJAX to submit Git forms.
 - Display the production branch name in the list of versions.
+- Use Navigation API to increase navigation performance.
 
 ## [0.15.0] - 2026-04-06
 ### Added
