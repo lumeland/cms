@@ -1,4 +1,4 @@
-body:has(> .pagepreview) {
+body:has(> u-pagepreview iframe) {
   display: grid;
   --modal-width: max(min(500px, 90vw), 50%, 100% - var(--app-width));
 
@@ -6,7 +6,7 @@ body:has(> .pagepreview) {
     grid-area: 1 / 1;
     align-self: start;
   }
-  > .pagepreview {
+  > u-pagepreview {
     justify-self: start;
     resize: both;
     overflow: hidden;

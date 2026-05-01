@@ -35,18 +35,25 @@
 
     <button
       class="button is-secondary"
-      id="themeButton"
       type="button"
       onclick="$ui.toggleTheme()"
     >
-      <u-icon name="paint-roller"></u-icon>
+      <u-icon name="circle-half-fill"></u-icon>
       {{ t("user.action.theme") }}
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      {{ t("user.action.preview") }}
     </button>
 
     {{ if user.isLogged }}
       <button
         class="button is-secondary"
-        id="logoutButton"
         type="button"
         onclick="$ui.logout()"
       >
