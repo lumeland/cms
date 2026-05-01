@@ -37,6 +37,7 @@
       class="button is-secondary"
       id="themeButton"
       type="button"
+      onclick="$ui.toggleTheme()"
     >
       <u-icon name="paint-roller"></u-icon>
       {{ t("user.action.theme") }}
@@ -47,6 +48,7 @@
         class="button is-secondary"
         id="logoutButton"
         type="button"
+        onclick="$ui.logout()"
       >
         <u-icon name="sign-out"></u-icon>
         {{ t("user.action.logout") }}
