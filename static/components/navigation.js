@@ -1,5 +1,5 @@
 navigation.addEventListener("navigate", (event) => {
-  if (!event.canIntercept || event.hashChange || event.downloadRequest !== null || event.formData) {
+  if (!event.canIntercept || event.hashChange || event.downloadRequest !== null || event.formData || event.navigationType === "reload") {
     return;
   }
 
