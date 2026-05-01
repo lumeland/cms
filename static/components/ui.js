@@ -44,5 +44,5 @@ globalThis.$ui = {
     xmlHttp.send();
     document.body.innerHTML =
       '<p class="emptyState is-fullscreen">Logged out.</p>';
-  }
-}
+  },
+};

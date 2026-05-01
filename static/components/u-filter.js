@@ -37,7 +37,7 @@ customElements.define(
               }
             }
           });
-          history.replaceState({}, "", `#filter=${value}`);
+          document.location.hash = `#filter=${value}`;
         },
       }, this);
 

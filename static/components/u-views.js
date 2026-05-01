@@ -21,11 +21,7 @@ customElements.define(
         }
 
         if (initialViews.size > 0) {
-          history.replaceState(
-            null,
-            "",
-            `#${Array.from(initialViews).join(",")}`,
-          );
+          document.location.hash = `#${Array.from(initialViews).join(",")}`;
         }
       }
 
@@ -60,11 +56,7 @@ customElements.define(
       });
 
       const visible = Array.from(views).join(",");
-      history.replaceState(
-        null,
-        "",
-        visible ? `#${visible}` : location.pathname,
-      );
+      document.location.hash = visible ? `#${visible}` : "";
     }
   },
 );
