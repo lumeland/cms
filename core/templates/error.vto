@@ -1,0 +1,26 @@
+{{ layout "layout.vto" { title: t("error.title") } }}
+  <header class="header">
+    {{
+      include "breadcrumb.vto" {
+        version,
+        links: [],
+      }
+    }}
+    <h1 class="header-title">
+      {{ t("error.description") }}
+    </h1>
+  </header>
+
+  <section class="emptyState is-error error-type-{{ errorType }}">
+    <u-icon class="errorState-icon" name="warning"></u-icon>
+
+    <h1>{{ t(`error.type.${errorType}`) }}</h1>
+
+    <pre><code>{{ error }}</code></pre>
+
+    <button type="button" class="button is-primary" onclick="window.location.reload();">
+      <u-icon name="arrow-clockwise"></u-icon>
+      {{ t("error.action.reload") }}
+    </button>
+  </section>
+{{ /layout }}

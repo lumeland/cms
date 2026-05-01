@@ -22,7 +22,22 @@
     h1, > u-icon {
       color: var(--color-error);
     }
+
+    pre {
+      width: 100%;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      text-align: left;
+      font-size: 1.1rem;
+      margin-bottom: 3rem;
+    }
   }
+
+  &.error-type-stack {
+    margin: 3rem 0;
+    padding: 3rem 2rem;
+  }
+
   .ly-rowStack {
     justify-content: center;
   }
