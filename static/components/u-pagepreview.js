@@ -5,6 +5,7 @@ customElements.define(
   "u-pagepreview",
   class Modal extends Component {
     #document;
+    #isClosed = false;
 
     static get observedAttributes() {
       return ["data-url"];
@@ -12,32 +13,47 @@ customElements.define(
 
     attributeChangedCallback(name, oldValue, newValue) {
       if (name === "data-url" && oldValue !== newValue) {
-        const { iframe } = this;
-        if (iframe) {
-          iframe.src = newValue;
-        }
+        this.init();
       }
     }
 
     init() {
       const { url } = this.dataset;
 
-      if (!url) {
+      if (!url || this.#isClosed) {
         return;
       }
-      const div = dom("div", {
-        class: "pagepreview",
-      }, document.body);
+
+      const iframe = this.querySelector("iframe");
+
+      if (iframe) {
+        iframe.src = url;
+        return;
+      }
 
       this.#document = new Promise((resolve) => {
-        this.iframe = dom("iframe", {
+        dom("iframe", {
           class: "pagepreview",
           src: url,
           onload() {
             resolve(this.contentDocument);
           },
-        }, div);
+        }, this);
       });
+    }
+
+    set closed(value) {
+      this.#isClosed = value;
+
+      if (value) {
+        this.innerText = "";
+      } else {
+        this.init();
+      }
+    }
+
+    get closed() {
+      return this.#isClosed;
     }
 
     async highlight(selector) {

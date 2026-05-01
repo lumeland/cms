@@ -5,6 +5,7 @@
   "user.not_logged": "No authentication",
   "user.action.theme": "Switch theme",
   "user.action.logout": "Log out",
+  "user.action.preview": "Toggle preview",
   "notfound.title": "Not found",
   "notfound.description": "The page you are looking for does not exist.",
   "notfound.action.back": "Back home",

@@ -38,6 +38,12 @@ globalThis.$ui = {
       );
     }
   },
+  togglePreview() {
+    const preview = document.querySelector("u-pagepreview");
+    if (preview) {
+      preview.closed = !preview.closed
+    }
+  },
   logout() {
     const xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", url("auth", "logout"), true, "logout");
