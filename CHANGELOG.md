@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.15.1] - Unreleased
 ### Added
 - Toggle preview option.
+- `es` language.
 
 ### Changed
 - Use AJAX to submit Git forms.

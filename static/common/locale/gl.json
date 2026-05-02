@@ -8,7 +8,7 @@
   "error.title": "Erro",
   "error.description": "Produciuse un erro.",
   "error.action.reload": "Recargar",
-  "error.type.stack": "Traza da pila",
+  "error.type.stack": "Pila de chamadas",
   "user.action.preview": "Alternar vista previa",
   "notfound.title": "Páxina non atopada",
   "notfound.description": "A páxina que buscas non existe.",

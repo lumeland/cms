@@ -76,7 +76,8 @@ export default function init(options: InitOptions): Router<RouterData> {
       }
 
       // Detect the language
-      const lang = user.language ?? acceptsLanguages(request, "en") ?? "en";
+      const langs = ["en", "gl", "es"]
+      const lang = user.language ?? acceptsLanguages(request, ...langs) ?? langs[0];
       await setLocale(lang);
 
       // Template renderer
