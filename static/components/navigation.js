@@ -3,23 +3,26 @@ navigation.addEventListener("navigate", (event) => {
     !event.canIntercept ||
     event.hashChange ||
     event.downloadRequest !== null ||
-    event.navigationType === "reload"
+    event.navigationType === "reload" ||
+    !document.startViewTransition
   ) {
     return;
   }
 
   event.intercept({
-    async handler() {
-      const response = await fetch(
-        event.destination.url,
-        event.formData ? { body: event.formData, method: "POST" } : {},
-      );
-      const html = await response.text();
-      const dom = parseHtml(html);
-      const currentContent = document.querySelector(".app-container");
-      const newContent = dom.querySelector(".app-container");
-      currentContent.replaceWith(newContent);
-      document.title = dom.title;
+    handler() {
+      return document.startViewTransition(async () => {
+        const response = await fetch(
+          event.destination.url,
+          event.formData ? { body: event.formData, method: "POST" } : {},
+        );
+        const html = await response.text();
+        const dom = parseHtml(html);
+        const currentContent = document.querySelector(".app-container");
+        const newContent = dom.querySelector(".app-container");
+        currentContent.replaceWith(newContent);
+        document.title = dom.title;
+      }).finished
     },
   });
 });
