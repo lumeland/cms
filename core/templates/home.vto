@@ -1,6 +1,6 @@
 {{ layout "layout.vto" { title: t("home.title") } }}
   <header class="header">
-    {{ include "breadcrumb.vto" { version: git?.current() } }}
+    {{ include "breadcrumb.vto" }}
 
     <h1 class="header-title">
       {{ site.name ?? "Lume CMS" }}
