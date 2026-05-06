@@ -77,14 +77,8 @@ export default class Git {
       throw new Error(`Version ${name} already exists (${branch})`);
     }
 
-    const currentBranch = this.#gitCurrentBranch();
-
-    // Update the current branch before changing
-    if (currentBranch !== this.prodBranch) {
-      this.sync(user);
-    } else {
-      this.save(user);
-    }
+    // Save the current branch before changing
+    this.save(user);
 
     from = this.#nameToBranch(from ?? this.prodBranch)
     this.#git("checkout", "-b", branch, from);
@@ -99,14 +93,8 @@ export default class Git {
       throw new Error(`Version ${name} does not exist`);
     }
 
-    const currentBranch = this.#gitCurrentBranch();
-
-    // Update the current branch before changing
-    if (currentBranch !== this.prodBranch) {
-      this.sync(user);
-    } else {
-      this.save(user);
-    }
+    // Save the current branch before changing
+    this.save(user);
 
     // Checkout to the new branch and update
     this.#git("checkout", branch);

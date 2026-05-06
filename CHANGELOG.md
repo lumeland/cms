@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - Use AJAX to submit Git forms.
+- Don't automatically sync the current version when changing or creating a new version.
 - Display the production branch name in the list of versions.
 - Use Navigation API to increase navigation performance.
 - Maintain the preview panel open across the navigation.
