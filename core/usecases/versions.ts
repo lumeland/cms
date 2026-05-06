@@ -35,5 +35,5 @@ export function publishVersion(user: User, git: Git, name: string) {
 }
 
 export function deleteVersion(user: User, git: Git, name: string) {
-  git.delete(user, name);
+  return git.delete(user, name);
 }

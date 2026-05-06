@@ -139,8 +139,8 @@ export default class Git {
     }
   }
 
-  /* Delete a version */
-  delete(user: User, name: string): void {
+  /* Delete a version. Returns `true` if the deleted version is the current one */
+  delete(user: User, name: string): boolean {
     const branch = this.#nameToBranch(name);
 
     if (branch === this.prodBranch) {
@@ -149,8 +149,10 @@ export default class Git {
 
     // If the current branch is the one to be deleted,
     // change to the production branch
+    let changed = false;
     if (branch === this.#gitCurrentBranch()) {
       this.change(user, this.prodBranch);
+      changed = true;
     }
 
     this.#git("branch", "-D", branch);
@@ -159,6 +161,8 @@ export default class Git {
     if (this.#gitRemoteBranchExists(branch)) {
       this.#git("push", this.remote, "--delete", branch);
     }
+
+    return changed;
   }
 
   /** Updates the current branch (pull) */

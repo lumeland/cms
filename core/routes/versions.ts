@@ -62,8 +62,8 @@ app.post("/*", async ({ request, cms, user, next }) => {
     })
     /* POST /versions/delete */
     .post("/delete", () => {
-      deleteVersion(user, git, name);
-      return redirect();
+      const changed = deleteVersion(user, git, name);
+      return redirect(changed);
     })
     /* POST /versions/update */
     .post("/update", () => {
