@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.15.1] - Unreleased
+## [0.15.1] - 2026-05-06
 ### Added
 - Toggle preview option.
 - `es` language.
@@ -918,7 +918,7 @@ First version
 [#75]: https://github.com/lumeland/cms/issues/75
 [#76]: https://github.com/lumeland/cms/issues/76
 
-[0.15.1]: https://github.com/lumeland/cms/compare/v0.15.0...HEAD
+[0.15.1]: https://github.com/lumeland/cms/compare/v0.15.0...v0.15.1
 [0.15.0]: https://github.com/lumeland/cms/compare/v0.14.16...v0.15.0
 [0.14.16]: https://github.com/lumeland/cms/compare/v0.14.15...v0.14.16
 [0.14.15]: https://github.com/lumeland/cms/compare/v0.14.14...v0.14.15
