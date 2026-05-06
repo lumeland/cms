@@ -213,7 +213,7 @@ export default class Git {
   /** Runs a git command and returns the stdout as string */
   #git(...args: string[]): string {
     const [cmd, ...rest] = args;
-
+    console.log(cmd, rest)
     const command = new Deno.Command(this.command, {
       args: [cmd, ...rest],
       cwd: this.root,
