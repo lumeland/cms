@@ -8,7 +8,6 @@
   "error.title": "Error",
   "error.description": "Se ha producido un error.",
   "error.action.reload": "Recargar",
-  "error.type.stack": "Pila de llamadas",
   "user.action.preview": "Alternar vista previa",
   "notfound.title": "Página no encontrada",
   "notfound.description": "La página que buscas no existe.",
