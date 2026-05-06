@@ -41,7 +41,8 @@ app.post("/*", async ({ request, cms, user, next }) => {
   return next()
     /* POST /versions/create */
     .post("/create", () => {
-      createVersion(user, git, name);
+      const from = (body.get("from") ?? undefined) as string | undefined;
+      createVersion(user, git, name, from);
       return redirect();
     })
     /* POST /versions/save */

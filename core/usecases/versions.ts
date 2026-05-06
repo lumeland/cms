@@ -1,8 +1,8 @@
 import type Git from "../git.ts";
 import type User from "../user.ts";
 
-export function createVersion(user: User, git: Git, name: string) {
-  git.create(user, name);
+export function createVersion(user: User, git: Git, name: string, from?: string) {
+  git.create(user, name, from);
 }
 
 export function changeVersion(user: User, git: Git, name: string) {

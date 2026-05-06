@@ -69,7 +69,7 @@ export default class Git {
   }
 
   /* Creates a new version */
-  create(user: User, name: string): void {
+  create(user: User, name: string, from?: string): void {
     const branch = this.#nameToBranch(name);
 
     // Check if the version already exists
@@ -86,7 +86,8 @@ export default class Git {
       this.save(user);
     }
 
-    this.#git("checkout", "-b", branch, this.prodBranch);
+    from = this.#nameToBranch(from ?? this.prodBranch)
+    this.#git("checkout", "-b", branch, from);
   }
 
   /* Changes the current version */
@@ -213,7 +214,7 @@ export default class Git {
   /** Runs a git command and returns the stdout as string */
   #git(...args: string[]): string {
     const [cmd, ...rest] = args;
-    console.log(cmd, rest)
+
     const command = new Deno.Command(this.command, {
       args: [cmd, ...rest],
       cwd: this.root,

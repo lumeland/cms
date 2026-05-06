@@ -216,10 +216,11 @@
 
         <form
           method="post"
+          class="fieldset is-root is-separated"
           action='{{ ["versions", "create"] |> path }}'
         >
           <div class="field">
-            <label for="version-name">{{ t("versions.action.new.label") }}</label>
+            <label for="version-name">{{ t("versions.action.new.name") }}</label>
             <input
               id="version-name"
               class="input"
@@ -228,6 +229,17 @@
               autofocus
               name="name"
             >
+          </div>
+
+          <div class="field">
+            <label for="version-from">{{ t("versions.action.new.from") }}</label>
+            <select class="select" name="from" id="version-from">
+              {{ for version of versions }}
+              <option {{ if version.isCurrent }}selected{{ /if }}>
+                {{ version.name }}
+              </option>
+              {{ /for }}
+            </select>
           </div>
 
           <footer class="field-footer">
