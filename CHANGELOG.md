@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Toggle preview option.
 - `es` language.
+- Generic error handler [#75]
 
 ### Changed
 - Use AJAX to submit Git forms.
@@ -15,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Display the production branch name in the list of versions.
 - Use Navigation API to increase navigation performance.
 - Maintain the preview panel open across the navigation.
+
+### Fixed
+- Load locales with fetch for compatibility with Deno deploy classic [#76].
 
 ## [0.15.0] - 2026-04-06
 ### Added
@@ -911,6 +915,8 @@ First version
 [#66]: https://github.com/lumeland/cms/issues/66
 [#68]: https://github.com/lumeland/cms/issues/68
 [#69]: https://github.com/lumeland/cms/issues/69
+[#75]: https://github.com/lumeland/cms/issues/75
+[#76]: https://github.com/lumeland/cms/issues/76
 
 [0.15.1]: https://github.com/lumeland/cms/compare/v0.15.0...HEAD
 [0.15.0]: https://github.com/lumeland/cms/compare/v0.14.16...v0.15.0
