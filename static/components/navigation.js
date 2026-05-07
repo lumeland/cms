@@ -1,10 +1,15 @@
+const { baseurls } = document.documentElement.dataset;
+
 navigation.addEventListener("navigate", (event) => {
+  const url = new URL(event.destination.url);
+
   if (
     !event.canIntercept ||
     event.hashChange ||
     event.downloadRequest !== null ||
     event.navigationType === "reload" ||
-    !document.startViewTransition
+    !document.startViewTransition ||
+    (url.pathname !== baseurls && !url.pathname.startsWith(`${baseurls}/`))
   ) {
     return;
   }
@@ -13,7 +18,7 @@ navigation.addEventListener("navigate", (event) => {
     handler() {
       return document.startViewTransition(async () => {
         const response = await fetch(
-          event.destination.url,
+          url,
           event.formData ? { body: event.formData, method: "POST" } : {},
         );
         const html = await response.text();

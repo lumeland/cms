@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.15.3] - 2026-05-07
+### Fixed
+- Disable fetch for external links.
+
 ## [0.15.2] - 2026-05-07
 ### Fixed
-- Update the pagepreview in the edit view
+- Update the u-pagepreview component in the edit view.
 
 ## [0.15.1] - 2026-05-06
 ### Added
@@ -922,6 +926,7 @@ First version
 [#75]: https://github.com/lumeland/cms/issues/75
 [#76]: https://github.com/lumeland/cms/issues/76
 
+[0.15.3]: https://github.com/lumeland/cms/compare/v0.15.2...v0.15.3
 [0.15.2]: https://github.com/lumeland/cms/compare/v0.15.1...v0.15.2
 [0.15.1]: https://github.com/lumeland/cms/compare/v0.15.0...v0.15.1
 [0.15.0]: https://github.com/lumeland/cms/compare/v0.14.16...v0.15.0
