@@ -22,6 +22,11 @@ navigation.addEventListener("navigate", (event) => {
         const newContent = dom.querySelector(".app-container");
         currentContent.replaceWith(newContent);
         document.title = dom.title;
+        const previewUrl = dom.querySelector("u-pagepreview")?.dataset.url;
+
+        if (previewUrl) {
+          document.querySelector("u-pagepreview")?.setAttribute("data-url", previewUrl);
+        }
       }).finished
     },
   });
