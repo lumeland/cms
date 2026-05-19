@@ -159,6 +159,19 @@
                   {{ t("versions.action.save") }}
                 </button>
               </form>
+
+              <form
+                method="post"
+                action='{{ ["versions", "update"] |> path }}'
+              >
+                <input type="hidden" name="name" value="{{ version.name }}">
+                <u-form-restart data-message="{{ t("versions.action.update.busy") |> escape }}">
+                  <button class="button is-secondary">
+                    <u-icon name="arrow-down"></u-icon>
+                    {{ t("versions.action.update") }}
+                  </button>
+                </u-form-restart>
+              </form>
             {{ /if }}
 
             {{ if !version.isProduction }}
@@ -187,19 +200,6 @@
                     {{ t("versions.action.delete") }}
                   </button>
                 </u-confirm>
-              </u-form-restart>
-            </form>
-            {{ else if version.isCurrent }}
-            <form
-              method="post"
-              action='{{ ["versions", "update"] |> path }}'
-            >
-              <input type="hidden" name="name" value="{{ version.name }}">
-              <u-form-restart data-message="{{ t("versions.action.update.busy") |> escape }}">
-                <button class="button is-secondary">
-                  <u-icon name="download-simple"></u-icon>
-                  {{ t("versions.action.update") }}
-                </button>
               </u-form-restart>
             </form>
             {{ /if }}
