@@ -17,6 +17,6 @@ jobs:
       - name: Mirror to Codeberg
         uses: yesolutions/mirror-action@master
         with:
-          REMOTE: git@codeberg.org:lume/lume.git
+          REMOTE: git@codeberg.org:lume/cms.git
           GIT_SSH_PRIVATE_KEY: ${{ secrets.MIRROR_CODEBERG_SSH_KEY }}
           GIT_SSH_NO_VERIFY_HOST: "true"
