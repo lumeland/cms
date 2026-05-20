@@ -88,8 +88,7 @@
         {{ /layout }}
       {{ /if }}
 
-      {{ set format = file |> formatSupported }}
-      {{ if format && user.canEdit(upload) }}
+      {{ if isCroppeable && user.canEdit(upload) }}
         <a
           href='{{ ["uploads", upload.name, file, "crop"] |> path }}'
           class="button is-secondary"
@@ -97,6 +96,49 @@
           <u-icon name="crop"></u-icon>
           {{ t("uploads.edit.action.crop") }}
         </a>
+      {{ /if }}
+
+      {{ if isCodeEditable && user.canEdit(upload) }}
+        <a
+          href='{{ ["uploads", upload.name, file, "code"] |> path }}'
+          class="button is-secondary"
+        >
+          <u-icon name="code"></u-icon>
+          {{ t("uploads.edit.action.code") }}
+        </a>
+      {{ /if }}
+
+      {{ if user.canEdit(upload) }}
+        {{ layout "components/dialog.vto" { id: "modal-edit" } }}
+          {{ slot button }}
+            <u-icon name="swap"></u-icon>
+            {{ t("uploads.edit.action.edit") }}
+          {{ /slot }}
+
+          <form
+            method="post"
+            enctype="multipart/form-data"
+            action='{{ ["uploads", upload.name, file, "edit"] |> path }}'
+          >
+            <div class="field">
+              <label for="file-name">{{ t("uploads.edit.action.edit.file") }}</label>
+              <p class="field-description">{{ t("uploads.edit.action.edit.file.description") }}</p>
+              <u-upload>
+                <input
+                  id="new-file"
+                  type="file"
+                  name="files"
+                  required
+                  class="inputFile"
+                >
+              </u-upload>
+            </div>
+
+            <footer class="field-footer">
+              <button class="button is-primary">{{ t("uploads.edit.action.edit.submit") }}</button>
+            </footer>
+          </form>
+        {{ /layout }}
       {{ /if }}
 
       {{ if user.canDelete(upload) }}

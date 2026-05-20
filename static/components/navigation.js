@@ -30,9 +30,12 @@ navigation.addEventListener("navigate", (event) => {
         const previewUrl = dom.querySelector("u-pagepreview")?.dataset.url;
 
         if (previewUrl) {
-          document.querySelector("u-pagepreview")?.setAttribute("data-url", previewUrl);
+          document.querySelector("u-pagepreview")?.setAttribute(
+            "data-url",
+            previewUrl,
+          );
         }
-      }).finished
+      }).finished;
     },
   });
 });

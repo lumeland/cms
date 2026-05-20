@@ -80,7 +80,7 @@ export default class Git {
     // Save the current branch before changing
     this.save(user);
 
-    from = this.#nameToBranch(from ?? this.prodBranch)
+    from = this.#nameToBranch(from ?? this.prodBranch);
     this.#git("checkout", "-b", branch, from);
   }
 

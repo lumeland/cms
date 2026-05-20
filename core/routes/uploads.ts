@@ -6,10 +6,13 @@ import {
   canCropDocument,
   deleteDocument,
   getDocument,
+  getDocumentCode,
   getNewDocument,
   getUpload,
   moveDocument,
   saveCropDocument,
+  saveDocument,
+  saveDocumentCode,
   saveNewDocument,
 } from "../usecases/uploads.ts";
 
@@ -96,7 +99,8 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
         .get("/", () => upload.get(name).readFile())
         /* GET /uploads/:name/:file/edit - Show the file edit form */
         .get("/edit", async () => {
-          const { type, size, exif } = await getDocument(upload, name);
+          const { type, size, exif, isCroppeable, isCodeEditable } =
+            await getDocument(upload, name);
 
           return render("uploads/edit.vto", {
             type,
@@ -105,7 +109,36 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
             upload,
             file: name,
             user,
+            isCroppeable,
+            isCodeEditable,
           });
+        })
+        /* POST /uploads/:name/:file/edit - Edit the file content */
+        .post("/edit", async ({ request }) => {
+          const data = await request.formData();
+          const file = data.get("files") as File;
+          await saveDocument(user, upload, name, file);
+
+          return redirect(upload.name, name, "edit");
+        })
+        /* GET /uploads/:name/:file/code - Show the code edit form */
+        .get("/code", async () => {
+          const { data, fields } = await getDocumentCode(user, upload, name);
+
+          return render("uploads/code.vto", {
+            data,
+            fields,
+            upload,
+            file: name,
+            user,
+          });
+        })
+        /* POST /uploads/:name/:file/code - Edit the file content */
+        .post("/code", async ({ request }) => {
+          const changes = Object.fromEntries(await request.formData());
+          await saveDocumentCode(user, upload, name, changes);
+
+          return redirect(upload.name, name, "edit");
         })
         /* GET /uploads/:name/:file/crop - Show the crop form for images */
         .get("/crop", () => {

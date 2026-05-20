@@ -30,7 +30,7 @@ export function transform(
     });
 }
 
-const supportedFormats: string[] = [
+export const supportedFormats: string[] = [
   MagickFormat.Avif,
   MagickFormat.Gif,
   MagickFormat.Heif,
@@ -43,13 +43,6 @@ const supportedFormats: string[] = [
   MagickFormat.Tif,
   MagickFormat.WebP,
 ];
-
-export function formatSupported(file: string): IMagickFormat | undefined {
-  const extension = file.split(".").pop();
-  return extension && supportedFormats.includes(extension.toUpperCase())
-    ? extension.toUpperCase() as IMagickFormat
-    : undefined;
-}
 
 async function initialize() {
   const wasmUrl = new URL(

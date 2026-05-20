@@ -1,6 +1,5 @@
 import vento from "https://deno.land/x/vento@v2.3.1/web.ts";
 import { normalizePath } from "../core/utils/path.ts";
-import { formatSupported } from "./imagick.ts";
 import { formatBytes } from "./std.ts";
 
 const env = vento({
@@ -21,6 +20,5 @@ export function filter(name: string, filter: (...args: any[]) => any) {
   env.filters[name] = filter;
 }
 
-filter("formatSupported", formatSupported);
 filter("formatBytes", formatBytes);
 filter("normalizePath", (args) => normalizePath(...args));

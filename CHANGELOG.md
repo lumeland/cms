@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.15.3] - 2026-05-07
+### Added
+- Option to edit the code of some uploaded files (CSS, JavaScript, etc).
+- Option to replace an uploaded file.
+
 ### Fixed
 - Disable fetch for external links.
 

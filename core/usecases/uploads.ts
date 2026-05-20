@@ -1,13 +1,14 @@
 import createTree from "./tree.ts";
-import { normalizeName } from "../utils/path.ts";
+import { getLanguageCode, normalizeName } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
 import { parseExif } from "../../deps/exifr.ts";
 import { slugify } from "../utils/string.ts";
 import type Upload from "../upload.ts";
 import type User from "../user.ts";
 import {
-  formatSupported,
+  MagickFormat,
   MagickGeometry,
+  supportedFormats,
   transform,
 } from "../../deps/imagick.ts";
 
@@ -67,14 +68,78 @@ export async function saveNewDocument(
   return { names };
 }
 
+export async function getDocumentCode(
+  user: User,
+  upload: Upload,
+  name: string,
+) {
+  if (!user.canEdit(upload)) {
+    throw new Error("Permission denied to edit this document");
+  }
+
+  const file = upload.get(name);
+  const code = await file.readText();
+
+  const data = { root: { code } };
+
+  const fields = {
+    tag: "f-object-root",
+    name: "root",
+    fields: [{
+      tag: "f-code",
+      name: "code",
+      label: "Code",
+      type: "code",
+      attributes: {
+        data: {
+          language: getLanguageCode(name, ""),
+        },
+      },
+    }],
+  };
+
+  return { data, fields };
+}
+
+export async function saveDocumentCode(
+  user: User,
+  upload: Upload,
+  name: string,
+  changes: Record<string, unknown>,
+) {
+  if (!user.canEdit(upload)) {
+    throw new Error("Permission denied to edit this file");
+  }
+
+  const code = changes["root.code"] as string | undefined;
+  const file = upload.get(name);
+  await file.writeText(code ?? "");
+}
+
+export async function saveDocument(
+  user: User,
+  upload: Upload,
+  name: string,
+  file: File,
+) {
+  if (!user.canEdit(upload)) {
+    throw new Error("Permission denied to update files in this upload");
+  }
+
+  const entry = upload.get(name);
+  await entry.writeFile(file);
+}
+
 export async function getDocument(upload: Upload, name: string) {
   const entry = upload.get(name);
   const fileData = await entry.readFile();
   const type = fileData.type;
   const size = fileData.size;
   const exif = await parseExif(fileData);
+  const isCroppeable = !!getFormat(name);
+  const isCodeEditable = !!getLanguageCode(name, "") || type.includes("text/");
 
-  return { type, size, exif };
+  return { type, size, exif, isCroppeable, isCodeEditable };
 }
 
 export async function moveDocument(
@@ -107,8 +172,8 @@ export async function moveDocument(
   }
 
   // Transform images (i.e. renaming from jpg to png)
-  const format = formatSupported(newName);
-  if (format && formatSupported(name)) {
+  const format = getFormat(newName);
+  if (format && getFormat(name)) {
     const extFrom = name.split(".").pop()?.toLowerCase();
     const extTo = newName.split(".").pop()?.toLowerCase();
 
@@ -129,7 +194,7 @@ export function canCropDocument(user: User, upload: Upload, name: string) {
     throw new Error("Permission denied to edit this file");
   }
 
-  return formatSupported(name);
+  return getFormat(name);
 }
 
 interface Crop {
@@ -174,4 +239,11 @@ export async function deleteDocument(user: User, upload: Upload, name: string) {
     throw new Error("Permission denied to delete this file");
   }
   await upload.delete(name);
+}
+
+export function getFormat(file: string): MagickFormat | undefined {
+  const extension = file.split(".").pop();
+  return extension && supportedFormats.includes(extension.toUpperCase())
+    ? extension.toUpperCase() as MagickFormat
+    : undefined;
 }
