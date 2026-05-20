@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.15.3] - 2026-05-07
+## [0.15.4] - 2026-05-20
 ### Added
 - Option to edit the code of some uploaded files (CSS, JavaScript, etc).
 - Option to replace an uploaded file.
 
+### Fixed
+- Improved code detection.
+
+## [0.15.3] - 2026-05-07
 ### Fixed
 - Disable fetch for external links.
 
@@ -930,6 +934,7 @@ First version
 [#75]: https://github.com/lumeland/cms/issues/75
 [#76]: https://github.com/lumeland/cms/issues/76
 
+[0.15.4]: https://github.com/lumeland/cms/compare/v0.15.3...v0.15.4
 [0.15.3]: https://github.com/lumeland/cms/compare/v0.15.2...v0.15.3
 [0.15.2]: https://github.com/lumeland/cms/compare/v0.15.1...v0.15.2
 [0.15.1]: https://github.com/lumeland/cms/compare/v0.15.0...v0.15.1
