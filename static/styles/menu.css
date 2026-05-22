@@ -15,6 +15,7 @@
   margin-top: 4px;
   top: anchor(bottom);
   left: anchor(left);
+  position-anchor: auto;
   position-try-fallbacks:
     --anchor-bottom-left,
     --anchor-top-left,

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.15.5] - 2026-05-22
+### Fixed
+- Anchor position on Firefox.
+
 ## [0.15.4] - 2026-05-20
 ### Added
 - Option to edit the code of some uploaded files (CSS, JavaScript, etc).
@@ -934,6 +938,7 @@ First version
 [#75]: https://github.com/lumeland/cms/issues/75
 [#76]: https://github.com/lumeland/cms/issues/76
 
+[0.15.5]: https://github.com/lumeland/cms/compare/v0.15.4...v0.15.5
 [0.15.4]: https://github.com/lumeland/cms/compare/v0.15.3...v0.15.4
 [0.15.3]: https://github.com/lumeland/cms/compare/v0.15.2...v0.15.3
 [0.15.2]: https://github.com/lumeland/cms/compare/v0.15.1...v0.15.2
