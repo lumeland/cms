@@ -43,7 +43,11 @@ customElements.define(
 
     async wait() {
       try {
-        await fetch(document.location);
+        const ok = (await fetch(document.location)).ok;
+        if (!ok) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await this.wait();
+        }
       } catch {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         await this.wait();
