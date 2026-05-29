@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.15.6] - Unreleased
 ### Fixed
 - Restart action can show a 500 error page.
+- Prevent the browser to cache the raw file previews.
 
 ## [0.15.5] - 2026-05-22
 ### Fixed

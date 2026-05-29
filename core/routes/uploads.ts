@@ -96,7 +96,18 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
 
       return next()
         /* GET /uploads/:name/:file - Get raw file content */
-        .get("/", () => upload.get(name).readFile())
+        .get("/", async () => {
+          const file = await upload.get(name).readFile();
+          return new Response(file.stream(), {
+            status: 200,
+            headers: {
+              "Content-Type": file.type || "application/octet-stream",
+              "Content-Length": file.size.toString(),
+              "Content-Disposition": `attachment; filename="${file.name}"`,
+              "Cache-Control": "no-cache no-store must-revalidate",
+            },
+          });
+        })
         /* GET /uploads/:name/:file/edit - Show the file edit form */
         .get("/edit", async () => {
           const { type, size, exif, isCroppeable, isCodeEditable } =
