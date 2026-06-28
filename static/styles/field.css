@@ -21,7 +21,7 @@
 
   &:has(> label + .field-dom-picker) {
     > label,
-    > .field-dom-picker {
+     > .field-dom-picker {
       grid-row: 1;
       grid-column: 1;
     }

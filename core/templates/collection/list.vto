@@ -22,7 +22,7 @@
             {{ if child.icon }}
               <u-icon name="{{ child.icon }}"></u-icon>
             {{ else }}
-              <u-icon-file path="{{child.name}}"></u-icon-file>
+              <u-icon-file path="{{ child.name }}"></u-icon-file>
             {{ /if }}
             <div class="list-item-header">
               {{ name }}
@@ -45,7 +45,7 @@
           </details>
           <div class="list-actions">
             <a
-              href='{{ ["collection", collection.name, "create"] |> path }}?folder={{child.path}}'
+              href='{{ ["collection", collection.name, "create"] |> path }}?folder={{ child.path }}'
               title='{{ t("document.list.action.create") |> escape }}'
               class="buttonIcon"
             >
@@ -90,7 +90,7 @@
   </nav>
 
   {{ if content }}
-    <u-tree data-name="collection-{{ collection.name}}">
+    <u-tree data-name="collection-{{ collection.name }}">
       <ul id="list" class="list">{{ content }}</ul>
     </u-tree>
   {{ else }}

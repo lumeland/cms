@@ -75,7 +75,8 @@ export default {
       null,
       posix.dirname(document.source.path),
     );
-    if (!uploaded) {
+
+    if (!uploaded?.size) {
       data[field.name] = transform(
         field,
         field.relativePath

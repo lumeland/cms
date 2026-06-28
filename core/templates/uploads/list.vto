@@ -22,7 +22,7 @@
             {{ if child.icon }}
               <u-icon name="{{ child.icon }}"></u-icon>
             {{ else }}
-              <u-icon-file path="{{child.name}}"></u-icon-file>
+              <u-icon-file path="{{ child.name }}"></u-icon-file>
             {{ /if }}
             {{ name }}
             {{ for key, value of child.flags }}
@@ -35,7 +35,7 @@
             </button>
             <template>
               <u-preview
-                id="preview_{{file}}"
+                id="preview_{{ file }}"
                 data-src='{{ ["uploads", upload.name, child.name] |> path }}'
               >
               </u-preview>
@@ -58,13 +58,13 @@
           </details>
           <div class="list-actions">
             <a
-              href='{{ ["uploads", upload.name] |> path }}?folder={{child.path}}'
+              href='{{ ["uploads", upload.name] |> path }}?folder={{ child.path }}'
               class="buttonIcon"
             >
               <u-icon name="sign-in"></u-icon>
             </a>
             <a
-              href='{{ ["uploads", upload.name, "create"] |> path }}?folder={{child.path}}'
+              href='{{ ["uploads", upload.name, "create"] |> path }}?folder={{ child.path }}'
               title='{{ t("uploads.list.action.create", { folder: name }) }}'
               class="buttonIcon"
             >
@@ -100,7 +100,7 @@
 
   {{ if content }}
     <u-filter
-      data-placeholder="Search files in {{upload.label}}"
+      data-placeholder="Search files in {{ upload.label }}"
       data-selector="#list li"
     >
     </u-filter>
@@ -109,7 +109,7 @@
   <nav class="navigation">
     {{ if user.canCreate(upload) }}
       <a
-        href='{{ ["uploads", upload.name, "create"] |> path }}{{ parts.length ? `?folder=${parts.join("/")}` : '' }}'
+        href='{{ ["uploads", upload.name, "create"] |> path }}{{ parts.length ? `?folder=${parts.join("/")}` : "" }}'
         class="button is-primary"
       >
         <u-icon name="plus-circle"></u-icon>
@@ -141,7 +141,7 @@
   {{ /if }}
 
   {{ if content }}
-    <u-tree data-name="upload-{{ upload.name}}">
+    <u-tree data-name="upload-{{ upload.name }}">
       <ul id="list" class="list">{{ content }}</ul>
     </u-tree>
   {{ else }}

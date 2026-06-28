@@ -18,17 +18,16 @@ export function getUploads(user: User, uploads: Upload[]): Upload[] {
 
 export async function getUpload(upload: Upload, folder?: string) {
   let tree = createTree(await Array.fromAsync(upload));
-  const parts: string[] = [];
+  const parts = folder?.split("/").filter(Boolean) ?? [];
 
-  for (const part of folder?.split("/") ?? []) {
-    if (!part) {
-      continue;
-    }
-    if (!tree.folders?.has(part)) {
+  for (const part of parts) {
+    const treePart = tree.folders?.get(part);
+
+    if (!treePart) {
+      tree = { path: parts.join("/") + "/" };
       break;
     }
-    parts.push(part);
-    tree = tree.folders.get(part)!
+    tree = treePart;
   }
 
   return { tree, parts };

@@ -17,8 +17,8 @@
 
   <nav class="navigation">
     <a
-      href="{{src}}"
-      download="{{file}}"
+      href="{{ src }}"
+      download="{{ file }}"
       class="button is-primary"
     >
       <u-icon name="download-simple"></u-icon>
@@ -169,7 +169,7 @@
       <dd>{{ size |> formatBytes }}</dd>
     </dl>
 
-    <u-preview class="preview-media" data-src="{{src}}"></u-preview>
+    <u-preview class="preview-media" data-src="{{ src }}"></u-preview>
     {{ if exif }}
       <details class="accordion is-button">
         <summary>{{ t("uploads.details.exif") }}</summary>

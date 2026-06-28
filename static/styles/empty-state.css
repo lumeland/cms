@@ -19,7 +19,8 @@
   }
 
   &.is-error {
-    h1, > u-icon {
+    h1,
+     > u-icon {
       color: var(--color-error);
     }
 

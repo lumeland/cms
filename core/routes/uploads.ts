@@ -48,7 +48,10 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
     /* GET /uploads/:name/ - List files in the upload */
     .get("/", async ({ request }) => {
       const { searchParams } = new URL(request.url);
-      const { tree, parts } = await getUpload(upload, searchParams.get("folder") ?? undefined);
+      const { tree, parts } = await getUpload(
+        upload,
+        searchParams.get("folder") ?? undefined,
+      );
 
       return render("uploads/list.vto", {
         upload,
