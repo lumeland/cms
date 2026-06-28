@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
 - Restart action can show a 500 error page.
 - Prevent the browser to cache the raw file previews.
+- Empty file inputs errors.
 
 ## [0.15.5] - 2026-05-22
 ### Fixed
