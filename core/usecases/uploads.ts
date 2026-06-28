@@ -16,9 +16,22 @@ export function getUploads(user: User, uploads: Upload[]): Upload[] {
   return uploads.filter((upload) => upload.listed && user.canView(upload));
 }
 
-export async function getUpload(upload: Upload) {
-  const tree = createTree(await Array.fromAsync(upload));
-  return { tree };
+export async function getUpload(upload: Upload, folder?: string) {
+  let tree = createTree(await Array.fromAsync(upload));
+  const parts: string[] = [];
+
+  for (const part of folder?.split("/") ?? []) {
+    if (!part) {
+      continue;
+    }
+    if (!tree.folders?.has(part)) {
+      break;
+    }
+    parts.push(part);
+    tree = tree.folders.get(part)!
+  }
+
+  return { tree, parts };
 }
 
 export function getNewDocument(

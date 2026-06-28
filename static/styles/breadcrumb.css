@@ -7,6 +7,11 @@
   flex-wrap: wrap;
   font: var(--font-small);
 
+  &.is-sub {
+    border-bottom: solid 1px var(--color-line);
+    padding-bottom: 1em;
+  }
+
   & > li::after {
     content: "/";
     display: inline-block;

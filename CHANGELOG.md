@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.15.6] - Unreleased
+### Added
+- Uploads: allow to navigate in subfolders.
+
 ### Fixed
 - Restart action can show a 500 error page.
 - Prevent the browser to cache the raw file previews.

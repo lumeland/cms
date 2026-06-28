@@ -33,23 +33,27 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
     return new Response("Not found", { status: 404 });
   }
 
-  function redirect(...paths: string[]) {
+  function redirect(paths: string[], query?: string) {
+    const path = getPath(basePath, "uploads", ...paths);
+
     return new Response(null, {
       status: 302,
       headers: new Headers({
-        "Location": getPath(basePath, "uploads", ...paths),
+        "Location": query ? `${path}?${query}` : path,
       }),
     });
   }
 
   return next()
     /* GET /uploads/:name/ - List files in the upload */
-    .get("/", async () => {
-      const { tree } = await getUpload(upload);
+    .get("/", async ({ request }) => {
+      const { searchParams } = new URL(request.url);
+      const { tree, parts } = await getUpload(upload, searchParams.get("folder") ?? undefined);
 
       return render("uploads/list.vto", {
         upload,
         tree,
+        parts,
         user,
       });
     })
@@ -82,9 +86,9 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
 
       // If only one file is uploaded, redirect to its details
       if (names.length === 1) {
-        return redirect(upload.name, names[0], "edit");
+        return redirect([upload.name, names[0], "edit"]);
       }
-      return redirect(upload.name);
+      return redirect([upload.name], folder ? `folder=${folder}` : undefined);
     })
     /* GET /uploads/:name/:file/* - File actions */
     .path("/:file/*", ({ file, next }) => {
@@ -130,7 +134,7 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
           const file = data.get("files") as File;
           await saveDocument(user, upload, name, file);
 
-          return redirect(upload.name, name, "edit");
+          return redirect([upload.name, name, "edit"]);
         })
         /* GET /uploads/:name/:file/code - Show the code edit form */
         .get("/code", async () => {
@@ -149,12 +153,12 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
           const changes = Object.fromEntries(await request.formData());
           await saveDocumentCode(user, upload, name, changes);
 
-          return redirect(upload.name, name, "edit");
+          return redirect([upload.name, name, "edit"]);
         })
         /* GET /uploads/:name/:file/crop - Show the crop form for images */
         .get("/crop", () => {
           if (!canCropDocument(user, upload, name)) {
-            return redirect(upload.name, name, "edit");
+            return redirect([upload.name, name, "edit"]);
           }
 
           return render("uploads/crop.vto", {
@@ -172,12 +176,12 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
           const height = parseInt(data.get("height") as string);
 
           await saveCropDocument(user, upload, name, { x, y, width, height });
-          return redirect(upload.name, name, "edit");
+          return redirect([upload.name, name, "edit"]);
         })
         /* POST /uploads/:name/:file/delete - Delete the file */
         .post("/delete", async () => {
           await deleteDocument(user, upload, name);
-          return redirect(upload.name);
+          return redirect([upload.name]);
         })
         /* POST /uploads/:name/:file/move - Move the file */
         .post("/move", async ({ request }) => {
@@ -188,7 +192,7 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
             name,
             data.get("name") as string,
           );
-          return redirect(upload.name, newName, "edit");
+          return redirect([upload.name, newName, "edit"]);
         })
         /* POST /uploads/:name/:file/duplicate - Duplicate the file */
         .post("/duplicate", async ({ request }) => {
@@ -200,7 +204,7 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
             data.get("name") as string,
             true,
           );
-          return redirect(upload.name, newName, "edit");
+          return redirect([upload.name, newName, "edit"]);
         });
     });
 });

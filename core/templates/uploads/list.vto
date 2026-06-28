@@ -58,6 +58,12 @@
           </details>
           <div class="list-actions">
             <a
+              href='{{ ["uploads", upload.name] |> path }}?folder={{child.path}}'
+              class="buttonIcon"
+            >
+              <u-icon name="sign-in"></u-icon>
+            </a>
+            <a
               href='{{ ["uploads", upload.name, "create"] |> path }}?folder={{child.path}}'
               title='{{ t("uploads.list.action.create", { folder: name }) }}'
               class="buttonIcon"
@@ -73,7 +79,17 @@
   <header class="header">
     {{ include "breadcrumb.vto" }}
 
-    <h1 class="header-title">{{ upload.label }}</h1>
+    <h1 class="header-title">
+      {{ upload.label }}
+
+      {{ if parts.length }}
+        / 
+        {{ if parts.length > 1 }}
+          … /
+        {{ /if }}
+        {{ parts[parts.length - 1] }}
+      {{ /if }}
+    </h1>
 
     {{ if upload.description }}
       <p class="header-description">{{ upload.description }}</p>
@@ -93,7 +109,7 @@
   <nav class="navigation">
     {{ if user.canCreate(upload) }}
       <a
-        href='{{ ["uploads", upload.name, "create"] |> path }}'
+        href='{{ ["uploads", upload.name, "create"] |> path }}{{ parts.length ? `?folder=${parts.join("/")}` : '' }}'
         class="button is-primary"
       >
         <u-icon name="plus-circle"></u-icon>
@@ -101,6 +117,28 @@
       </a>
     {{ /if }}
   </nav>
+
+  {{ if parts.length }}
+    {{ set f = "" }}
+
+    <ul class="breadcrumb is-sub">
+      <li>
+        <a href='{{ ["uploads", upload.name] |> path }}'>
+          <u-icon name="folder-fill"></u-icon>
+          {{ upload.name }}
+        </a>
+      </li>
+      {{ for part of parts }}
+      {{ set f = `${f}/${part}` }}
+      <li>
+        <a href="{{ ["uploads", upload.name] |> path }}?folder={{ f }}">
+          <u-icon name="folder-fill"></u-icon>
+          {{ part }}
+        </a>
+      </li>
+      {{ /for }}
+    </ul>
+  {{ /if }}
 
   {{ if content }}
     <u-tree data-name="upload-{{ upload.name}}">
