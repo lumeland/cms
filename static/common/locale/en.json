@@ -44,6 +44,7 @@
   "document.code.action.delete": "Delete",
   "document.code.action.delete.confirm": "Are you sure?",
   "uploads.list.action.create": "Upload file inside {folder}",
+  "uploads.list.search": "Search files here",
   "uploads.list.action.add": "Add file(s)",
   "uploads.list.empty": "This is empty",
   "uploads.edit.action.download": "Download file",

@@ -38,6 +38,7 @@
   "document.code.action.delete": "Eliminar",
   "document.code.action.delete.confirm": "Estás seguro?",
   "uploads.list.action.create": "Subir arquivos dentro de {folder}",
+  "uploads.list.search": "Buscar arquivos aqui",
   "uploads.list.action.add": "Engadir arquivo(s)",
   "uploads.list.empty": "Esto está baleiro",
   "uploads.edit.action.download": "Descargar arquivo",
