@@ -2,15 +2,11 @@ import createTree from "./tree.ts";
 import { getLanguageCode, normalizeName } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
 import { parseExif } from "../../deps/exifr.ts";
+import { fromFile, getInputFormat, getOutputFormat } from "../../deps/sharp.ts";
 import { slugify } from "../utils/string.ts";
+
 import type Upload from "../upload.ts";
 import type User from "../user.ts";
-import {
-  MagickFormat,
-  MagickGeometry,
-  supportedFormats,
-  transform,
-} from "../../deps/imagick.ts";
 
 export function getUploads(user: User, uploads: Upload[]): Upload[] {
   return uploads.filter((upload) => upload.listed && user.canView(upload));
@@ -148,7 +144,7 @@ export async function getDocument(upload: Upload, name: string) {
   const type = fileData.type;
   const size = fileData.size;
   const exif = await parseExif(fileData);
-  const isCroppeable = !!getFormat(name);
+  const isCroppeable = !!getOutputFormat(name);
   const isCodeEditable = !!getLanguageCode(name, "") || type.includes("text/");
 
   return { type, size, exif, isCroppeable, isCodeEditable };
@@ -184,29 +180,33 @@ export async function moveDocument(
   }
 
   // Transform images (i.e. renaming from jpg to png)
-  const format = getFormat(newName);
-  if (format && getFormat(name)) {
+  const inputFormat = getInputFormat(name);
+  const outputFormat = getOutputFormat(newName);
+  if (inputFormat && outputFormat && inputFormat !== outputFormat) {
     const extFrom = name.split(".").pop()?.toLowerCase();
     const extTo = newName.split(".").pop()?.toLowerCase();
 
     if (extTo && extFrom !== extTo) {
       const entry = upload.get(newName);
-      const img = await transform(await entry.readFile(), (img) => {
-        img.format = format;
-      });
-      await entry.writeFile(new File([img], newName));
+      const img = await fromFile(await entry.readFile());
+      img.toFormat(outputFormat);
+      await entry.writeFile(new File([await img.toBuffer()], newName));
     }
   }
 
   return { newName };
 }
 
-export function canCropDocument(user: User, upload: Upload, name: string) {
+export function canCropDocument(
+  user: User,
+  upload: Upload,
+  name: string,
+): boolean {
   if (!user.canEdit(upload)) {
     throw new Error("Permission denied to edit this file");
   }
 
-  return getFormat(name);
+  return !!getOutputFormat(name);
 }
 
 interface Crop {
@@ -235,14 +235,15 @@ export async function saveCropDocument(
     throw new Error("Invalid crop values");
   }
   const entry = upload.get(name);
-  const img = await transform(
-    await entry.readFile(),
-    (img) => {
-      img.crop(new MagickGeometry(x, y, width, height));
-    },
-  );
+  const img = await fromFile(await entry.readFile());
+  img.extract({
+    left: x,
+    top: y,
+    width,
+    height,
+  });
 
-  const file = new File([img], name);
+  const file = new File([await img.toBuffer()], name);
   await entry.writeFile(file);
 }
 
@@ -251,11 +252,4 @@ export async function deleteDocument(user: User, upload: Upload, name: string) {
     throw new Error("Permission denied to delete this file");
   }
   await upload.delete(name);
-}
-
-export function getFormat(file: string): MagickFormat | undefined {
-  const extension = file.split(".").pop();
-  return extension && supportedFormats.includes(extension.toUpperCase())
-    ? extension.toUpperCase() as MagickFormat
-    : undefined;
 }
