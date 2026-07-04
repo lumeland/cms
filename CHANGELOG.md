@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.15.7] - Unreleased
+## [0.15.7] - 2026-07-04
 ### Added
 - `manifest.json` file to install the CMS as a PWA.
 
@@ -954,7 +954,7 @@ First version
 [#75]: https://github.com/lumeland/cms/issues/75
 [#76]: https://github.com/lumeland/cms/issues/76
 
-[0.15.7]: https://github.com/lumeland/cms/compare/v0.15.6...HEAD
+[0.15.7]: https://github.com/lumeland/cms/compare/v0.15.6...v0.15.7
 [0.15.6]: https://github.com/lumeland/cms/compare/v0.15.5...v0.15.6
 [0.15.5]: https://github.com/lumeland/cms/compare/v0.15.4...v0.15.5
 [0.15.4]: https://github.com/lumeland/cms/compare/v0.15.3...v0.15.4
