@@ -99,6 +99,28 @@ export default function init(options: InitOptions): Router<RouterData> {
         .path("/collection/*", collectionRoute)
         .path("/uploads/*", uploadsRoute)
         .path("/versions/*", versionsRoute)
+        .get("/manifest.json", () => {
+          return {
+            name: "LumeCMS",
+            short_name: "LumeCMS",
+            description: "CMS to edit the content of your static site",
+            start_url: getPath(options.basePath),
+            display: "browser",
+            display_override: ["standalone", "minimal-ui"],
+            icons: [
+              {
+                sizes: "192x192",
+                src: asset(options.basePath, "/pwa-icon-192.png"),
+                type: "image/png",
+              },
+              {
+                sizes: "512x512",
+                src: asset(options.basePath, "/pwa-icon-512.png"),
+                type: "image/png",
+              },
+            ],
+          };
+        })
         .catch((params) => {
           return renderTemplate("error.vto", {
             t,
