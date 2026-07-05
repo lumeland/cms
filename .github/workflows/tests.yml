@@ -1,0 +1,36 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Run tests
+    strategy:
+      matrix:
+        deno_version:
+          - 2.8.x
+          - latest
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Deno environment
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: ${{ matrix.deno_version }}
+
+      - name: Verify formatting
+        if: matrix.os == 'ubuntu-latest'
+        run: deno fmt --check
+
+      - name: Run linter
+        run: deno lint
+
+      - name: Run tests
+        run: deno task test

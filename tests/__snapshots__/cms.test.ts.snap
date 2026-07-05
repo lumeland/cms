@@ -1,0 +1,3718 @@
+export const snapshot = {};
+
+snapshot[`CMS test > Homepage 1`] = `
+\`<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+
+    <h1 class="header-title">
+      My awesome blog
+    </h1>
+
+    <div class="header-description">
+      
+
+      
+        <p>
+          <a href="https://example.com">https://example.com</a>
+        </p>
+      
+    </div>
+  </header>
+
+  <ul class="list">
+    
+      <li>
+        <a
+          href='/collection/posts'
+          class="list-item"
+        >
+          <u-icon name="folder-fill"></u-icon>
+          <div class="list-item-header">
+            <strong>My posts</strong>
+
+            
+          </div>
+        </a>
+      </li>
+    
+
+    
+      <li>
+        <a
+          href='/document/Homepage/edit'
+          class="list-item"
+          title="Homepage"
+        >
+          <u-icon name="file"></u-icon>
+          <div class="list-item-header">
+            <strong>Homepage</strong>
+
+            
+              <p>This is the Home page</p>
+            
+          </div>
+        </a>
+      </li>
+    
+
+    
+      <li>
+        <a href='/uploads/my_uploads' class="list-item">
+          <u-icon name="images-square-fill"></u-icon>
+          <div class="list-item-header">
+            <strong>my_uploads</strong>
+
+            
+          </div>
+        </a>
+      </li>
+    
+  </ul>
+
+  
+
+  
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url=""></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Document 1`] = `
+\`<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+
+    <h1 class="header-title">
+      Homepage
+    </h1>
+
+    
+      <div class="header-description">
+        This is the Home page
+      </div>
+    
+  </header>
+
+  <nav class="navigation">
+    <button
+      class="button is-primary"
+      type="submit"
+      form="form-edit"
+      tabindex="1"
+    >
+      <u-icon name="floppy-disk"></u-icon>
+      Save changes
+    </button>
+
+    
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="edit-menu"
+    aria-label="Edit options"
+  >
+    <u-icon name='dots-three-vertical'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="edit-menu">
+    <p class="menu-header">
+      Edit options
+    </p>
+
+    
+      
+        <a
+          class="button is-secondary"
+          href="https://lume.land"
+          target="_blank"
+        >
+          <u-icon name="arrow-square-out"></u-icon>
+          Open page
+        </a>
+      
+      <a
+        class="button is-secondary"
+        href='/document/Homepage/code'
+      >
+        <u-icon name="code"></u-icon>
+        Edit code
+      </a>
+    
+  </div>
+
+
+  </nav>
+
+  <u-form>
+    
+
+    <form
+      action='/document/Homepage/edit'
+      method="post"
+      class="form"
+      id="form-edit"
+      enctype="multipart/form-data"
+    >
+      <u-fields
+        data-fields="{&quot;name&quot;:&quot;root&quot;,&quot;type&quot;:&quot;object&quot;,&quot;tag&quot;:&quot;f-object-root&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;Please, write a title here&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;,&quot;description&quot;:&quot;A catchy title works better. Be creative!!&quot;,&quot;attributes&quot;:{&quot;required&quot;:true,&quot;placeholder&quot;:&quot;Example: \\\\&quot;The best blog in the world\\\\&quot;&quot;}},{&quot;tag&quot;:&quot;f-textarea&quot;,&quot;label&quot;:&quot;description&quot;,&quot;name&quot;:&quot;description&quot;,&quot;type&quot;:&quot;textarea&quot;},{&quot;tag&quot;:&quot;f-markdown&quot;,&quot;label&quot;:&quot;content&quot;,&quot;name&quot;:&quot;content&quot;,&quot;type&quot;:&quot;markdown&quot;,&quot;upload&quot;:&quot;my_uploads&quot;},{&quot;tag&quot;:&quot;f-code&quot;,&quot;label&quot;:&quot;extra&quot;,&quot;name&quot;:&quot;extra&quot;,&quot;type&quot;:&quot;code&quot;,&quot;attributes&quot;:{&quot;data&quot;:{&quot;language&quot;:&quot;CSS&quot;}}}]}"
+        data-value="{&quot;root&quot;:{}}"
+      ></u-fields>
+    </form>
+  </u-form>
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url="https://lume.land"></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Document 2`] = `"/document/Homepage/edit"`;
+
+snapshot[`CMS test > Document 3`] = `
+\`<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+
+    <h1 class="header-title">
+      Homepage
+    </h1>
+
+    
+      <div class="header-description">
+        This is the Home page
+      </div>
+    
+  </header>
+
+  <nav class="navigation">
+    <button
+      class="button is-primary"
+      type="submit"
+      form="form-edit"
+      tabindex="1"
+    >
+      <u-icon name="floppy-disk"></u-icon>
+      Save changes
+    </button>
+
+    
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="edit-menu"
+    aria-label="Edit options"
+  >
+    <u-icon name='dots-three-vertical'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="edit-menu">
+    <p class="menu-header">
+      Edit options
+    </p>
+
+    
+      
+        <a
+          class="button is-secondary"
+          href="https://lume.land"
+          target="_blank"
+        >
+          <u-icon name="arrow-square-out"></u-icon>
+          Open page
+        </a>
+      
+      <a
+        class="button is-secondary"
+        href='/document/Homepage/code'
+      >
+        <u-icon name="code"></u-icon>
+        Edit code
+      </a>
+    
+  </div>
+
+
+  </nav>
+
+  <u-form>
+    
+
+    <form
+      action='/document/Homepage/edit'
+      method="post"
+      class="form"
+      id="form-edit"
+      enctype="multipart/form-data"
+    >
+      <u-fields
+        data-fields="{&quot;name&quot;:&quot;root&quot;,&quot;type&quot;:&quot;object&quot;,&quot;tag&quot;:&quot;f-object-root&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;Please, write a title here&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;,&quot;description&quot;:&quot;A catchy title works better. Be creative!!&quot;,&quot;attributes&quot;:{&quot;required&quot;:true,&quot;placeholder&quot;:&quot;Example: \\\\&quot;The best blog in the world\\\\&quot;&quot;}},{&quot;tag&quot;:&quot;f-textarea&quot;,&quot;label&quot;:&quot;description&quot;,&quot;name&quot;:&quot;description&quot;,&quot;type&quot;:&quot;textarea&quot;},{&quot;tag&quot;:&quot;f-markdown&quot;,&quot;label&quot;:&quot;content&quot;,&quot;name&quot;:&quot;content&quot;,&quot;type&quot;:&quot;markdown&quot;,&quot;upload&quot;:&quot;my_uploads&quot;},{&quot;tag&quot;:&quot;f-code&quot;,&quot;label&quot;:&quot;extra&quot;,&quot;name&quot;:&quot;extra&quot;,&quot;type&quot;:&quot;code&quot;,&quot;attributes&quot;:{&quot;data&quot;:{&quot;language&quot;:&quot;CSS&quot;}}}]}"
+        data-value="{&quot;root&quot;:{&quot;title&quot;:&quot;New title&quot;,&quot;description&quot;:&quot;New description&quot;,&quot;extra&quot;:&quot;body { background: pink; }&quot;,&quot;content&quot;:&quot;New content\\\\n&quot;}}"
+      ></u-fields>
+    </form>
+  </u-form>
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url="https://lume.land"></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Document 4`] = `
+Map(1) {
+  "/index.md" => "---
+title: New title
+description: New description
+extra: 'body { background: pink; }'
+---
+New content
+",
+}
+`;
+
+snapshot[`CMS test > Collection 1`] = `
+\`
+
+<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My posts - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  
+
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+
+    <h1 class="header-title">My posts</h1>
+
+    
+  </header>
+
+  
+
+  
+
+  <nav class="navigation">
+    
+      <a
+        href='/collection/posts/create'
+        class="button is-primary"
+      >
+        <u-icon name="plus-circle"></u-icon>
+        Create new
+      </a>
+    
+  </nav>
+
+  
+    <p class="emptyState">This is empty</p>
+  
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url=""></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Collection 2`] = `
+\`<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New document - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+      
+        <li><a href="/collection/posts">My posts</a></li>
+      
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+
+    <h1 class="header-title">
+      New document
+    </h1>
+  </header>
+
+  <nav class="navigation">
+    
+      <label class="input-file">
+        
+        <input
+          class="input"
+          id="_id"
+          type="text"
+          name="_id"
+          value=""
+          placeholder='Name your file…'
+          form="form-create"
+          aria-label='File name'
+          required autofocus
+        >
+      </label>
+    
+
+    <button
+      class="button is-primary"
+      form="form-create"
+      type="submit"
+      tabindex="1"
+    >
+      <u-icon name="plus-circle"></u-icon>
+      Create document
+    </button>
+  </nav>
+
+  
+    <u-views
+      data-target="form-create"
+      data-state="[]"
+      data-views="[&quot;title&quot;]"
+    >
+      <strong class="field-label">View:</strong>
+    </u-views>
+  
+
+  <form
+    action='/collection/posts/create'
+    method="post"
+    class="form"
+    enctype="multipart/form-data"
+    id="form-create"
+  >
+    <input type="hidden" name="_prefix" value="">
+    <u-fields
+      data-fields="{&quot;name&quot;:&quot;root&quot;,&quot;type&quot;:&quot;object&quot;,&quot;tag&quot;:&quot;f-object-root&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;Post title&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;,&quot;description&quot;:&quot;Write a catchy title for your post.&quot;,&quot;view&quot;:&quot;title&quot;,&quot;attributes&quot;:{&quot;required&quot;:true,&quot;placeholder&quot;:&quot;Example: \\\\&quot;How to create a blog with LumeCMS\\\\&quot;&quot;}},{&quot;tag&quot;:&quot;f-list&quot;,&quot;label&quot;:&quot;tags&quot;,&quot;name&quot;:&quot;tags&quot;,&quot;type&quot;:&quot;list&quot;},{&quot;tag&quot;:&quot;f-current-datetime&quot;,&quot;label&quot;:&quot;date&quot;,&quot;name&quot;:&quot;date&quot;,&quot;type&quot;:&quot;current-datetime&quot;},{&quot;tag&quot;:&quot;f-date&quot;,&quot;label&quot;:&quot;so_data&quot;,&quot;name&quot;:&quot;so_data&quot;,&quot;type&quot;:&quot;date&quot;},{&quot;tag&quot;:&quot;f-datetime&quot;,&quot;label&quot;:&quot;so_datatime&quot;,&quot;name&quot;:&quot;so_datatime&quot;,&quot;type&quot;:&quot;datetime&quot;},{&quot;tag&quot;:&quot;f-color&quot;,&quot;label&quot;:&quot;color&quot;,&quot;name&quot;:&quot;color&quot;,&quot;type&quot;:&quot;color&quot;},{&quot;tag&quot;:&quot;f-file&quot;,&quot;label&quot;:&quot;cover&quot;,&quot;name&quot;:&quot;cover&quot;,&quot;type&quot;:&quot;file&quot;,&quot;relativePath&quot;:true,&quot;upload&quot;:&quot;my_uploads:img/covers&quot;,&quot;publicPath&quot;:&quot;/uploads&quot;},{&quot;tag&quot;:&quot;f-object&quot;,&quot;label&quot;:&quot;Image note&quot;,&quot;name&quot;:&quot;image&quot;,&quot;type&quot;:&quot;object&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;title&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;tag&quot;:&quot;f-file&quot;,&quot;label&quot;:&quot;image&quot;,&quot;name&quot;:&quot;image&quot;,&quot;type&quot;:&quot;file&quot;,&quot;upload&quot;:&quot;my_uploads&quot;,&quot;publicPath&quot;:&quot;/uploads&quot;}]},{&quot;tag&quot;:&quot;f-markdown&quot;,&quot;label&quot;:&quot;Post content&quot;,&quot;name&quot;:&quot;content&quot;,&quot;type&quot;:&quot;markdown&quot;,&quot;relativePath&quot;:true,&quot;upload&quot;:&quot;my_uploads&quot;}]}"
+      data-new="true"
+      data-value="{}"
+    ></u-fields>
+  </form>
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url=""></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Collection 3`] = `"/collection/posts/new-post.md/edit"`;
+
+snapshot[`CMS test > Collection 4`] = `
+\`<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new-post.md - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+      
+        <li><a href="/collection/posts">My posts</a></li>
+      
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+    <h1 class="header-title">
+      new-post.md
+    </h1>
+  </header>
+
+  <nav class="navigation">
+    
+      <button
+        class="button is-primary"
+        type="submit"
+        form="form-edit"
+        tabindex="1"
+      >
+        <u-icon name="floppy-disk"></u-icon>
+        Save changes
+      </button>
+    
+
+    
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="edit-menu"
+    aria-label="Edit options"
+  >
+    <u-icon name='dots-three-vertical'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="edit-menu">
+    <p class="menu-header">
+      Edit options
+    </p>
+
+    
+      
+        <a
+          class="button is-secondary"
+          href="https://lume.land"
+          target="_blank"
+        >
+          <u-icon name="arrow-square-out"></u-icon>
+          Open page
+        </a>
+      
+      
+        <a
+          class="button is-secondary"
+          href='/collection/posts/new-post.md/code'
+        >
+          <u-icon name="code"></u-icon>
+          Edit code
+        </a>
+      
+
+      
+        <button
+  command="show-modal"
+  commandfor="modal-rename"
+  class="button is-secondary"
+  type="button"
+>
+  
+            <u-icon name="arrow-square-right"></u-icon>
+            Move file
+          
+</button>
+
+<dialog class="modal is-center" id="modal-rename">
+  <button
+    type="button"
+    class="buttonIcon modal-close"
+    command="close"
+    commandfor="modal-rename"
+  >
+    <u-icon name="x"></u-icon>
+  </button>
+
+  
+          
+
+          <form
+            method="post"
+            action='/collection/posts/new-post.md/move'
+          >
+            <div class="field">
+              <label for="file-name">New path</label>
+              <input
+                id="file-name"
+                class="input"
+                type="text"
+                required
+                autofocus
+                value="new-post.md"
+                name="name"
+              >
+            </div>
+
+            <footer class="field-footer">
+              <button class="button is-primary">Move file</button>
+            </footer>
+          </form>
+        
+</dialog>
+
+      
+
+      
+        <button
+  command="show-modal"
+  commandfor="modal-duplicate"
+  class="button is-secondary"
+  type="button"
+>
+  
+            <u-icon name="copy"></u-icon>
+            Save as…
+          
+</button>
+
+<dialog class="modal is-center" id="modal-duplicate">
+  <button
+    type="button"
+    class="buttonIcon modal-close"
+    command="close"
+    commandfor="modal-duplicate"
+  >
+    <u-icon name="x"></u-icon>
+  </button>
+
+  
+          
+
+          <u-form-join data-form="form-edit">
+            <form
+              method="post"
+              action='/collection/posts/new-post.md/duplicate'
+            >
+              
+                <div class="field">
+                  <label for="file-name">Document name</label>
+                  <input
+                    id="file-name"
+                    class="input"
+                    type="text"
+                    required
+                    autofocus
+                    value="new-post.md"
+                    name="name"
+                  >
+                </div>
+              
+
+              <footer class="field-footer">
+                <button class="button is-primary">Save copy</button>
+              </footer>
+            </form>
+          </u-form-join>
+        
+</dialog>
+
+      
+
+      
+        <u-confirm data-message="Are you sure?">
+          <button
+            class="button is-secondary"
+            type="submit"
+            form="form-edit"
+            formAction='/collection/posts/new-post.md/delete'
+          >
+            <u-icon name="trash"></u-icon>
+            Delete
+          </button>
+        </u-confirm>
+      
+    
+  </div>
+
+
+  </nav>
+
+  <u-form>
+    
+      <u-views
+        data-target="form-edit"
+        data-state="[]"
+        data-views="[&quot;title&quot;]"
+      >
+        <strong class="field-label">View:</strong>
+      </u-views>
+    
+
+    <form
+      action='/collection/posts/new-post.md/edit'
+      method="post"
+      class="form"
+      enctype="multipart/form-data"
+      id="form-edit"
+    >
+      <u-fields
+        data-fields="{&quot;name&quot;:&quot;root&quot;,&quot;type&quot;:&quot;object&quot;,&quot;tag&quot;:&quot;f-object-root&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;Post title&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;,&quot;description&quot;:&quot;This title is perfect!&quot;,&quot;view&quot;:&quot;title&quot;,&quot;attributes&quot;:{&quot;required&quot;:true,&quot;placeholder&quot;:&quot;Example: \\\\&quot;How to create a blog with LumeCMS\\\\&quot;&quot;}},{&quot;tag&quot;:&quot;f-list&quot;,&quot;label&quot;:&quot;tags&quot;,&quot;name&quot;:&quot;tags&quot;,&quot;type&quot;:&quot;list&quot;},{&quot;tag&quot;:&quot;f-current-datetime&quot;,&quot;label&quot;:&quot;date&quot;,&quot;name&quot;:&quot;date&quot;,&quot;type&quot;:&quot;current-datetime&quot;},{&quot;tag&quot;:&quot;f-date&quot;,&quot;label&quot;:&quot;so_data&quot;,&quot;name&quot;:&quot;so_data&quot;,&quot;type&quot;:&quot;date&quot;},{&quot;tag&quot;:&quot;f-datetime&quot;,&quot;label&quot;:&quot;so_datatime&quot;,&quot;name&quot;:&quot;so_datatime&quot;,&quot;type&quot;:&quot;datetime&quot;},{&quot;tag&quot;:&quot;f-color&quot;,&quot;label&quot;:&quot;color&quot;,&quot;name&quot;:&quot;color&quot;,&quot;type&quot;:&quot;color&quot;},{&quot;tag&quot;:&quot;f-file&quot;,&quot;label&quot;:&quot;cover&quot;,&quot;name&quot;:&quot;cover&quot;,&quot;type&quot;:&quot;file&quot;,&quot;relativePath&quot;:true,&quot;upload&quot;:&quot;my_uploads:img/covers&quot;,&quot;publicPath&quot;:&quot;/uploads&quot;},{&quot;tag&quot;:&quot;f-object&quot;,&quot;label&quot;:&quot;Image note&quot;,&quot;name&quot;:&quot;image&quot;,&quot;type&quot;:&quot;object&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;title&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;tag&quot;:&quot;f-file&quot;,&quot;label&quot;:&quot;image&quot;,&quot;name&quot;:&quot;image&quot;,&quot;type&quot;:&quot;file&quot;,&quot;upload&quot;:&quot;my_uploads&quot;,&quot;publicPath&quot;:&quot;/uploads&quot;}]},{&quot;tag&quot;:&quot;f-markdown&quot;,&quot;label&quot;:&quot;Post content&quot;,&quot;name&quot;:&quot;content&quot;,&quot;type&quot;:&quot;markdown&quot;,&quot;relativePath&quot;:true,&quot;upload&quot;:&quot;my_uploads&quot;}]}"
+        data-value="{&quot;root&quot;:{&quot;title&quot;:&quot;New title&quot;,&quot;tags&quot;:[&quot;Tag 1&quot;,&quot;Tag 2&quot;,&quot;Tag 3&quot;],&quot;so_data&quot;:&quot;2026-06-21T00:00:00.000Z&quot;,&quot;so_datatime&quot;:&quot;2026-06-21T18:00:00.000Z&quot;,&quot;color&quot;:&quot;#332211&quot;,&quot;cover&quot;:&quot;/example.png&quot;,&quot;image&quot;:{&quot;title&quot;:&quot;Image title&quot;,&quot;image&quot;:&quot;/uploads/example2.txt&quot;},&quot;content&quot;:&quot;POST CONTENT\\\\n&quot;}}"
+      ></u-fields>
+    </form>
+  </u-form>
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url="https://lume.land"></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Collection 5`] = `
+Map(3) {
+  "/index.md" => "---
+title: New title
+description: New description
+extra: 'body { background: pink; }'
+---
+New content
+",
+  "/posts/new-post.md" => "---
+title: New title
+tags:
+  - Tag 1
+  - Tag 2
+  - Tag 3
+so_data: 2026-06-21
+so_datatime: 2026-06-21 18:00:00
+color: '#332211'
+cover: ../example.png
+image:
+  title: Image title
+  image: /uploads/example2.txt
+---
+POST CONTENT
+",
+  "/uploads/example2.txt" => Uint8Array(11) [
+    104,
+    101,
+    108,
+    108,
+    111,
+    32,
+    119,
+    111,
+    114,
+    108,
+    100,
+  ],
+}
+`;
+
+snapshot[`CMS test > Collection 6`] = `"/collection/posts/new-post.md/edit"`;
+
+snapshot[`CMS test > Collection 7`] = `
+\`<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new-post.md - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+      
+        <li><a href="/collection/posts">My posts</a></li>
+      
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+    <h1 class="header-title">
+      new-post.md
+    </h1>
+  </header>
+
+  <nav class="navigation">
+    
+      <button
+        class="button is-primary"
+        type="submit"
+        form="form-edit"
+        tabindex="1"
+      >
+        <u-icon name="floppy-disk"></u-icon>
+        Save changes
+      </button>
+    
+
+    
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="edit-menu"
+    aria-label="Edit options"
+  >
+    <u-icon name='dots-three-vertical'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="edit-menu">
+    <p class="menu-header">
+      Edit options
+    </p>
+
+    
+      
+        <a
+          class="button is-secondary"
+          href="https://lume.land"
+          target="_blank"
+        >
+          <u-icon name="arrow-square-out"></u-icon>
+          Open page
+        </a>
+      
+      
+        <a
+          class="button is-secondary"
+          href='/collection/posts/new-post.md/code'
+        >
+          <u-icon name="code"></u-icon>
+          Edit code
+        </a>
+      
+
+      
+        <button
+  command="show-modal"
+  commandfor="modal-rename"
+  class="button is-secondary"
+  type="button"
+>
+  
+            <u-icon name="arrow-square-right"></u-icon>
+            Move file
+          
+</button>
+
+<dialog class="modal is-center" id="modal-rename">
+  <button
+    type="button"
+    class="buttonIcon modal-close"
+    command="close"
+    commandfor="modal-rename"
+  >
+    <u-icon name="x"></u-icon>
+  </button>
+
+  
+          
+
+          <form
+            method="post"
+            action='/collection/posts/new-post.md/move'
+          >
+            <div class="field">
+              <label for="file-name">New path</label>
+              <input
+                id="file-name"
+                class="input"
+                type="text"
+                required
+                autofocus
+                value="new-post.md"
+                name="name"
+              >
+            </div>
+
+            <footer class="field-footer">
+              <button class="button is-primary">Move file</button>
+            </footer>
+          </form>
+        
+</dialog>
+
+      
+
+      
+        <button
+  command="show-modal"
+  commandfor="modal-duplicate"
+  class="button is-secondary"
+  type="button"
+>
+  
+            <u-icon name="copy"></u-icon>
+            Save as…
+          
+</button>
+
+<dialog class="modal is-center" id="modal-duplicate">
+  <button
+    type="button"
+    class="buttonIcon modal-close"
+    command="close"
+    commandfor="modal-duplicate"
+  >
+    <u-icon name="x"></u-icon>
+  </button>
+
+  
+          
+
+          <u-form-join data-form="form-edit">
+            <form
+              method="post"
+              action='/collection/posts/new-post.md/duplicate'
+            >
+              
+                <div class="field">
+                  <label for="file-name">Document name</label>
+                  <input
+                    id="file-name"
+                    class="input"
+                    type="text"
+                    required
+                    autofocus
+                    value="new-post.md"
+                    name="name"
+                  >
+                </div>
+              
+
+              <footer class="field-footer">
+                <button class="button is-primary">Save copy</button>
+              </footer>
+            </form>
+          </u-form-join>
+        
+</dialog>
+
+      
+
+      
+        <u-confirm data-message="Are you sure?">
+          <button
+            class="button is-secondary"
+            type="submit"
+            form="form-edit"
+            formAction='/collection/posts/new-post.md/delete'
+          >
+            <u-icon name="trash"></u-icon>
+            Delete
+          </button>
+        </u-confirm>
+      
+    
+  </div>
+
+
+  </nav>
+
+  <u-form>
+    
+      <u-views
+        data-target="form-edit"
+        data-state="[]"
+        data-views="[&quot;title&quot;]"
+      >
+        <strong class="field-label">View:</strong>
+      </u-views>
+    
+
+    <form
+      action='/collection/posts/new-post.md/edit'
+      method="post"
+      class="form"
+      enctype="multipart/form-data"
+      id="form-edit"
+    >
+      <u-fields
+        data-fields="{&quot;name&quot;:&quot;root&quot;,&quot;type&quot;:&quot;object&quot;,&quot;tag&quot;:&quot;f-object-root&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;Post title&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;,&quot;description&quot;:&quot;This title is perfect!&quot;,&quot;view&quot;:&quot;title&quot;,&quot;attributes&quot;:{&quot;required&quot;:true,&quot;placeholder&quot;:&quot;Example: \\\\&quot;How to create a blog with LumeCMS\\\\&quot;&quot;}},{&quot;tag&quot;:&quot;f-list&quot;,&quot;label&quot;:&quot;tags&quot;,&quot;name&quot;:&quot;tags&quot;,&quot;type&quot;:&quot;list&quot;},{&quot;tag&quot;:&quot;f-current-datetime&quot;,&quot;label&quot;:&quot;date&quot;,&quot;name&quot;:&quot;date&quot;,&quot;type&quot;:&quot;current-datetime&quot;},{&quot;tag&quot;:&quot;f-date&quot;,&quot;label&quot;:&quot;so_data&quot;,&quot;name&quot;:&quot;so_data&quot;,&quot;type&quot;:&quot;date&quot;},{&quot;tag&quot;:&quot;f-datetime&quot;,&quot;label&quot;:&quot;so_datatime&quot;,&quot;name&quot;:&quot;so_datatime&quot;,&quot;type&quot;:&quot;datetime&quot;},{&quot;tag&quot;:&quot;f-color&quot;,&quot;label&quot;:&quot;color&quot;,&quot;name&quot;:&quot;color&quot;,&quot;type&quot;:&quot;color&quot;},{&quot;tag&quot;:&quot;f-file&quot;,&quot;label&quot;:&quot;cover&quot;,&quot;name&quot;:&quot;cover&quot;,&quot;type&quot;:&quot;file&quot;,&quot;relativePath&quot;:true,&quot;upload&quot;:&quot;my_uploads:img/covers&quot;,&quot;publicPath&quot;:&quot;/uploads&quot;},{&quot;tag&quot;:&quot;f-object&quot;,&quot;label&quot;:&quot;Image note&quot;,&quot;name&quot;:&quot;image&quot;,&quot;type&quot;:&quot;object&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;title&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;tag&quot;:&quot;f-file&quot;,&quot;label&quot;:&quot;image&quot;,&quot;name&quot;:&quot;image&quot;,&quot;type&quot;:&quot;file&quot;,&quot;upload&quot;:&quot;my_uploads&quot;,&quot;publicPath&quot;:&quot;/uploads&quot;}]},{&quot;tag&quot;:&quot;f-markdown&quot;,&quot;label&quot;:&quot;Post content&quot;,&quot;name&quot;:&quot;content&quot;,&quot;type&quot;:&quot;markdown&quot;,&quot;relativePath&quot;:true,&quot;upload&quot;:&quot;my_uploads&quot;}]}"
+        data-value="{&quot;root&quot;:{&quot;title&quot;:&quot;Title modified&quot;,&quot;tags&quot;:[&quot;Tag 1&quot;,&quot;Tag 3&quot;],&quot;so_data&quot;:&quot;2026-06-21T00:00:00.000Z&quot;,&quot;so_datatime&quot;:&quot;2026-06-21T18:00:00.000Z&quot;,&quot;color&quot;:&quot;#332211&quot;,&quot;cover&quot;:&quot;&quot;,&quot;image&quot;:{&quot;title&quot;:&quot;Image title&quot;,&quot;image&quot;:&quot;/uploads/example2.txt&quot;},&quot;content&quot;:&quot;POST CONTENT\\\\n&quot;}}"
+      ></u-fields>
+    </form>
+  </u-form>
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url="https://lume.land"></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Collection 8`] = `
+Map(3) {
+  "/index.md" => "---
+title: New title
+description: New description
+extra: 'body { background: pink; }'
+---
+New content
+",
+  "/posts/new-post.md" => "---
+title: Title modified
+tags:
+  - Tag 1
+  - Tag 3
+so_data: 2026-06-21
+so_datatime: 2026-06-21 18:00:00
+color: '#332211'
+cover: ''
+image:
+  title: Image title
+  image: /uploads/example2.txt
+---
+POST CONTENT
+",
+  "/uploads/example2.txt" => Uint8Array(11) [
+    104,
+    101,
+    108,
+    108,
+    111,
+    32,
+    119,
+    111,
+    114,
+    108,
+    100,
+  ],
+}
+`;
+
+snapshot[`CMS test > Collection > Collection 1`] = `
+\`
+
+<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My posts - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  
+
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+
+    <h1 class="header-title">My posts</h1>
+
+    
+  </header>
+
+  
+
+  
+    <u-filter
+      data-placeholder="Filter My posts"
+      data-selector="#list > li"
+    >
+    </u-filter>
+  
+
+  <nav class="navigation">
+    
+      <a
+        href='/collection/posts/create'
+        class="button is-primary"
+      >
+        <u-icon name="plus-circle"></u-icon>
+        Create new
+      </a>
+    
+  </nav>
+
+  
+    <u-tree data-name="collection-posts">
+      <ul id="list" class="list"><li>
+          <a
+            href='/collection/posts/new-post.md/edit'
+            class="list-item"
+            title="new-post.md"
+          >
+            
+              <u-icon-file path="new-post.md"></u-icon-file>
+            
+            <div class="list-item-header">
+              new-post.md
+              
+            </div>
+          </a>
+        </li></ul>
+    </u-tree>
+  
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url=""></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Uploads 1`] = `
+\`
+
+<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>my_uploads - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  
+
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+
+    <h1 class="header-title">
+      my_uploads
+
+      
+    </h1>
+
+    
+  </header>
+
+  
+
+  
+    <u-filter
+      data-placeholder="Search files here"
+      data-selector="#list li"
+    >
+    </u-filter>
+  
+
+  <nav class="navigation">
+    
+      <a
+        href='/uploads/my_uploads/create'
+        class="button is-primary"
+      >
+        <u-icon name="plus-circle"></u-icon>
+        Add file(s)
+      </a>
+    
+  </nav>
+
+  
+
+  
+    <u-tree data-name="upload-my_uploads">
+      <ul id="list" class="list"><li>
+          <a
+            href='/uploads/my_uploads/example2.txt/edit'
+            class="list-item"
+            title="example2.txt"
+          >
+            
+              <u-icon-file path="example2.txt"></u-icon-file>
+            
+            example2.txt
+            
+          </a>
+          <u-popover>
+            <button class="buttonIcon" type="button">
+              <u-icon name="eye"></u-icon>
+            </button>
+            <template>
+              <u-preview
+                id="preview_"
+                data-src='/uploads/my_uploads/example2.txt'
+              >
+              </u-preview>
+            </template>
+          </u-popover>
+          <u-copy
+            text="/uploads/example2.txt"
+          ></u-copy>
+        </li></ul>
+    </u-tree>
+  
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url=""></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Uploads 2`] = `
+\`<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload files - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+      
+        <li><a href="/uploads/my_uploads">my_uploads</a></li>
+      
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+    <h1 class="header-title">
+      Upload files
+    </h1>
+  </header>
+
+  <nav class="navigation">
+    <label class="input-file">
+      <input
+        class="input"
+        type="text"
+        name="folder"
+        placeholder='folder'
+        form="form-create"
+        aria-label='Folder'
+        value=""
+      >
+    </label>
+
+    <button
+      class="button is-primary"
+      type="submit"
+      form="form-create"
+      tabindex="1"
+    >
+      <u-icon name="upload-simple"></u-icon>
+      Upload files
+    </button>
+  </nav>
+
+  <form
+    method="post"
+    class="form"
+    enctype="multipart/form-data"
+    id="form-create"
+    action='/uploads/my_uploads/create'
+  >
+    <div class="field">
+      <u-upload>
+        <input
+          aria-label='Upload file'
+          id="new-file"
+          type="file"
+          name="files"
+          required
+          class="inputFile"
+          multiple
+        >
+      </u-upload>
+    </div>
+  </form>
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url=""></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Uploads 3`] = `"/uploads/my_uploads/example3.txt/edit"`;
+
+snapshot[`CMS test > Uploads 4`] = `
+Map(4) {
+  "/index.md" => "---
+title: New title
+description: New description
+extra: 'body { background: pink; }'
+---
+New content
+",
+  "/posts/new-post.md" => "---
+title: Title modified
+tags:
+  - Tag 1
+  - Tag 3
+so_data: 2026-06-21
+so_datatime: 2026-06-21 18:00:00
+color: '#332211'
+cover: ''
+image:
+  title: Image title
+  image: /uploads/example2.txt
+---
+POST CONTENT
+",
+  "/uploads/example2.txt" => Uint8Array(11) [
+    104,
+    101,
+    108,
+    108,
+    111,
+    32,
+    119,
+    111,
+    114,
+    108,
+    100,
+  ],
+  "/uploads/example3.txt" => Uint8Array(5) [
+    79,
+    116,
+    104,
+    101,
+    114,
+  ],
+}
+`;
+
+snapshot[`CMS test > Uploads 5`] = `
+\`
+
+<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>my_uploads - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  
+
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+
+    <h1 class="header-title">
+      my_uploads
+
+      
+    </h1>
+
+    
+  </header>
+
+  
+
+  
+    <u-filter
+      data-placeholder="Search files here"
+      data-selector="#list li"
+    >
+    </u-filter>
+  
+
+  <nav class="navigation">
+    
+      <a
+        href='/uploads/my_uploads/create'
+        class="button is-primary"
+      >
+        <u-icon name="plus-circle"></u-icon>
+        Add file(s)
+      </a>
+    
+  </nav>
+
+  
+
+  
+    <u-tree data-name="upload-my_uploads">
+      <ul id="list" class="list"><li>
+          <a
+            href='/uploads/my_uploads/example2.txt/edit'
+            class="list-item"
+            title="example2.txt"
+          >
+            
+              <u-icon-file path="example2.txt"></u-icon-file>
+            
+            example2.txt
+            
+          </a>
+          <u-popover>
+            <button class="buttonIcon" type="button">
+              <u-icon name="eye"></u-icon>
+            </button>
+            <template>
+              <u-preview
+                id="preview_"
+                data-src='/uploads/my_uploads/example2.txt'
+              >
+              </u-preview>
+            </template>
+          </u-popover>
+          <u-copy
+            text="/uploads/example2.txt"
+          ></u-copy>
+        </li>
+      
+    
+      
+
+      
+        <li>
+          <a
+            href='/uploads/my_uploads/example3.txt/edit'
+            class="list-item"
+            title="example3.txt"
+          >
+            
+              <u-icon-file path="example3.txt"></u-icon-file>
+            
+            example3.txt
+            
+          </a>
+          <u-popover>
+            <button class="buttonIcon" type="button">
+              <u-icon name="eye"></u-icon>
+            </button>
+            <template>
+              <u-preview
+                id="preview_"
+                data-src='/uploads/my_uploads/example3.txt'
+              >
+              </u-preview>
+            </template>
+          </u-popover>
+          <u-copy
+            text="/uploads/example3.txt"
+          ></u-copy>
+        </li></ul>
+    </u-tree>
+  
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url=""></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Uploads 6`] = `"Other"`;
+
+snapshot[`CMS test > Uploads 7`] = `
+\`<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>example3.txt - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  
+
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+      
+        <li><a href="/uploads/my_uploads">my_uploads</a></li>
+      
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+
+    <h1 class="header-title">
+      example3.txt
+    </h1>
+  </header>
+
+  <nav class="navigation">
+    <a
+      href="/uploads/my_uploads/example3.txt"
+      download="example3.txt"
+      class="button is-primary"
+    >
+      <u-icon name="download-simple"></u-icon>
+      Download file
+    </a>
+
+    
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="edit-menu"
+    aria-label="File options"
+  >
+    <u-icon name='dots-three-vertical'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="edit-menu">
+    <p class="menu-header">
+      File options
+    </p>
+
+    
+      
+        <button
+  command="show-modal"
+  commandfor="modal-rename"
+  class="button is-secondary"
+  type="button"
+>
+  
+            <u-icon name="arrow-square-right"></u-icon>
+            Move file
+          
+</button>
+
+<dialog class="modal is-center" id="modal-rename">
+  <button
+    type="button"
+    class="buttonIcon modal-close"
+    command="close"
+    commandfor="modal-rename"
+  >
+    <u-icon name="x"></u-icon>
+  </button>
+
+  
+          
+
+          <form
+            method="post"
+            action='/uploads/my_uploads/example3.txt/move'
+          >
+            <div class="field">
+              <label for="file-name">New path</label>
+              <input
+                id="file-name"
+                class="input"
+                type="text"
+                required
+                autofocus
+                value="example3.txt"
+                name="name"
+              >
+            </div>
+
+            <footer class="field-footer">
+              <button class="button is-primary">Move file</button>
+            </footer>
+          </form>
+        
+</dialog>
+
+      
+
+      
+        <button
+  command="show-modal"
+  commandfor="modal-duplicate"
+  class="button is-secondary"
+  type="button"
+>
+  
+            <u-icon name="copy"></u-icon>
+            Duplicate file
+          
+</button>
+
+<dialog class="modal is-center" id="modal-duplicate">
+  <button
+    type="button"
+    class="buttonIcon modal-close"
+    command="close"
+    commandfor="modal-duplicate"
+  >
+    <u-icon name="x"></u-icon>
+  </button>
+
+  
+          
+
+          <form
+            method="post"
+            action='/uploads/my_uploads/example3.txt/duplicate'
+          >
+            <div class="field">
+              <label for="file-name">Copy path</label>
+              <input
+                id="file-name"
+                class="input"
+                type="text"
+                required
+                autofocus
+                value="example3.txt"
+                name="name"
+              >
+            </div>
+
+            <footer class="field-footer">
+              <button class="button is-primary">Duplicate</button>
+            </footer>
+          </form>
+        
+</dialog>
+
+      
+
+      
+
+      
+        <a
+          href='/uploads/my_uploads/example3.txt/code'
+          class="button is-secondary"
+        >
+          <u-icon name="code"></u-icon>
+          Edit code
+        </a>
+      
+
+      
+        <button
+  command="show-modal"
+  commandfor="modal-edit"
+  class="button is-secondary"
+  type="button"
+>
+  
+            <u-icon name="swap"></u-icon>
+            Replace file
+          
+</button>
+
+<dialog class="modal is-center" id="modal-edit">
+  <button
+    type="button"
+    class="buttonIcon modal-close"
+    command="close"
+    commandfor="modal-edit"
+  >
+    <u-icon name="x"></u-icon>
+  </button>
+
+  
+          
+
+          <form
+            method="post"
+            enctype="multipart/form-data"
+            action='/uploads/my_uploads/example3.txt/edit'
+          >
+            <div class="field">
+              <label for="file-name">Upload file</label>
+              <p class="field-description">It will be saved with the same name as the original file.</p>
+              <u-upload>
+                <input
+                  id="new-file"
+                  type="file"
+                  name="files"
+                  required
+                  class="inputFile"
+                >
+              </u-upload>
+            </div>
+
+            <footer class="field-footer">
+              <button class="button is-primary">Replace</button>
+            </footer>
+          </form>
+        
+</dialog>
+
+      
+
+      
+        <u-confirm data-message="Delete this file?">
+          <button
+            class="button is-secondary"
+            form="form-edit"
+            formAction='/uploads/my_uploads/example3.txt/delete'
+          >
+            <u-icon name="trash"></u-icon>
+            Delete file
+          </button>
+        </u-confirm>
+      
+    
+  </div>
+
+
+  </nav>
+
+  <figure class="preview">
+    <dl class="definition">
+      <dt>Public URL:</dt>
+      
+      <dd>
+        <u-copy-inline>/uploads/example3.txt</u-copy-inline>
+      </dd>
+      <dt>Type:</dt>
+      <dd>text/plain; charset=utf-8</dd>
+      <dt>Size:</dt>
+      <dd>5 B</dd>
+    </dl>
+
+    <u-preview class="preview-media" data-src="/uploads/my_uploads/example3.txt"></u-preview>
+    
+  </figure>
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url=""></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Uploads 8`] = `"/uploads/my_uploads/example3.txt/edit"`;
+
+snapshot[`CMS test > Uploads 9`] = `"Modified"`;
+
+snapshot[`CMS test > Uploads 10`] = `"/uploads/my_uploads/example4.txt/edit"`;
+
+snapshot[`CMS test > Uploads 11`] = `"Modified"`;
+
+snapshot[`CMS test > Uploads 12`] = `"Modified"`;
+
+snapshot[`CMS test > Uploads 13`] = `"/uploads/my_uploads/example5.txt/edit"`;
+
+snapshot[`CMS test > Uploads 14`] = `"Modified"`;
+
+snapshot[`CMS test > Uploads 15`] = `"/uploads/my_uploads/example5.txt/edit"`;
+
+snapshot[`CMS test > Uploads 16`] = `"Edited"`;
+
+snapshot[`CMS test > Uploads 17`] = `
+\`<!DOCTYPE html>
+<html
+  lang="en"
+  data-baseassets='/'
+  data-baseurls="/"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>example5.txt - Lume CMS</title>
+    <link rel="stylesheet" href='/styles.css'>
+    <link rel="icon" href='/favicon.ico' sizes="32x32">
+    <link
+      rel="apple-touch-icon"
+      href='/apple-touch-icon.png'
+      sizes="180x180"
+    >
+    <link
+      rel="icon"
+      href='/favicon.svg'
+      sizes="any"
+      type="image/svg+xml"
+    >
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    <script type="importmap">
+    {
+      "imports": {
+        "lume_cms/": "/",
+        "dom": "https://cdn.jsdelivr.net/gh/oscarotero/dom@0.2.1/dom.js",
+        "cropper": "https://cdn.jsdelivr.net/npm/cropperjs@2.1.0/dist/cropper.esm.js"
+      }
+    }
+    </script>
+    <script>
+      const darkLightModeStorageKey = "__lume_cms__user_theme";
+      const contemporaryTheme = localStorage.getItem(
+        darkLightModeStorageKey,
+      );
+      if (contemporaryTheme) {
+        document.documentElement.setAttribute(
+          "data-theme",
+          contemporaryTheme,
+        );
+      }
+    </script>
+
+    <script type="module">
+      import "lume_cms/components/ui.js";
+      // deno-fmt-ignore-start
+      import "lume_cms/components/f-checkbox.js";
+import "lume_cms/components/f-choose-list.js";
+import "lume_cms/components/f-choose.js";
+import "lume_cms/components/f-code.js";
+import "lume_cms/components/f-color.js";
+import "lume_cms/components/f-current-datetime.js";
+import "lume_cms/components/f-date.js";
+import "lume_cms/components/f-datetime.js";
+import "lume_cms/components/f-email.js";
+import "lume_cms/components/f-file-list.js";
+import "lume_cms/components/f-file.js";
+import "lume_cms/components/f-hidden.js";
+import "lume_cms/components/f-list.js";
+import "lume_cms/components/f-map.js";
+import "lume_cms/components/f-markdown.js";
+import "lume_cms/components/f-number.js";
+import "lume_cms/components/f-object-list.js";
+import "lume_cms/components/f-object.js";
+import "lume_cms/components/f-radio.js";
+import "lume_cms/components/f-relation-list.js";
+import "lume_cms/components/f-rich-text.js";
+import "lume_cms/components/f-relation.js";
+import "lume_cms/components/f-select.js";
+import "lume_cms/components/f-text.js";
+import "lume_cms/components/f-textarea.js";
+import "lume_cms/components/f-time.js";
+import "lume_cms/components/f-url.js";
+      // deno-fmt-ignore-end
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="app-container" tabindex="-1">
+      <div class="app">
+        
+  <header class="header">
+    <nav class="app-nav" aria-label="You are here:">
+  <ul class="breadcrumb">
+    
+
+    <li>
+      <a href="/"><u-icon name="house-fill"></u-icon> Home</a>
+    </li>
+
+    
+      
+        <li><a href="/uploads/my_uploads">my_uploads</a></li>
+      
+    
+      
+        <li><a href="/uploads/my_uploads/example5.txt/edit">example5.txt</a></li>
+      
+    
+  </ul>
+
+  
+  <button
+    class="buttonIcon is-secondary"
+    type="button"
+    command="toggle-popover"
+    commandfor="user-menu"
+    aria-label="
+      
+        No authentication
+      
+    "
+  >
+    <u-icon name='user-circle'></u-icon>
+  </button>
+
+  <div popover="auto" class="menu" id="user-menu">
+    <p class="menu-header">
+      
+      
+        No authentication
+      
+    
+    </p>
+
+    
+    
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.toggleTheme()"
+    >
+      <u-icon name="circle-half-fill"></u-icon>
+      Switch theme
+    </button>
+
+    <button
+      class="button is-secondary"
+      type="button"
+      onclick="\$ui.togglePreview()"
+    >
+      <u-icon name="square-half"></u-icon>
+      Toggle preview
+    </button>
+
+    
+  
+  </div>
+
+
+</nav>
+
+
+    <h1 class="header-title">
+      example5.txt
+    </h1>
+  </header>
+
+  <nav class="navigation">
+    <a
+      class="button is-secondary"
+      href='/uploads/my_uploads/example5.txt/edit'
+    >
+      Cancel
+    </a>
+    <button class="button is-primary" type="submit" form="form-edit">
+      <u-icon name="check"></u-icon>
+      Crop image
+    </button>
+  </nav>
+
+  <u-form>
+    <form
+      action='/uploads/my_uploads/example5.txt/code'
+      method="post"
+      class="form"
+      id="form-edit"
+    >
+      <u-fields
+        data-fields="{&quot;tag&quot;:&quot;f-object-root&quot;,&quot;name&quot;:&quot;root&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-code&quot;,&quot;name&quot;:&quot;code&quot;,&quot;label&quot;:&quot;Code&quot;,&quot;type&quot;:&quot;code&quot;,&quot;attributes&quot;:{&quot;data&quot;:{&quot;language&quot;:&quot;&quot;}}}]}"
+        data-value="{&quot;root&quot;:{&quot;code&quot;:&quot;Edited&quot;}}"
+      ></u-fields>
+    </form>
+  </u-form>
+
+      </div>
+      <footer class="app-footer">
+        <p>
+          Powered by
+          <a href="https://lume.land/cms/">
+            LumeCMS (local)
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <u-pagepreview data-url=""></u-pagepreview>
+  </body>
+</html>
+
+\`
+`;
+
+snapshot[`CMS test > Uploads 18`] = `"/uploads/my_uploads"`;
+
+snapshot[`CMS test > Uploads 19`] = `
+Map(4) {
+  "/index.md" => "---
+title: New title
+description: New description
+extra: 'body { background: pink; }'
+---
+New content
+",
+  "/posts/new-post.md" => "---
+title: Title modified
+tags:
+  - Tag 1
+  - Tag 3
+so_data: 2026-06-21
+so_datatime: 2026-06-21 18:00:00
+color: '#332211'
+cover: ''
+image:
+  title: Image title
+  image: /uploads/example2.txt
+---
+POST CONTENT
+",
+  "/uploads/example2.txt" => Uint8Array(11) [
+    104,
+    101,
+    108,
+    108,
+    111,
+    32,
+    119,
+    111,
+    114,
+    108,
+    100,
+  ],
+  "/uploads/example3.txt" => Uint8Array(8) [
+    77,
+    111,
+    100,
+    105,
+    102,
+    105,
+    101,
+    100,
+  ],
+}
+`;

@@ -1,6 +1,7 @@
 {
   "lock": false,
   "tasks": {
+    "test": "deno test --allow-env --allow-ffi --allow-read tests",
     "update-deps": "deno run -A 'https://deno.land/x/nudd@v0.2.11/cli.ts' update 'deps/*.ts' deno.json core/templates/layout.ts static/components/u-bar.js storage/github.ts",
     "build-libs": "cd scripts && npm run build"
   },

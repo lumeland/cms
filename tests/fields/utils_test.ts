@@ -39,7 +39,7 @@ Deno.test("Ignores Markdown Code Blocks", () => {
     \`\`\`
   `;
 
-  const output = toAbsolutePaths(input, (path) => "CHANGED");
+  const output = toAbsolutePaths(input, () => "CHANGED");
 
   // Real one changed
   assertEquals(output.includes("![](CHANGED)"), true);
