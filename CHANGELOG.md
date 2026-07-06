@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 - Replace `imagick` with `sharp`.
 
+### Fixed
+- Restore `cms.initContent()` function.
+
 ## [0.15.7] - 2026-07-04
 ### Added
 - `manifest.json` file to install the CMS as a PWA.

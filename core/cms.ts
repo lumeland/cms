@@ -290,8 +290,8 @@ export default class Cms {
     return this;
   }
 
-  /** Start the CMS */
-  init(): Router<RouterData> {
+  /** Initialize the CMS content */
+  initContent(): CMSContent {
     const content: CMSContent = {
       basePath: this.options.basePath,
       site: this.options.site ?? {},
@@ -353,13 +353,18 @@ export default class Cms {
       });
     }
 
+    return content;
+  }
+
+  /** Start the CMS */
+  init(): Router<RouterData> {
     // JavaScript files to import
     const jsImports = new Set(
       this.fields.values().map((field) => field.jsImport),
     );
 
     const initOptions: Parameters<typeof init>[0] = {
-      content,
+      content: this.initContent(),
       jsImports: Array.from(jsImports),
       basePath: this.options.basePath,
       extraHead: this.options.extraHead,
