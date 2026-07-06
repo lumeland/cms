@@ -10,6 +10,7 @@ import type {
   UploadOptions,
 } from "./core/cms.ts";
 import type { Options as GitOptions } from "./core/git.ts";
+import Action from "./core/action.ts";
 
 /** Generic data to store */
 export type Data = Record<string, any>;
@@ -233,6 +234,7 @@ export interface CMSContent {
   collections: Record<string, Collection>;
   documents: Record<string, Document>;
   uploads: Record<string, Upload>;
+  actions: Record<string, Action>;
   git?: Git;
   data: Record<string, any>;
 }

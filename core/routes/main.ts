@@ -10,6 +10,7 @@ import collectionRoute from "./collection.ts";
 import versionsRoute from "./versions.ts";
 import indexRoute from "./index.ts";
 import uploadsRoute from "./uploads.ts";
+import actionsRoute from "./actions.ts";
 
 import type { SourcePath } from "../cms.ts";
 import type {
@@ -91,6 +92,7 @@ export default function init(options: InitOptions): Router<RouterData> {
           extraHead: options.extraHead,
           cmsVersion: getCurrentVersion(),
           git: options.content.git,
+          actions: options.content.actions,
         });
 
       return next({ user, lang, render: renderTemplate })
@@ -99,6 +101,7 @@ export default function init(options: InitOptions): Router<RouterData> {
         .path("/collection/*", collectionRoute)
         .path("/uploads/*", uploadsRoute)
         .path("/versions/*", versionsRoute)
+        .path("/actions/*", actionsRoute)
         .get("/manifest.json", () => {
           return {
             name: "LumeCMS",

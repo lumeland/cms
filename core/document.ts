@@ -39,7 +39,7 @@ export default class Document {
 
   constructor(options: DocumentOptions) {
     this.#name = options.name;
-    this.#label = options.label;
+    this.#label = options.label || options.name;
     this.description = options.description;
     this.#entry = options.entry;
     this.#fields = options.fields;

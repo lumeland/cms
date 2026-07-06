@@ -22,6 +22,7 @@ import type {
 } from "../types.ts";
 import init from "./routes/main.ts";
 import { Basic } from "../auth/Basic.ts";
+import Action from "./action.ts";
 
 export type SourcePath = (
   url: string,
@@ -111,7 +112,14 @@ export interface UploadOptions {
   create?: boolean;
   delete?: boolean;
   edit?: boolean;
-  rename?: boolean | "auto";
+  rename?: boolean;
+}
+
+export interface ActionOptions {
+  icon: string;
+  name: string;
+  description?: string;
+  action: () => unknown;
 }
 
 const defaults: Partial<CmsOptions> = {
@@ -128,6 +136,7 @@ export default class Cms {
   fields = new Map<string, FieldDefinition>();
   collections = new Map<string, CollectionOptions>();
   documents = new Map<string, DocumentOptions>();
+  actions = new Map<string, ActionOptions>();
   gitRepo: Git | undefined;
   authentication?: AuthProvider;
 
@@ -209,6 +218,35 @@ export default class Cms {
     }
 
     this.uploads.set(options.name, options);
+    return this;
+  }
+
+  /** Add a new action */
+  action(options: ActionOptions): this;
+  action(
+    name: string,
+    action: () => unknown,
+  ): this;
+  action(
+    name: string | ActionOptions,
+    action?: () => unknown,
+  ): this {
+    const options = typeof name === "string"
+      ? {
+        name,
+        action,
+      } as ActionOptions
+      : name as ActionOptions;
+
+    if (!options.description) {
+      const [name, description] = options.name.split(":").map((part) =>
+        part.trim()
+      );
+      options.name = name;
+      options.description = description;
+    }
+
+    this.actions.set(options.name, options);
     return this;
   }
 
@@ -300,56 +338,43 @@ export default class Cms {
       collections: {},
       documents: {},
       uploads: {},
+      actions: {},
     };
 
-    // Initialize uploads
-    for (const entry of this.uploads.values()) {
-      const {
-        name,
-        label,
-        description,
-        documentLabel,
-        store,
-        publicPath,
-        listed,
-      } = entry;
+    // Initialize actions
+    for (const options of this.actions.values()) {
+      content.actions[options.name] = new Action(options);
+    }
 
-      content.uploads[name] = new Upload({
-        name,
-        label: label ?? name,
-        description,
-        documentLabel,
-        storage: this.#getStorage(store),
-        publicPath: publicPath ?? "/",
-        listed: listed ?? true,
+    // Initialize uploads
+    for (const options of this.uploads.values()) {
+      content.uploads[options.name] = new Upload({
+        ...options,
+        storage: this.#getStorage(options.store),
       });
     }
 
     // Initialize collections
-    for (const entry of this.collections.values()) {
-      const { name, label, store, fields, type, ...options } = entry;
+    for (const options of this.collections.values()) {
+      const { store, fields, type, ...other } = options;
 
-      content.collections[name] = new Collection({
+      content.collections[options.name] = new Collection({
         storage: this.#getStorage(store),
         fields: fields ? this.#resolveFields(fields, content, type) : undefined,
-        name,
-        label: label ?? name,
         previewUrl: this.options.previewUrl,
-        ...options,
+        ...other,
       });
     }
 
     // Initialize documents
-    for (const entry of this.documents.values()) {
-      const { name, label, store, fields, type, ...options } = entry;
+    for (const options of this.documents.values()) {
+      const { store, fields, type, ...other } = options;
 
-      content.documents[name] = new Document({
+      content.documents[options.name] = new Document({
         entry: this.#getEntry(store),
         fields: fields ? this.#resolveFields(fields, content, type) : undefined,
-        name,
-        label: label ?? name,
         previewUrl: this.options.previewUrl,
-        ...options,
+        ...other,
       });
     }
 

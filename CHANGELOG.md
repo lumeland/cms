@@ -5,11 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.16.0] - Unreleased
+### Added
+- New `cms.action()` function to register custom actions.
+
 ### Changed
 - Replace `imagick` with `sharp`.
 
 ### Fixed
 - Restore `cms.initContent()` function.
+- Updated dependencies
 
 ## [0.15.7] - 2026-07-04
 ### Added

@@ -51,7 +51,23 @@
       {{ t("user.action.preview") }}
     </button>
 
+    {{ if Object.keys(actions).length }}
+    <hr>
+    {{ for action of actions }}
+    <form
+      method="post"
+      action='{{ ["actions", action.name] |> path }}'
+    >
+      <button class="button is-secondary">
+        <u-icon name="{{ action.icon }}"></u-icon>
+        {{ action.label }}
+      </button>
+    </form>
+    {{ /for }}
+    {{ /if }}
+
     {{ if user.isLogged }}
+      <hr/>
       <button
         class="button is-secondary"
         type="button"

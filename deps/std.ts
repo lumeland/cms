@@ -1,11 +1,11 @@
-export { escape } from "jsr:@std/html@1.0.5/entities";
-import { type ImplicitType, parse } from "jsr:@std/yaml@1.0.12/unstable-parse";
-import { stringify } from "jsr:@std/yaml@1.0.12/unstable-stringify";
-export { acceptsLanguages } from "jsr:@std/http@1.0.25/negotiation";
+export { escape } from "jsr:@std/html@1.0.7/entities";
+import { type ImplicitType, parse } from "jsr:@std/yaml@1.1.2/unstable-parse";
+import { stringify } from "jsr:@std/yaml@1.1.2/unstable-stringify";
+export { acceptsLanguages } from "jsr:@std/http@1.1.2/negotiation";
 export { test as testFrontMatter } from "jsr:@std/front-matter@1.0.9";
 export { extract as extractFrontMatter } from "jsr:@std/front-matter@1.0.9/yaml";
-export { emptyDir, ensureDir, expandGlob } from "jsr:@std/fs@1.0.23";
-export * as posix from "jsr:@std/path@1.1.4/posix";
+export { emptyDir, ensureDir, expandGlob } from "jsr:@std/fs@1.0.24";
+export * as posix from "jsr:@std/path@1.1.6/posix";
 export {
   basename,
   dirname,
@@ -14,9 +14,9 @@ export {
   globToRegExp,
   relative,
   SEPARATOR,
-} from "jsr:@std/path@1.1.4";
-export { format as formatBytes } from "jsr:@std/fmt@1.0.9/bytes";
-export { decodeBase64, encodeBase64 } from "jsr:@std/encoding@1.0.10/base64";
+} from "jsr:@std/path@1.1.6";
+export { format as formatBytes } from "jsr:@std/fmt@1.0.10/bytes";
+export { decodeBase64, encodeBase64 } from "jsr:@std/encoding@1.0.11/base64";
 export { contentType } from "jsr:@std/media-types@1.1.0/content-type";
 export * as logger from "jsr:@std/log@0.224.14";
 

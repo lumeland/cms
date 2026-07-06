@@ -1,7 +1,7 @@
 {{ layout "layout.vto" { title: file } }}
   <header class="header">
     {{
-      include "breadcrumb.vto" {
+      include "navigation.vto" {
         links: [
           [upload.label, ["uploads", upload.name]],
           [file, ["uploads", upload.name, file, "edit"]],

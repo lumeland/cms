@@ -30,6 +30,11 @@
   .button {
     width: 100%;
   }
+  hr {
+    margin-block: .5em;
+    border: none;
+    border-top: solid 1px var(--color-line);
+  }
 }
 .menu-header {
   padding: 0.5em;

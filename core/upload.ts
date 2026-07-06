@@ -11,7 +11,7 @@ export interface UploadOptions {
   label?: string;
   description?: string;
   storage: Storage;
-  publicPath: string;
+  publicPath?: string;
   documentLabel?: Labelizer;
   listed?: boolean;
   create?: boolean;
@@ -42,7 +42,7 @@ export default class Upload {
     this.label = options.label || options.name;
     this.description = options.description;
     this.#storage = options.storage;
-    this.publicPath = options.publicPath;
+    this.publicPath = options.publicPath ?? "/";
     this.listed = options.listed ?? true;
     this.documentLabel = options.documentLabel;
     this.permissions = {
