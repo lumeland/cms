@@ -67,7 +67,7 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
   }
 
   iframe {
-    display: block;;
+    display: block;
     width: 100%;
     border: none;
     background-color: white;

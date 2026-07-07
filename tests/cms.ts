@@ -14,6 +14,7 @@ cms.storage("src", Memory.create());
 
 // Create a document to edit a file
 cms.document({
+  icon: "airplane",
   name: "Homepage",
   description: "This is the Home page",
   store: "src:index.md",

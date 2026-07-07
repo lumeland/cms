@@ -3,6 +3,7 @@ import { TransformError } from "../storage/transformers/transform_error.js";
 import type { CMSContent, Data, Entry, PreviewUrl } from "../types.ts";
 
 export interface DocumentOptions {
+  icon?: string;
   name?: string;
   label?: string;
   description?: string;
@@ -23,6 +24,7 @@ interface Permissions {
 }
 
 export default class Document {
+  icon: string;
   #name?: string;
   #label?: string;
   description?: string;
@@ -38,6 +40,7 @@ export default class Document {
   ) => void | Promise<void>;
 
   constructor(options: DocumentOptions) {
+    this.icon = options.icon || "file";
     this.#name = options.name;
     this.#label = options.label || options.name;
     this.description = options.description;

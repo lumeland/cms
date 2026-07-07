@@ -24,7 +24,7 @@
           href='{{ ["collection", collection.name] |> path }}'
           class="list-item"
         >
-          <u-icon name="folder-fill"></u-icon>
+          <u-icon name="{{ collection.icon }}"></u-icon>
           <div class="list-item-header">
             <strong>{{ collection.label }}</strong>
 
@@ -43,7 +43,7 @@
           class="list-item"
           title="{{ document.label }}"
         >
-          <u-icon name="file"></u-icon>
+          <u-icon name="{{ document.icon }}"></u-icon>
           <div class="list-item-header">
             <strong>{{ document.label }}</strong>
 
@@ -58,7 +58,7 @@
     {{ for upload of uploads }}
       <li>
         <a href='{{ ["uploads", upload.name] |> path }}' class="list-item">
-          <u-icon name="images-square-fill"></u-icon>
+          <u-icon name="{{ upload.icon }}"></u-icon>
           <div class="list-item-header">
             <strong>{{ upload.label }}</strong>
 

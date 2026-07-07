@@ -7,6 +7,7 @@ import type {
 } from "../types.ts";
 
 export interface UploadOptions {
+  icon?: string;
   name: string;
   label?: string;
   description?: string;
@@ -28,6 +29,7 @@ interface Permissions {
 }
 
 export default class Upload {
+  icon: string;
   name: string;
   label: string;
   description?: string;
@@ -38,6 +40,7 @@ export default class Upload {
   permissions: Permissions;
 
   constructor(options: UploadOptions) {
+    this.icon = options.icon || "images-square-fill";
     this.name = options.name;
     this.label = options.label || options.name;
     this.description = options.description;

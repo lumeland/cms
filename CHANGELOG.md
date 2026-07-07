@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.15.8] - Unreleased
 ### Added
+- New option `icon` to customize the icon for collections, documents and uploads.
 - New `cms.action()` function to register custom actions.
 
 ### Fixed

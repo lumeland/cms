@@ -190,7 +190,7 @@ import "lume_cms/components/f-url.js";
           class="list-item"
           title="Homepage"
         >
-          <u-icon name="file"></u-icon>
+          <u-icon name="airplane"></u-icon>
           <div class="list-item-header">
             <strong>Homepage</strong>
 

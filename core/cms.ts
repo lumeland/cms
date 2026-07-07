@@ -63,6 +63,7 @@ const allowedTypes: DocumentType[] = [
 ];
 
 export interface DocumentOptions {
+  icon?: string;
   name: string;
   label?: string;
   description?: string;
@@ -80,6 +81,7 @@ export interface DocumentOptions {
 }
 
 export interface CollectionOptions {
+  icon?: string;
   name: string;
   label?: string;
   description?: string;
@@ -102,6 +104,7 @@ export interface CollectionOptions {
 }
 
 export interface UploadOptions {
+  icon?: string;
   name: string;
   label?: string;
   description?: string;
@@ -116,7 +119,7 @@ export interface UploadOptions {
 }
 
 export interface ActionOptions {
-  icon: string;
+  icon?: string;
   name: string;
   description?: string;
   action: () => unknown;

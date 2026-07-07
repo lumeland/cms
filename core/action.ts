@@ -1,5 +1,5 @@
 export interface ActionOptions {
-  icon: string;
+  icon?: string;
   name: string;
   label?: string;
   description?: string;
@@ -9,7 +9,7 @@ export interface ActionOptions {
 export default class Action {
   icon: string;
   name: string;
-  label?: string;
+  label: string;
   description?: string;
   action: () => unknown;
 

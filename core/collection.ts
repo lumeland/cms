@@ -11,6 +11,7 @@ import type {
 } from "../types.ts";
 
 export interface CollectionOptions {
+  icon?: string;
   name: string;
   label?: string;
   description?: string;
@@ -39,6 +40,7 @@ interface Permissions {
 }
 
 export default class Collection {
+  icon: string;
   name: string;
   label: string;
   description?: string;
@@ -56,6 +58,7 @@ export default class Collection {
   permissions: Permissions;
 
   constructor(options: CollectionOptions) {
+    this.icon = options.icon || "folder-fill";
     this.name = options.name;
     this.label = options.label || options.name;
     this.description = options.description;
