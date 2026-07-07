@@ -53,16 +53,39 @@
 
     {{- if Object.keys(actions).length }}
     <hr>
-    {{ for action of actions }}
-    <form
-      method="post"
-      action='{{ ["actions", action.name] |> path }}'
-    >
-      <button class="button is-secondary">
+    {{ for number, action of Object.values(actions) }}
+    {{ layout "components/dialog.vto" { id: `id-action-${number}` } }}
+      {{ slot button }}
         <u-icon name="{{ action.icon }}"></u-icon>
         {{ action.label }}
-      </button>
-    </form>
+      {{ /slot }}
+
+      <header class="modal-header">
+        <h3 class="modal-title">{{ action.label }}</h3>
+        {{ if action.description }}
+          <p>{{ action.description }}</p>
+        {{ /if }}
+      </header>
+
+      <u-action>
+        <form
+          method="post"
+          action='{{ ["actions", action.name] |> path }}'
+          target="{{ `iframe-action-${number}` }}"
+        >
+          <iframe
+            hidden
+            name="{{ `iframe-action-${number}` }}"
+            src="{{ 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>' |> escape }}"
+          >
+          </iframe>
+
+          <button class="button is-primary" type="submit">
+            Start
+          </button>
+        </form>
+      </u-action>
+    {{ /layout }}
     {{ /for }}
     {{ /if }}
 

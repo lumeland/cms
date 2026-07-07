@@ -65,8 +65,27 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
     resize: both;
     overflow: hidden;
   }
-}
 
+  iframe {
+    display: block;;
+    width: 100%;
+    border: none;
+    background-color: white;
+    margin-bottom: .5em;
+  }
+}
+.modal-header {
+  margin-bottom: 1em;
+  p {
+    margin: 0;
+    color: var(--color-dim);
+    font: var(--font-ui);
+  }
+}
+.modal-title {
+  margin: 0;
+  font: var(--font-body-bold);
+}
 .modal-close {
   position: absolute;
   top: 0.5rem;
