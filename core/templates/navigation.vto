@@ -51,7 +51,7 @@
       {{ t("user.action.preview") }}
     </button>
 
-    {{ if Object.keys(actions).length }}
+    {{- if Object.keys(actions).length }}
     <hr>
     {{ for action of actions }}
     <form
