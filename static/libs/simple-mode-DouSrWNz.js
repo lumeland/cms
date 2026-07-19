@@ -1,1 +1,137 @@
-function simpleMode(n){ensureState(n,"start");var t={},e=n.languageData||{},a=!1;for(var r in n)if(r!=e&&n.hasOwnProperty(r))for(var i=t[r]=[],o=n[r],s=0;s<o.length;s++){var u=o[s];i.push(new Rule(u,n)),(u.indent||u.dedent)&&(a=!0)}return{name:e.name,startState:function(){return{state:"start",pending:null,indent:a?[]:null}},copyState:function(n){var t={state:n.state,pending:n.pending,indent:n.indent&&n.indent.slice(0)};return n.stack&&(t.stack=n.stack.slice(0)),t},token:tokenFunction(t),indent:indentFunction(t,e),mergeTokens:e.mergeTokens,languageData:e}}function ensureState(n,t){if(!n.hasOwnProperty(t))throw new Error("Undefined state "+t+" in simple mode")}function toRegex(n,t){if(!n)return/(?:)/;var e="";return n instanceof RegExp?(n.ignoreCase&&(e="i"),n.unicode&&(e+="u"),n=n.source):n=String(n),new RegExp("^(?:"+n+")",e)}function asToken(n){if(!n)return null;if(n.apply)return n;if("string"==typeof n)return n.replace(/\./g," ");for(var t=[],e=0;e<n.length;e++)t.push(n[e]&&n[e].replace(/\./g," "));return t}function Rule(n,t){(n.next||n.push)&&ensureState(t,n.next||n.push),this.regex=toRegex(n.regex),this.token=asToken(n.token),this.data=n}function tokenFunction(n){return function(t,e){if(e.pending){var a=e.pending.shift();return 0==e.pending.length&&(e.pending=null),t.pos+=a.text.length,a.token}for(var r=n[e.state],i=0;i<r.length;i++){var o=r[i],s=(!o.data.sol||t.sol())&&t.match(o.regex);if(s){o.data.next?e.state=o.data.next:o.data.push?((e.stack||(e.stack=[])).push(e.state),e.state=o.data.push):o.data.pop&&e.stack&&e.stack.length&&(e.state=e.stack.pop()),o.data.indent&&e.indent.push(t.indentation()+t.indentUnit),o.data.dedent&&e.indent.pop();var u=o.token;if(u&&u.apply&&(u=u(s)),s.length>2&&o.token&&"string"!=typeof o.token){e.pending=[];for(var d=2;d<s.length;d++)s[d]&&e.pending.push({text:s[d],token:o.token[d-1]});return t.backUp(s[0].length-(s[1]?s[1].length:0)),u[0]}return u&&u.join?u[0]:u}}return t.next(),null}}function indentFunction(n,t){return function(e,a){if(null==e.indent||t.dontIndentStates&&t.dontIndentStates.indexOf(e.state)>-1)return null;var r=e.indent.length-1,i=n[e.state];n:for(;;){for(var o=0;o<i.length;o++){var s=i[o];if(s.data.dedent&&!1!==s.data.dedentIfLineStart){var u=s.regex.exec(a);if(u&&u[0]){r--,(s.next||s.push)&&(i=n[s.next||s.push]),a=a.slice(u[0].length);continue n}}}break}return r<0?0:e.indent[r]}}export{simpleMode as s};
+function simpleMode(states) {
+  ensureState(states, "start");
+  var states_ = {}, meta = states.languageData || {}, hasIndentation = false;
+  for (var state in states) if (state != meta && states.hasOwnProperty(state)) {
+    var list = states_[state] = [], orig = states[state];
+    for (var i = 0; i < orig.length; i++) {
+      var data = orig[i];
+      list.push(new Rule(data, states));
+      if (data.indent || data.dedent) hasIndentation = true;
+    }
+  }
+  return {
+    name: meta.name,
+    startState: function() {
+      return {state: "start", pending: null, indent: hasIndentation ? [] : null};
+    },
+    copyState: function(state) {
+      var s = {state: state.state, pending: state.pending, indent: state.indent && state.indent.slice(0)};
+      if (state.stack)
+        s.stack = state.stack.slice(0);
+      return s;
+    },
+    token: tokenFunction(states_),
+    indent: indentFunction(states_, meta),
+    mergeTokens: meta.mergeTokens,
+    languageData: meta
+  }
+}
+function ensureState(states, name) {
+  if (!states.hasOwnProperty(name))
+    throw new Error("Undefined state " + name + " in simple mode");
+}
+
+function toRegex(val, caret) {
+  if (!val) return /(?:)/;
+  var flags = "";
+  if (val instanceof RegExp) {
+    if (val.ignoreCase) flags = "i";
+    if (val.unicode) flags += "u";
+    val = val.source;
+  } else {
+    val = String(val);
+  }
+  return new RegExp(("^") + "(?:" + val + ")", flags);
+}
+
+function asToken(val) {
+  if (!val) return null;
+  if (val.apply) return val
+  if (typeof val == "string") return val.replace(/\./g, " ");
+  var result = [];
+  for (var i = 0; i < val.length; i++)
+    result.push(val[i] && val[i].replace(/\./g, " "));
+  return result;
+}
+
+function Rule(data, states) {
+  if (data.next || data.push) ensureState(states, data.next || data.push);
+  this.regex = toRegex(data.regex);
+  this.token = asToken(data.token);
+  this.data = data;
+}
+
+function tokenFunction(states) {
+  return function(stream, state) {
+    if (state.pending) {
+      var pend = state.pending.shift();
+      if (state.pending.length == 0) state.pending = null;
+      stream.pos += pend.text.length;
+      return pend.token;
+    }
+
+    var curState = states[state.state];
+    for (var i = 0; i < curState.length; i++) {
+      var rule = curState[i];
+      var matches = (!rule.data.sol || stream.sol()) && stream.match(rule.regex);
+      if (matches) {
+        if (rule.data.next) {
+          state.state = rule.data.next;
+        } else if (rule.data.push) {
+          (state.stack || (state.stack = [])).push(state.state);
+          state.state = rule.data.push;
+        } else if (rule.data.pop && state.stack && state.stack.length) {
+          state.state = state.stack.pop();
+        }
+
+        if (rule.data.indent)
+          state.indent.push(stream.indentation() + stream.indentUnit);
+        if (rule.data.dedent)
+          state.indent.pop();
+        var token = rule.token;
+        if (token && token.apply) token = token(matches);
+        if (matches.length > 2 && rule.token && typeof rule.token != "string") {
+          state.pending = [];
+          for (var j = 2; j < matches.length; j++)
+            if (matches[j])
+              state.pending.push({text: matches[j], token: rule.token[j - 1]});
+          stream.backUp(matches[0].length - (matches[1] ? matches[1].length : 0));
+          return token[0];
+        } else if (token && token.join) {
+          return token[0];
+        } else {
+          return token;
+        }
+      }
+    }
+    stream.next();
+    return null;
+  };
+}
+
+function indentFunction(states, meta) {
+  return function(state, textAfter) {
+    if (state.indent == null || meta.dontIndentStates && meta.dontIndentStates.indexOf(state.state) > -1)
+      return null
+
+    var pos = state.indent.length - 1, rules = states[state.state];
+    scan: for (;;) {
+      for (var i = 0; i < rules.length; i++) {
+        var rule = rules[i];
+        if (rule.data.dedent && rule.data.dedentIfLineStart !== false) {
+          var m = rule.regex.exec(textAfter);
+          if (m && m[0]) {
+            pos--;
+            if (rule.next || rule.push) rules = states[rule.next || rule.push];
+            textAfter = textAfter.slice(m[0].length);
+            continue scan;
+          }
+        }
+      }
+      break;
+    }
+    return pos < 0 ? 0 : state.indent[pos];
+  };
+}
+
+export { simpleMode as s };

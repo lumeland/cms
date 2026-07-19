@@ -1,1 +1,76 @@
-const toml={name:"toml",startState:function(){return{inString:!1,stringType:"",lhs:!0,inArray:0}},token:function(e,t){let n;if(!t.inString&&(n=e.match(/^('''|"""|'|")/))&&(t.stringType=n[0],t.inString=!0),e.sol()&&!t.inString&&0===t.inArray&&(t.lhs=!0),t.inString){for(;t.inString;)if(e.match(t.stringType))t.inString=!1;else if("\\"===e.peek())e.next(),e.next();else{if(e.eol())break;e.match(/^.[^\\\"\']*/)}return t.lhs?"property":"string"}return t.inArray&&"]"===e.peek()?(e.next(),t.inArray--,"bracket"):t.lhs&&"["===e.peek()&&e.skipTo("]")?(e.next(),"]"===e.peek()&&e.next(),"atom"):"#"===e.peek()?(e.skipToEnd(),"comment"):e.eatSpace()?null:t.lhs&&e.eatWhile(function(e){return"="!=e&&" "!=e})?"property":t.lhs&&"="===e.peek()?(e.next(),t.lhs=!1,null):!t.lhs&&e.match(/^\d\d\d\d[\d\-\:\.T]*Z/)?"atom":t.lhs||!e.match("true")&&!e.match("false")?t.lhs||"["!==e.peek()?!t.lhs&&e.match(/^\-?\d+(?:\.\d+)?/)?"number":(e.eatSpace()||e.next(),null):(t.inArray++,e.next(),"bracket"):"atom"},languageData:{commentTokens:{line:"#"}}};export{toml};
+const toml = {
+  name: "toml",
+  startState: function () {
+    return {
+      inString: false,
+      stringType: "",
+      lhs: true,
+      inArray: 0
+    };
+  },
+  token: function (stream, state) {
+    //check for state changes
+    let quote;
+    if (!state.inString && (quote = stream.match(/^('''|"""|'|")/))) {
+      state.stringType = quote[0];
+      state.inString = true; // Update state
+    }
+    if (stream.sol() && !state.inString && state.inArray === 0) {
+      state.lhs = true;
+    }
+    //return state
+    if (state.inString) {
+      while (state.inString) {
+        if (stream.match(state.stringType)) {
+          state.inString = false; // Clear flag
+        } else if (stream.peek() === '\\') {
+          stream.next();
+          stream.next();
+        } else if (stream.eol()) {
+          break
+        } else {
+          stream.match(/^.[^\\\"\']*/);
+        }
+      }
+      return state.lhs ? "property" : "string"; // Token style
+    } else if (state.inArray && stream.peek() === ']') {
+      stream.next();
+      state.inArray--;
+      return 'bracket';
+    } else if (state.lhs && stream.peek() === '[' && stream.skipTo(']')) {
+      stream.next();//skip closing ]
+      // array of objects has an extra open & close []
+      if (stream.peek() === ']') stream.next();
+      return "atom";
+    } else if (stream.peek() === "#") {
+      stream.skipToEnd();
+      return "comment";
+    } else if (stream.eatSpace()) {
+      return null;
+    } else if (state.lhs && stream.eatWhile(function (c) { return c != '=' && c != ' '; })) {
+      return "property";
+    } else if (state.lhs && stream.peek() === "=") {
+      stream.next();
+      state.lhs = false;
+      return null;
+    } else if (!state.lhs && stream.match(/^\d\d\d\d[\d\-\:\.T]*Z/)) {
+      return 'atom'; //date
+    } else if (!state.lhs && (stream.match('true') || stream.match('false'))) {
+      return 'atom';
+    } else if (!state.lhs && stream.peek() === '[') {
+      state.inArray++;
+      stream.next();
+      return 'bracket';
+    } else if (!state.lhs && stream.match(/^\-?\d+(?:\.\d+)?/)) {
+      return 'number';
+    } else if (!stream.eatSpace()) {
+      stream.next();
+    }
+    return null;
+  },
+  languageData: {
+    commentTokens: { line: '#' },
+  },
+};
+
+export { toml };

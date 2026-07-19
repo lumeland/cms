@@ -9,8 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New option `icon` to customize the icon for collections, documents and uploads.
 - New `cms.action()` function to register custom actions.
 
+### Changed
+- Submit the form on pressing ctrl/cmd + Enter from a textarea.
+
 ### Fixed
 - Restore `cms.initContent()` function.
+- Don't create markdown links when replacing URLs with other URLs.
 - Updated dependencies
 
 ## [0.15.7] - 2026-07-04

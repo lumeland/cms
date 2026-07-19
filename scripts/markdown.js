@@ -82,13 +82,13 @@ export function init(parent, textarea, pasteLink = createLink) {
       EditorView.lineWrapping,
       EditorView.domEventHandlers({
         paste(event, view) {
+          console.log(event.shiftKey)
           const text = event.clipboardData.getData("text/plain");
           const selectedText = view.state.doc.sliceString(
             view.state.selection.main.from,
             view.state.selection.main.to,
           );
-          const insert = isUrlLike(text) ? pasteLink(text, selectedText) : text;
-
+          const insert = (isUrlLike(text) && !isUrlLike(selectedText)) ? pasteLink(text, selectedText) : text;
           view.dispatch({
             changes: {
               from: view.state.selection.main.from,
