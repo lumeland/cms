@@ -55,6 +55,7 @@ const markdownBinding = [
 export function init(parent, textarea, pasteLink = createLink) {
   const themeConfig = new Compartment();
   const initTheme = document.documentElement.dataset.theme == "dark" ? theme.dark : theme.light;
+  let shiftKeyIsPressed = false;
   const state = EditorState.create({
     doc: textarea.value,
     extensions: [
@@ -70,25 +71,28 @@ export function init(parent, textarea, pasteLink = createLink) {
         defaultKeymap: false,
       }),
       rectangularSelection(),
-      keymap.of([
-        ...markdownBinding,
-        ...closeBracketsKeymap,
-        ...defaultKeymap,
-        ...historyKeymap,
-      ]),
-      markdown({
-        codeLanguages: languages,
-      }),
-      EditorView.lineWrapping,
       EditorView.domEventHandlers({
+        keydown(event) {
+          if (event.key === "Shift") {
+            shiftKeyIsPressed = true;
+          }
+        },
+        keyup(event) {
+          if (event.key === "Shift") {
+            shiftKeyIsPressed = false;
+          }
+        },
         paste(event, view) {
-          console.log(event.shiftKey)
           const text = event.clipboardData.getData("text/plain");
           const selectedText = view.state.doc.sliceString(
             view.state.selection.main.from,
             view.state.selection.main.to,
           );
-          const insert = (isUrlLike(text) && !isUrlLike(selectedText)) ? pasteLink(text, selectedText) : text;
+
+          const insert = !shiftKeyIsPressed && isUrlLike(text) && !isUrlLike(selectedText)
+            ? pasteLink(text, selectedText)
+            : text;
+
           view.dispatch({
             changes: {
               from: view.state.selection.main.from,
@@ -102,6 +106,16 @@ export function init(parent, textarea, pasteLink = createLink) {
           return true;
         },
       }),
+      keymap.of([
+        ...markdownBinding,
+        ...closeBracketsKeymap,
+        ...defaultKeymap,
+        ...historyKeymap,
+      ]),
+      markdown({
+        codeLanguages: languages,
+      }),
+      EditorView.lineWrapping,
     ],
   });
 

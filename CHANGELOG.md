@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - New option `icon` to customize the icon for collections, documents and uploads.
 - New `cms.action()` function to register custom actions.
+- Don't create automatic links in the markdown editor on paste content with shift key pressed.
 
 ### Changed
 - Submit the form on pressing ctrl/cmd + Enter from a textarea.

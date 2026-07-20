@@ -183,10 +183,6 @@ function pasteLink(url, selectedText = "") {
       return `<audio src="${url}" controls>${selectedText}</audio>`;
 
     default:
-      // avoid linking if the selected text is already a URL
-      if (URL.canParse(selectedText) || selectedText.match(/^[\w/.?#-]+$/)) {
-        return selectedText;
-      }
       return `[${selectedText || t("markdown.placeholder.link")}](${url})`;
   }
 }
