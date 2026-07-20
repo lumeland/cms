@@ -60,7 +60,10 @@
   <header class="header">
     {{ include "navigation.vto" }}
 
-    <h1 class="header-title">{{ collection.label }}</h1>
+    <h1 class="header-title">
+      <u-icon name="{{ collection.icon }}"></u-icon>
+      {{ collection.label }}
+    </h1>
 
     {{ if collection.description }}
       <p class="header-description">{{ collection.description }}</p>
