@@ -1,6 +1,13 @@
 import type { Data, Entry, EntrySource, Storage } from "../types.ts";
 import { DatabaseSync, type SQLOutputValue } from "node:sqlite";
 
+function assertIdentifier(value: string): string {
+  if (!/^\w+$/.test(value)) {
+    throw new Error(`Invalid SQL identifier: "${value}"`);
+  }
+  return value;
+}
+
 export interface Options {
   db: DatabaseSync;
   tableName?: string;
@@ -28,6 +35,9 @@ export class Sqlite implements Storage {
       this.#tableName = tableName;
       this.#fieldName = fieldName;
     } else {
+      if (options.tableName && !/^\w+$/.test(options.tableName)) {
+        throw new Error("Invalid table name: only word characters are allowed.");
+      }
       this.#tableName = options.tableName;
       this.#fieldName = "id";
     }
@@ -35,7 +45,7 @@ export class Sqlite implements Storage {
 
   name(name?: string): string {
     if (!name) {
-      const query = `SELECT max(id) as max_id FROM ${this.tableName}`;
+      const query = "SELECT max(id) as max_id FROM " + this.tableName;
       const result = this.#db.prepare(query).get();
       const maxId = (result?.max_id as number | undefined) ?? 0;
       return `${maxId + 1}`;
@@ -48,14 +58,14 @@ export class Sqlite implements Storage {
     if (!this.#tableName) {
       throw new Error("Table name is not specified.");
     }
-    return this.#tableName;
+    return assertIdentifier(this.#tableName);
   }
 
   get fieldName() {
     if (!this.#fieldName) {
       throw new Error("Field name is not specified.");
     }
-    return this.#fieldName;
+    return assertIdentifier(this.#fieldName);
   }
 
   get db() {
@@ -63,7 +73,7 @@ export class Sqlite implements Storage {
   }
 
   async *[Symbol.asyncIterator](): AsyncGenerator<EntrySource> {
-    const query = `SELECT id, ${this.fieldName} FROM ${this.tableName}`;
+    const query = "SELECT id, " + this.fieldName + " FROM " + this.tableName;
     const stmt = this.#db.prepare(query);
 
     for (const row of stmt.iterate()) {
@@ -100,7 +110,7 @@ export class Sqlite implements Storage {
 
   delete(name: string) {
     const id = this.#getIdFromName(name);
-    const query = `DELETE FROM ${this.tableName} WHERE id = ?`;
+    const query = "DELETE FROM " + this.tableName + " WHERE id = ?";
     const stmt = this.#db.prepare(query);
     stmt.run(id);
   }
@@ -108,7 +118,7 @@ export class Sqlite implements Storage {
   rename(name: string, newName: string): void {
     const id = this.#getIdFromName(name);
     const newId = this.#getIdFromName(newName);
-    const query = `UPDATE ${this.tableName} SET id = ? WHERE id = ?`;
+    const query = "UPDATE " + this.tableName + " SET id = ? WHERE id = ?";
     const stmt = this.#db.prepare(query);
     stmt.run(newId, id);
   }
@@ -132,7 +142,7 @@ export class SqliteEntry implements Entry {
   #getTableAndId(): [string, string] {
     const { src } = this.source;
     const [table, id] = src.split("/");
-    return [table.trim(), id.trim()];
+    return [assertIdentifier(table.trim()), id.trim()];
   }
 
   readText(): string {
@@ -147,7 +157,7 @@ export class SqliteEntry implements Entry {
 
   readData(): Data {
     const [table, id] = this.#getTableAndId();
-    const query = `SELECT * FROM ${table} WHERE id = ?`;
+    const query = "SELECT * FROM " + table + " WHERE id = ?";
     const stmt = this.#storage.db.prepare(query);
     const row = stmt.get(id);
     if (!row) {
@@ -159,12 +169,16 @@ export class SqliteEntry implements Entry {
   }
   writeData(content: Data): void {
     const [table, id] = this.#getTableAndId();
-    const keys = Object.keys(content).join(", ");
+    const contentKeys = Object.keys(content);
+    if (contentKeys.some((k) => !/^\w+$/.test(k))) {
+      throw new Error("Invalid field name: only word characters are allowed.");
+    }
+    const keys = contentKeys.join(", ");
     const values = Object.values(content).map(serialize);
     const placeholders = values.map(() => "?").join(", ");
 
     const query =
-      `INSERT OR REPLACE INTO ${table} (id, ${keys}) VALUES (?, ${placeholders})`;
+      "INSERT OR REPLACE INTO " + table + " (id, " + keys + ") VALUES (?, " + placeholders + ")";
     const stmt = this.#storage.db.prepare(query);
     stmt.run(id, ...values);
   }
