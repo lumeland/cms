@@ -390,6 +390,7 @@ import "lume_cms/components/f-url.js";
 
 
     <h1 class="header-title">
+      <u-icon name="airplane"></u-icon>
       Homepage
     </h1>
 
@@ -640,6 +641,7 @@ import "lume_cms/components/f-url.js";
 
 
     <h1 class="header-title">
+      <u-icon name="airplane"></u-icon>
       Homepage
     </h1>
 
@@ -903,7 +905,10 @@ import "lume_cms/components/f-url.js";
 </nav>
 
 
-    <h1 class="header-title">My posts</h1>
+    <h1 class="header-title">
+      <u-icon name="folder-fill"></u-icon>
+      My posts
+    </h1>
 
     
   </header>
@@ -1135,30 +1140,32 @@ import "lume_cms/components/f-url.js";
     </button>
   </nav>
 
-  
-    <u-views
-      data-target="form-create"
-      data-state="[]"
-      data-views="[&quot;title&quot;]"
-    >
-      <strong class="field-label">View:</strong>
-    </u-views>
-  
+  <u-form>
+    
+      <u-views
+        data-target="form-create"
+        data-state="[]"
+        data-views="[&quot;title&quot;]"
+      >
+        <strong class="field-label">View:</strong>
+      </u-views>
+    
 
-  <form
-    action='/collection/posts/create'
-    method="post"
-    class="form"
-    enctype="multipart/form-data"
-    id="form-create"
-  >
-    <input type="hidden" name="_prefix" value="">
-    <u-fields
-      data-fields="{&quot;name&quot;:&quot;root&quot;,&quot;type&quot;:&quot;object&quot;,&quot;tag&quot;:&quot;f-object-root&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;Post title&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;,&quot;description&quot;:&quot;Write a catchy title for your post.&quot;,&quot;view&quot;:&quot;title&quot;,&quot;attributes&quot;:{&quot;required&quot;:true,&quot;placeholder&quot;:&quot;Example: \\\\&quot;How to create a blog with LumeCMS\\\\&quot;&quot;}},{&quot;tag&quot;:&quot;f-list&quot;,&quot;label&quot;:&quot;tags&quot;,&quot;name&quot;:&quot;tags&quot;,&quot;type&quot;:&quot;list&quot;},{&quot;tag&quot;:&quot;f-current-datetime&quot;,&quot;label&quot;:&quot;date&quot;,&quot;name&quot;:&quot;date&quot;,&quot;type&quot;:&quot;current-datetime&quot;},{&quot;tag&quot;:&quot;f-date&quot;,&quot;label&quot;:&quot;so_data&quot;,&quot;name&quot;:&quot;so_data&quot;,&quot;type&quot;:&quot;date&quot;},{&quot;tag&quot;:&quot;f-datetime&quot;,&quot;label&quot;:&quot;so_datatime&quot;,&quot;name&quot;:&quot;so_datatime&quot;,&quot;type&quot;:&quot;datetime&quot;},{&quot;tag&quot;:&quot;f-color&quot;,&quot;label&quot;:&quot;color&quot;,&quot;name&quot;:&quot;color&quot;,&quot;type&quot;:&quot;color&quot;},{&quot;tag&quot;:&quot;f-file&quot;,&quot;label&quot;:&quot;cover&quot;,&quot;name&quot;:&quot;cover&quot;,&quot;type&quot;:&quot;file&quot;,&quot;relativePath&quot;:true,&quot;upload&quot;:&quot;my_uploads:img/covers&quot;,&quot;publicPath&quot;:&quot;/uploads&quot;},{&quot;tag&quot;:&quot;f-object&quot;,&quot;label&quot;:&quot;Image note&quot;,&quot;name&quot;:&quot;image&quot;,&quot;type&quot;:&quot;object&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;title&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;tag&quot;:&quot;f-file&quot;,&quot;label&quot;:&quot;image&quot;,&quot;name&quot;:&quot;image&quot;,&quot;type&quot;:&quot;file&quot;,&quot;upload&quot;:&quot;my_uploads&quot;,&quot;publicPath&quot;:&quot;/uploads&quot;}]},{&quot;tag&quot;:&quot;f-markdown&quot;,&quot;label&quot;:&quot;Post content&quot;,&quot;name&quot;:&quot;content&quot;,&quot;type&quot;:&quot;markdown&quot;,&quot;relativePath&quot;:true,&quot;upload&quot;:&quot;my_uploads&quot;}]}"
-      data-new="true"
-      data-value="{}"
-    ></u-fields>
-  </form>
+    <form
+      action='/collection/posts/create'
+      method="post"
+      class="form"
+      enctype="multipart/form-data"
+      id="form-create"
+    >
+      <input type="hidden" name="_prefix" value="">
+      <u-fields
+        data-fields="{&quot;name&quot;:&quot;root&quot;,&quot;type&quot;:&quot;object&quot;,&quot;tag&quot;:&quot;f-object-root&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;Post title&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;,&quot;description&quot;:&quot;Write a catchy title for your post.&quot;,&quot;view&quot;:&quot;title&quot;,&quot;attributes&quot;:{&quot;required&quot;:true,&quot;placeholder&quot;:&quot;Example: \\\\&quot;How to create a blog with LumeCMS\\\\&quot;&quot;}},{&quot;tag&quot;:&quot;f-list&quot;,&quot;label&quot;:&quot;tags&quot;,&quot;name&quot;:&quot;tags&quot;,&quot;type&quot;:&quot;list&quot;},{&quot;tag&quot;:&quot;f-current-datetime&quot;,&quot;label&quot;:&quot;date&quot;,&quot;name&quot;:&quot;date&quot;,&quot;type&quot;:&quot;current-datetime&quot;},{&quot;tag&quot;:&quot;f-date&quot;,&quot;label&quot;:&quot;so_data&quot;,&quot;name&quot;:&quot;so_data&quot;,&quot;type&quot;:&quot;date&quot;},{&quot;tag&quot;:&quot;f-datetime&quot;,&quot;label&quot;:&quot;so_datatime&quot;,&quot;name&quot;:&quot;so_datatime&quot;,&quot;type&quot;:&quot;datetime&quot;},{&quot;tag&quot;:&quot;f-color&quot;,&quot;label&quot;:&quot;color&quot;,&quot;name&quot;:&quot;color&quot;,&quot;type&quot;:&quot;color&quot;},{&quot;tag&quot;:&quot;f-file&quot;,&quot;label&quot;:&quot;cover&quot;,&quot;name&quot;:&quot;cover&quot;,&quot;type&quot;:&quot;file&quot;,&quot;relativePath&quot;:true,&quot;upload&quot;:&quot;my_uploads:img/covers&quot;,&quot;publicPath&quot;:&quot;/uploads&quot;},{&quot;tag&quot;:&quot;f-object&quot;,&quot;label&quot;:&quot;Image note&quot;,&quot;name&quot;:&quot;image&quot;,&quot;type&quot;:&quot;object&quot;,&quot;fields&quot;:[{&quot;tag&quot;:&quot;f-text&quot;,&quot;label&quot;:&quot;title&quot;,&quot;name&quot;:&quot;title&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;tag&quot;:&quot;f-file&quot;,&quot;label&quot;:&quot;image&quot;,&quot;name&quot;:&quot;image&quot;,&quot;type&quot;:&quot;file&quot;,&quot;upload&quot;:&quot;my_uploads&quot;,&quot;publicPath&quot;:&quot;/uploads&quot;}]},{&quot;tag&quot;:&quot;f-markdown&quot;,&quot;label&quot;:&quot;Post content&quot;,&quot;name&quot;:&quot;content&quot;,&quot;type&quot;:&quot;markdown&quot;,&quot;relativePath&quot;:true,&quot;upload&quot;:&quot;my_uploads&quot;}]}"
+        data-new="true"
+        data-value="{}"
+      ></u-fields>
+    </form>
+  </u-form>
 
       </div>
       <footer class="app-footer">
@@ -1335,6 +1342,7 @@ import "lume_cms/components/f-url.js";
 </nav>
 
     <h1 class="header-title">
+      <u-icon name="file"></u-icon>
       new-post.md
     </h1>
   </header>
@@ -1757,6 +1765,7 @@ import "lume_cms/components/f-url.js";
 </nav>
 
     <h1 class="header-title">
+      <u-icon name="file"></u-icon>
       new-post.md
     </h1>
   </header>
@@ -2176,7 +2185,10 @@ import "lume_cms/components/f-url.js";
 </nav>
 
 
-    <h1 class="header-title">My posts</h1>
+    <h1 class="header-title">
+      <u-icon name="folder-fill"></u-icon>
+      My posts
+    </h1>
 
     
   </header>
@@ -2397,6 +2409,7 @@ import "lume_cms/components/f-url.js";
 
 
     <h1 class="header-title">
+      <u-icon name="images-square-fill"></u-icon>
       my_uploads
 
       
@@ -2908,6 +2921,7 @@ import "lume_cms/components/f-url.js";
 
 
     <h1 class="header-title">
+      <u-icon name="images-square-fill"></u-icon>
       my_uploads
 
       
