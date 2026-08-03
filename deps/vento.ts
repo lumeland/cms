@@ -1,4 +1,4 @@
-import vento from "https://deno.land/x/vento@v2.3.1/web.ts";
+import vento from "https://cdn.jsdelivr.net/gh/ventojs/vento@2.4.0/web.ts";
 import { normalizePath } from "../core/utils/path.ts";
 import { formatBytes } from "./std.ts";
 
