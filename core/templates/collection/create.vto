@@ -42,28 +42,30 @@
     </button>
   </nav>
 
-  {{ if views.length }}
-    <u-views
-      data-target="form-create"
-      data-state="{{ initViews |> JSON.stringify |> escape }}"
-      data-views="{{ views |> JSON.stringify |> escape }}"
-    >
-      <strong class="field-label">{{ t("document.views") }}:</strong>
-    </u-views>
-  {{ /if }}
+  <u-form>
+    {{ if views.length }}
+      <u-views
+        data-target="form-create"
+        data-state="{{ initViews |> JSON.stringify |> escape }}"
+        data-views="{{ views |> JSON.stringify |> escape }}"
+      >
+        <strong class="field-label">{{ t("document.views") }}:</strong>
+      </u-views>
+    {{ /if }}
 
-  <form
-    action='{{ ["collection", collection.name, "create"] |> path }}'
-    method="post"
-    class="form"
-    enctype="multipart/form-data"
-    id="form-create"
-  >
-    <input type="hidden" name="_prefix" value="{{ folder }}">
-    <u-fields
-      data-fields="{{ fields |> JSON.stringify |> escape }}"
-      data-new="true"
-      data-value="{{ defaults |> JSON.stringify |> escape }}"
-    ></u-fields>
-  </form>
+    <form
+      action='{{ ["collection", collection.name, "create"] |> path }}'
+      method="post"
+      class="form"
+      enctype="multipart/form-data"
+      id="form-create"
+    >
+      <input type="hidden" name="_prefix" value="{{ folder }}">
+      <u-fields
+        data-fields="{{ fields |> JSON.stringify |> escape }}"
+        data-new="true"
+        data-value="{{ defaults |> JSON.stringify |> escape }}"
+      ></u-fields>
+    </form>
+  </u-form>
 {{ /layout }}
