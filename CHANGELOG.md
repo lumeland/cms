@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.15.9] - Unreleased
+### Added
+- Portugese translation [#79].
+
 ## [0.15.8] - 2026-08-04
 ### Added
 - New option `icon` to customize the icon for collections, documents and uploads.
@@ -968,7 +972,9 @@ First version
 [#69]: https://github.com/lumeland/cms/issues/69
 [#75]: https://github.com/lumeland/cms/issues/75
 [#76]: https://github.com/lumeland/cms/issues/76
+[#79]: https://github.com/lumeland/cms/issues/79
 
+[0.15.9]: https://github.com/lumeland/cms/compare/v0.15.8...HEAD
 [0.15.8]: https://github.com/lumeland/cms/compare/v0.15.7...v0.15.8
 [0.15.7]: https://github.com/lumeland/cms/compare/v0.15.6...v0.15.7
 [0.15.6]: https://github.com/lumeland/cms/compare/v0.15.5...v0.15.6
