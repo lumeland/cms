@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Portugese translation [#79].
 
+### Fixed
+- Break words in headers.
+
 ## [0.15.8] - 2026-08-04
 ### Added
 - New option `icon` to customize the icon for collections, documents and uploads.

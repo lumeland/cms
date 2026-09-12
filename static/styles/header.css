@@ -2,6 +2,7 @@
   margin: 0;
   font: var(--font-title);
   letter-spacing: var(--font-title-spacing);
+  word-break: break-word;
 
   u-icon {
     vertical-align: middle;
