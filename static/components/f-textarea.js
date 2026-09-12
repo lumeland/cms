@@ -20,7 +20,6 @@ customElements.define(
         this,
       );
 
-      const autogrow = dom("div", { class: "input-autogrow" }, this);
       dom("textarea", {
         ...schema.attributes,
         id,
@@ -34,7 +33,12 @@ customElements.define(
         onfocus() {
           this.parentNode.dataset.replicatedValue = this.value;
         },
-      }, autogrow);
+        onkeydown(e) {
+          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+            e.target.form?.requestSubmit();
+          }
+        }
+      }, this);
     }
 
     get currentValue() {

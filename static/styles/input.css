@@ -1,5 +1,4 @@
-.input,
-.input-autogrow::after {
+.input {
   display: block;
   width: 100%;
   max-width: var(--max-width, 100%);
@@ -50,25 +49,9 @@
 
 textarea.input {
   resize: vertical;
+  field-sizing: content;
   height: auto;
   min-height: 70px;
-}
-
-.input-autogrow {
-  display: grid;
-
-  &::after {
-    content: attr(data-replicated-value) " ";
-    white-space: pre-wrap;
-    visibility: hidden;
-    grid-area: 1 / 1 / 2 / 2;
-  }
-
-  > textarea {
-    resize: none;
-    overflow: hidden;
-    grid-area: 1 / 1 / 2 / 2;
-  }
 }
 
 .input-file {

@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Portugese translation [#79].
 
+### Changed
+- Removed input-autogrow hack and use `field-sizing` CSS property.
+- Submit the form on pressing ctrl/cmd + Enter from a textarea.
+
 ### Fixed
 - Break words in headers.
 
@@ -17,9 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New `cms.action()` function to register custom actions.
 - Don't create automatic links in the markdown editor on paste content with shift key pressed.
 - Send the form when creating a new collection item when pressing Cmd/Ctrl + S.
-
-### Changed
-- Submit the form on pressing ctrl/cmd + Enter from a textarea.
 
 ### Fixed
 - Restore `cms.initContent()` function.
