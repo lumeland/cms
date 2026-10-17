@@ -1,9 +1,9 @@
-import vento from "https://cdn.jsdelivr.net/gh/ventojs/vento@2.4.0/web.ts";
+import vento from "ventojs";
 import { normalizePath } from "../core/utils/path.ts";
 import { formatBytes } from "./std.ts";
 
 const env = vento({
-  includes: new URL(import.meta.resolve("../core/templates")),
+  includes: import.meta.resolve("../core/templates"),
 });
 
 export async function render(file: string, data: Record<string, unknown> = {}) {

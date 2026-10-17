@@ -1,4 +1,4 @@
-import exifr from "npm:exifr@7.1.3";
+import exifr from "exifr";
 
 const supportedFormats: string[] = [
   "jpeg",
