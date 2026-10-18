@@ -57,7 +57,3 @@ export function stringifyYaml(yaml: Record<string, unknown>) {
     extraTypes: [date, datetime],
   });
 }
-
-export function expandGlob() {
-  throw new Error("to-do")
-}

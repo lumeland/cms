@@ -1,7 +1,6 @@
 import createTree from "./tree.ts";
 import { getLanguageCode, normalizeName } from "../utils/path.ts";
 import { posix } from "../../deps/std.ts";
-import { parseExif } from "../../deps/exifr.ts";
 import { slugify } from "../utils/string.ts";
 import type Upload from "../upload.ts";
 import type User from "../user.ts";
@@ -146,7 +145,7 @@ export async function getDocument(upload: Upload, name: string) {
   const fileData = await entry.readFile();
   const type = fileData.type;
   const size = fileData.size;
-  const exif = await parseExif(fileData);
+  const exif = undefined; // to-do
   const isCroppeable = !!getOutputFormat(name);
   const isCodeEditable = !!getLanguageCode(name, "") || type.includes("text/");
 
