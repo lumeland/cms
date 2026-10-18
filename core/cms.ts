@@ -233,7 +233,7 @@ export default class Cms {
 
   /** Add a new collection */
   collection(options: CollectionOptions): this;
-  collection(name: string, store: string, fields: Lume.CMS.Field[]): this;
+  collection(name: string, store: string, fields?: Lume.CMS.Field[]): this;
   collection(name: string | CollectionOptions, store?: string, fields?: Lume.CMS.Field[]): this {
     const options =
       typeof name === "string"
@@ -256,7 +256,7 @@ export default class Cms {
 
   /** Add a new document */
   document(options: DocumentOptions): this;
-  document(name: string, store: string, fields: Lume.CMS.Field[]): this;
+  document(name: string, store: string, fields?: Lume.CMS.Field[]): this;
   document(name: string | DocumentOptions, store?: string, fields?: Lume.CMS.Field[]): this {
     const options =
       typeof name === "string"

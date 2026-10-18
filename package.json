@@ -1,11 +1,24 @@
 {
   "name": "@lumeland/cms",
-  "version": "1.0.0",
-  "description": "",
-  "keywords": [],
+  "version": "1.0.0-beta-1",
+  "description": "A framework-agnostic CMS",
   "license": "MIT",
-  "author": "",
+  "files": [
+    "auth",
+    "core",
+    "deps",
+    "fields",
+    "static",
+    "storage",
+    "mod.ts",
+    "types.ts",
+    "CHANGELOG.md"
+  ],
   "type": "module",
+  "exports": {
+    ".": "./mod.ts",
+    "./*": "./*"
+  },
   "scripts": {
     "lint": "oxlint . --fix",
     "lint:check": "oxlint .",

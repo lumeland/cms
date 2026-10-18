@@ -214,11 +214,11 @@ export default class Router<D extends Data = Data> {
     const reqMethod = request.method as Method;
 
     // Check if it's a static file
-    if ((reqMethod === "GET" || reqMethod === "HEAD") && parts.length) {
+    if (reqMethod === "GET" || reqMethod === "HEAD") {
       for (const [handler, pattern] of this.staticRoutes) {
         const params = matches(pattern, parts);
 
-        if (!params) {
+        if (!params?._.length) {
           continue;
         }
 
