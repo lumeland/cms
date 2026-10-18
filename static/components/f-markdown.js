@@ -25,19 +25,19 @@ customElements.define(
       initField(this);
       dom("label", { for: id, html: schema.label }, this);
 
-      dom(
-        "div",
-        { class: "field-description", html: schema.description },
+      dom("div", { class: "field-description", html: schema.description }, this);
+
+      const textarea = dom(
+        "textarea",
+        {
+          id,
+          name,
+          value: isNew ? (value ?? schema.value) : value,
+          hidden: true,
+          oninvalid,
+        },
         this,
       );
-
-      const textarea = dom("textarea", {
-        id,
-        name,
-        value: isNew ? value ?? schema.value : value,
-        hidden: true,
-        oninvalid,
-      }, this);
 
       const shadow = this.attachShadow({ mode: "open" });
       shadow.innerHTML = `
@@ -51,31 +51,43 @@ customElements.define(
       if (schema.upload) {
         const name = schema.upload;
 
-        dom("button", {
-          class: "button is-secondary",
-          type: "button",
-          onclick() {
-            dom("u-modal", {
-              data: { src: url("uploads", name) },
-            }, document.body);
+        dom(
+          "button",
+          {
+            class: "button is-secondary",
+            type: "button",
+            onclick() {
+              dom(
+                "u-modal",
+                {
+                  data: { src: url("uploads", name) },
+                },
+                document.body,
+              );
+            },
+            html: `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`,
           },
-          html: `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`,
-        }, custom);
+          custom,
+        );
       }
 
       if (schema.snippets) {
-        const select = dom("select", {
-          class: "select is-secondary",
-          style: "width:7em",
-          html: `<option value=''>${t("markdown.action.insert")}</option>`,
-          onchange() {
-            if (this.value) {
-              md.insertSnippet(md.editor, this.value);
-              md.editor.focus();
-            }
-            this.value = "";
+        const select = dom(
+          "select",
+          {
+            class: "select is-secondary",
+            style: "width:7em",
+            html: `<option value=''>${t("markdown.action.insert")}</option>`,
+            onchange() {
+              if (this.value) {
+                md.insertSnippet(md.editor, this.value);
+                md.editor.focus();
+              }
+              this.value = "";
+            },
           },
-        }, custom);
+          custom,
+        );
         pushOptions(select, schema.snippets);
       }
 
@@ -92,38 +104,42 @@ customElements.define(
       [
         [md.makeBold, "text-b", t("markdown.action.bold")],
         [md.makeItalic, "text-italic", t("markdown.action.italic")],
-        [
-          md.makeStrikethrough,
-          "text-strikethrough",
-          t("markdown.action.strikethrough"),
-        ],
+        [md.makeStrikethrough, "text-strikethrough", t("markdown.action.strikethrough")],
       ].forEach(([fn, icon, label]) => {
-        dom("button", {
-          class: "buttonIcon",
-          ariaLabel: label,
-          type: "button",
-          html: `<u-icon name="${icon}"></u-icon>`,
-          onclick() {
-            fn(md.editor);
-            md.editor.focus();
+        dom(
+          "button",
+          {
+            class: "buttonIcon",
+            ariaLabel: label,
+            type: "button",
+            html: `<u-icon name="${icon}"></u-icon>`,
+            onclick() {
+              fn(md.editor);
+              md.editor.focus();
+            },
           },
-        }, tools);
+          tools,
+        );
       });
 
-      dom("button", {
-        class: "buttonIcon",
-        type: "button",
-        ariaLabel: t("markdown.action.link"),
-        onclick() {
-          const url = prompt(t("markdown.action.link.url"));
+      dom(
+        "button",
+        {
+          class: "buttonIcon",
+          type: "button",
+          ariaLabel: t("markdown.action.link"),
+          onclick() {
+            const url = prompt(t("markdown.action.link.url"));
 
-          if (url) {
-            md.insertLink(md.editor, url);
-            md.editor.focus();
-          }
+            if (url) {
+              md.insertLink(md.editor, url);
+              md.editor.focus();
+            }
+          },
+          html: `<u-icon name="link-simple"></u-icon>`,
         },
-        html: `<u-icon name="link-simple"></u-icon>`,
-      }, tools);
+        tools,
+      );
 
       tools = dom("div", { class: "tools-group" }, helpers);
       [
@@ -131,16 +147,20 @@ customElements.define(
         [md.makeH3, "text-h-three", t("markdown.action.h3")],
         [md.makeH4, "text-h-four", t("markdown.action.h4")],
       ].forEach(([fn, icon, label]) => {
-        dom("button", {
-          class: "buttonIcon",
-          type: "button",
-          ariaLabel: label,
-          html: `<u-icon name="${icon}"></u-icon>`,
-          onclick() {
-            fn(md.editor);
-            md.editor.focus();
+        dom(
+          "button",
+          {
+            class: "buttonIcon",
+            type: "button",
+            ariaLabel: label,
+            html: `<u-icon name="${icon}"></u-icon>`,
+            onclick() {
+              fn(md.editor);
+              md.editor.focus();
+            },
           },
-        }, tools);
+          tools,
+        );
       });
 
       this.editor = md.editor;

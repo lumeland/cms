@@ -1,10 +1,5 @@
 import { applySelectChanges } from "./utils.ts";
-import type {
-  FieldDefinition,
-  InputField,
-  Option,
-  ResolvedField,
-} from "../types.ts";
+import type { FieldDefinition, InputField, Option, ResolvedField } from "../types.ts";
 
 /** Field for select values */
 interface SelectField extends InputField<ResolvedSelectField> {
@@ -15,8 +10,7 @@ interface SelectField extends InputField<ResolvedSelectField> {
   options: Option[];
 }
 
-interface ResolvedSelectField extends SelectField, ResolvedField {
-}
+interface ResolvedSelectField extends SelectField, ResolvedField {}
 
 export default {
   tag: "f-select",

@@ -1,8 +1,4 @@
-import {
-  extractFrontMatter,
-  stringifyYaml,
-  testFrontMatter,
-} from "../../deps/std.ts";
+import { extractFrontMatter, stringifyYaml, testFrontMatter } from "../../deps/std.ts";
 import { TransformError } from "./transform_error.js";
 import type { Data, Transformer } from "../../types.ts";
 
@@ -18,9 +14,7 @@ export const FrontMatter: Transformer<string> = {
         return data;
       }
     } catch (error) {
-      throw new TransformError(
-        `Malformed front matter code (YAML): ${(error as Error).message}`,
-      );
+      throw new TransformError(`Malformed front matter code (YAML): ${(error as Error).message}`);
     }
 
     return { content };

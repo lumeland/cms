@@ -22,15 +22,7 @@ export const inputFormats: Format[] = [
   "webp",
 ];
 
-export const outputFormats: Format[] = [
-  "avif",
-  "gif",
-  "jpeg",
-  "png",
-  "tiff",
-  "raw",
-  "webp",
-];
+export const outputFormats: Format[] = ["avif", "gif", "jpeg", "png", "tiff", "raw", "webp"];
 
 const extensionAliases = new Map<string, Format>([
   ["tif", "tiff"],
@@ -40,8 +32,7 @@ const extensionAliases = new Map<string, Format>([
 export function getInputFormat(name: string): Format | undefined {
   const extension = name.split(".").pop()?.toLowerCase() as Format;
   if (extension) {
-    return extensionAliases.get(extension) ??
-        inputFormats.includes(extension)
+    return (extensionAliases.get(extension) ?? inputFormats.includes(extension))
       ? extension
       : undefined;
   }
@@ -50,8 +41,7 @@ export function getInputFormat(name: string): Format | undefined {
 export function getOutputFormat(name: string): Format | undefined {
   const extension = name.split(".").pop()?.toLowerCase() as Format;
   if (extension) {
-    return extensionAliases.get(extension) ??
-        outputFormats.includes(extension)
+    return (extensionAliases.get(extension) ?? outputFormats.includes(extension))
       ? extension
       : undefined;
   }

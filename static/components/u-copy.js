@@ -8,24 +8,32 @@ customElements.define(
     init() {
       const icon = dom("u-icon", { name: "link-simple" });
 
-      dom("button", {
-        type: "button",
-        class: "buttonIcon",
-        html: icon,
-        onclick: async () => {
-          const text = this.getAttribute("text");
-          await navigator.clipboard.writeText(text);
-          icon.setAttribute("name", "check");
-          const tooltip = dom("div", {
-            class: "tooltip",
-            html: t("copy.copied"),
-          }, this);
-          setTimeout(() => {
-            icon.setAttribute("name", "link-simple");
-            tooltip.remove();
-          }, 2000);
+      dom(
+        "button",
+        {
+          type: "button",
+          class: "buttonIcon",
+          html: icon,
+          onclick: async () => {
+            const text = this.getAttribute("text");
+            await navigator.clipboard.writeText(text);
+            icon.setAttribute("name", "check");
+            const tooltip = dom(
+              "div",
+              {
+                class: "tooltip",
+                html: t("copy.copied"),
+              },
+              this,
+            );
+            setTimeout(() => {
+              icon.setAttribute("name", "link-simple");
+              tooltip.remove();
+            }, 2000);
+          },
         },
-      }, this);
+        this,
+      );
     }
   },
 );
@@ -37,25 +45,30 @@ customElements.define(
       const icon = dom("u-icon", { name: "link-simple" });
       const text = this.innerText.trim();
       this.innerText = "";
-      dom("button", {
-        type: "button",
-        html: [
-          text,
-          icon,
-        ],
-        onclick: async () => {
-          await navigator.clipboard.writeText(text);
-          icon.setAttribute("name", "check");
-          const tooltip = dom("div", {
-            class: "tooltip",
-            html: t("copy.copied"),
-          }, this);
-          setTimeout(() => {
-            icon.setAttribute("name", "link-simple");
-            tooltip.remove();
-          }, 2000);
+      dom(
+        "button",
+        {
+          type: "button",
+          html: [text, icon],
+          onclick: async () => {
+            await navigator.clipboard.writeText(text);
+            icon.setAttribute("name", "check");
+            const tooltip = dom(
+              "div",
+              {
+                class: "tooltip",
+                html: t("copy.copied"),
+              },
+              this,
+            );
+            setTimeout(() => {
+              icon.setAttribute("name", "link-simple");
+              tooltip.remove();
+            }, 2000);
+          },
         },
-      }, this);
+        this,
+      );
     }
   },
 );

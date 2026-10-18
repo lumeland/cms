@@ -6,16 +6,17 @@ customElements.define(
   class Fields extends Component {
     init() {
       const isNew = this.dataset.new === "true";
-      const { fields, value } = this.#parseData(
-        this.dataset.fields,
-        this.dataset.value,
-      );
+      const { fields, value } = this.#parseData(this.dataset.fields, this.dataset.value);
 
-      dom(fields.tag, {
-        ".schema": fields,
-        ".isNew": isNew,
-        value: value?.[fields.name] ?? null,
-      }, this);
+      dom(
+        fields.tag,
+        {
+          ".schema": fields,
+          ".isNew": isNew,
+          value: value?.[fields.name] ?? null,
+        },
+        this,
+      );
     }
 
     update(rawFields, rawValue) {

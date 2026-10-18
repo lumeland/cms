@@ -17,21 +17,15 @@
   left: anchor(left);
   position-anchor: auto;
   position-try-fallbacks:
-    --anchor-bottom-left,
-    --anchor-top-left,
-    --anchor-bottom-right,
-    --anchor-top-right,
-    --anchor-bottom-center,
-    --anchor-top-center,
-    --anchor-left,
-    --anchor-right;
+    --anchor-bottom-left, --anchor-top-left, --anchor-bottom-right, --anchor-top-right,
+    --anchor-bottom-center, --anchor-top-center, --anchor-left, --anchor-right;
 }
 @scope (.menu) to (dialog) {
   .button {
     width: 100%;
   }
   hr {
-    margin-block: .5em;
+    margin-block: 0.5em;
     border: none;
     border-top: solid 1px var(--color-line);
   }

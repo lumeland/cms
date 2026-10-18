@@ -1,10 +1,4 @@
-import type {
-  Entry,
-  EntryMetadata,
-  EntrySource,
-  Labelizer,
-  Storage,
-} from "../types.ts";
+import type { Entry, EntryMetadata, EntrySource, Labelizer, Storage } from "../types.ts";
 
 export interface UploadOptions {
   icon?: string;
@@ -76,10 +70,7 @@ export default class Upload {
   }
 }
 
-function getMetadata(
-  source: EntrySource,
-  labelizer?: Labelizer,
-): EntryMetadata {
+function getMetadata(source: EntrySource, labelizer?: Labelizer): EntryMetadata {
   if (labelizer) {
     const label = labelizer(source.name);
     if (typeof label === "string") {

@@ -32,49 +32,51 @@ app.post("/*", async ({ request, cms, user, next }) => {
     return new Response(null, {
       status: 302,
       headers: new Headers({
-        "Location": getPath(basePath),
+        Location: getPath(basePath),
         "X-Lume-CMS": reload ? "reload" : "",
       }),
     });
   }
 
-  return next()
-    /* POST /versions/create */
-    .post("/create", () => {
-      const from = (body.get("from") ?? undefined) as string | undefined;
-      createVersion(user, git, name, from);
-      return redirect();
-    })
-    /* POST /versions/save */
-    .post("/save", () => {
-      saveVersion(user, git, name);
-      return redirect(false);
-    })
-    /* POST /versions/change */
-    .post("/change", () => {
-      changeVersion(user, git, name);
-      return redirect();
-    })
-    /* POST /versions/publish */
-    .post("/publish", () => {
-      publishVersion(user, git, name);
-      return redirect();
-    })
-    /* POST /versions/delete */
-    .post("/delete", () => {
-      const changed = deleteVersion(user, git, name);
-      return redirect(changed);
-    })
-    /* POST /versions/update */
-    .post("/update", () => {
-      updateVersion(git, name);
-      return redirect();
-    })
-    /* POST /versions/sync */
-    .post("/sync", () => {
-      syncVersion(user, git, name);
-      return redirect();
-    });
+  return (
+    next()
+      /* POST /versions/create */
+      .post("/create", () => {
+        const from = (body.get("from") ?? undefined) as string | undefined;
+        createVersion(user, git, name, from);
+        return redirect();
+      })
+      /* POST /versions/save */
+      .post("/save", () => {
+        saveVersion(user, git, name);
+        return redirect(false);
+      })
+      /* POST /versions/change */
+      .post("/change", () => {
+        changeVersion(user, git, name);
+        return redirect();
+      })
+      /* POST /versions/publish */
+      .post("/publish", () => {
+        publishVersion(user, git, name);
+        return redirect();
+      })
+      /* POST /versions/delete */
+      .post("/delete", () => {
+        const changed = deleteVersion(user, git, name);
+        return redirect(changed);
+      })
+      /* POST /versions/update */
+      .post("/update", () => {
+        updateVersion(git, name);
+        return redirect();
+      })
+      /* POST /versions/sync */
+      .post("/sync", () => {
+        syncVersion(user, git, name);
+        return redirect();
+      })
+  );
 });
 
 export default app;

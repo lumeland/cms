@@ -75,9 +75,7 @@ export abstract class BaseGitAPI<API extends GitAPI> implements Storage {
   name(name?: string): string {
     const newName = name ? slugify(name) : generateId();
 
-    return (this.extension && !newName.endsWith(this.extension))
-      ? newName + this.extension
-      : newName;
+    return this.extension && !newName.endsWith(this.extension) ? newName + this.extension : newName;
   }
 
   abstract directory(id: string): Storage;
@@ -113,7 +111,7 @@ export class GitAPIEntry implements Entry {
   }
 
   async readText(): Promise<string> {
-    return await this.#storage.api.getTextContent(this.source.path) || "";
+    return (await this.#storage.api.getTextContent(this.source.path)) || "";
   }
 
   async writeText(content: string): Promise<void> {
@@ -128,8 +126,7 @@ export class GitAPIEntry implements Entry {
 
   async writeData(data: Data) {
     const transformer = fromFilename(this.source.path);
-    const content = (await transformer.fromData(data))
-      .replaceAll(/\r\n/g, "\n"); // Unify line endings
+    const content = (await transformer.fromData(data)).replaceAll(/\r\n/g, "\n"); // Unify line endings
 
     await this.writeText(content);
   }
@@ -147,10 +144,7 @@ export class GitAPIEntry implements Entry {
   }
 
   async writeFile(file: File) {
-    await this.#storage.api.setContent(
-      this.source.path,
-      await file.arrayBuffer(),
-    );
+    await this.#storage.api.setContent(this.source.path, await file.arrayBuffer());
   }
 }
 

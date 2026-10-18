@@ -1,12 +1,6 @@
 import { compareOptions, getSelectValue, transform } from "./utils.ts";
 import { isEmpty } from "../core/utils/string.ts";
-import type {
-  EntryMetadata,
-  FieldDefinition,
-  Option,
-  ResolvedField,
-  UIField,
-} from "../types.ts";
+import type { EntryMetadata, FieldDefinition, Option, ResolvedField, UIField } from "../types.ts";
 
 /** Field for list values */
 interface RelationListField extends UIField<ResolvedRelationListField> {
@@ -43,15 +37,14 @@ export default {
       );
     }
 
-    const createOption = field.option ??
+    const createOption =
+      field.option ??
       (({ label, name }: EntryMetadata): Option => ({
         label,
         value: name,
       }));
 
-    field.options = (await Array.fromAsync(collection))
-      .map(createOption)
-      .sort(compareOptions);
+    field.options = (await Array.fromAsync(collection)).map(createOption).sort(compareOptions);
   },
   applyChanges(data, changes, field) {
     const options = field.options;

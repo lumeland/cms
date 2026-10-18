@@ -7,17 +7,25 @@ customElements.define(
     init() {
       const { src } = this.dataset;
 
-      const dialog = dom("dialog", {
-        class: "modal is-aside",
-        onclose: () => this.remove(),
-        onclick: closeOnClickOutside,
-      }, this);
+      const dialog = dom(
+        "dialog",
+        {
+          class: "modal is-aside",
+          onclose: () => this.remove(),
+          onclick: closeOnClickOutside,
+        },
+        this,
+      );
 
-      dom("button", {
-        class: "buttonIcon modal-close",
-        onclick: () => dialog.close(),
-        html: "<u-icon name='x'></u-icon>",
-      }, dialog);
+      dom(
+        "button",
+        {
+          class: "buttonIcon modal-close",
+          onclick: () => dialog.close(),
+          html: "<u-icon name='x'></u-icon>",
+        },
+        dialog,
+      );
 
       if (src) {
         dom("iframe", { class: "modal-content", src }, dialog);
@@ -34,7 +42,8 @@ function closeOnClickOutside(e) {
   }
 
   const rect = e.target.getBoundingClientRect();
-  const clickedInDialog = rect.top <= e.clientY &&
+  const clickedInDialog =
+    rect.top <= e.clientY &&
     e.clientY <= rect.top + rect.height &&
     rect.left <= e.clientX &&
     e.clientX <= rect.left + rect.width;

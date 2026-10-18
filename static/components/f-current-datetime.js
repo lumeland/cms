@@ -14,11 +14,9 @@ customElements.define(
       const abortController = new AbortController();
 
       // Update the value before submitting the form
-      input.form.addEventListener(
-        "submit",
-        () => input.value = formatDatetime(),
-        { signal: abortController.signal },
-      );
+      input.form.addEventListener("submit", () => (input.value = formatDatetime()), {
+        signal: abortController.signal,
+      });
 
       // If the user inputs a new value, don't update the value
       input.addEventListener("input", () => abortController.abort(), {

@@ -29,23 +29,27 @@ customElements.define(
 
       for (const view of JSON.parse(views)) {
         const visible = initialViews.has(view);
-        const button = dom("button", {
-          type: "button",
-          class: "button is-secondary",
-          "aria-pressed": String(visible),
-          html: labelify(view),
-          onclick: () => {
-            const pressed = button.getAttribute("aria-pressed") === "true";
-            button.setAttribute("aria-pressed", String(!pressed));
-            if (pressed) {
-              visibleViews.delete(view);
-            } else {
-              visibleViews.add(view);
-            }
+        const button = dom(
+          "button",
+          {
+            type: "button",
+            class: "button is-secondary",
+            "aria-pressed": String(visible),
+            html: labelify(view),
+            onclick: () => {
+              const pressed = button.getAttribute("aria-pressed") === "true";
+              button.setAttribute("aria-pressed", String(!pressed));
+              if (pressed) {
+                visibleViews.delete(view);
+              } else {
+                visibleViews.add(view);
+              }
 
-            this.update(targetElement, visibleViews);
+              this.update(targetElement, visibleViews);
+            },
           },
-        }, group);
+          group,
+        );
       }
     }
 

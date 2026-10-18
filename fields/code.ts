@@ -6,8 +6,7 @@ interface CodeField extends InputField<ResolvedCodeField> {
   type: "code";
   value?: string;
 }
-interface ResolvedCodeField extends CodeField, ResolvedField {
-}
+interface ResolvedCodeField extends CodeField, ResolvedField {}
 
 export default {
   tag: "f-code",

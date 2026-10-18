@@ -7,10 +7,7 @@ import type Collection from "../collection.ts";
 import type Document from "../document.ts";
 import type User from "../user.ts";
 
-export function getCollections(
-  user: User,
-  collections: Collection[],
-): Collection[] {
+export function getCollections(user: User, collections: Collection[]): Collection[] {
   return collections.filter((collection) => user.canView(collection));
 }
 
@@ -34,14 +31,11 @@ export async function getNewDocument(
   }
 
   if (collection.fields === undefined) {
-    throw new Error(
-      "Create document without fields is not supported yet",
-    );
+    throw new Error("Create document without fields is not supported yet");
   }
 
-  const initViews = typeof collection.views === "function"
-    ? collection.views() || []
-    : collection.views || [];
+  const initViews =
+    typeof collection.views === "function" ? collection.views() || [] : collection.views || [];
 
   const fields = await prepareField(collection.fields, cms);
   const views = Array.from(getViews(collection.fields));
@@ -63,14 +57,10 @@ export async function saveNewDocument(
   let data = changesToData(changes);
 
   // Calculate the document name
-  let name = normalizeName(changes._id as string) ||
-    collection.storage.name();
+  let name = normalizeName(changes._id as string) || collection.storage.name();
 
   if (changes._prefix) {
-    name = posix.join(
-      normalizeName(changes._prefix as string) || "",
-      name,
-    );
+    name = posix.join(normalizeName(changes._prefix as string) || "", name);
   }
 
   // Write the document
@@ -105,9 +95,8 @@ export async function getDocument(
 
   const data = await document.read();
 
-  const initViews = typeof collection.views === "function"
-    ? collection.views() || []
-    : collection.views || [];
+  const initViews =
+    typeof collection.views === "function" ? collection.views() || [] : collection.views || [];
 
   const fields = await prepareField(collection.fields!, cms, data, document);
   const views = Array.from(getViews(collection.fields!));
@@ -164,17 +153,19 @@ export async function getDocumentCode(
   const fields = {
     tag: "f-object-root",
     name: "root",
-    fields: [{
-      tag: "f-code",
-      name: "code",
-      label: "Code",
-      type: "code",
-      attributes: {
-        data: {
-          language: getLanguageCode(document.source.name),
+    fields: [
+      {
+        tag: "f-code",
+        name: "code",
+        label: "Code",
+        type: "code",
+        attributes: {
+          data: {
+            language: getLanguageCode(document.source.name),
+          },
         },
       },
-    }],
+    ],
   };
 
   return { data, fields, url };
@@ -234,11 +225,7 @@ export async function duplicateDocument(
     return { newDocument: document };
   }
 
-  await newDocument.write(
-    changesToData(changes),
-    cms,
-    true,
-  );
+  await newDocument.write(changesToData(changes), cms, true);
 
   // Wait for the preview URL to be ready
   await getPreviewUrl(collection, newDocument, cms, true);
@@ -276,11 +263,7 @@ export async function moveDocument(
   return { newDocument };
 }
 
-export async function deleteDocument(
-  user: User,
-  collection: Collection,
-  document: Document,
-) {
+export async function deleteDocument(user: User, collection: Collection, document: Document) {
   if (!user.canDelete(collection)) {
     throw new Error("Permission denied");
   }
@@ -288,22 +271,18 @@ export async function deleteDocument(
   await collection.delete(document.name);
 }
 
-function getDocumentName(
-  collection: Collection,
-  data: Data,
-) {
+function getDocumentName(collection: Collection, data: Data) {
   switch (typeof collection.documentName) {
     case "string":
-      return collection.documentName.replaceAll(
-        /\{([^}\s]+)\}/g,
-        (_, key) => {
+      return collection.documentName
+        .replaceAll(/\{([^}\s]+)\}/g, (_, key) => {
           const value = getValue(key, data);
           if (typeof value === "string") {
             return value.replaceAll("/", "").trim();
           }
           return typeof value === "number" ? value.toString() : "";
-        },
-      ).trim();
+        })
+        .trim();
 
     case "function":
       return collection.documentName(data as Data);
@@ -334,11 +313,6 @@ export function getPreviewUrl(
   changed = false,
 ) {
   if (collection.previewUrl) {
-    return collection.previewUrl(
-      document.source.path,
-      cms,
-      changed,
-      document.storage,
-    );
+    return collection.previewUrl(document.source.path, cms, changed, document.storage);
   }
 }

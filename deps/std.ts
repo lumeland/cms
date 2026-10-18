@@ -27,22 +27,17 @@ const date: ImplicitType = {
   tag: "tag:cms:date",
   kind: "scalar",
   resolve: (data): boolean => typeof data === "string" && YAML_DATE.test(data),
-  construct: (data: string): Temporal.PlainDate =>
-    Temporal.PlainDate.from(data),
-  predicate: (data): data is Temporal.PlainDate =>
-    data instanceof Temporal.PlainDate,
+  construct: (data: string): Temporal.PlainDate => Temporal.PlainDate.from(data),
+  predicate: (data): data is Temporal.PlainDate => data instanceof Temporal.PlainDate,
   represent: (data): string => data.toString(),
 };
 
 const datetime: ImplicitType = {
   tag: "tag:cms:datetime",
   kind: "scalar",
-  resolve: (data): boolean =>
-    typeof data === "string" && YAML_DATETIME.test(data),
-  construct: (data: string): Temporal.PlainDateTime =>
-    Temporal.PlainDateTime.from(data),
-  predicate: (data): data is Temporal.PlainDateTime =>
-    data instanceof Temporal.PlainDateTime,
+  resolve: (data): boolean => typeof data === "string" && YAML_DATETIME.test(data),
+  construct: (data: string): Temporal.PlainDateTime => Temporal.PlainDateTime.from(data),
+  predicate: (data): data is Temporal.PlainDateTime => data instanceof Temporal.PlainDateTime,
   represent: (data): string => data.toString().replace("T", " "),
 };
 

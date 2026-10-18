@@ -14,31 +14,31 @@ customElements.define(
       initField(this);
       dom("label", { for: id, html: schema.label }, this);
 
+      dom("div", { class: "field-description", html: schema.description }, this);
+
       dom(
-        "div",
-        { class: "field-description", html: schema.description },
+        "textarea",
+        {
+          ...schema.attributes,
+          id,
+          name,
+          value: isNew ? (value ?? schema.value) : value,
+          class: "input",
+          oninvalid,
+          oninput() {
+            this.parentNode.dataset.replicatedValue = this.value;
+          },
+          onfocus() {
+            this.parentNode.dataset.replicatedValue = this.value;
+          },
+          onkeydown(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+              e.target.form?.requestSubmit();
+            }
+          },
+        },
         this,
       );
-
-      dom("textarea", {
-        ...schema.attributes,
-        id,
-        name,
-        value: isNew ? value ?? schema.value : value,
-        class: "input",
-        oninvalid,
-        oninput() {
-          this.parentNode.dataset.replicatedValue = this.value;
-        },
-        onfocus() {
-          this.parentNode.dataset.replicatedValue = this.value;
-        },
-        onkeydown(e) {
-          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-            e.target.form?.requestSubmit();
-          }
-        }
-      }, this);
     }
 
     get currentValue() {

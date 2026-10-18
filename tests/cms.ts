@@ -63,9 +63,8 @@ cms.collection({
       },
       init(field, _, data) {
         if (data?.title) {
-          field.description = data.title.length > 100
-            ? "This title is too long!"
-            : "This title is perfect!";
+          field.description =
+            data.title.length > 100 ? "This title is too long!" : "This title is perfect!";
         }
       },
     },
@@ -87,10 +86,7 @@ cms.collection({
       name: "image",
       type: "object",
       label: "Image note",
-      fields: [
-        "title: text",
-        "image: file",
-      ],
+      fields: ["title: text", "image: file"],
     },
     {
       name: "content",

@@ -10,9 +10,7 @@ customElements.define(
 
     init() {
       const { src } = this.dataset;
-      const download = `<a href="${src}" download>${
-        t("preview.action.download")
-      }</a>`;
+      const download = `<a href="${src}" download>${t("preview.action.download")}</a>`;
 
       switch (fileType(src)) {
         case "image":

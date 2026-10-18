@@ -7,7 +7,7 @@
   u-icon {
     vertical-align: middle;
     color: var(--color-dim);
-    margin-inline-end: .25rem;
+    margin-inline-end: 0.25rem;
   }
 }
 .header-description {

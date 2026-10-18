@@ -20,7 +20,7 @@
 
   &.is-error {
     h1,
-     > u-icon {
+    > u-icon {
       color: var(--color-error);
     }
 

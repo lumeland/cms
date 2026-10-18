@@ -23,10 +23,14 @@ customElements.define(
 
         e.preventDefault();
 
-        const tooltip = dom("div", {
-          class: "tooltip is-toast",
-          html: t("form.saving"),
-        }, this);
+        const tooltip = dom(
+          "div",
+          {
+            class: "tooltip is-toast",
+            html: t("form.saving"),
+          },
+          this,
+        );
 
         setTimeout(async () => {
           await this.sendForm(form);
@@ -80,7 +84,5 @@ function sameURL(url1, url2) {
   const u1 = new URL(url1);
   const u2 = new URL(url2);
 
-  return u1.origin === u2.origin &&
-    u1.pathname === u2.pathname &&
-    u1.search === u2.search;
+  return u1.origin === u2.origin && u1.pathname === u2.pathname && u1.search === u2.search;
 }

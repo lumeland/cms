@@ -25,18 +25,13 @@ export interface GitAPI {
    * Get the binary content of a file.
    * Returns `undefined` if the file does not exist.
    */
-  getBinaryContent: (
-    path?: string,
-  ) => Promise<Uint8Array<ArrayBuffer> | undefined>;
+  getBinaryContent: (path?: string) => Promise<Uint8Array<ArrayBuffer> | undefined>;
 
   /**
    * Edit the content of a file
    * Creates the file if it does not exist.
    */
-  setContent: (
-    path: string,
-    content: ArrayBuffer | Uint8Array | string,
-  ) => Promise<void>;
+  setContent: (path: string, content: ArrayBuffer | Uint8Array | string) => Promise<void>;
 
   /**
    * Delete a file

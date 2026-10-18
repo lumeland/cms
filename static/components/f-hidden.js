@@ -9,11 +9,15 @@ customElements.define(
       const { schema, value, isNew } = this;
       const name = getFieldName(this);
 
-      dom("input", {
-        type: "hidden",
-        name,
-        value: isNew ? value ?? schema.value : value,
-      }, this);
+      dom(
+        "input",
+        {
+          type: "hidden",
+          name,
+          value: isNew ? (value ?? schema.value) : value,
+        },
+        this,
+      );
     }
 
     get currentValue() {

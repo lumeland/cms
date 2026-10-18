@@ -1,10 +1,5 @@
 import { applyTextChanges } from "./utils.ts";
-import type {
-  FieldDefinition,
-  InputField,
-  Option,
-  ResolvedField,
-} from "../types.ts";
+import type { FieldDefinition, InputField, Option, ResolvedField } from "../types.ts";
 
 /** Field for email values */
 interface EmailField extends InputField<ResolvedEmailField> {
@@ -15,8 +10,7 @@ interface EmailField extends InputField<ResolvedEmailField> {
   options?: Option[];
 }
 
-interface ResolvedEmailField extends EmailField, ResolvedField {
-}
+interface ResolvedEmailField extends EmailField, ResolvedField {}
 
 export default {
   tag: "f-email",

@@ -49,7 +49,6 @@ globalThis.$ui = {
     const xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", url("auth", "logout"), true, "logout");
     xmlHttp.send();
-    document.body.innerHTML =
-      '<p class="emptyState is-fullscreen">Logged out.</p>';
+    document.body.innerHTML = '<p class="emptyState is-fullscreen">Logged out.</p>';
   },
 };

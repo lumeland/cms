@@ -1,6 +1,6 @@
-import { contentType } from "deno-std/media_types/content_type.js"
+import { contentType } from "deno-std/media_types/content_type.js";
 import { extname, posix } from "node:path";
-import {createReadStream, statSync} from "node:fs";
+import { createReadStream, statSync } from "node:fs";
 import { Readable } from "node:stream";
 
 /**
@@ -120,7 +120,9 @@ export async function serveFile(root: string, req: Request, path: string): Promi
     headers.set("Content-Length", `${contentLength}`);
 
     // Return 206 Partial Content
-    const file = Readable.toWeb(createReadStream(filePath, { start })) as ReadableStream<Uint8Array<ArrayBuffer>>;
+    const file = Readable.toWeb(createReadStream(filePath, { start })) as ReadableStream<
+      Uint8Array<ArrayBuffer>
+    >;
 
     const sliced = file.pipeThrough(new ByteSliceStream(0, contentLength - 1));
 
@@ -130,7 +132,9 @@ export async function serveFile(root: string, req: Request, path: string): Promi
   // Set content length
   headers.set("Content-Length", `${fileSize}`);
 
-  const file = Readable.toWeb(createReadStream(filePath)) as ReadableStream<Uint8Array<ArrayBuffer>>
+  const file = Readable.toWeb(createReadStream(filePath)) as ReadableStream<
+    Uint8Array<ArrayBuffer>
+  >;
   return createResponse(STATUS.OK, headers, file);
 }
 

@@ -7,9 +7,7 @@ export const Yaml: Transformer<string> = {
     try {
       return parseYaml(content) as Record<string, unknown>;
     } catch (error) {
-      throw new TransformError(
-        `Malformed YAML code: ${(error as Error).message}`,
-      );
+      throw new TransformError(`Malformed YAML code: ${(error as Error).message}`);
     }
   },
 

@@ -1,10 +1,5 @@
 import { transform } from "./utils.ts";
-import type {
-  FieldDefinition,
-  InputField,
-  Option,
-  ResolvedField,
-} from "../types.ts";
+import type { FieldDefinition, InputField, Option, ResolvedField } from "../types.ts";
 
 /** Field for numeric values */
 interface NumberField extends InputField<ResolvedNumberField, Attributes> {
@@ -26,8 +21,7 @@ interface Attributes {
   step?: number;
 }
 
-interface ResolvedNumberField extends NumberField, ResolvedField {
-}
+interface ResolvedNumberField extends NumberField, ResolvedField {}
 
 export default {
   tag: "f-number",

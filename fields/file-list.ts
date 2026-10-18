@@ -1,10 +1,5 @@
 import { transform } from "./utils.ts";
-import type {
-  Data,
-  FieldDefinition,
-  GroupField,
-  ResolvedGroupField,
-} from "../types.ts";
+import type { Data, FieldDefinition, GroupField, ResolvedGroupField } from "../types.ts";
 
 /** Field for file-list values */
 interface FileListField extends GroupField<ResolvedFileListField> {
@@ -12,9 +7,7 @@ interface FileListField extends GroupField<ResolvedFileListField> {
   value?: Record<string, unknown>[];
 }
 
-interface ResolvedFileListField
-  extends Omit<FileListField, "fields">, ResolvedGroupField {
-}
+interface ResolvedFileListField extends Omit<FileListField, "fields">, ResolvedGroupField {}
 
 export default {
   tag: "f-file-list",
@@ -27,13 +20,7 @@ export default {
           const value = {} as Data;
 
           for (const f of field.fields) {
-            await f.applyChanges(
-              value,
-              subchanges,
-              f,
-              document,
-              cmsContent,
-            );
+            await f.applyChanges(value, subchanges, f, document, cmsContent);
           }
 
           return value;

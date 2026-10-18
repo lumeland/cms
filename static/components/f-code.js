@@ -1,11 +1,4 @@
-import {
-  asset,
-  getFieldName,
-  initField,
-  oninvalid,
-  pushOptions,
-  updateField,
-} from "./utils.js";
+import { asset, getFieldName, initField, oninvalid, pushOptions, updateField } from "./utils.js";
 import { Component } from "./component.js";
 import { init } from "../libs/code.js";
 import dom from "dom";
@@ -20,25 +13,37 @@ customElements.define(
       const id = `field_${name}`;
 
       initField(this);
-      dom("label", {
-        for: id,
-        html: schema.label,
-      }, this);
+      dom(
+        "label",
+        {
+          for: id,
+          html: schema.label,
+        },
+        this,
+      );
 
-      dom("div", {
-        class: "field-description",
-        html: schema.description,
-      }, this);
+      dom(
+        "div",
+        {
+          class: "field-description",
+          html: schema.description,
+        },
+        this,
+      );
 
       const tools = dom("div", { class: "tools" }, this);
 
-      const textarea = dom("textarea", {
-        id,
-        name,
-        value: isNew ? value ?? schema.value : value,
-        hidden: true,
-        oninvalid,
-      }, this);
+      const textarea = dom(
+        "textarea",
+        {
+          id,
+          name,
+          value: isNew ? (value ?? schema.value) : value,
+          hidden: true,
+          oninvalid,
+        },
+        this,
+      );
 
       const shadow = this.attachShadow({ mode: "open" });
       shadow.innerHTML = `
@@ -49,12 +54,16 @@ customElements.define(
       const code = dom("div", { class: "code" }, shadow);
       const { editor, changeLanguage, allLanguages } = init(code, textarea);
       this.editor = editor;
-      const languageSelector = dom("select", {
-        class: "select",
-        onchange: (event) => {
-          changeLanguage(event.target.value);
+      const languageSelector = dom(
+        "select",
+        {
+          class: "select",
+          onchange: (event) => {
+            changeLanguage(event.target.value);
+          },
         },
-      }, tools);
+        tools,
+      );
       pushOptions(languageSelector, allLanguages);
       languageSelector.value = schema.attributes?.data?.language ?? "HTML";
       languageSelector.dispatchEvent(new Event("change"));

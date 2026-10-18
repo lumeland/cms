@@ -1,10 +1,5 @@
 import { transform } from "./utils.ts";
-import type {
-  Data,
-  FieldDefinition,
-  GroupField,
-  ResolvedGroupField,
-} from "../types.ts";
+import type { Data, FieldDefinition, GroupField, ResolvedGroupField } from "../types.ts";
 
 /** Field for choose list values */
 interface ChooseListField extends GroupField<ResolvedChooseListField> {
@@ -12,9 +7,7 @@ interface ChooseListField extends GroupField<ResolvedChooseListField> {
   value?: Record<string, unknown>[];
 }
 
-interface ResolvedChooseListField
-  extends Omit<ChooseListField, "fields">, ResolvedGroupField {
-}
+interface ResolvedChooseListField extends Omit<ChooseListField, "fields">, ResolvedGroupField {}
 
 export default {
   tag: "f-choose-list",
@@ -35,13 +28,7 @@ export default {
           }
 
           for (const f of chooseField?.fields || []) {
-            await f.applyChanges(
-              value,
-              subchanges,
-              f,
-              document,
-              cmsContent,
-            );
+            await f.applyChanges(value, subchanges, f, document, cmsContent);
           }
 
           return value;

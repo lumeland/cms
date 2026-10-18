@@ -21,11 +21,7 @@ export interface CollectionOptions {
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
-  transform?: (
-    data: Data,
-    CmsContent: CMSContent,
-    isNew: boolean,
-  ) => void | Promise<void>;
+  transform?: (data: Data, CmsContent: CMSContent, isNew: boolean) => void | Promise<void>;
   create?: boolean;
   delete?: boolean;
   edit?: boolean;
@@ -49,11 +45,7 @@ export default class Collection {
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
-  transform?: (
-    data: Data,
-    CmsContent: CMSContent,
-    isNew: boolean,
-  ) => void | Promise<void>;
+  transform?: (data: Data, CmsContent: CMSContent, isNew: boolean) => void | Promise<void>;
   documentLabel?: Labelizer;
   permissions: Permissions;
 
@@ -128,10 +120,7 @@ export default class Collection {
   }
 }
 
-function getMetadata(
-  source: EntrySource,
-  labelizer?: Labelizer,
-): EntryMetadata {
+function getMetadata(source: EntrySource, labelizer?: Labelizer): EntryMetadata {
   if (labelizer) {
     const label = labelizer(source.name);
     if (typeof label === "string") {

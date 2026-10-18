@@ -58,9 +58,7 @@ export class ForgejoAPI implements GitAPI {
 
     if (!res.ok) {
       const body = await res.text();
-      throw new Error(
-        `Forgejo API request failed: ${res.status} ${res.statusText}\n${body}`,
-      );
+      throw new Error(`Forgejo API request failed: ${res.status} ${res.statusText}\n${body}`);
     }
     return await res.json();
   }
@@ -99,9 +97,7 @@ export class ForgejoAPI implements GitAPI {
   }
 
   /** Get the binary content of a file. */
-  async getBinaryContent(
-    path = "",
-  ): Promise<Uint8Array<ArrayBuffer> | undefined> {
+  async getBinaryContent(path = ""): Promise<Uint8Array<ArrayBuffer> | undefined> {
     try {
       const result = await this.#fetch(path);
       return decodeBase64(result.content);

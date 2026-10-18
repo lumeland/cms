@@ -32,13 +32,17 @@ customElements.define(
       }
 
       this.#document = new Promise((resolve) => {
-        dom("iframe", {
-          class: "pagepreview",
-          src: url,
-          onload() {
-            resolve(this.contentDocument);
+        dom(
+          "iframe",
+          {
+            class: "pagepreview",
+            src: url,
+            onload() {
+              resolve(this.contentDocument);
+            },
           },
-        }, this);
+          this,
+        );
       });
     }
 
@@ -67,9 +71,13 @@ customElements.define(
       container.style.zIndex = 12;
 
       // Create the div that will highlight the element
-      const div = dom("div", {
-        class: "pagepreview-mask",
-      }, container);
+      const div = dom(
+        "div",
+        {
+          class: "pagepreview-mask",
+        },
+        container,
+      );
 
       // Scroll to the element
       element.scrollIntoView({ behavior: "instant", block: "center" });
@@ -78,14 +86,8 @@ customElements.define(
       const rect = element.getBoundingClientRect();
       const offset = 4;
 
-      div.style.setProperty(
-        "--position",
-        `${rect.left - offset / 2}px ${rect.top - offset / 2}px`,
-      );
-      div.style.setProperty(
-        "--size",
-        `${rect.width + offset}px ${rect.height + offset}px`,
-      );
+      div.style.setProperty("--position", `${rect.left - offset / 2}px ${rect.top - offset / 2}px`);
+      div.style.setProperty("--size", `${rect.width + offset}px ${rect.height + offset}px`);
 
       // Remove the mask after a while
       setTimeout(() => {

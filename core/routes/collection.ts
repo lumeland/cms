@@ -20,26 +20,25 @@ import {
  */
 const app = new Router<RouterData>();
 
-app.path(
-  "/:name/*",
-  ({ request, cms, render, name, next, user }) => {
-    const { collections, basePath } = cms;
-    const collection = collections[name];
+app.path("/:name/*", ({ request, cms, render, name, next, user }) => {
+  const { collections, basePath } = cms;
+  const collection = collections[name];
 
-    if (!collection) {
-      return new Response("Not found", { status: 404 });
-    }
+  if (!collection) {
+    return new Response("Not found", { status: 404 });
+  }
 
-    function redirect(...paths: string[]) {
-      return new Response(null, {
-        status: 302,
-        headers: new Headers({
-          "Location": getPath(basePath, "collection", ...paths),
-        }),
-      });
-    }
+  function redirect(...paths: string[]) {
+    return new Response(null, {
+      status: 302,
+      headers: new Headers({
+        Location: getPath(basePath, "collection", ...paths),
+      }),
+    });
+  }
 
-    return next()
+  return (
+    next()
       /* GET /collection/:name */
       .get("/", async () => {
         const { tree } = await getCollection(user, collection);
@@ -66,12 +65,7 @@ app.path(
       /* POST /collection/:name/create */
       .post("/create", async ({ request }) => {
         const changes = Object.fromEntries(await request.formData());
-        const { document } = await saveNewDocument(
-          user,
-          collection,
-          cms,
-          changes,
-        );
+        const { document } = await saveNewDocument(user, collection, cms, changes);
 
         return redirect(collection.name, document.name, "edit");
       })
@@ -83,107 +77,103 @@ app.path(
           return new Response("Not found", { status: 404 });
         }
 
-        return next()
-          /* GET /collection/:name/:file/edit */
-          .get("/edit", async () => {
-            // If there are no fields defined, redirect to the code editor
-            if (collection.fields === undefined) {
-              return redirect(collection.name, document.name, "code");
-            }
+        return (
+          next()
+            /* GET /collection/:name/:file/edit */
+            .get("/edit", async () => {
+              // If there are no fields defined, redirect to the code editor
+              if (collection.fields === undefined) {
+                return redirect(collection.name, document.name, "code");
+              }
 
-            try {
-              const data = await getDocument(user, collection, document, cms);
+              try {
+                const data = await getDocument(user, collection, document, cms);
 
-              return render("collection/edit.vto", {
+                return render("collection/edit.vto", {
+                  user,
+                  collection,
+                  document,
+                  ...data,
+                });
+              } catch (error) {
+                return render("collection/edit-error.vto", {
+                  user,
+                  collection,
+                  document,
+                  error: (error as Error).message,
+                });
+              }
+            })
+            /* POST /collection/:name/:file/edit */
+            .post("/edit", async () => {
+              const changes = Object.fromEntries(await request.formData());
+              const { finalDocument } = await saveDocument(
+                user,
+                collection,
+                document,
+                cms,
+                changes,
+              );
+
+              return redirect(collection.name, finalDocument.name, "edit");
+            })
+            /* GET /collection/:name/:file/code */
+            .get("/code", async () => {
+              const data = await getDocumentCode(user, collection, document, cms);
+
+              return render("collection/code.vto", {
                 user,
                 collection,
                 document,
                 ...data,
               });
-            } catch (error) {
-              return render("collection/edit-error.vto", {
+            })
+            /* POST /collection/:name/:file/code */
+            .post("/code", async ({ request }) => {
+              const changes = Object.fromEntries(await request.formData());
+              const { finalDocument } = await saveDocumentCode(
                 user,
                 collection,
                 document,
-                error: (error as Error).message,
-              });
-            }
-          })
-          /* POST /collection/:name/:file/edit */
-          .post("/edit", async () => {
-            const changes = Object.fromEntries(await request.formData());
-            const { finalDocument } = await saveDocument(
-              user,
-              collection,
-              document,
-              cms,
-              changes,
-            );
+                cms,
+                changes,
+              );
 
-            return redirect(collection.name, finalDocument.name, "edit");
-          })
-          /* GET /collection/:name/:file/code */
-          .get("/code", async () => {
-            const data = await getDocumentCode(user, collection, document, cms);
+              return redirect(collection.name, finalDocument.name, "code");
+            })
+            /* POST /collection/:name/:file/duplicate */
+            .post("/duplicate", async ({ request }) => {
+              const changes = Object.fromEntries(await request.formData());
+              const newName = changes.name as string;
 
-            return render("collection/code.vto", {
-              user,
-              collection,
-              document,
-              ...data,
-            });
-          })
-          /* POST /collection/:name/:file/code */
-          .post("/code", async ({ request }) => {
-            const changes = Object.fromEntries(await request.formData());
-            const { finalDocument } = await saveDocumentCode(
-              user,
-              collection,
-              document,
-              cms,
-              changes,
-            );
+              const { newDocument } = await duplicateDocument(
+                user,
+                collection,
+                document,
+                cms,
+                newName,
+                changes,
+              );
 
-            return redirect(collection.name, finalDocument.name, "code");
-          })
-          /* POST /collection/:name/:file/duplicate */
-          .post("/duplicate", async ({ request }) => {
-            const changes = Object.fromEntries(await request.formData());
-            const newName = changes.name as string;
+              return redirect(collection.name, newDocument.name, "edit");
+            })
+            /* POST /collection/:name/:file/move */
+            .post("/move", async ({ request }) => {
+              const data = await request.formData();
+              const newName = data.get("name") as string;
 
-            const { newDocument } = await duplicateDocument(
-              user,
-              collection,
-              document,
-              cms,
-              newName,
-              changes,
-            );
+              const { newDocument } = await moveDocument(user, collection, document, cms, newName);
 
-            return redirect(collection.name, newDocument.name, "edit");
-          })
-          /* POST /collection/:name/:file/move */
-          .post("/move", async ({ request }) => {
-            const data = await request.formData();
-            const newName = data.get("name") as string;
-
-            const { newDocument } = await moveDocument(
-              user,
-              collection,
-              document,
-              cms,
-              newName,
-            );
-
-            return redirect(collection.name, newDocument.name, "edit");
-          })
-          /* POST /collection/:name/:file/delete */
-          .post("/delete", async () => {
-            await deleteDocument(user, collection, document);
-            return redirect(collection.name);
-          });
-      });
-  },
-);
+              return redirect(collection.name, newDocument.name, "edit");
+            })
+            /* POST /collection/:name/:file/delete */
+            .post("/delete", async () => {
+              await deleteDocument(user, collection, document);
+              return redirect(collection.name);
+            })
+        );
+      })
+  );
+});
 
 export default app;

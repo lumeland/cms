@@ -5,7 +5,15 @@ import { ensureDir } from "../core/utils/fs.ts";
 import { fromFilename } from "./transformers/mod.ts";
 
 import type { Data, Entry, EntrySource, Storage } from "../types.ts";
-import { readDir, readFile, readTextFile, remove, rename, writeFile, writeTextFile } from "../core/services/fs.ts";
+import {
+  readDir,
+  readFile,
+  readTextFile,
+  remove,
+  rename,
+  writeFile,
+  writeTextFile,
+} from "../core/services/fs.ts";
 import { cwd } from "../core/services/process.ts";
 
 export interface Options {
@@ -33,9 +41,7 @@ export class Fs implements Storage {
     const pos = options.path.indexOf("*");
 
     if (pos === -1) {
-      this.path = options.path.endsWith("/")
-        ? options.path
-        : options.path + "/";
+      this.path = options.path.endsWith("/") ? options.path : options.path + "/";
       this.pattern = "**";
     } else if (pos === 0) {
       this.path = "";
@@ -66,7 +72,7 @@ export class Fs implements Storage {
         name,
         path: posix.join("/", path, name),
         src: posix.join(root, path, name),
-      }
+      };
     }
   }
 
@@ -81,9 +87,7 @@ export class Fs implements Storage {
   name(name?: string): string {
     const newName = name ? slugify(name) : generateId();
 
-    return (this.extension && !newName.endsWith(this.extension))
-      ? newName + this.extension
-      : newName;
+    return this.extension && !newName.endsWith(this.extension) ? newName + this.extension : newName;
   }
 
   directory(path: string): Storage {
@@ -146,8 +150,7 @@ export class FsEntry implements Entry {
   async writeData(data: Data) {
     const { src } = this.source;
     const transformer = fromFilename(src);
-    const content = (await transformer.fromData(data))
-      .replaceAll(/\r\n/g, "\n"); // Unify line endings
+    const content = (await transformer.fromData(data)).replaceAll(/\r\n/g, "\n"); // Unify line endings
 
     await this.writeText(content);
   }

@@ -1,26 +1,23 @@
-import { Editor } from '@tiptap/core';
-import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
-import Placeholder from '@tiptap/extension-placeholder';
-import Mathematics from '@tiptap/extension-mathematics';
-import { Markdown } from 'tiptap-markdown';
+import { Editor } from "@tiptap/core";
+import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
+import Placeholder from "@tiptap/extension-placeholder";
+import Mathematics from "@tiptap/extension-mathematics";
+import { Markdown } from "tiptap-markdown";
 
-import { isUrlLike } from './markup_util.js';
+import { isUrlLike } from "./markup_util.js";
 
-export function init({
-  element,
-  content,
-  attributes,
-  onUpdate,
-  pasteLink,
-}) {
+export function init({ element, content, attributes, onUpdate, pasteLink }) {
   return new Editor({
-    element, content, attributes, onUpdate,
+    element,
+    content,
+    attributes,
+    onUpdate,
     extensions: [
       StarterKit,
       Image,
       Placeholder.configure({
-        placeholder: 'Type something...',
+        placeholder: "Type something...",
       }),
       Markdown.configure({
         linkify: true,
@@ -28,29 +25,39 @@ export function init({
         transformCopiedText: true, // Copied text is transformed to markdown
       }),
       Mathematics.configure({
-        regex: /\$\$(([^\$]|\$[^\$])*)\$\$/gi,
+        regex: /\$\$(([^$]|\$[^$])*)\$\$/gi,
       }),
     ],
     onCreate: ({ editor }) => {
       const dom = editor.view.dom;
-      dom.addEventListener('paste', async (event) => {
-        const clipboard = event.clipboardData; if (!clipboard) return;
-        const text = clipboard.getData('text/plain')?.trim();
-        if (!text || !isUrlLike(text)) return;
-        const info = pasteLink(text);
+      dom.addEventListener(
+        "paste",
+        async (event) => {
+          const clipboard = event.clipboardData;
+          if (!clipboard) return;
+          const text = clipboard.getData("text/plain")?.trim();
+          if (!text || !isUrlLike(text)) return;
+          const info = pasteLink(text);
 
-        if (info == "image") {
-          event.preventDefault()
-          const state = editor.editorState;
-          const selectedText = state.doc.textBetween(state.selection.from, state.selection.to, ' ')
-          editor.chain()
-            .setImage({ src: text, alt: selectedText || undefined })
-            .setTextSelection(state.selection.to)
-            .run()
-          return
-        }
-      }, true);
-      editor.on('destroy', () => dom.removeEventListener('paste', onPaste));
+          if (info == "image") {
+            event.preventDefault();
+            const state = editor.editorState;
+            const selectedText = state.doc.textBetween(
+              state.selection.from,
+              state.selection.to,
+              " ",
+            );
+            editor
+              .chain()
+              .setImage({ src: text, alt: selectedText || undefined })
+              .setTextSelection(state.selection.to)
+              .run();
+            return;
+          }
+        },
+        true,
+      );
+      editor.on("destroy", () => dom.removeEventListener("paste", onPaste));
     },
-  })
+  });
 }

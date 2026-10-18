@@ -42,15 +42,14 @@ export default {
       );
     }
 
-    const createOption = field.option ??
+    const createOption =
+      field.option ??
       (({ label, name }: EntryMetadata): Option => ({
         label,
         value: name,
       }));
 
-    field.options = (await Array.fromAsync(collection))
-      .map(createOption)
-      .sort(compareOptions);
+    field.options = (await Array.fromAsync(collection)).map(createOption).sort(compareOptions);
   },
   applyChanges: applySelectChanges,
 } as FieldDefinition<ResolvedRelationField>;

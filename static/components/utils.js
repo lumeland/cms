@@ -21,9 +21,7 @@ export function pushOptions(el, options) {
 
 /** Show or hide an element based on the current view */
 const hash = location.hash.slice(1);
-export const initialViews = new Set(
-  hash ? hash.split(",").map(decodeURIComponent) : [],
-);
+export const initialViews = new Set(hash ? hash.split(",").map(decodeURIComponent) : []);
 
 /** Common init code used by several components */
 export function initField(element) {
@@ -44,28 +42,35 @@ export function initField(element) {
   }
 
   // Add a button to highlight the element in the page preview
-  dom("button", {
-    class: "buttonIcon field-dom-picker",
-    type: "button",
-    html: '<u-icon name="crosshair-simple"></u-icon>',
-    async onclick() {
-      const preview = document.querySelector("u-pagepreview");
-      if (preview) {
-        const exists = await preview.highlight(schema.cssSelector);
-        if (!exists) {
-          this.animate([
-            { transform: "translate(-40px, -8px)", opacity: 1 },
-            { transform: "translate(-50px, -8px)" },
-            { transform: "translate(-40px, -8px)" },
-            { transform: "translate(-50px, -8px)" },
-            { transform: "translate(-40px, -8px)", opacity: 1 },
-          ], {
-            duration: 500,
-          });
+  dom(
+    "button",
+    {
+      class: "buttonIcon field-dom-picker",
+      type: "button",
+      html: '<u-icon name="crosshair-simple"></u-icon>',
+      async onclick() {
+        const preview = document.querySelector("u-pagepreview");
+        if (preview) {
+          const exists = await preview.highlight(schema.cssSelector);
+          if (!exists) {
+            this.animate(
+              [
+                { transform: "translate(-40px, -8px)", opacity: 1 },
+                { transform: "translate(-50px, -8px)" },
+                { transform: "translate(-40px, -8px)" },
+                { transform: "translate(-50px, -8px)" },
+                { transform: "translate(-40px, -8px)", opacity: 1 },
+              ],
+              {
+                duration: 500,
+              },
+            );
+          }
         }
-      }
+      },
     },
-  }, element);
+    element,
+  );
 }
 
 /** Dispatch a bubbled event on error */
@@ -156,7 +161,8 @@ export function randomId() {
 
 /** Convert slugs to labels */
 export function labelify(slug) {
-  if (!slug || slug === "[]") { // Special case for array fields
+  if (!slug || slug === "[]") {
+    // Special case for array fields
     return "";
   }
 
@@ -181,8 +187,7 @@ export function getNow() {
 
 export function updateField(field, schema, input) {
   input.labels[0].innerHTML = schema.label;
-  field.querySelector(".field-description").innerHTML = schema.description ??
-    "";
+  field.querySelector(".field-description").innerHTML = schema.description ?? "";
 }
 
 export function getFieldName(field) {
@@ -208,9 +213,7 @@ const allowedTypes = new Set([
 
 export function getItemLabel(field, value, defaultDescription) {
   const label = field.label || field.name;
-  const firstField = field.fields?.find((field) =>
-    allowedTypes.has(field.type)
-  );
+  const firstField = field.fields?.find((field) => allowedTypes.has(field.type));
 
   if (!firstField) {
     if (defaultDescription !== undefined) {
@@ -220,8 +223,7 @@ export function getItemLabel(field, value, defaultDescription) {
   }
 
   let description = cleanHtml(
-    (typeof value === "object" && value[firstField.name]) ||
-      defaultDescription || "",
+    (typeof value === "object" && value[firstField.name]) || defaultDescription || "",
   );
 
   if (!description) {
@@ -237,6 +239,5 @@ export function getItemLabel(field, value, defaultDescription) {
 
 const domParser = new DOMParser();
 function cleanHtml(html) {
-  return domParser.parseFromString(String(html), "text/html").body?.textContent
-    ?.trim() || "";
+  return domParser.parseFromString(String(html), "text/html").body?.textContent?.trim() || "";
 }

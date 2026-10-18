@@ -1,10 +1,5 @@
 import { applyTextChanges, toAbsolutePaths, toRelativePaths } from "./utils.ts";
-import type {
-  FieldDefinition,
-  InputField,
-  Option,
-  ResolvedField,
-} from "../types.ts";
+import type { FieldDefinition, InputField, Option, ResolvedField } from "../types.ts";
 import { getRelativePath } from "../core/utils/path.ts";
 import { posix } from "../deps/std.ts";
 
@@ -32,8 +27,7 @@ interface MarkdownField extends InputField<ResolvedMarkdownField> {
   relativePath?: boolean;
 }
 
-interface ResolvedMarkdownField extends MarkdownField, ResolvedField {
-}
+interface ResolvedMarkdownField extends MarkdownField, ResolvedField {}
 
 export default {
   tag: "f-markdown",

@@ -12,44 +12,39 @@ export function toggleTag(start, end) {
             {
               from: range.from,
               insert: `${start}text${end}`,
-            }
+            },
           ],
-          range: EditorSelection.range(
-            range.from + startLength,
-            range.from + startLength + 4,
-          ),
+          range: EditorSelection.range(range.from + startLength, range.from + startLength + 4),
         };
       }
-      const existsBefore =
-        state.sliceDoc(range.from - startLength, range.from) === start;
-      const existsAfter =
-        state.sliceDoc(range.to, range.to + endLength) === end;
+      const existsBefore = state.sliceDoc(range.from - startLength, range.from) === start;
+      const existsAfter = state.sliceDoc(range.to, range.to + endLength) === end;
       const changes = [];
 
       changes.push(
         existsBefore
           ? {
-            from: range.from - startLength,
-            to: range.from,
-            insert: "",
-          }
+              from: range.from - startLength,
+              to: range.from,
+              insert: "",
+            }
           : {
-            from: range.from,
-            insert: start,
-          },
+              from: range.from,
+              insert: start,
+            },
       );
 
       changes.push(
         existsAfter
           ? {
-            from: range.to,
-            to: range.to + endLength,
-            insert: "",
-          }
+              from: range.to,
+              to: range.to + endLength,
+              insert: "",
+            }
           : {
-            from: range.to,
-            insert: end,
-          },
+              from: range.to,
+              insert: end,
+            },
       );
 
       const extendBefore = existsBefore ? -startLength : startLength;
@@ -57,10 +52,7 @@ export function toggleTag(start, end) {
 
       return {
         changes,
-        range: EditorSelection.range(
-          range.from + extendBefore,
-          range.to + extendAfter,
-        ),
+        range: EditorSelection.range(range.from + extendBefore, range.to + extendAfter),
       };
     });
 
@@ -84,8 +76,8 @@ export function toggleHeader(count) {
       let text = line.text;
       if (line.text.startsWith(start)) {
         text = text.slice(start.length);
-      } else if (line.text.match(/^\#+\s/)) {
-        text = text.replace(/\#+\s/, "");
+      } else if (line.text.match(/^#+\s/)) {
+        text = text.replace(/#+\s/, "");
         text = start + text;
       } else {
         text = start + text;
@@ -99,10 +91,7 @@ export function toggleHeader(count) {
             insert: text,
           },
         ],
-        range: EditorSelection.range(
-          range.from,
-          range.to,
-        ),
+        range: EditorSelection.range(range.from, range.to),
       };
     });
 
@@ -122,35 +111,26 @@ export function insertLink() {
     const changes = state.changeByRange((range) => {
       const changes = [];
 
-      changes.push(
-        {
-          from: range.from,
-          insert: "[",
-        },
-      );
+      changes.push({
+        from: range.from,
+        insert: "[",
+      });
 
       if (range.from === range.to) {
-        changes.push(
-          {
-            from: range.to,
-            insert: "link text",
-          },
-        );
+        changes.push({
+          from: range.to,
+          insert: "link text",
+        });
       }
 
-      changes.push(
-        {
-          from: range.to,
-          insert: url ? `](${url})` : "]()",
-        },
-      );
+      changes.push({
+        from: range.to,
+        insert: url ? `](${url})` : "]()",
+      });
 
       return {
         changes,
-        range: EditorSelection.range(
-          range.from + 1,
-          range.to + 1,
-        ),
+        range: EditorSelection.range(range.from + 1, range.to + 1),
       };
     });
 
@@ -177,12 +157,9 @@ export function insertSnippet() {
               {
                 from: range.from,
                 insert: start,
-              }
+              },
             ],
-            range: EditorSelection.range(
-              range.from + start.length,
-              range.from + start.length,
-            ),
+            range: EditorSelection.range(range.from + start.length, range.from + start.length),
           };
         }
 
@@ -191,26 +168,22 @@ export function insertSnippet() {
             {
               from: range.from,
               insert: `${start}text${end}`,
-            }
+            },
           ],
-          range: EditorSelection.range(
-            range.from + start.length,
-            range.from + start.length + 4,
-          ),
+          range: EditorSelection.range(range.from + start.length, range.from + start.length + 4),
         };
       }
 
       if (end === undefined) {
         return {
-          changes: [{
-            from: range.from,
-            to: range.to,
-            insert: start,
-          }],
-          range: EditorSelection.range(
-            range.from + start.length,
-            range.from + start.length,
-          ),
+          changes: [
+            {
+              from: range.from,
+              to: range.to,
+              insert: start,
+            },
+          ],
+          range: EditorSelection.range(range.from + start.length, range.from + start.length),
         };
       }
 

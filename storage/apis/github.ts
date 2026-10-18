@@ -87,9 +87,7 @@ export class GitHubAPI implements GitAPI {
   }
 
   /** Get the binary content of a file. */
-  async getBinaryContent(
-    path = "",
-  ): Promise<Uint8Array<ArrayBuffer> | undefined> {
+  async getBinaryContent(path = ""): Promise<Uint8Array<ArrayBuffer> | undefined> {
     path = removeLeadingSlash(path);
 
     // https://github.com/octokit/rest.js/issues/14#issuecomment-584413497
@@ -103,11 +101,11 @@ export class GitHubAPI implements GitAPI {
       },
     });
 
-    const auth = await this.#client.auth() as { token: string };
+    const auth = (await this.#client.auth()) as { token: string };
     const response = await fetch(endpoint.url, {
       method: endpoint.method,
       headers: {
-        ...endpoint.headers as Record<string, string>,
+        ...(endpoint.headers as Record<string, string>),
         authorization: `Bearer ${auth.token}`,
       },
     });

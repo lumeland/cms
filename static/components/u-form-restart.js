@@ -11,13 +11,15 @@ customElements.define(
       this.classList.add("ly-none");
 
       button.form.addEventListener("submit", (ev) => {
-        document.querySelectorAll("dialog[open]").forEach((dialog) =>
-          dialog.close()
-        );
-        dom("dialog", {
-          class: "u-busy",
-          html: `<p>${message}</p>`,
-        }, document.body).showModal();
+        document.querySelectorAll("dialog[open]").forEach((dialog) => dialog.close());
+        dom(
+          "dialog",
+          {
+            class: "u-busy",
+            html: `<p>${message}</p>`,
+          },
+          document.body,
+        ).showModal();
 
         ev.preventDefault();
         this.sendForm(button.form);

@@ -14,8 +14,7 @@ customElements.define(
       });
 
       this.closest("dialog").addEventListener("toggle", () => {
-        iframe.src =
-          `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>`;
+        iframe.src = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>`;
         submit.disabled = false;
       });
     }

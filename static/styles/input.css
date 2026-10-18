@@ -83,8 +83,7 @@ textarea.input {
   &:focus-within {
     background-color: var(--color-input-bg);
     border: solid 1px var(--color-line);
-    box-shadow: 0 0 0 3px
-      color-mix(in hsl, var(--color-primary), transparent 75%);
+    box-shadow: 0 0 0 3px color-mix(in hsl, var(--color-primary), transparent 75%);
   }
   &:has(input[required]:placeholder-shown) {
     background-color: var(--color-input-bg);

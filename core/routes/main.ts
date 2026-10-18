@@ -13,11 +13,7 @@ import uploadsRoute from "./uploads.ts";
 import actionsRoute from "./actions.ts";
 
 import type { SourcePath } from "../cms.ts";
-import type {
-  AuthProvider,
-  CMSContent,
-  UserConfiguration,
-} from "../../types.ts";
+import type { AuthProvider, CMSContent, UserConfiguration } from "../../types.ts";
 
 export interface RouterData {
   cms: CMSContent;
@@ -42,10 +38,13 @@ export default function init(options: InitOptions): Router<RouterData> {
   filter("path", (args: string[]) => getPath(options.basePath, ...args));
   filter("asset", (url: string) => asset(options.basePath, url));
 
-  const app = new Router({
-    cms: options.content,
-    sourcePath: options.sourcePath,
-  }, options.basePath);
+  const app = new Router(
+    {
+      cms: options.content,
+      sourcePath: options.sourcePath,
+    },
+    options.basePath,
+  );
 
   app
     .path("/auth/*", ({ next }) => {
@@ -78,8 +77,7 @@ export default function init(options: InitOptions): Router<RouterData> {
 
       // Detect the language
       const langs = ["en", "gl", "es", "pt"];
-      const lang = user.language ?? acceptsLanguages(request, ...langs) ??
-        langs[0];
+      const lang = user.language ?? acceptsLanguages(request, ...langs) ?? langs[0];
       await setLocale(lang);
 
       // Template renderer

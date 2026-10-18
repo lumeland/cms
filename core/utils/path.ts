@@ -31,21 +31,19 @@ export function normalizePath(...paths: string[]) {
 
     // Is absolute Windows path (C:/...)
     if (path.includes(":/")) {
-      return (path !== "/" && path.endsWith("/")) ? path.slice(0, -1) : path;
+      return path !== "/" && path.endsWith("/") ? path.slice(0, -1) : path;
     }
   }
 
   path = posix.join("/", path);
 
-  return (path !== "/" && path.endsWith("/")) ? path.slice(0, -1) : path;
+  return path !== "/" && path.endsWith("/") ? path.slice(0, -1) : path;
 }
 
 export function getPath(basePath: string, ...parts: string[]) {
   return posix.join(
     basePath,
-    ...parts
-      .filter((part) => typeof part === "string")
-      .map((part) => encodeURIComponent(part)),
+    ...parts.filter((part) => typeof part === "string").map((part) => encodeURIComponent(part)),
   );
 }
 
@@ -56,10 +54,7 @@ export function asset(basePath: string, url = "") {
     return posix.join(basePath, url);
   }
 
-  return new URL(
-    posix.join(staticUrl.pathname, url),
-    staticUrl,
-  ).toString();
+  return new URL(posix.join(staticUrl.pathname, url), staticUrl).toString();
 }
 
 /**
@@ -71,10 +66,7 @@ export function asset(basePath: string, url = "") {
  * assertEquals(path, "./asset.jpg");
  * ```
  */
-export function getRelativePath(
-  from?: string,
-  to?: string,
-): string | undefined {
+export function getRelativePath(from?: string, to?: string): string | undefined {
   if (!from || !to) return;
   const relativePath = posix.relative(from, to);
   return relativePath.startsWith("./") || relativePath.startsWith("../")

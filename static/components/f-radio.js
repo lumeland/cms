@@ -20,44 +20,64 @@ customElements.define(
         const li = dom("li", { class: "field-check" }, ul);
 
         if (typeof option === "string") {
-          dom("input", {
-            type: "radio",
-            id: optionId,
-            name,
-            value: option,
-            class: "radio",
-            oninvalid,
-          }, li);
-          dom("label", {
-            for: optionId,
-            class: "is-secondary",
-            html: labelify(option),
-          }, li);
+          dom(
+            "input",
+            {
+              type: "radio",
+              id: optionId,
+              name,
+              value: option,
+              class: "radio",
+              oninvalid,
+            },
+            li,
+          );
+          dom(
+            "label",
+            {
+              for: optionId,
+              class: "is-secondary",
+              html: labelify(option),
+            },
+            li,
+          );
         } else {
           const { label, ...attrs } = option;
-          dom("input", {
-            type: "radio",
-            ...attrs,
-            id: optionId,
-            name,
-            value: option,
-            oninvalid,
-          }, li);
-          dom("label", {
-            for: optionId,
-            class: "is-secondary",
-            html: labelify(label),
-          }, li);
+          dom(
+            "input",
+            {
+              type: "radio",
+              ...attrs,
+              id: optionId,
+              name,
+              value: option,
+              oninvalid,
+            },
+            li,
+          );
+          dom(
+            "label",
+            {
+              for: optionId,
+              class: "is-secondary",
+              html: labelify(label),
+            },
+            li,
+          );
         }
       }
 
       const form = this.closest("form");
-      form[name].value = isNew ? value ?? schema.value : value;
+      form[name].value = isNew ? (value ?? schema.value) : value;
 
-      dom("div", {
-        class: "field-description",
-        html: schema.description,
-      }, this);
+      dom(
+        "div",
+        {
+          class: "field-description",
+          html: schema.description,
+        },
+        this,
+      );
     }
 
     get currentValue() {

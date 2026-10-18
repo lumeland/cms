@@ -12,22 +12,28 @@ customElements.define(
       let open = true;
 
       initField(this);
-      dom("label", {
-        for: `field_${namePrefix}.0`,
-        class: "field-label",
-        onclick: () => {
-          open = !open;
-          this.querySelectorAll("details.accordion").forEach((el) =>
-            el.open = open
-          );
+      dom(
+        "label",
+        {
+          for: `field_${namePrefix}.0`,
+          class: "field-label",
+          onclick: () => {
+            open = !open;
+            this.querySelectorAll("details.accordion").forEach((el) => (el.open = open));
+          },
+          html: schema.label,
         },
-        html: schema.label,
-      }, this);
+        this,
+      );
 
-      dom("div", {
-        class: "field-description",
-        html: schema.description,
-      }, this);
+      dom(
+        "div",
+        {
+          class: "field-description",
+          html: schema.description,
+        },
+        this,
+      );
 
       const div = dom("div", { class: "fieldset no-indent" }, this);
       let index = 0;
@@ -90,36 +96,52 @@ customElements.define(
         return item;
       }
 
-      for (const v of (isNew ? value ?? schema.value : value) ?? []) {
+      for (const v of (isNew ? (value ?? schema.value) : value) ?? []) {
         div.append(createOption(v));
       }
 
-      const footer = dom("footer", {
-        class: "field-footer ly-rowStack",
-      }, this);
-
-      const select = dom("select", {
-        class: "select",
-        onchange: () => {
-          if (select.value) {
-            div.append(createOption({ type: select.value }, true));
-            select.value = "";
-          }
+      const footer = dom(
+        "footer",
+        {
+          class: "field-footer ly-rowStack",
         },
-      }, footer);
+        this,
+      );
 
-      dom("option", {
-        value: "",
-        text: t("choose-list.action.add"),
-      }, select);
+      const select = dom(
+        "select",
+        {
+          class: "select",
+          onchange: () => {
+            if (select.value) {
+              div.append(createOption({ type: select.value }, true));
+              select.value = "";
+            }
+          },
+        },
+        footer,
+      );
+
+      dom(
+        "option",
+        {
+          value: "",
+          text: t("choose-list.action.add"),
+        },
+        select,
+      );
 
       dom("hr", select);
 
       for (const field of schema.fields) {
-        dom("option", {
-          value: field.name,
-          html: field.label ?? field.name,
-        }, select);
+        dom(
+          "option",
+          {
+            value: field.name,
+            html: field.label ?? field.name,
+          },
+          select,
+        );
       }
     }
 
@@ -135,24 +157,26 @@ customElements.define(
 
     update(schema, values) {
       this.querySelector(".field-label").innerHTML = schema.label;
-      this.querySelector(".field-description").innerHTML = schema.description ??
-        "";
+      this.querySelector(".field-description").innerHTML = schema.description ?? "";
       const items = Array.from(this.querySelector(".fieldset").children);
 
       for (const [index, value] of values.entries()) {
         const field = schema.fields.find((f) => f.name === value.type);
-        items.shift()?.update({
-          ...field,
-          label: getItemLabel(field, value, index),
-          fields: [
-            {
-              name: "type",
-              tag: "f-hidden",
-              value: value.type,
-            },
-            ...field.fields,
-          ],
-        }, value);
+        items.shift()?.update(
+          {
+            ...field,
+            label: getItemLabel(field, value, index),
+            fields: [
+              {
+                name: "type",
+                tag: "f-hidden",
+                value: value.type,
+              },
+              ...field.fields,
+            ],
+          },
+          value,
+        );
       }
     }
   },

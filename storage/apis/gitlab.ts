@@ -57,9 +57,7 @@ export class GitLabAPI implements GitAPI {
 
     if (!res.ok) {
       const body = await res.text();
-      throw new Error(
-        `GitLab API request failed: ${res.status} ${res.statusText}\n${body}`,
-      );
+      throw new Error(`GitLab API request failed: ${res.status} ${res.statusText}\n${body}`);
     }
     return res;
   }
@@ -76,8 +74,8 @@ export class GitLabAPI implements GitAPI {
     }
 
     try {
-      const url = this.#getUrl("/repository/tree") +
-        `?ref=${this.branch}&path=${encodeURIComponent(path)}`;
+      const url =
+        this.#getUrl("/repository/tree") + `?ref=${this.branch}&path=${encodeURIComponent(path)}`;
       const result = await this.#fetchJson(url);
 
       for (const entry of result) {
@@ -110,15 +108,12 @@ export class GitLabAPI implements GitAPI {
   }
 
   /** Get the binary content of a file. */
-  async getBinaryContent(
-    path = "",
-  ): Promise<Uint8Array<ArrayBuffer> | undefined> {
+  async getBinaryContent(path = ""): Promise<Uint8Array<ArrayBuffer> | undefined> {
     if (path?.startsWith("/")) {
       path = path.slice(1);
     }
     try {
-      const url = this.#getUrl("/repository/files", path) +
-        `?ref=${this.branch}`;
+      const url = this.#getUrl("/repository/files", path) + `?ref=${this.branch}`;
       const result = await this.#fetchJson(url);
 
       return decodeBase64(result.content);
@@ -129,8 +124,7 @@ export class GitLabAPI implements GitAPI {
 
   async #exists(path: string): Promise<boolean> {
     try {
-      const url = this.#getUrl("/repository/files", path) +
-        `?ref=${this.branch}`;
+      const url = this.#getUrl("/repository/files", path) + `?ref=${this.branch}`;
       const res = await this.#fetch(url, { method: "HEAD" });
       return res.ok;
     } catch {

@@ -12,23 +12,21 @@ customElements.define(
       let open = true;
 
       initField(this);
-      dom("label", {
-        for: `field_${namePrefix}.0`,
-        class: "field-label",
-        onclick: () => {
-          open = !open;
-          this.querySelectorAll("details.accordion").forEach((el) =>
-            el.open = open
-          );
-        },
-        html: schema.label,
-      }, this);
-
       dom(
-        "div",
-        { class: "field-description", html: schema.description },
+        "label",
+        {
+          for: `field_${namePrefix}.0`,
+          class: "field-label",
+          onclick: () => {
+            open = !open;
+            this.querySelectorAll("details.accordion").forEach((el) => (el.open = open));
+          },
+          html: schema.label,
+        },
         this,
       );
+
+      dom("div", { class: "field-description", html: schema.description }, this);
 
       const div = dom("div", { class: "fieldset" }, this);
       let index = 0;
@@ -78,45 +76,57 @@ customElements.define(
         return item;
       }
 
-      for (const v of (isNew ? value ?? schema.value : value) ?? []) {
+      for (const v of (isNew ? (value ?? schema.value) : value) ?? []) {
         div.append(createOption(v));
       }
 
       const footer = dom("footer", { class: "field-footer" }, this);
       const fileField = schema.fields.find((f) => f.type === "file");
 
-      dom("button", {
-        class: "button is-secondary",
-        type: "button",
-        html: [
-          '<u-icon name="plus-circle"></u-icon>',
-          t("file-list.action.add", { label: schema.label }),
-        ],
-        onclick() {
-          div.append(createOption({}, true));
-          this.value = null;
+      dom(
+        "button",
+        {
+          class: "button is-secondary",
+          type: "button",
+          html: [
+            '<u-icon name="plus-circle"></u-icon>',
+            t("file-list.action.add", { label: schema.label }),
+          ],
+          onclick() {
+            div.append(createOption({}, true));
+            this.value = null;
+          },
         },
-      }, footer);
+        footer,
+      );
 
-      const btn = dom("label", {
-        class: "button is-secondary",
-        html: [
-          '<u-icon name="upload-simple"></u-icon>',
-          t("file-list.action.upload", { label: schema.label }),
-        ],
-      }, footer);
-
-      dom("input", {
-        type: "file",
-        multiple: true,
-        style: "display: none",
-        onchange() {
-          for (const file of this.files) {
-            div.append(createOption({ [fileField.name]: file }, true));
-          }
-          this.value = null;
+      const btn = dom(
+        "label",
+        {
+          class: "button is-secondary",
+          html: [
+            '<u-icon name="upload-simple"></u-icon>',
+            t("file-list.action.upload", { label: schema.label }),
+          ],
         },
-      }, btn);
+        footer,
+      );
+
+      dom(
+        "input",
+        {
+          type: "file",
+          multiple: true,
+          style: "display: none",
+          onchange() {
+            for (const file of this.files) {
+              div.append(createOption({ [fileField.name]: file }, true));
+            }
+            this.value = null;
+          },
+        },
+        btn,
+      );
     }
 
     get currentValue() {
@@ -131,16 +141,18 @@ customElements.define(
 
     update(schema, values) {
       this.querySelector(".field-label").innerHTML = schema.label;
-      this.querySelector(".field-description").innerHTML = schema.description ??
-        "";
+      this.querySelector(".field-description").innerHTML = schema.description ?? "";
       const items = Array.from(this.querySelector(".fieldset").children);
 
       for (const [index, value] of values.entries()) {
-        items.shift()?.update({
-          type: "object",
-          label: getItemLabel(schema, value, index),
-          fields: schema.fields,
-        }, value);
+        items.shift()?.update(
+          {
+            type: "object",
+            label: getItemLabel(schema, value, index),
+            fields: schema.fields,
+          },
+          value,
+        );
       }
     }
   },

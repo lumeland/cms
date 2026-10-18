@@ -88,16 +88,17 @@ export class Memory implements Storage {
   name(name?: string): string {
     const newName = name ? slugify(name) : generateId();
 
-    return (this.extension && !newName.endsWith(this.extension))
-      ? newName + this.extension
-      : newName;
+    return this.extension && !newName.endsWith(this.extension) ? newName + this.extension : newName;
   }
 
   directory(path: string): Storage {
-    return new Memory({
-      root: posix.join(this.root, this.path),
-      path,
-    }, this.#storage);
+    return new Memory(
+      {
+        root: posix.join(this.root, this.path),
+        path,
+      },
+      this.#storage,
+    );
   }
 
   get(name: string): Entry {
@@ -149,9 +150,7 @@ export class MemoryEntry implements Entry {
     }
 
     return Promise.resolve(
-      content instanceof Uint8Array
-        ? new TextDecoder().decode(content)
-        : content,
+      content instanceof Uint8Array ? new TextDecoder().decode(content) : content,
     );
   }
 
@@ -173,8 +172,7 @@ export class MemoryEntry implements Entry {
   async writeData(data: Data) {
     const { src } = this.source;
     const transformer = fromFilename(src);
-    const content = (await transformer.fromData(data))
-      .replaceAll(/\r\n/g, "\n"); // Unify line endings
+    const content = (await transformer.fromData(data)).replaceAll(/\r\n/g, "\n"); // Unify line endings
 
     await this.writeText(content);
   }
@@ -186,9 +184,10 @@ export class MemoryEntry implements Entry {
       throw new Error(`File not found: ${src}`);
     }
     const type = contentType(posix.extname(src));
-    const data = content instanceof Uint8Array
-      ? content as Uint8Array<ArrayBuffer>
-      : new TextEncoder().encode(content);
+    const data =
+      content instanceof Uint8Array
+        ? (content as Uint8Array<ArrayBuffer>)
+        : new TextEncoder().encode(content);
 
     return Promise.resolve(new File([new Blob([data])], name, { type }));
   }

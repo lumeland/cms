@@ -1,10 +1,4 @@
-import {
-  getFieldName,
-  initField,
-  oninvalid,
-  pushOptions,
-  updateField,
-} from "./utils.js";
+import { getFieldName, initField, oninvalid, pushOptions, updateField } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -20,22 +14,22 @@ customElements.define(
       initField(this);
       dom("label", { for: id, html: schema.label }, this);
 
-      dom(
-        "div",
-        { class: "field-description", html: schema.description },
+      dom("div", { class: "field-description", html: schema.description }, this);
+
+      const select = dom(
+        "select",
+        {
+          ...schema.attributes,
+          id,
+          name,
+          class: "select is-narrow",
+          oninvalid,
+        },
         this,
       );
 
-      const select = dom("select", {
-        ...schema.attributes,
-        id,
-        name,
-        class: "select is-narrow",
-        oninvalid,
-      }, this);
-
       pushOptions(select, schema.options);
-      select.value = (isNew ? value ?? schema.value : value) ?? "";
+      select.value = (isNew ? (value ?? schema.value) : value) ?? "";
     }
 
     get currentValue() {

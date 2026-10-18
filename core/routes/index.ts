@@ -17,7 +17,7 @@ app.get("/", async ({ request, cms, render, sourcePath, user }) => {
     return new Response(null, {
       status: 302,
       headers: new Headers({
-        "Location": getPath(basePath, ...paths),
+        Location: getPath(basePath, ...paths),
       }),
     });
   }

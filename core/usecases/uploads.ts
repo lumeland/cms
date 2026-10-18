@@ -4,11 +4,7 @@ import { posix } from "../../deps/std.ts";
 import { slugify } from "../utils/string.ts";
 import type Upload from "../upload.ts";
 import type User from "../user.ts";
-import {
-  fromFile,
-  getInputFormat,
-  getOutputFormat,
-} from "../../deps/sharp.ts";
+import { fromFile, getInputFormat, getOutputFormat } from "../../deps/sharp.ts";
 
 export function getUploads(user: User, uploads: Upload[]): Upload[] {
   return uploads.filter((upload) => upload.listed && user.canView(upload));
@@ -31,11 +27,7 @@ export async function getUpload(upload: Upload, folder?: string) {
   return { tree, parts };
 }
 
-export function getNewDocument(
-  user: User,
-  upload: Upload,
-  folder: string,
-) {
+export function getNewDocument(user: User, upload: Upload, folder: string) {
   if (!user.canCreate(upload)) {
     throw new Error("Permission denied to create files in this upload");
   }
@@ -45,12 +37,7 @@ export function getNewDocument(
   return { folder };
 }
 
-export async function saveNewDocument(
-  user: User,
-  upload: Upload,
-  files: File[],
-  folder?: string,
-) {
+export async function saveNewDocument(user: User, upload: Upload, files: File[], folder?: string) {
   if (!user.canCreate(upload)) {
     throw new Error("Permission denied to create files in this upload");
   }
@@ -78,11 +65,7 @@ export async function saveNewDocument(
   return { names };
 }
 
-export async function getDocumentCode(
-  user: User,
-  upload: Upload,
-  name: string,
-) {
+export async function getDocumentCode(user: User, upload: Upload, name: string) {
   if (!user.canEdit(upload)) {
     throw new Error("Permission denied to edit this document");
   }
@@ -95,17 +78,19 @@ export async function getDocumentCode(
   const fields = {
     tag: "f-object-root",
     name: "root",
-    fields: [{
-      tag: "f-code",
-      name: "code",
-      label: "Code",
-      type: "code",
-      attributes: {
-        data: {
-          language: getLanguageCode(name, ""),
+    fields: [
+      {
+        tag: "f-code",
+        name: "code",
+        label: "Code",
+        type: "code",
+        attributes: {
+          data: {
+            language: getLanguageCode(name, ""),
+          },
         },
       },
-    }],
+    ],
   };
 
   return { data, fields };
@@ -126,12 +111,7 @@ export async function saveDocumentCode(
   await file.writeText(code ?? "");
 }
 
-export async function saveDocument(
-  user: User,
-  upload: Upload,
-  name: string,
-  file: File,
-) {
+export async function saveDocument(user: User, upload: Upload, name: string, file: File) {
   if (!user.canEdit(upload)) {
     throw new Error("Permission denied to update files in this upload");
   }
@@ -215,22 +195,14 @@ interface Crop {
   height: number;
 }
 
-export async function saveCropDocument(
-  user: User,
-  upload: Upload,
-  name: string,
-  crop: Crop,
-) {
+export async function saveCropDocument(user: User, upload: Upload, name: string, crop: Crop) {
   if (!user.canEdit(upload)) {
     throw new Error("Permission denied to edit this file");
   }
 
   const { x, y, width, height } = crop;
 
-  if (
-    Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(width) ||
-    Number.isNaN(height)
-  ) {
+  if (Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(width) || Number.isNaN(height)) {
     throw new Error("Invalid crop values");
   }
   const entry = upload.get(name);

@@ -1,12 +1,4 @@
-import {
-  asset,
-  fileType,
-  initField,
-  labelify,
-  oninvalid,
-  updateField,
-  url,
-} from "./utils.js";
+import { asset, fileType, initField, labelify, oninvalid, updateField, url } from "./utils.js";
 import { init } from "../libs/tiptap.js";
 import { Component } from "./component.js";
 import dom from "dom";
@@ -21,25 +13,29 @@ customElements.define(
       const id = `field_${name}`;
 
       initField(this);
-      dom("label", {
-        for: id,
-        html: schema.label,
-        onclick: () => this.editor.chain().focus().run(),
-      }, this);
-
       dom(
-        "div",
-        { class: "field-description", html: schema.description },
+        "label",
+        {
+          for: id,
+          html: schema.label,
+          onclick: () => this.editor.chain().focus().run(),
+        },
         this,
       );
 
-      const hiddenInput = dom("textarea", {
-        id,
-        name,
-        value: isNew ? value ?? schema.value : value,
-        hidden: true,
-        oninvalid,
-      }, this);
+      dom("div", { class: "field-description", html: schema.description }, this);
+
+      const hiddenInput = dom(
+        "textarea",
+        {
+          id,
+          name,
+          value: isNew ? (value ?? schema.value) : value,
+          hidden: true,
+          oninvalid,
+        },
+        this,
+      );
 
       const shadow = this.attachShadow({ mode: "open" });
       shadow.innerHTML = `
@@ -55,21 +51,29 @@ customElements.define(
       if (schema.upload) {
         const name = schema.upload;
 
-        dom("button", {
-          class: "button is-secondary",
-          type: "button",
-          onclick() {
-            dom("u-modal", {
-              data: { src: url("uploads", name) },
-            }, document.body);
+        dom(
+          "button",
+          {
+            class: "button is-secondary",
+            type: "button",
+            onclick() {
+              dom(
+                "u-modal",
+                {
+                  data: { src: url("uploads", name) },
+                },
+                document.body,
+              );
+            },
+            html: `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`,
           },
-          html: `<u-icon name="image-square-fill"></u-icon> ${labelify(name)}`,
-        }, custom);
+          custom,
+        );
       }
 
       this.editor = init({
         element: editorContainer,
-        content: isNew ? value ?? schema.value : value,
+        content: isNew ? (value ?? schema.value) : value,
         attributes: {
           "aria-labelledby": `${id}_label`,
         },
@@ -88,31 +92,39 @@ customElements.define(
         [() => chain().toggleItalic(), "text-italic"],
         [() => chain().toggleStrike(), "text-strikethrough"],
       ].forEach(([chain, icon]) => {
-        dom("button", {
-          class: "buttonIcon",
-          type: "button",
-          html: `<u-icon name="${icon}"></u-icon>`,
-          onclick() {
-            chain().run();
+        dom(
+          "button",
+          {
+            class: "buttonIcon",
+            type: "button",
+            html: `<u-icon name="${icon}"></u-icon>`,
+            onclick() {
+              chain().run();
+            },
           },
-        }, tools);
+          tools,
+        );
       });
 
-      dom("button", {
-        class: "buttonIcon",
-        type: "button",
-        onclick: () => {
-          const currentValue = this.editor.getAttributes("link").href || "";
-          const url = prompt("URL to link to:", currentValue);
+      dom(
+        "button",
+        {
+          class: "buttonIcon",
+          type: "button",
+          onclick: () => {
+            const currentValue = this.editor.getAttributes("link").href || "";
+            const url = prompt("URL to link to:", currentValue);
 
-          if (url) {
-            chain().setLink({ href: url }).run();
-          } else {
-            chain().unsetLink().run();
-          }
+            if (url) {
+              chain().setLink({ href: url }).run();
+            } else {
+              chain().unsetLink().run();
+            }
+          },
+          html: `<u-icon name="link-simple"></u-icon>`,
         },
-        html: `<u-icon name="link-simple"></u-icon>`,
-      }, tools);
+        tools,
+      );
 
       tools = dom("div", { class: "tools-group" }, helpers);
       [
@@ -121,14 +133,18 @@ customElements.define(
         [() => chain().toggleHeading({ level: 3 }), "text-h-three"],
         [() => chain().toggleHeading({ level: 4 }), "text-h-four"],
       ].forEach(([chain, icon]) => {
-        dom("button", {
-          class: "buttonIcon",
-          type: "button",
-          html: `<u-icon name="${icon}"></u-icon>`,
-          onclick() {
-            chain().run();
+        dom(
+          "button",
+          {
+            class: "buttonIcon",
+            type: "button",
+            html: `<u-icon name="${icon}"></u-icon>`,
+            onclick() {
+              chain().run();
+            },
           },
-        }, tools);
+          tools,
+        );
       });
     }
 

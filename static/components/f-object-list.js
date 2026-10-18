@@ -12,23 +12,21 @@ customElements.define(
       let open = true;
 
       initField(this);
-      dom("label", {
-        for: `field_${namePrefix}.0`,
-        class: "field-label",
-        onclick: () => {
-          open = !open;
-          this.querySelectorAll("details.accordion").forEach((el) =>
-            el.open = open
-          );
-        },
-        html: schema.label,
-      }, this);
-
       dom(
-        "div",
-        { class: "field-description", html: schema.description },
+        "label",
+        {
+          for: `field_${namePrefix}.0`,
+          class: "field-label",
+          onclick: () => {
+            open = !open;
+            this.querySelectorAll("details.accordion").forEach((el) => (el.open = open));
+          },
+          html: schema.label,
+        },
         this,
       );
+
+      dom("div", { class: "field-description", html: schema.description }, this);
 
       const div = dom("div", { class: "fieldset no-indent" }, this);
       let index = 0;
@@ -79,21 +77,25 @@ customElements.define(
         return item;
       }
 
-      for (const v of toArray(isNew ? value ?? schema.value : value)) {
+      for (const v of toArray(isNew ? (value ?? schema.value) : value)) {
         div.append(createOption(v));
       }
 
       const footer = dom("footer", { class: "field-footer" }, this);
 
-      dom("button", {
-        type: "button",
-        onclick: () => div.append(createOption()),
-        class: "button is-secondary",
-        html: [
-          '<u-icon name="plus-circle"></u-icon>',
-          t("object-list.action.add", { label: schema.label }),
-        ],
-      }, footer);
+      dom(
+        "button",
+        {
+          type: "button",
+          onclick: () => div.append(createOption()),
+          class: "button is-secondary",
+          html: [
+            '<u-icon name="plus-circle"></u-icon>',
+            t("object-list.action.add", { label: schema.label }),
+          ],
+        },
+        footer,
+      );
     }
 
     get currentValue() {
@@ -108,16 +110,18 @@ customElements.define(
 
     update(schema, values) {
       this.querySelector(".field-label").innerHTML = schema.label;
-      this.querySelector(".field-description").innerHTML = schema.description ??
-        "";
+      this.querySelector(".field-description").innerHTML = schema.description ?? "";
       const items = Array.from(this.querySelector(".fieldset").children);
 
       for (const [index, value] of values.entries()) {
-        items.shift()?.update({
-          type: "object",
-          label: getItemLabel(schema, value, index),
-          fields: schema.fields,
-        }, value);
+        items.shift()?.update(
+          {
+            type: "object",
+            label: getItemLabel(schema, value, index),
+            fields: schema.fields,
+          },
+          value,
+        );
       }
     }
   },
@@ -174,21 +178,22 @@ customElements.define(
         return item;
       }
 
-      for (const v of toArray(isNew ? value ?? schema.value : value)) {
+      for (const v of toArray(isNew ? (value ?? schema.value) : value)) {
         div.append(createOption(v));
       }
 
       const footer = dom("footer", { class: "field-footer" }, this);
 
-      dom("button", {
-        type: "button",
-        onclick: () => div.append(createOption()),
-        class: "button is-secondary",
-        html: [
-          '<u-icon name="plus-circle"></u-icon>',
-          t("object-list.action.new"),
-        ],
-      }, footer);
+      dom(
+        "button",
+        {
+          type: "button",
+          onclick: () => div.append(createOption()),
+          class: "button is-secondary",
+          html: ['<u-icon name="plus-circle"></u-icon>', t("object-list.action.new")],
+        },
+        footer,
+      );
     }
 
     get currentValue() {
@@ -205,11 +210,14 @@ customElements.define(
       const items = Array.from(this.querySelector(".fieldset").children);
 
       for (const [index, value] of values.entries()) {
-        items.shift()?.update({
-          type: "object",
-          label: getItemLabel(schema, value, index),
-          fields: schema.fields,
-        }, value);
+        items.shift()?.update(
+          {
+            type: "object",
+            label: getItemLabel(schema, value, index),
+            fields: schema.fields,
+          },
+          value,
+        );
       }
     }
   },

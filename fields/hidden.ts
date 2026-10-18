@@ -7,8 +7,7 @@ interface HiddenField extends Field<ResolvedHiddenField> {
   value?: string | number | boolean;
 }
 
-interface ResolvedHiddenField extends HiddenField, ResolvedField {
-}
+interface ResolvedHiddenField extends HiddenField, ResolvedField {}
 
 export default {
   tag: "f-hidden",

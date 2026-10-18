@@ -1,17 +1,8 @@
 import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
-import {
-  dropCursor,
-  highlightSpecialChars,
-  keymap,
-  rectangularSelection,
-} from "@codemirror/view";
+import { dropCursor, highlightSpecialChars, keymap, rectangularSelection } from "@codemirror/view";
 
-import {
-  bracketMatching,
-  defaultHighlightStyle,
-  syntaxHighlighting,
-} from "@codemirror/language";
+import { bracketMatching, defaultHighlightStyle, syntaxHighlighting } from "@codemirror/language";
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import {
   autocompletion,

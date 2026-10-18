@@ -13,26 +13,38 @@ customElements.define(
       const div = dom("div", { class: "field-check" }, this);
       initField(this);
       dom("input", { name, type: "hidden", value: false }, div);
-      dom("input", {
-        ...schema.attributes,
-        id,
-        name,
-        value: true,
-        oninvalid,
-        checked: (isNew ? value ?? schema.value : value) ?? undefined,
-        type: "checkbox",
-        class: "checkbox",
-      }, div);
+      dom(
+        "input",
+        {
+          ...schema.attributes,
+          id,
+          name,
+          value: true,
+          oninvalid,
+          checked: (isNew ? (value ?? schema.value) : value) ?? undefined,
+          type: "checkbox",
+          class: "checkbox",
+        },
+        div,
+      );
 
-      dom("label", {
-        for: id,
-        html: schema.label,
-      }, div);
+      dom(
+        "label",
+        {
+          for: id,
+          html: schema.label,
+        },
+        div,
+      );
 
-      dom("div", {
-        class: "field-description",
-        html: schema.description,
-      }, this);
+      dom(
+        "div",
+        {
+          class: "field-description",
+          html: schema.description,
+        },
+        this,
+      );
     }
 
     get currentValue() {

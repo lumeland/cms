@@ -25,7 +25,7 @@ app.post("/:name", async ({ name, cms }) => {
   return new Response(null, {
     status: 302,
     headers: new Headers({
-      "Location": getPath(basePath),
+      Location: getPath(basePath),
     }),
   });
 });

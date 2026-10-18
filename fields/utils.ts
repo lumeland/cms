@@ -1,9 +1,7 @@
 import { isEmpty } from "../core/utils/string.ts";
 import type { Data, Field, InputField, Option } from "../types.ts";
 
-export function applySelectChanges<
-  T extends InputField & { options: Option[] },
->(
+export function applySelectChanges<T extends InputField & { options: Option[] }>(
   data: Data,
   changes: Data,
   field: T,
@@ -23,18 +21,11 @@ export function applySelectChanges<
 
 export function compareOptions(a: Option, b: Option): number {
   return typeof a === "object"
-    ? a.label.localeCompare(
-      typeof b === "object" ? b.label.toString() : b.toString(),
-    )
-    : a.toString().localeCompare(
-      typeof b === "object" ? b.label.toString() : b.toString(),
-    );
+    ? a.label.localeCompare(typeof b === "object" ? b.label.toString() : b.toString())
+    : a.toString().localeCompare(typeof b === "object" ? b.label.toString() : b.toString());
 }
 
-export function getSelectValue(
-  options: Option[],
-  value: unknown,
-): unknown | undefined {
+export function getSelectValue(options: Option[], value: unknown): unknown | undefined {
   if (isEmpty(value)) {
     return;
   }
@@ -52,11 +43,7 @@ export function getSelectValue(
   }
 }
 
-export function applyTextChanges<T extends InputField>(
-  data: Data,
-  changes: Data,
-  field: T,
-) {
+export function applyTextChanges<T extends InputField>(data: Data, changes: Data, field: T) {
   if (!(field.name in changes)) {
     return;
   }
@@ -91,13 +78,12 @@ const skipPattern = [
   /<pre\b[^>]*>[\s\S]*?<\/pre>/.source, // HTML <pre>
   /<code\b[^>]*>[\s\S]*?<\/code>/.source, // HTML <code>
   /<script\b[^>]*>[\s\S]*?<\/script>/.source, // HTML <script>
-  /[a-z]+:\/\/[^\s"'\)]+/.source, // Full URLs
+  /[a-z]+:\/\/[^\s"')]+/.source, // Full URLs
 ].join("|");
 
 // Matches content we want to detect as paths.
 // Requires dot-slash (./ or ../) OR slash (/), and must end with .extension
-const targetPattern =
-  /(?:(?:\.{1,2}\/)|(?:\/))[^"'\)\s\]]+\.[a-zA-Z0-9]+/.source;
+const targetPattern = /(?:(?:\.{1,2}\/)|(?:\/))[^"')\s\]]+\.[a-zA-Z0-9]+/.source;
 
 // Combined RegExp
 const combinedPattern = new RegExp(`(${skipPattern})|(${targetPattern})`, "gi");
@@ -105,10 +91,7 @@ const combinedPattern = new RegExp(`(${skipPattern})|(${targetPattern})`, "gi");
 /**
  * Core function to traverse text and replace paths while respecting code blocks.
  */
-function replacePaths(
-  text: string,
-  transformFn: (path: string) => string | undefined,
-): string {
+function replacePaths(text: string, transformFn: (path: string) => string | undefined): string {
   return text.replace(combinedPattern, (match, skippedContent, foundPath) => {
     // We matched a protected block (Shield): return as is.
     if (skippedContent) {

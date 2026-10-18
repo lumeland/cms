@@ -58,11 +58,7 @@ export interface RouterData {
 
 type DocumentType = "object" | "object-list" | "choose";
 
-const allowedTypes: DocumentType[] = [
-  "object",
-  "object-list",
-  "choose",
-];
+const allowedTypes: DocumentType[] = ["object", "object-list", "choose"];
 
 export interface DocumentOptions {
   icon?: string;
@@ -74,11 +70,7 @@ export interface DocumentOptions {
   fields?: Lume.CMS.Field[];
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
-  transform?: (
-    data: Data,
-    CmsContent: CMSContent,
-    isNew: boolean,
-  ) => void | Promise<void>;
+  transform?: (data: Data, CmsContent: CMSContent, isNew: boolean) => void | Promise<void>;
   edit?: boolean;
 }
 
@@ -94,11 +86,7 @@ export interface CollectionOptions {
   views?: string[] | ((data?: Data) => string[] | undefined);
   documentName?: string | ((changes: Data) => string | undefined);
   documentLabel?: Labelizer;
-  transform?: (
-    data: Data,
-    CmsContent: CMSContent,
-    isNew: boolean,
-  ) => void | Promise<void>;
+  transform?: (data: Data, CmsContent: CMSContent, isNew: boolean) => void | Promise<void>;
   create?: boolean;
   delete?: boolean;
   edit?: boolean;
@@ -196,23 +184,18 @@ export default class Cms {
   /** Add a new upload foler */
   upload(options: UploadOptions): this;
   upload(name: string, store: string, publicPath?: string): this;
-  upload(
-    name: string | UploadOptions,
-    store?: string,
-    publicPath?: string,
-  ): this {
-    const options: UploadOptions = typeof name === "string"
-      ? {
-        name,
-        store,
-        publicPath,
-      } as UploadOptions
-      : name;
+  upload(name: string | UploadOptions, store?: string, publicPath?: string): this {
+    const options: UploadOptions =
+      typeof name === "string"
+        ? ({
+            name,
+            store,
+            publicPath,
+          } as UploadOptions)
+        : name;
 
     if (!options.description) {
-      const [name, description] = options.name.split(":").map((part) =>
-        part.trim()
-      );
+      const [name, description] = options.name.split(":").map((part) => part.trim());
       options.name = name;
       options.description = description;
     }
@@ -228,25 +211,18 @@ export default class Cms {
 
   /** Add a new action */
   action(options: ActionOptions): this;
-  action(
-    name: string,
-    action: () => unknown,
-  ): this;
-  action(
-    name: string | ActionOptions,
-    action?: () => unknown,
-  ): this {
-    const options = typeof name === "string"
-      ? {
-        name,
-        action,
-      } as ActionOptions
-      : name as ActionOptions;
+  action(name: string, action: () => unknown): this;
+  action(name: string | ActionOptions, action?: () => unknown): this {
+    const options =
+      typeof name === "string"
+        ? ({
+            name,
+            action,
+          } as ActionOptions)
+        : (name as ActionOptions);
 
     if (!options.description) {
-      const [name, description] = options.name.split(":").map((part) =>
-        part.trim()
-      );
+      const [name, description] = options.name.split(":").map((part) => part.trim());
       options.name = name;
       options.description = description;
     }
@@ -257,28 +233,19 @@ export default class Cms {
 
   /** Add a new collection */
   collection(options: CollectionOptions): this;
-  collection(
-    name: string,
-    store: string,
-    fields: Lume.CMS.Field[],
-  ): this;
-  collection(
-    name: string | CollectionOptions,
-    store?: string,
-    fields?: Lume.CMS.Field[],
-  ): this {
-    const options = typeof name === "string"
-      ? {
-        name,
-        store,
-        fields,
-      } as CollectionOptions
-      : name as CollectionOptions;
+  collection(name: string, store: string, fields: Lume.CMS.Field[]): this;
+  collection(name: string | CollectionOptions, store?: string, fields?: Lume.CMS.Field[]): this {
+    const options =
+      typeof name === "string"
+        ? ({
+            name,
+            store,
+            fields,
+          } as CollectionOptions)
+        : (name as CollectionOptions);
 
     if (!options.description) {
-      const [name, description] = options.name.split(":").map((part) =>
-        part.trim()
-      );
+      const [name, description] = options.name.split(":").map((part) => part.trim());
       options.name = name;
       options.description = description;
     }
@@ -289,28 +256,19 @@ export default class Cms {
 
   /** Add a new document */
   document(options: DocumentOptions): this;
-  document(
-    name: string,
-    store: string,
-    fields: Lume.CMS.Field[],
-  ): this;
-  document(
-    name: string | DocumentOptions,
-    store?: string,
-    fields?: Lume.CMS.Field[],
-  ): this {
-    const options = typeof name === "string"
-      ? {
-        name,
-        store,
-        fields,
-      } as DocumentOptions
-      : name as DocumentOptions;
+  document(name: string, store: string, fields: Lume.CMS.Field[]): this;
+  document(name: string | DocumentOptions, store?: string, fields?: Lume.CMS.Field[]): this {
+    const options =
+      typeof name === "string"
+        ? ({
+            name,
+            store,
+            fields,
+          } as DocumentOptions)
+        : (name as DocumentOptions);
 
     if (!options.description) {
-      const [name, description] = options.name.split(":").map((part) =>
-        part.trim()
-      );
+      const [name, description] = options.name.split(":").map((part) => part.trim());
       options.name = name;
       options.description = description;
     }
@@ -319,10 +277,7 @@ export default class Cms {
     return this;
   }
 
-  field(
-    name: string,
-    field: FieldDefinition,
-  ): this {
+  field(name: string, field: FieldDefinition): this {
     this.fields.set(name, field);
     return this;
   }
@@ -389,9 +344,7 @@ export default class Cms {
   /** Start the CMS */
   init(): Router<RouterData> {
     // JavaScript files to import
-    const jsImports = new Set(
-      this.fields.values().map((field) => field.jsImport),
-    );
+    const jsImports = new Set(this.fields.values().map((field) => field.jsImport));
 
     const initOptions: Parameters<typeof init>[0] = {
       content: this.initContent(),
@@ -409,10 +362,7 @@ export default class Cms {
 
     if (auth) {
       for (const [user, password] of Object.entries(auth.users)) {
-        initOptions.users.set(
-          user,
-          typeof password === "string" ? { password } : password,
-        );
+        initOptions.users.set(user, typeof password === "string" ? { password } : password);
       }
       authMethod = auth.method === "basic" ? Basic.create() : auth.method;
       authMethod.init(initOptions);
@@ -469,10 +419,7 @@ export default class Cms {
     } as Lume.CMS.ResolvedField;
   }
 
-  #resolveField(
-    field: Lume.CMS.Field,
-    content: CMSContent,
-  ): Lume.CMS.ResolvedField {
+  #resolveField(field: Lume.CMS.Field, content: CMSContent): Lume.CMS.ResolvedField {
     // deno-lint-ignore no-explicit-any
     let resolvedField: any;
 
@@ -506,23 +453,20 @@ export default class Cms {
 
     if (resolvedField.fields) {
       resolvedField.fields = resolvedField.fields.map((field: Lume.CMS.Field) =>
-        this.#resolveField(field, content)
+        this.#resolveField(field, content),
       );
     }
 
     if (type.init) {
       const customInit = resolvedField.init;
 
-      resolvedField.init = typeof customInit === "function"
-        ? async (
-          field: Lume.CMS.ResolvedField,
-          content: CMSContent,
-          data: Data,
-        ) => {
-          await type.init!(field, content);
-          await customInit(field, content, data);
-        }
-        : type.init;
+      resolvedField.init =
+        typeof customInit === "function"
+          ? async (field: Lume.CMS.ResolvedField, content: CMSContent, data: Data) => {
+              await type.init!(field, content);
+              await customInit(field, content, data);
+            }
+          : type.init;
     }
 
     return resolvedField as Lume.CMS.ResolvedField;

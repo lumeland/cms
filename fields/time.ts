@@ -1,10 +1,5 @@
 import { applyTextChanges } from "./utils.ts";
-import type {
-  FieldDefinition,
-  InputField,
-  Option,
-  ResolvedField,
-} from "../types.ts";
+import type { FieldDefinition, InputField, Option, ResolvedField } from "../types.ts";
 
 /** Field for time values */
 interface TimeField extends InputField<ResolvedTimeField, Attributes> {
@@ -26,8 +21,7 @@ interface Attributes {
   step?: number;
 }
 
-interface ResolvedTimeField extends TimeField, ResolvedField {
-}
+interface ResolvedTimeField extends TimeField, ResolvedField {}
 
 export default {
   tag: "f-time",

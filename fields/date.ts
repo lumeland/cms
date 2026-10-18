@@ -18,17 +18,17 @@ interface Attributes {
   step?: number;
 }
 
-interface ResolvedDateField extends DateField, ResolvedField {
-}
+interface ResolvedDateField extends DateField, ResolvedField {}
 
 export default {
   tag: "f-date",
   jsImport: "lume_cms/components/f-date.js",
   applyChanges(data, changes, field) {
     try {
-      const value = typeof changes[field.name] === "string"
-        ? Temporal.PlainDate.from(changes[field.name] as string)
-        : null;
+      const value =
+        typeof changes[field.name] === "string"
+          ? Temporal.PlainDate.from(changes[field.name] as string)
+          : null;
 
       if (value) {
         data[field.name] = transform(field, value);

@@ -18,9 +18,7 @@ import type Document from "../document.ts";
  *   ]
  * }
  */
-export function changesToData(
-  changes: Record<string, unknown>,
-): Data {
+export function changesToData(changes: Record<string, unknown>): Data {
   const data: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(changes)) {
@@ -64,9 +62,7 @@ export async function prepareField(
 
   if ("fields" in json) {
     json.fields = await Promise.all(
-      json.fields.map((f) =>
-        prepareField(f, content, data?.[field.name], document)
-      ),
+      json.fields.map((f) => prepareField(f, content, data?.[field.name], document)),
     );
   }
 
@@ -78,10 +74,7 @@ export async function prepareField(
   return json;
 }
 
-export function getViews(
-  field: Lume.CMS.ResolvedField,
-  views = new Set<string>(),
-): Set<string> {
+export function getViews(field: Lume.CMS.ResolvedField, views = new Set<string>()): Set<string> {
   if (typeof field.view === "string") {
     views.add(field.view);
   }

@@ -1,10 +1,5 @@
 import { applyTextChanges } from "./utils.ts";
-import type {
-  FieldDefinition,
-  InputField,
-  Option,
-  ResolvedField,
-} from "../types.ts";
+import type { FieldDefinition, InputField, Option, ResolvedField } from "../types.ts";
 
 /** Field for url values */
 interface UrlField extends InputField<ResolvedUrlField> {
@@ -15,8 +10,7 @@ interface UrlField extends InputField<ResolvedUrlField> {
   options?: Option[];
 }
 
-interface ResolvedUrlField extends UrlField, ResolvedField {
-}
+interface ResolvedUrlField extends UrlField, ResolvedField {}
 
 export default {
   tag: "f-url",

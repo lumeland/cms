@@ -1,10 +1,5 @@
 import { applyTextChanges } from "./utils.ts";
-import type {
-  FieldDefinition,
-  InputField,
-  Option,
-  ResolvedField,
-} from "../types.ts";
+import type { FieldDefinition, InputField, Option, ResolvedField } from "../types.ts";
 
 /** Field for radio values */
 interface RadioField extends InputField<ResolvedRadioField> {
@@ -15,8 +10,7 @@ interface RadioField extends InputField<ResolvedRadioField> {
   options: Option[];
 }
 
-interface ResolvedRadioField extends RadioField, ResolvedField {
-}
+interface ResolvedRadioField extends RadioField, ResolvedField {}
 
 export default {
   tag: "f-radio",

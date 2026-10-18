@@ -111,10 +111,7 @@ export async function readTextFile(file: string): Promise<string> {
 }
 
 /** Write a binary file */
-export async function writeFile(
-  file: string,
-  content: Uint8Array,
-): Promise<void> {
+export async function writeFile(file: string, content: Uint8Array): Promise<void> {
   try {
     await fsPromises.writeFile(file, content);
   } catch (error) {
@@ -123,10 +120,7 @@ export async function writeFile(
 }
 
 /** Write a text file */
-export async function writeTextFile(
-  file: string,
-  content: string,
-): Promise<void> {
+export async function writeTextFile(file: string, content: string): Promise<void> {
   try {
     await fsPromises.writeFile(file, content);
   } catch (error) {

@@ -14,12 +14,7 @@ export interface HTTPServerOptions {
 
 /** Start a new HTTP server */
 export function serve(options: HTTPServerOptions): void {
-  const {
-    handler,
-    port = 8000,
-    hostname = "0.0.0.0",
-    signal,
-  } = options;
+  const { handler, port = 8000, hostname = "0.0.0.0", signal } = options;
 
   const server = createServer(async (req, res) => {
     try {

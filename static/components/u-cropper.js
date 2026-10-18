@@ -1,12 +1,6 @@
 import { Component } from "./component.js";
 import dom from "dom";
-import {
-  CropperCanvas,
-  CropperCrosshair,
-  CropperGrid,
-  CropperHandle,
-  CropperImage,
-} from "cropper";
+import { CropperCanvas, CropperCrosshair, CropperGrid, CropperHandle, CropperImage } from "cropper";
 import { t } from "./utils.js";
 
 CropperCanvas.$define();
@@ -36,87 +30,95 @@ customElements.define(
         scalable: true,
         translatable: true,
       });
-      const canvas = dom("cropper-canvas", {
-        background: true,
-        style: {
-          width: `min(100%, ${img.width}px)`,
-          "aspect-ratio": img.width / img.height,
-          margin: "auto",
+      const canvas = dom(
+        "cropper-canvas",
+        {
+          background: true,
+          style: {
+            width: `min(100%, ${img.width}px)`,
+            "aspect-ratio": img.width / img.height,
+            margin: "auto",
+          },
+          "theme-color": "var(--color-primary)",
+          scaleStep: 0,
+          html: [
+            image,
+            dom("cropper-shade", { "theme-color": "#0003" }),
+            dom("cropper-handle", { action: "select", plain: true }),
+          ],
         },
-        "theme-color": "var(--color-primary)",
-        scaleStep: 0,
-        html: [
-          image,
-          dom("cropper-shade", { "theme-color": "#0003" }),
-          dom("cropper-handle", { action: "select", plain: true }),
-        ],
-      }, this);
+        this,
+      );
 
-      const selection = dom("cropper-selection", {
-        "initial-coverage": 0.9,
-        movable: true,
-        resizable: true,
-        onchange: (event) => {
-          const cropperCanvasRect = canvas.getBoundingClientRect();
-          const cropperImageRect = image.getBoundingClientRect();
-          const maxSelection = {
-            x: cropperImageRect.left - cropperCanvasRect.left,
-            y: cropperImageRect.top - cropperCanvasRect.top,
-            width: cropperImageRect.width,
-            height: cropperImageRect.height,
-          };
+      const selection = dom(
+        "cropper-selection",
+        {
+          "initial-coverage": 0.9,
+          movable: true,
+          resizable: true,
+          onchange: (event) => {
+            const cropperCanvasRect = canvas.getBoundingClientRect();
+            const cropperImageRect = image.getBoundingClientRect();
+            const maxSelection = {
+              x: cropperImageRect.left - cropperCanvasRect.left,
+              y: cropperImageRect.top - cropperCanvasRect.top,
+              width: cropperImageRect.width,
+              height: cropperImageRect.height,
+            };
 
-          if (!inSelection(event.detail, maxSelection)) {
-            event.preventDefault();
-          }
+            if (!inSelection(event.detail, maxSelection)) {
+              event.preventDefault();
+            }
+          },
+          html: [
+            dom("cropper-grid", {
+              covered: true,
+            }),
+            dom("cropper-crosshair", { centered: true }),
+            dom("cropper-handle", {
+              action: "move",
+              "theme-color": "#FFF3",
+              style: {
+                outline: "solid 1px var(--color-primary)",
+                "box-shadow": "0 0 10px #0006",
+              },
+            }),
+            dom("cropper-handle", {
+              action: "n-resize",
+              "theme-color": "var(--color-primary)",
+            }),
+            dom("cropper-handle", {
+              action: "e-resize",
+              "theme-color": "var(--color-primary)",
+            }),
+            dom("cropper-handle", {
+              action: "s-resize",
+              "theme-color": "var(--color-primary)",
+            }),
+            dom("cropper-handle", {
+              action: "w-resize",
+              "theme-color": "var(--color-primary)",
+            }),
+            dom("cropper-handle", {
+              action: "ne-resize",
+              "theme-color": "var(--color-primary)",
+            }),
+            dom("cropper-handle", {
+              action: "se-resize",
+              "theme-color": "var(--color-primary)",
+            }),
+            dom("cropper-handle", {
+              action: "sw-resize",
+              "theme-color": "var(--color-primary)",
+            }),
+            dom("cropper-handle", {
+              action: "nw-resize",
+              "theme-color": "var(--color-primary)",
+            }),
+          ],
         },
-        html: [
-          dom("cropper-grid", {
-            covered: true,
-          }),
-          dom("cropper-crosshair", { centered: true }),
-          dom("cropper-handle", {
-            action: "move",
-            "theme-color": "#FFF3",
-            style: {
-              outline: "solid 1px var(--color-primary)",
-              "box-shadow": "0 0 10px #0006",
-            },
-          }),
-          dom("cropper-handle", {
-            action: "n-resize",
-            "theme-color": "var(--color-primary)",
-          }),
-          dom("cropper-handle", {
-            action: "e-resize",
-            "theme-color": "var(--color-primary)",
-          }),
-          dom("cropper-handle", {
-            action: "s-resize",
-            "theme-color": "var(--color-primary)",
-          }),
-          dom("cropper-handle", {
-            action: "w-resize",
-            "theme-color": "var(--color-primary)",
-          }),
-          dom("cropper-handle", {
-            action: "ne-resize",
-            "theme-color": "var(--color-primary)",
-          }),
-          dom("cropper-handle", {
-            action: "se-resize",
-            "theme-color": "var(--color-primary)",
-          }),
-          dom("cropper-handle", {
-            action: "sw-resize",
-            "theme-color": "var(--color-primary)",
-          }),
-          dom("cropper-handle", {
-            action: "nw-resize",
-            "theme-color": "var(--color-primary)",
-          }),
-        ],
-      }, canvas);
+        canvas,
+      );
 
       const form = this.closest("form");
       form.addEventListener("submit", () => {
@@ -129,25 +131,33 @@ customElements.define(
         form["height"].value = selection.height * scale;
       });
 
-      dom("button", {
-        type: "button",
-        class: "buttonIcon",
-        title: t("cropped.action.square"),
-        onclick: () => {
-          const min = Math.min(selection.width, selection.height);
-          selection.$change(selection.x, selection.y, min, min);
+      dom(
+        "button",
+        {
+          type: "button",
+          class: "buttonIcon",
+          title: t("cropped.action.square"),
+          onclick: () => {
+            const min = Math.min(selection.width, selection.height);
+            selection.$change(selection.x, selection.y, min, min);
+          },
+          html: "<u-icon name='square'></u-icon>",
         },
-        html: "<u-icon name='square'></u-icon>",
-      }, tools);
-      dom("button", {
-        type: "button",
-        class: "buttonIcon",
-        title: t("cropped.action.center"),
-        onclick: () => {
-          selection.$center();
+        tools,
+      );
+      dom(
+        "button",
+        {
+          type: "button",
+          class: "buttonIcon",
+          title: t("cropped.action.center"),
+          onclick: () => {
+            selection.$center();
+          },
+          html: "<u-icon name='plus'></u-icon>",
         },
-        html: "<u-icon name='plus'></u-icon>",
-      }, tools);
+        tools,
+      );
     }
   },
 );
@@ -156,7 +166,7 @@ function inSelection(selection, maxSelection) {
   return (
     selection.x >= maxSelection.x &&
     selection.y >= maxSelection.y &&
-    (selection.x + selection.width) <= (maxSelection.x + maxSelection.width) &&
-    (selection.y + selection.height) <= (maxSelection.y + maxSelection.height)
+    selection.x + selection.width <= maxSelection.x + maxSelection.width &&
+    selection.y + selection.height <= maxSelection.y + maxSelection.height
   );
 }

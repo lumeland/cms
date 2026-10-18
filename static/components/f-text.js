@@ -1,11 +1,5 @@
 import { Component } from "./component.js";
-import {
-  getFieldName,
-  initField,
-  oninvalid,
-  pushOptions,
-  updateField,
-} from "./utils.js";
+import { getFieldName, initField, oninvalid, pushOptions, updateField } from "./utils.js";
 import dom from "dom";
 
 export class Input extends Component {
@@ -22,25 +16,25 @@ export class Input extends Component {
     initField(this);
     dom("label", { for: id, html: schema.label }, this);
 
-    dom(
-      "div",
-      { class: "field-description", html: schema.description },
-      this,
-    );
+    dom("div", { class: "field-description", html: schema.description }, this);
 
     const maxWidth = schema.attributes?.maxlength
       ? `${Math.max(3, schema.attributes.maxlength)}em`
       : "none";
 
-    const input = dom("input", {
-      ...schema.attributes,
-      id,
-      name,
-      oninvalid,
-      value: isNew ? value ?? schema.value : value,
-      ...this.inputAttributes,
-      style: { "--max-width": maxWidth },
-    }, this);
+    const input = dom(
+      "input",
+      {
+        ...schema.attributes,
+        id,
+        name,
+        oninvalid,
+        value: isNew ? (value ?? schema.value) : value,
+        ...this.inputAttributes,
+        style: { "--max-width": maxWidth },
+      },
+      this,
+    );
 
     input.addEventListener("invalid", () => {
       input.dispatchEvent(

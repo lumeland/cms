@@ -24,19 +24,27 @@
 }
 @keyframes u-busy {
   0% {
-    box-shadow: -20px 0 hsl(0 50% 50% / 0.1), 20px 0 hsl(0 50% 50%);
+    box-shadow:
+      -20px 0 hsl(0 50% 50% / 0.1),
+      20px 0 hsl(0 50% 50%);
     background: hsl(0 50% 50%);
   }
   33% {
-    box-shadow: -20px 0 hsl(0 50% 50% / 0.1), 20px 0 hsl(0 50% 50%);
+    box-shadow:
+      -20px 0 hsl(0 50% 50% / 0.1),
+      20px 0 hsl(0 50% 50%);
     background: hsl(0 50% 50% / 0.1);
   }
   66% {
-    box-shadow: -20px 0 hsl(0 50% 50%), 20px 0 hsl(0 50% 50% / 0.1);
+    box-shadow:
+      -20px 0 hsl(0 50% 50%),
+      20px 0 hsl(0 50% 50% / 0.1);
     background: hsl(0 50% 50% / 0.1);
   }
   100% {
-    box-shadow: -20px 0 hsl(0 50% 50%), 20px 0 hsl(0 50% 50% / 0.1);
+    box-shadow:
+      -20px 0 hsl(0 50% 50%),
+      20px 0 hsl(0 50% 50% / 0.1);
     background: hsl(0 50% 50%);
   }
 }

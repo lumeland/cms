@@ -1,10 +1,5 @@
 import { applyTextChanges } from "./utils.ts";
-import type {
-  FieldDefinition,
-  InputField,
-  Option,
-  ResolvedField,
-} from "../types.ts";
+import type { FieldDefinition, InputField, Option, ResolvedField } from "../types.ts";
 
 /** Field for text values */
 interface TextField extends InputField<ResolvedTextField, Attributes> {
@@ -29,8 +24,7 @@ interface Attributes {
   title?: string;
 }
 
-interface ResolvedTextField extends TextField, ResolvedField {
-}
+interface ResolvedTextField extends TextField, ResolvedField {}
 
 export default {
   tag: "f-text",

@@ -6,8 +6,7 @@ interface ColorField extends InputField<ResolvedColorField> {
   type: "color";
   value?: string;
 }
-interface ResolvedColorField extends ColorField, ResolvedField {
-}
+interface ResolvedColorField extends ColorField, ResolvedField {}
 
 export default {
   tag: "f-color",

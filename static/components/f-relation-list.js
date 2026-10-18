@@ -13,11 +13,7 @@ customElements.define(
       initField(this);
       dom("label", { for: `field_${namePrefix}.0`, html: schema.label }, this);
 
-      dom(
-        "div",
-        { class: "field-description", html: schema.description },
-        this,
-      );
+      dom("div", { class: "field-description", html: schema.description }, this);
 
       const div = dom("div", { class: "fieldset" }, this);
       let index = 0;
@@ -25,52 +21,58 @@ customElements.define(
       function addOption(value) {
         const name = `${namePrefix}.${index++}`;
         const item = dom("div", { class: "ly-rowStack is-narrow" }, div);
-        const select = dom("select", {
-          class: "select is-narrow",
-          id: `field_${name}`,
-          name,
-        }, item);
+        const select = dom(
+          "select",
+          {
+            class: "select is-narrow",
+            id: `field_${name}`,
+            name,
+          },
+          item,
+        );
         dom("option", { value: "", html: "--" }, select);
         pushOptions(select, schema.options);
         select.value = value ?? "";
 
-        dom("button", {
-          type: "button",
-          class: "buttonIcon",
-          onclick() {
-            item.remove();
+        dom(
+          "button",
+          {
+            type: "button",
+            class: "buttonIcon",
+            onclick() {
+              item.remove();
+            },
+            html: '<u-icon name="trash"></u-icon>',
           },
-          html: '<u-icon name="trash"></u-icon>',
-        }, item);
+          item,
+        );
         dom("u-draggable", item);
       }
 
-      for (const v of (isNew ? value ?? schema.value : value) ?? []) {
+      for (const v of (isNew ? (value ?? schema.value) : value) ?? []) {
         addOption(v);
       }
 
       const footer = dom("footer", { class: "field-footer" }, this);
 
-      dom("button", {
-        type: "button",
-        onclick: () => addOption(),
-        class: "button is-secondary",
-        html: [
-          '<u-icon name="plus-circle"></u-icon>',
-          `Add ${schema.label}`,
-        ],
-      }, footer);
-    }
-
-    get currentValue() {
-      return Array.from(this.querySelectorAll("select")).map((select) =>
-        select.value
+      dom(
+        "button",
+        {
+          type: "button",
+          onclick: () => addOption(),
+          class: "button is-secondary",
+          html: ['<u-icon name="plus-circle"></u-icon>', `Add ${schema.label}`],
+        },
+        footer,
       );
     }
 
+    get currentValue() {
+      return Array.from(this.querySelectorAll("select")).map((select) => select.value);
+    }
+
     update(schema) {
-      this.querySelector(".field-description").innerHTML = schema.description ??
-        "";
+      this.querySelector(".field-description").innerHTML = schema.description ?? "";
     }
   },
 );

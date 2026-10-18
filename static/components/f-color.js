@@ -12,33 +12,49 @@ customElements.define(
       const id = `field_${name}`;
 
       initField(this);
-      dom("label", {
-        for: id,
-        html: schema.label,
-      }, this);
+      dom(
+        "label",
+        {
+          for: id,
+          html: schema.label,
+        },
+        this,
+      );
 
-      dom("div", {
-        class: "field-description",
-        html: schema.description,
-      }, this);
+      dom(
+        "div",
+        {
+          class: "field-description",
+          html: schema.description,
+        },
+        this,
+      );
 
       const div = dom("div", { class: "ly-rowStack" }, this);
-      const input = dom("input", {
-        class: "input",
-        type: "color",
-        id,
-        name,
-        value: isNew ? value ?? schema.value : value,
-        oninvalid,
-      }, div);
-      const text = dom("input", {
-        class: "input is-narrow",
-        type: "text",
-        value: input.value,
-      }, div);
+      const input = dom(
+        "input",
+        {
+          class: "input",
+          type: "color",
+          id,
+          name,
+          value: isNew ? (value ?? schema.value) : value,
+          oninvalid,
+        },
+        div,
+      );
+      const text = dom(
+        "input",
+        {
+          class: "input is-narrow",
+          type: "text",
+          value: input.value,
+        },
+        div,
+      );
 
-      input.addEventListener("input", () => text.value = input.value);
-      text.addEventListener("input", () => input.value = text.value);
+      input.addEventListener("input", () => (text.value = input.value));
+      text.addEventListener("input", () => (input.value = text.value));
     }
 
     get currentValue() {
@@ -47,7 +63,7 @@ customElements.define(
 
     update(schema, value) {
       const inputs = this.querySelectorAll("input");
-      inputs.forEach((input) => input.value = value ?? null);
+      inputs.forEach((input) => (input.value = value ?? null));
       updateField(this, schema, inputs[0]);
     }
   },

@@ -1,4 +1,13 @@
 {
+  "scripts": {
+    "build": "rm -f ../static/libs/* && npm run markdown && npm run tiptap && npm run markup_util && npm run code && npm run normalize && npm run terser",
+    "markdown": "rollup markdown.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
+    "tiptap": "rollup tiptap.js -d ../static/libs/ -p @rollup/plugin-node-resolve -p @rollup/plugin-commonjs",
+    "markup_util": "rollup markup_util.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
+    "code": "rollup code.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
+    "normalize": "wget -O ../static/libs/modern-normalize.css https://unpkg.com/modern-normalize/modern-normalize.css",
+    "terser": "terser-glob ../static/libs/*.js"
+  },
   "dependencies": {
     "@codemirror/lang-html": "^6.4.11",
     "@codemirror/lang-markdown": "^6.5.1",
@@ -19,14 +28,5 @@
     "terser": "^5.49.0",
     "terser-glob": "^1.2.1",
     "tiptap-markdown": "^0.9.0"
-  },
-  "scripts": {
-    "build": "rm -f ../static/libs/* && npm run markdown && npm run tiptap && npm run markup_util && npm run code && npm run normalize && npm run terser",
-    "markdown": "rollup markdown.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
-    "tiptap": "rollup tiptap.js -d ../static/libs/ -p @rollup/plugin-node-resolve -p @rollup/plugin-commonjs",
-    "markup_util": "rollup markup_util.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
-    "code": "rollup code.js -d ../static/libs/ -p @rollup/plugin-node-resolve",
-    "normalize": "wget -O ../static/libs/modern-normalize.css https://unpkg.com/modern-normalize/modern-normalize.css",
-    "terser": "terser-glob ../static/libs/*.js"
   }
 }

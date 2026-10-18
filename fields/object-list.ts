@@ -1,10 +1,5 @@
 import { transform } from "./utils.ts";
-import type {
-  Data,
-  FieldDefinition,
-  GroupField,
-  ResolvedGroupField,
-} from "../types.ts";
+import type { Data, FieldDefinition, GroupField, ResolvedGroupField } from "../types.ts";
 
 /** Field for object list values */
 interface ObjectListField extends GroupField<ResolvedObjectListField> {
@@ -12,9 +7,7 @@ interface ObjectListField extends GroupField<ResolvedObjectListField> {
   value?: Record<string, unknown>[];
 }
 
-interface ResolvedObjectListField
-  extends Omit<ObjectListField, "fields">, ResolvedGroupField {
-}
+interface ResolvedObjectListField extends Omit<ObjectListField, "fields">, ResolvedGroupField {}
 
 export default {
   tag: "f-object-list",
@@ -27,13 +20,7 @@ export default {
           const value = {} as Data;
 
           for (const f of field.fields || []) {
-            await f.applyChanges(
-              value,
-              subchanges,
-              f,
-              document,
-              cmsContent,
-            );
+            await f.applyChanges(value, subchanges, f, document, cmsContent);
           }
 
           return value;

@@ -47,9 +47,7 @@ export class Basic implements AuthProvider {
     return new Response("Not found", { status: 404 });
   }
 
-  #parseCredentials(
-    value?: string | null,
-  ): [string, string] | undefined {
+  #parseCredentials(value?: string | null): [string, string] | undefined {
     const match = value?.match(/^Basic\s+(.*)$/);
 
     if (!match) {

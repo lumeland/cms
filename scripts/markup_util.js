@@ -8,6 +8,7 @@ export function isUrlLike(text) {
   }
 
   // It's a path
-  return text.startsWith("./") || text.startsWith("/") ||
-    text.startsWith("#") || text.startsWith("?");
+  return (
+    text.startsWith("./") || text.startsWith("/") || text.startsWith("#") || text.startsWith("?")
+  );
 }

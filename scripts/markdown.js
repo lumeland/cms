@@ -1,24 +1,11 @@
 import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { markdown } from "@codemirror/lang-markdown";
-import {
-  dropCursor,
-  highlightSpecialChars,
-  keymap,
-  rectangularSelection,
-} from "@codemirror/view";
+import { dropCursor, highlightSpecialChars, keymap, rectangularSelection } from "@codemirror/view";
 
-import {
-  bracketMatching,
-  defaultHighlightStyle,
-  syntaxHighlighting,
-} from "@codemirror/language";
+import { bracketMatching, defaultHighlightStyle, syntaxHighlighting } from "@codemirror/language";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import {
-  autocompletion,
-  closeBrackets,
-  closeBracketsKeymap,
-} from "@codemirror/autocomplete";
+import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { languages } from "@codemirror/language-data";
 
 import theme from "./codemirror_theme.js";
@@ -89,9 +76,10 @@ export function init(parent, textarea, pasteLink = createLink) {
             view.state.selection.main.to,
           );
 
-          const insert = !shiftKeyIsPressed && isUrlLike(text) && !isUrlLike(selectedText)
-            ? pasteLink(text, selectedText)
-            : text;
+          const insert =
+            !shiftKeyIsPressed && isUrlLike(text) && !isUrlLike(selectedText)
+              ? pasteLink(text, selectedText)
+              : text;
 
           view.dispatch({
             changes: {
@@ -106,12 +94,7 @@ export function init(parent, textarea, pasteLink = createLink) {
           return true;
         },
       }),
-      keymap.of([
-        ...markdownBinding,
-        ...closeBracketsKeymap,
-        ...defaultKeymap,
-        ...historyKeymap,
-      ]),
+      keymap.of([...markdownBinding, ...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap]),
       markdown({
         codeLanguages: languages,
       }),

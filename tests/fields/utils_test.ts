@@ -76,23 +76,14 @@ Deno.test("Ignores Full URLs (https://)", () => {
     Another external: <img src="http://example.com/image.png">
   `;
 
-  const output = toAbsolutePaths(
-    input,
-    (path) => "/PREFIX" + path.replace(/^\./, ""),
-  );
+  const output = toAbsolutePaths(input, (path) => "/PREFIX" + path.replace(/^\./, ""));
 
   // Local path SHOULD change
-  assertEquals(
-    output.includes("](/PREFIX/local-page.html)"),
-    true,
-    "Failed to convert local path",
-  );
+  assertEquals(output.includes("](/PREFIX/local-page.html)"), true, "Failed to convert local path");
 
   // External HTTPS link should remain EXACTLY the same
   assertEquals(
-    output.includes(
-      "(https://www.domestic-wild.com/itinerari-la-pletera-pnmm-cat)",
-    ),
+    output.includes("(https://www.domestic-wild.com/itinerari-la-pletera-pnmm-cat)"),
     true,
     "Accidentally modified https URL!",
   );

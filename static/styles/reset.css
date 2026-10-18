@@ -31,8 +31,7 @@ code {
 }
 :focus-visible {
   outline: 0;
-  box-shadow: 0 0 0 3px
-    color-mix(in hsl, var(--color-primary), transparent 75%);
+  box-shadow: 0 0 0 3px color-mix(in hsl, var(--color-primary), transparent 75%);
 }
 ::selection {
   background: color-mix(in hsl, var(--color-primary), transparent 85%);
@@ -42,8 +41,7 @@ code {
 [data-theme="dark"] {
   :focus-visible {
     outline: 0;
-    box-shadow: 0 0 0 3px
-      color-mix(in hsl, var(--color-primary), transparent 75%);
+    box-shadow: 0 0 0 3px color-mix(in hsl, var(--color-primary), transparent 75%);
   }
   ::selection {
     background: color-mix(in hsl, var(--color-primary), transparent 85%);

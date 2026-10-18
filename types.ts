@@ -3,12 +3,7 @@ import type Collection from "./core/collection.ts";
 import type Document from "./core/document.ts";
 import type Upload from "./core/upload.ts";
 import type Git from "./core/git.ts";
-import type {
-  CmsOptions,
-  CollectionOptions,
-  DocumentOptions,
-  UploadOptions,
-} from "./core/cms.ts";
+import type { CmsOptions, CollectionOptions, DocumentOptions, UploadOptions } from "./core/cms.ts";
 import type { Options as GitOptions } from "./core/git.ts";
 import Action from "./core/action.ts";
 
@@ -102,12 +97,7 @@ export interface Field<T extends ResolvedField = ResolvedField, V = unknown> {
   value?: V;
 
   /** Function to execute on init the field  */
-  init?(
-    field: T,
-    content: CMSContent,
-    data?: Data,
-    document?: Document,
-  ): void | Promise<void>;
+  init?(field: T, content: CMSContent, data?: Data, document?: Document): void | Promise<void>;
 
   /** Function to transform the value before saved */
   transform?(value: any): any;
@@ -128,9 +118,7 @@ export interface ResolvedField {
 }
 
 /** A field definition to be used by the CMS */
-export type FieldDefinition<
-  T extends ResolvedField & Field = ResolvedField & Field,
-> = {
+export type FieldDefinition<T extends ResolvedField & Field = ResolvedField & Field> = {
   /** The tagName used in the HTML for the custom element */
   tag: string;
 
@@ -138,12 +126,7 @@ export type FieldDefinition<
   jsImport: string;
 
   /** Function to execute on init the field definition  */
-  init?(
-    field: T,
-    content: CMSContent,
-    data?: Data,
-    document?: Document,
-  ): void | Promise<void>;
+  init?(field: T, content: CMSContent, data?: Data, document?: Document): void | Promise<void>;
 
   /** Function to apply the changes in the data object */
   applyChanges(
@@ -174,8 +157,7 @@ export type PreviewUrl = (
 ) => undefined | string | Promise<string | undefined>;
 
 /** Field visible in the UI */
-export interface UIField<T extends ResolvedField = ResolvedField>
-  extends Field<T> {
+export interface UIField<T extends ResolvedField = ResolvedField> extends Field<T> {
   /** The visible name in the UI. If it's not defined, the name option will be used. */
   label?: string;
 
@@ -198,8 +180,7 @@ export interface InputField<
 }
 
 /** Field for groups */
-export interface GroupField<T extends ResolvedField = ResolvedField>
-  extends UIField<T> {
+export interface GroupField<T extends ResolvedField = ResolvedField> extends UIField<T> {
   /** The fields that belong to this group */
   fields: Lume.CMS.Field[];
 }
@@ -219,12 +200,11 @@ export interface InputAttributes {
 }
 
 /** Pretty */
-type Prettify<T> =
-  & {
-    [K in keyof T]: T[K];
-  }
+type Prettify<T> = {
+  [K in keyof T]: T[K];
+} &
   // deno-lint-ignore ban-types
-  & {};
+  {};
 
 export type Labelizer = (name: string) => string | DocumentLabel;
 
@@ -256,13 +236,8 @@ export interface Permissions {
 
 declare global {
   namespace Lume.CMS {
-    type FieldStrings = `${string}:${" " | ""}${keyof Fields}${
-      | "!"
-      | ""}`;
-    export type Field =
-      | Fields[keyof Fields]
-      | ParentFields[keyof ParentFields]
-      | FieldStrings;
+    type FieldStrings = `${string}:${" " | ""}${keyof Fields}${"!" | ""}`;
+    export type Field = Fields[keyof Fields] | ParentFields[keyof ParentFields] | FieldStrings;
     export type ResolvedField = ResolvedFields[keyof ResolvedFields];
 
     export type {

@@ -9,9 +9,7 @@ export const Json: Transformer<string> = {
     try {
       return JSON.parse(content) as Record<string, unknown>;
     } catch (error) {
-      throw new TransformError(
-        `Malformed JSON code: ${(error as Error).message}`,
-      );
+      throw new TransformError(`Malformed JSON code: ${(error as Error).message}`);
     }
   },
 

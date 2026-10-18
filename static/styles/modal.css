@@ -71,7 +71,7 @@ html:has(.modal.is-preview:not(.is-hidden)[open]) {
     width: 100%;
     border: none;
     background-color: white;
-    margin-bottom: .5em;
+    margin-bottom: 0.5em;
   }
 }
 .modal-header {

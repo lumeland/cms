@@ -19,28 +19,27 @@ import type { RouterData } from "../cms.ts";
 
 const app = new Router<RouterData>();
 
-app.path(
-  "/:name/*",
-  ({ cms, name, render, next, user }) => {
-    const { documents, basePath } = cms;
+app.path("/:name/*", ({ cms, name, render, next, user }) => {
+  const { documents, basePath } = cms;
 
-    // Check if the document exists
-    const document = documents[name];
+  // Check if the document exists
+  const document = documents[name];
 
-    if (!document) {
-      return new Response("Not found", { status: 404 });
-    }
+  if (!document) {
+    return new Response("Not found", { status: 404 });
+  }
 
-    function redirect(...paths: string[]) {
-      return new Response(null, {
-        status: 302,
-        headers: new Headers({
-          "Location": getPath(basePath, "document", document.name, ...paths),
-        }),
-      });
-    }
+  function redirect(...paths: string[]) {
+    return new Response(null, {
+      status: 302,
+      headers: new Headers({
+        Location: getPath(basePath, "document", document.name, ...paths),
+      }),
+    });
+  }
 
-    return next()
+  return (
+    next()
       /* GET /document/:name/edit */
       .get("/edit", async () => {
         // If there are no fields defined, redirect to the code editor
@@ -80,8 +79,8 @@ app.path(
         const changes = Object.fromEntries(await request.formData());
         await saveDocumentCode(user, document, cms, changes);
         return redirect("code");
-      });
-  },
-);
+      })
+  );
+});
 
 export default app;

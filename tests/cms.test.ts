@@ -23,7 +23,7 @@ Deno.test("CMS test", async (t) => {
     await runTest(t, "/collection/posts");
     await runTest(t, "/collection/posts/create");
     await runTest(t, "/collection/posts/create", {
-      "_id": "new-post.md",
+      _id: "new-post.md",
       "root.title": "New title",
       "root.tags.0": "Tag 1",
       "root.tags.1": "Tag 2",
@@ -41,7 +41,7 @@ Deno.test("CMS test", async (t) => {
     await runTest(t, "/collection/posts/new-post.md/edit");
     await assertStorage(t);
     await runTest(t, "/collection/posts/new-post.md/edit", {
-      "_id": "new-post.md",
+      _id: "new-post.md",
       "root.title": "Title modified",
       "root.tags.0": "Tag 1",
       "root.tags.2": "Tag 3",
@@ -90,11 +90,7 @@ Deno.test("CMS test", async (t) => {
   });
 });
 
-async function runTest(
-  t: Deno.TestContext,
-  url: string,
-  data?: Record<string, string | Blob>,
-) {
+async function runTest(t: Deno.TestContext, url: string, data?: Record<string, string | Blob>) {
   let body: FormData | undefined;
   if (data) {
     body = new FormData();

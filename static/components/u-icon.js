@@ -16,8 +16,7 @@ customElements.define(
         return cache.get(name);
       }
 
-      const code = fetch(getIconUrl(name))
-        .then((res) => res.text());
+      const code = fetch(getIconUrl(name)).then((res) => res.text());
 
       cache.set(name, code);
       return code;

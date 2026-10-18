@@ -6,8 +6,7 @@ interface CheckboxField extends InputField<ResolvedCheckboxField> {
   type: "checkbox";
   value?: boolean;
 }
-interface ResolvedCheckboxField extends CheckboxField, ResolvedField {
-}
+interface ResolvedCheckboxField extends CheckboxField, ResolvedField {}
 
 export default {
   tag: "f-checkbox",

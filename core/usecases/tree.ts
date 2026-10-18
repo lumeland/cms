@@ -18,12 +18,7 @@ export default function createTree(files: EntryMetadata[]): Tree {
   return tree;
 }
 
-function placeFile(
-  tree: Tree,
-  metadata: EntryMetadata,
-  labelParts: string[],
-  nameParts: string[],
-) {
+function placeFile(tree: Tree, metadata: EntryMetadata, labelParts: string[], nameParts: string[]) {
   const labelPart = labelParts.shift()!;
 
   if (labelParts.length) {

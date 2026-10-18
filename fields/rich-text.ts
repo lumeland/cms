@@ -21,8 +21,7 @@ interface RichTextField extends InputField<ResolvedRichTextField> {
   relativePath?: boolean;
 }
 
-interface ResolvedRichTextField extends RichTextField, ResolvedField {
-}
+interface ResolvedRichTextField extends RichTextField, ResolvedField {}
 
 export default {
   tag: "f-rich-text",

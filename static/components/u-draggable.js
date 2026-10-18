@@ -17,11 +17,11 @@ customElements.define(
       const item = this.parentElement;
 
       button.addEventListener("mousedown", () => {
-        this.draggables.forEach((child) => child.draggable = true);
+        this.draggables.forEach((child) => (child.draggable = true));
       });
 
       button.addEventListener("mouseup", () => {
-        this.draggables.forEach((child) => child.draggable = false);
+        this.draggables.forEach((child) => (child.draggable = false));
       });
 
       item.addEventListener("dragstart", () => {
@@ -47,14 +47,9 @@ customElements.define(
         }
         item.classList.add("is-drag-over");
 
-        const dragging = this.draggables.find((child) =>
-          child.classList.contains("is-dragging")
-        );
+        const dragging = this.draggables.find((child) => child.classList.contains("is-dragging"));
 
-        if (
-          dragging.compareDocumentPosition(item) ===
-            Node.DOCUMENT_POSITION_FOLLOWING
-        ) {
+        if (dragging.compareDocumentPosition(item) === Node.DOCUMENT_POSITION_FOLLOWING) {
           item.classList.add("is-drag-over-after");
         } else {
           item.classList.add("is-drag-over-before");
@@ -77,14 +72,9 @@ customElements.define(
           return;
         }
 
-        const dragging = this.draggables.find((child) =>
-          child.classList.contains("is-dragging")
-        );
+        const dragging = this.draggables.find((child) => child.classList.contains("is-dragging"));
 
-        if (
-          dragging.compareDocumentPosition(item) ===
-            Node.DOCUMENT_POSITION_FOLLOWING
-        ) {
+        if (dragging.compareDocumentPosition(item) === Node.DOCUMENT_POSITION_FOLLOWING) {
           item.insertAdjacentElement("afterend", dragging);
         } else {
           item.insertAdjacentElement("beforebegin", dragging);

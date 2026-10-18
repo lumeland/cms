@@ -39,177 +39,171 @@ app.path("/:name/*", ({ cms, name, render, next, user }) => {
     return new Response(null, {
       status: 302,
       headers: new Headers({
-        "Location": query ? `${path}?${query}` : path,
+        Location: query ? `${path}?${query}` : path,
       }),
     });
   }
 
-  return next()
-    /* GET /uploads/:name/ - List files in the upload */
-    .get("/", async ({ request }) => {
-      const { searchParams } = new URL(request.url);
-      const { tree, parts } = await getUpload(
-        upload,
-        searchParams.get("folder") ?? undefined,
-      );
+  return (
+    next()
+      /* GET /uploads/:name/ - List files in the upload */
+      .get("/", async ({ request }) => {
+        const { searchParams } = new URL(request.url);
+        const { tree, parts } = await getUpload(upload, searchParams.get("folder") ?? undefined);
 
-      return render("uploads/list.vto", {
-        upload,
-        tree,
-        parts,
-        user,
-      });
-    })
-    /* GET /uploads/:name/create - Show the file upload form */
-    .get("/create", ({ request }) => {
-      const { searchParams } = new URL(request.url);
-      const { folder } = getNewDocument(
-        user,
-        upload,
-        searchParams.get("folder") as string,
-      );
-
-      return render("uploads/create.vto", {
-        upload,
-        folder,
-        user,
-      });
-    })
-    /* POST /uploads/:name/create - Upload a new file */
-    .post("/create", async ({ request }) => {
-      const data = await request.formData();
-      const files = data.getAll("files") as File[];
-      const folder = data.get("folder") as string | undefined;
-      const { names } = await saveNewDocument(
-        user,
-        upload,
-        files,
-        folder,
-      );
-
-      // If only one file is uploaded, redirect to its details
-      if (names.length === 1) {
-        return redirect([upload.name, names[0], "edit"]);
-      }
-      return redirect([upload.name], folder ? `folder=${folder}` : undefined);
-    })
-    /* GET /uploads/:name/:file/* - File actions */
-    .path("/:file/*", ({ file, next }) => {
-      const name = normalizeName(file);
-
-      if (!name) {
-        return new Response("Not found", { status: 400 });
-      }
-
-      return next()
-        /* GET /uploads/:name/:file - Get raw file content */
-        .get("/", async () => {
-          const file = await upload.get(name).readFile();
-          return new Response(file.stream(), {
-            status: 200,
-            headers: {
-              "Content-Type": file.type || "application/octet-stream",
-              "Content-Length": file.size.toString(),
-              "Content-Disposition": `attachment; filename="${file.name}"`,
-              "Cache-Control": "no-cache no-store must-revalidate",
-            },
-          });
-        })
-        /* GET /uploads/:name/:file/edit - Show the file edit form */
-        .get("/edit", async () => {
-          const { type, size, exif, isCroppeable, isCodeEditable } =
-            await getDocument(upload, name);
-
-          return render("uploads/edit.vto", {
-            type,
-            size,
-            exif,
-            upload,
-            file: name,
-            user,
-            isCroppeable,
-            isCodeEditable,
-          });
-        })
-        /* POST /uploads/:name/:file/edit - Edit the file content */
-        .post("/edit", async ({ request }) => {
-          const data = await request.formData();
-          const file = data.get("files") as File;
-          await saveDocument(user, upload, name, file);
-
-          return redirect([upload.name, name, "edit"]);
-        })
-        /* GET /uploads/:name/:file/code - Show the code edit form */
-        .get("/code", async () => {
-          const { data, fields } = await getDocumentCode(user, upload, name);
-
-          return render("uploads/code.vto", {
-            data,
-            fields,
-            upload,
-            file: name,
-            user,
-          });
-        })
-        /* POST /uploads/:name/:file/code - Edit the file content */
-        .post("/code", async ({ request }) => {
-          const changes = Object.fromEntries(await request.formData());
-          await saveDocumentCode(user, upload, name, changes);
-
-          return redirect([upload.name, name, "edit"]);
-        })
-        /* GET /uploads/:name/:file/crop - Show the crop form for images */
-        .get("/crop", () => {
-          if (!canCropDocument(user, upload, name)) {
-            return redirect([upload.name, name, "edit"]);
-          }
-
-          return render("uploads/crop.vto", {
-            upload,
-            file: name,
-            user,
-          });
-        })
-        /* POST /uploads/:name/:file/crop - Crop the image */
-        .post("/crop", async ({ request }) => {
-          const data = await request.formData();
-          const x = parseInt(data.get("x") as string);
-          const y = parseInt(data.get("y") as string);
-          const width = parseInt(data.get("width") as string);
-          const height = parseInt(data.get("height") as string);
-
-          await saveCropDocument(user, upload, name, { x, y, width, height });
-          return redirect([upload.name, name, "edit"]);
-        })
-        /* POST /uploads/:name/:file/delete - Delete the file */
-        .post("/delete", async () => {
-          await deleteDocument(user, upload, name);
-          return redirect([upload.name]);
-        })
-        /* POST /uploads/:name/:file/move - Move the file */
-        .post("/move", async ({ request }) => {
-          const data = await request.formData();
-          const { newName } = await moveDocument(
-            user,
-            upload,
-            name,
-            data.get("name") as string,
-          );
-          return redirect([upload.name, newName, "edit"]);
-        })
-        /* POST /uploads/:name/:file/duplicate - Duplicate the file */
-        .post("/duplicate", async ({ request }) => {
-          const data = await request.formData();
-          const { newName } = await moveDocument(
-            user,
-            upload,
-            name,
-            data.get("name") as string,
-            true,
-          );
-          return redirect([upload.name, newName, "edit"]);
+        return render("uploads/list.vto", {
+          upload,
+          tree,
+          parts,
+          user,
         });
-    });
+      })
+      /* GET /uploads/:name/create - Show the file upload form */
+      .get("/create", ({ request }) => {
+        const { searchParams } = new URL(request.url);
+        const { folder } = getNewDocument(user, upload, searchParams.get("folder") as string);
+
+        return render("uploads/create.vto", {
+          upload,
+          folder,
+          user,
+        });
+      })
+      /* POST /uploads/:name/create - Upload a new file */
+      .post("/create", async ({ request }) => {
+        const data = await request.formData();
+        const files = data.getAll("files") as File[];
+        const folder = data.get("folder") as string | undefined;
+        const { names } = await saveNewDocument(user, upload, files, folder);
+
+        // If only one file is uploaded, redirect to its details
+        if (names.length === 1) {
+          return redirect([upload.name, names[0], "edit"]);
+        }
+        return redirect([upload.name], folder ? `folder=${folder}` : undefined);
+      })
+      /* GET /uploads/:name/:file/* - File actions */
+      .path("/:file/*", ({ file, next }) => {
+        const name = normalizeName(file);
+
+        if (!name) {
+          return new Response("Not found", { status: 400 });
+        }
+
+        return (
+          next()
+            /* GET /uploads/:name/:file - Get raw file content */
+            .get("/", async () => {
+              const file = await upload.get(name).readFile();
+              return new Response(file.stream(), {
+                status: 200,
+                headers: {
+                  "Content-Type": file.type || "application/octet-stream",
+                  "Content-Length": file.size.toString(),
+                  "Content-Disposition": `attachment; filename="${file.name}"`,
+                  "Cache-Control": "no-cache no-store must-revalidate",
+                },
+              });
+            })
+            /* GET /uploads/:name/:file/edit - Show the file edit form */
+            .get("/edit", async () => {
+              const { type, size, exif, isCroppeable, isCodeEditable } = await getDocument(
+                upload,
+                name,
+              );
+
+              return render("uploads/edit.vto", {
+                type,
+                size,
+                exif,
+                upload,
+                file: name,
+                user,
+                isCroppeable,
+                isCodeEditable,
+              });
+            })
+            /* POST /uploads/:name/:file/edit - Edit the file content */
+            .post("/edit", async ({ request }) => {
+              const data = await request.formData();
+              const file = data.get("files") as File;
+              await saveDocument(user, upload, name, file);
+
+              return redirect([upload.name, name, "edit"]);
+            })
+            /* GET /uploads/:name/:file/code - Show the code edit form */
+            .get("/code", async () => {
+              const { data, fields } = await getDocumentCode(user, upload, name);
+
+              return render("uploads/code.vto", {
+                data,
+                fields,
+                upload,
+                file: name,
+                user,
+              });
+            })
+            /* POST /uploads/:name/:file/code - Edit the file content */
+            .post("/code", async ({ request }) => {
+              const changes = Object.fromEntries(await request.formData());
+              await saveDocumentCode(user, upload, name, changes);
+
+              return redirect([upload.name, name, "edit"]);
+            })
+            /* GET /uploads/:name/:file/crop - Show the crop form for images */
+            .get("/crop", () => {
+              if (!canCropDocument(user, upload, name)) {
+                return redirect([upload.name, name, "edit"]);
+              }
+
+              return render("uploads/crop.vto", {
+                upload,
+                file: name,
+                user,
+              });
+            })
+            /* POST /uploads/:name/:file/crop - Crop the image */
+            .post("/crop", async ({ request }) => {
+              const data = await request.formData();
+              const x = parseInt(data.get("x") as string);
+              const y = parseInt(data.get("y") as string);
+              const width = parseInt(data.get("width") as string);
+              const height = parseInt(data.get("height") as string);
+
+              await saveCropDocument(user, upload, name, { x, y, width, height });
+              return redirect([upload.name, name, "edit"]);
+            })
+            /* POST /uploads/:name/:file/delete - Delete the file */
+            .post("/delete", async () => {
+              await deleteDocument(user, upload, name);
+              return redirect([upload.name]);
+            })
+            /* POST /uploads/:name/:file/move - Move the file */
+            .post("/move", async ({ request }) => {
+              const data = await request.formData();
+              const { newName } = await moveDocument(
+                user,
+                upload,
+                name,
+                data.get("name") as string,
+              );
+              return redirect([upload.name, newName, "edit"]);
+            })
+            /* POST /uploads/:name/:file/duplicate - Duplicate the file */
+            .post("/duplicate", async ({ request }) => {
+              const data = await request.formData();
+              const { newName } = await moveDocument(
+                user,
+                upload,
+                name,
+                data.get("name") as string,
+                true,
+              );
+              return redirect([upload.name, newName, "edit"]);
+            })
+        );
+      })
+  );
 });
 
 export default app;

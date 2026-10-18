@@ -38,8 +38,7 @@ export default class User {
       return this.#getUserPermission(subject)?.edit ?? subject.permissions.edit;
     }
 
-    return this.#getUserPermission(subject)?.create ??
-      subject.permissions.create;
+    return this.#getUserPermission(subject)?.create ?? subject.permissions.create;
   }
 
   canDelete(subject: Subject): boolean {
@@ -52,8 +51,7 @@ export default class User {
       return false;
     }
 
-    return this.#getUserPermission(subject)?.delete ??
-      subject.permissions.delete;
+    return this.#getUserPermission(subject)?.delete ?? subject.permissions.delete;
   }
 
   canEdit(subject: Subject): boolean {
@@ -75,8 +73,7 @@ export default class User {
     }
 
     // Collections have the "auto" feature so we need to check rename === true
-    return this.#getUserPermission(subject)?.rename ??
-      subject.permissions.rename === true;
+    return this.#getUserPermission(subject)?.rename ?? subject.permissions.rename === true;
   }
 
   #getUserPermission(subject: Subject): Permissions | undefined {

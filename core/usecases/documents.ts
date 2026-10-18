@@ -9,19 +9,14 @@ export function getDocuments(user: User, documents: Document[]): Document[] {
   return documents.filter((document) => user.canView(document));
 }
 
-export async function getDocument(
-  user: User,
-  document: Document,
-  cms: CMSContent,
-) {
+export async function getDocument(user: User, document: Document, cms: CMSContent) {
   if (!user.canView(document)) {
     throw new Error("Permission denied to view this document");
   }
 
   const data = await document.read(true);
-  const initViews = typeof document.views === "function"
-    ? document.views() || []
-    : document.views || [];
+  const initViews =
+    typeof document.views === "function" ? document.views() || [] : document.views || [];
 
   const fields = await prepareField(document.fields!, cms, data, document);
   const views = Array.from(getViews(document.fields!));
@@ -30,11 +25,7 @@ export async function getDocument(
   return { data, fields, views, initViews, url };
 }
 
-export async function getDocumentCode(
-  user: User,
-  document: Document,
-  cms: CMSContent,
-) {
+export async function getDocumentCode(user: User, document: Document, cms: CMSContent) {
   if (!user.canView(document)) {
     throw new Error("Permission denied to view this document");
   }
@@ -44,17 +35,19 @@ export async function getDocumentCode(
   const fields = {
     tag: "f-object-root",
     name: "root",
-    fields: [{
-      tag: "f-code",
-      name: "code",
-      label: "Code",
-      type: "code",
-      attributes: {
-        data: {
-          language: getLanguageCode(document.source.name),
+    fields: [
+      {
+        tag: "f-code",
+        name: "code",
+        label: "Code",
+        type: "code",
+        attributes: {
+          data: {
+            language: getLanguageCode(document.source.name),
+          },
         },
       },
-    }],
+    ],
   };
 
   return { data, fields, url };
@@ -70,11 +63,7 @@ export async function saveDocument(
     throw new Error("Permission denied to edit this document");
   }
 
-  await document.write(
-    changesToData(changes),
-    cms,
-    true,
-  );
+  await document.write(changesToData(changes), cms, true);
 
   // Wait for the preview URL to be ready
   await getPreviewUrl(document, cms, true);
@@ -97,17 +86,8 @@ export async function saveDocumentCode(
   await getPreviewUrl(document, cms, true);
 }
 
-export function getPreviewUrl(
-  document: Document,
-  cms: CMSContent,
-  changed = false,
-) {
+export function getPreviewUrl(document: Document, cms: CMSContent, changed = false) {
   if (document.previewUrl) {
-    return document.previewUrl(
-      document.source.path,
-      cms,
-      changed,
-      document.storage,
-    );
+    return document.previewUrl(document.source.path, cms, changed, document.storage);
   }
 }

@@ -11,11 +11,7 @@ export interface DocumentOptions {
   fields?: Lume.CMS.ResolvedField;
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
-  transform?: (
-    data: Data,
-    CmsContent: CMSContent,
-    isNew: boolean,
-  ) => void | Promise<void>;
+  transform?: (data: Data, CmsContent: CMSContent, isNew: boolean) => void | Promise<void>;
   edit?: boolean;
 }
 
@@ -33,11 +29,7 @@ export default class Document {
   previewUrl?: PreviewUrl;
   views?: string[] | ((data?: Data) => string[] | undefined);
   permissions: Permissions;
-  transform?: (
-    data: Data,
-    CmsContent: CMSContent,
-    isNew: boolean,
-  ) => void | Promise<void>;
+  transform?: (data: Data, CmsContent: CMSContent, isNew: boolean) => void | Promise<void>;
 
   constructor(options: DocumentOptions) {
     this.icon = options.icon || "file";

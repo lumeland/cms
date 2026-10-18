@@ -15,10 +15,7 @@ type Route = [
   ResponseHandler | undefined,
 ];
 
-type StaticRoute = [
-  (request: Request, file: string) => Promise<Response> | Response,
-  string[],
-];
+type StaticRoute = [(request: Request, file: string) => Promise<Response> | Response, string[]];
 
 /** Parameters passed to routes */
 interface Params<T extends Data = Data> {
@@ -40,9 +37,7 @@ interface ParentConfig<D extends Data = Data> {
 }
 
 /** Handler function type */
-type Handler<D = Data, R = HandlerReturn> = (
-  params: D & Params,
-) => R | Promise<R>;
+type Handler<D = Data, R = HandlerReturn> = (params: D & Params) => R | Promise<R>;
 
 type HandlerReturn =
   | void
@@ -63,14 +58,10 @@ type HandlerReturn =
   | File
   | AsyncGenerator<string | Uint8Array, void, unknown>;
 
-type HandlerOrRouter<T extends Data, R = HandlerReturn> =
-  | Handler<T, R>
-  | Router<T>;
+type HandlerOrRouter<T extends Data, R = HandlerReturn> = Handler<T, R> | Router<T>;
 
 /** Response handler */
-type ResponseHandler = (
-  response: Response,
-) => void | Response | Promise<Response | void>;
+type ResponseHandler = (response: Response) => void | Response | Promise<Response | void>;
 
 export default class Router<D extends Data = Data> {
   basePath: string[];
@@ -82,7 +73,7 @@ export default class Router<D extends Data = Data> {
   fetch: (request: Request) => Promise<Response>;
 
   constructor(params?: D, basePath?: string) {
-    this.params = params || {} as D;
+    this.params = params || ({} as D);
     this.basePath = basePath ? toParts(basePath) : [];
     this.fetch = (request: Request) =>
       this.#runRouter(request, toParts(new URL(request.url).pathname));
@@ -94,7 +85,7 @@ export default class Router<D extends Data = Data> {
       hostname,
       signal,
       handler: (request) => this.fetch(request),
-    })
+    });
   }
 
   response(): Promise<Response> {
@@ -137,33 +128,18 @@ export default class Router<D extends Data = Data> {
   }
 
   /** Add handlers for GET request */
-  get<T>(
-    handler: HandlerOrRouter<T & D>,
-    responseHandler?: ResponseHandler,
-  ): this;
-  get<T>(
-    pattern: string,
-    handler: HandlerOrRouter<T & D>,
-    responseHandler?: ResponseHandler,
-  ): this;
+  get<T>(handler: HandlerOrRouter<T & D>, responseHandler?: ResponseHandler): this;
+  get<T>(pattern: string, handler: HandlerOrRouter<T & D>, responseHandler?: ResponseHandler): this;
   get<T>(
     patternOrHandler: string | HandlerOrRouter<T & D>,
     handler?: HandlerOrRouter<T & D>,
     responseHandler?: ResponseHandler,
   ): this {
-    return this.#addMethod(
-      "GET",
-      patternOrHandler,
-      handler,
-      responseHandler,
-    );
+    return this.#addMethod("GET", patternOrHandler, handler, responseHandler);
   }
 
   /** Add handlers for POST requests */
-  post<T>(
-    handler: HandlerOrRouter<T & D>,
-    responseHandler?: ResponseHandler,
-  ): this;
+  post<T>(handler: HandlerOrRouter<T & D>, responseHandler?: ResponseHandler): this;
   post<T>(
     pattern: string,
     handler: HandlerOrRouter<T & D>,
@@ -174,42 +150,22 @@ export default class Router<D extends Data = Data> {
     handler?: HandlerOrRouter<T & D>,
     responseHandler?: ResponseHandler,
   ): this {
-    return this.#addMethod(
-      "POST",
-      patternOrHandler,
-      handler,
-      responseHandler,
-    );
+    return this.#addMethod("POST", patternOrHandler, handler, responseHandler);
   }
 
   /** Add handlers for PUT requests */
-  put<T>(
-    handler: HandlerOrRouter<T & D>,
-    responseHandler?: ResponseHandler,
-  ): this;
-  put<T>(
-    pattern: string,
-    handler: HandlerOrRouter<T & D>,
-    responseHandler?: ResponseHandler,
-  ): this;
+  put<T>(handler: HandlerOrRouter<T & D>, responseHandler?: ResponseHandler): this;
+  put<T>(pattern: string, handler: HandlerOrRouter<T & D>, responseHandler?: ResponseHandler): this;
   put<T>(
     patternOrHandler: string | HandlerOrRouter<T & D>,
     handler?: HandlerOrRouter<T & D>,
     responseHandler?: ResponseHandler,
   ): this {
-    return this.#addMethod(
-      "PUT",
-      patternOrHandler,
-      handler,
-      responseHandler,
-    );
+    return this.#addMethod("PUT", patternOrHandler, handler, responseHandler);
   }
 
   /** Add handlers for DELETE requests */
-  delete<T>(
-    handler: HandlerOrRouter<T & D>,
-    responseHandler?: ResponseHandler,
-  ): this;
+  delete<T>(handler: HandlerOrRouter<T & D>, responseHandler?: ResponseHandler): this;
   delete<T>(
     pattern: string,
     handler: HandlerOrRouter<T & D>,
@@ -220,12 +176,7 @@ export default class Router<D extends Data = Data> {
     handler?: HandlerOrRouter<T & D>,
     responseHandler?: ResponseHandler,
   ): this {
-    return this.#addMethod(
-      "DELETE",
-      patternOrHandler,
-      handler,
-      responseHandler,
-    );
+    return this.#addMethod("DELETE", patternOrHandler, handler, responseHandler);
   }
 
   /** Add handlers for any method requests */
@@ -235,24 +186,11 @@ export default class Router<D extends Data = Data> {
     handler?: HandlerOrRouter<any, any>,
     responseHandler?: ResponseHandler,
   ): this {
-    if (
-      typeof patternOrHandler === "function" ||
-      patternOrHandler instanceof Router
-    ) {
-      return this.#add(
-        patternOrHandler,
-        method,
-        undefined,
-        responseHandler,
-      );
+    if (typeof patternOrHandler === "function" || patternOrHandler instanceof Router) {
+      return this.#add(patternOrHandler, method, undefined, responseHandler);
     }
     if (typeof handler === "function" || handler instanceof Router) {
-      return this.#add(
-        handler,
-        method,
-        patternOrHandler,
-        responseHandler,
-      );
+      return this.#add(handler, method, patternOrHandler, responseHandler);
     }
     throw new Error("Handler must be a function or a Router instance");
   }
@@ -263,12 +201,7 @@ export default class Router<D extends Data = Data> {
     pattern?: string,
     responseHandler?: ResponseHandler,
   ): this {
-    this.routes.push([
-      handler,
-      method,
-      pattern,
-      responseHandler,
-    ]);
+    this.routes.push([handler, method, pattern, responseHandler]);
 
     return this;
   }
@@ -315,9 +248,8 @@ export default class Router<D extends Data = Data> {
       if (method && reqMethod !== method) {
         continue;
       }
-      const routeParts = typeof pattern === "string"
-        ? [...this.basePath, ...toParts(pattern)]
-        : pattern;
+      const routeParts =
+        typeof pattern === "string" ? [...this.basePath, ...toParts(pattern)] : pattern;
       route[2] = routeParts; // Update the route with the parts
 
       const params = routeParts ? matches(routeParts, parts) : { _: parts };
@@ -339,15 +271,11 @@ export default class Router<D extends Data = Data> {
         parentConfig,
       );
 
-      return responseHandler
-        ? (await responseHandler(response)) ?? response
-        : response;
+      return responseHandler ? ((await responseHandler(response)) ?? response) : response;
     }
 
-    const effectiveDefaultHandler = this.defaultHandler ??
-      parentConfig?.defaultHandler;
-    const effectiveErrorHandler = this.errorHandler ??
-      parentConfig?.errorHandler;
+    const effectiveDefaultHandler = this.defaultHandler ?? parentConfig?.defaultHandler;
+    const effectiveErrorHandler = this.errorHandler ?? parentConfig?.errorHandler;
 
     if (effectiveDefaultHandler) {
       return await this.#runHandler(
@@ -376,28 +304,21 @@ export default class Router<D extends Data = Data> {
     let handleReturn: HandlerReturn;
     try {
       if (handler instanceof Router) {
-        handleReturn = await handler.#runRouter(
-          params.request,
-          params._,
-          {
-            params: {
-              ...this.params,
-              ...parentConfig?.params,
-              ...params,
-            },
-            defaultHandler: this.defaultHandler ??
-              parentConfig?.defaultHandler,
-            errorHandler: this.errorHandler ??
-              parentConfig?.errorHandler,
+        handleReturn = await handler.#runRouter(params.request, params._, {
+          params: {
+            ...this.params,
+            ...parentConfig?.params,
+            ...params,
           },
-        );
+          defaultHandler: this.defaultHandler ?? parentConfig?.defaultHandler,
+          errorHandler: this.errorHandler ?? parentConfig?.errorHandler,
+        });
       } else {
         handleReturn = await handler(params);
       }
     } catch (err) {
       const error = toError(err);
-      const effectiveErrorHandler = errorHandler ??
-        parentConfig?.errorHandler;
+      const effectiveErrorHandler = errorHandler ?? parentConfig?.errorHandler;
       if (effectiveErrorHandler) {
         try {
           return await this.#runHandler(effectiveErrorHandler, {
@@ -477,7 +398,8 @@ export default class Router<D extends Data = Data> {
  * For example, "/foo/bar" becomes ["foo", "bar"]
  */
 function toParts(pattern: string): string[] {
-  return pattern.split("/")
+  return pattern
+    .split("/")
     .filter((part) => part.length > 0)
     .map(decodeURIComponent);
 }

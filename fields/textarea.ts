@@ -15,8 +15,7 @@ interface Attributes {
   minlength?: number;
 }
 
-interface ResolvedTextareaField extends TextareaField, ResolvedField {
-}
+interface ResolvedTextareaField extends TextareaField, ResolvedField {}
 
 export default {
   tag: "f-textarea",

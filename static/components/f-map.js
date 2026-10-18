@@ -13,11 +13,7 @@ customElements.define(
       initField(this);
       dom("label", { for: `field_${namePrefix}.0`, html: schema.label }, this);
 
-      dom(
-        "div",
-        { class: "field-description", html: schema.description },
-        this,
-      );
+      dom("div", { class: "field-description", html: schema.description }, this);
 
       let datalist;
 
@@ -33,53 +29,66 @@ customElements.define(
       function addOption([key, value] = ["", ""]) {
         const name = `${namePrefix}.${index++}`;
         const item = dom("div", { class: "ly-rowStack is-narrow" }, div);
-        dom("input", {
-          type: "text",
-          class: "input is-narrow",
-          id: `field_${name}`,
-          name: `${name}.key`,
-          value: key,
-        }, item);
-        const input = dom("input", {
-          type: "text",
-          class: "input is-narrow",
-          id: `field_${name}`,
-          name: `${name}.value`,
-          value,
-        }, item);
+        dom(
+          "input",
+          {
+            type: "text",
+            class: "input is-narrow",
+            id: `field_${name}`,
+            name: `${name}.key`,
+            value: key,
+          },
+          item,
+        );
+        const input = dom(
+          "input",
+          {
+            type: "text",
+            class: "input is-narrow",
+            id: `field_${name}`,
+            name: `${name}.value`,
+            value,
+          },
+          item,
+        );
 
         if (datalist) {
           input.setAttribute("list", datalist.id);
           input.setAttribute("autocomplete", "off");
         }
 
-        dom("button", {
-          type: "button",
-          class: "buttonIcon",
-          onclick() {
-            item.remove();
+        dom(
+          "button",
+          {
+            type: "button",
+            class: "buttonIcon",
+            onclick() {
+              item.remove();
+            },
+            html: '<u-icon name="trash"></u-icon>',
           },
-          html: '<u-icon name="trash"></u-icon>',
-        }, item);
+          item,
+        );
         dom("u-draggable", item);
       }
 
-      const options = (isNew ? value ?? schema.value : value) ?? {};
+      const options = (isNew ? (value ?? schema.value) : value) ?? {};
       for (const v of Object.entries(options)) {
         addOption(v);
       }
 
       const footer = dom("footer", { class: "field-footer" }, this);
 
-      dom("button", {
-        type: "button",
-        onclick: () => addOption(),
-        class: "button is-secondary",
-        html: [
-          '<u-icon name="plus-circle"></u-icon>',
-          `Add ${schema.label}`,
-        ],
-      }, footer);
+      dom(
+        "button",
+        {
+          type: "button",
+          onclick: () => addOption(),
+          class: "button is-secondary",
+          html: ['<u-icon name="plus-circle"></u-icon>', `Add ${schema.label}`],
+        },
+        footer,
+      );
     }
 
     get currentValue() {
@@ -96,8 +105,7 @@ customElements.define(
     }
 
     update(schema) {
-      this.querySelector(".field-description").innerHTML = schema.description ??
-        "";
+      this.querySelector(".field-description").innerHTML = schema.description ?? "";
     }
   },
 );

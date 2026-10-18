@@ -21,8 +21,7 @@ interface FileField extends InputField<ResolvedFileField> {
   relativePath?: boolean;
 }
 
-interface ResolvedFileField extends FileField, ResolvedField {
-}
+interface ResolvedFileField extends FileField, ResolvedField {}
 
 export default {
   tag: "f-file",
@@ -32,9 +31,7 @@ export default {
       field.upload = Object.keys(cmsContent.uploads)[0];
 
       if (!field.upload) {
-        throw new Error(
-          `No uploads found for file field '${field.name}'`,
-        );
+        throw new Error(`No uploads found for file field '${field.name}'`);
       }
     }
 
@@ -42,9 +39,7 @@ export default {
     const upload = cmsContent.uploads[name];
 
     if (!upload) {
-      throw new Error(
-        `No upload found for file field '${field.name}'`,
-      );
+      throw new Error(`No upload found for file field '${field.name}'`);
     }
 
     if (!field.publicPath) {
@@ -61,9 +56,7 @@ export default {
     }
   },
   async applyChanges(data, changes, field, document, cmsContent) {
-    const value = changes[field.name] as
-      | { current?: string; uploaded?: File }
-      | undefined;
+    const value = changes[field.name] as { current?: string; uploaded?: File } | undefined;
 
     if (!value) {
       return;
@@ -71,17 +64,12 @@ export default {
 
     const { current, uploaded } = value;
     // To store the path as relative if needed
-    const getRelativePathBound = getRelativePath.bind(
-      null,
-      posix.dirname(document.source.path),
-    );
+    const getRelativePathBound = getRelativePath.bind(null, posix.dirname(document.source.path));
 
     if (!uploaded?.size) {
       data[field.name] = transform(
         field,
-        field.relativePath
-          ? toRelativePaths(current ?? "", getRelativePathBound)
-          : current,
+        field.relativePath ? toRelativePaths(current ?? "", getRelativePathBound) : current,
       );
       return;
     }
@@ -90,15 +78,10 @@ export default {
     const uploads = cmsContent.uploads[uploadKey];
 
     if (!uploads) {
-      throw new Error(
-        `No upload found for file field '${field.name}'`,
-      );
+      throw new Error(`No upload found for file field '${field.name}'`);
     }
 
-    uploadPath = uploadPath.replace(
-      "{document_dirname}",
-      posix.dirname(document.name),
-    );
+    uploadPath = uploadPath.replace("{document_dirname}", posix.dirname(document.name));
 
     const entry = uploads.get(normalizePath(uploadPath, uploaded.name));
     await entry.writeFile(uploaded);
@@ -106,11 +89,7 @@ export default {
       field,
       field.relativePath
         ? toRelativePaths(entry.source.path, getRelativePathBound)
-        : normalizePath(
-          uploads.publicPath,
-          uploadPath,
-          uploaded.name,
-        ),
+        : normalizePath(uploads.publicPath, uploadPath, uploaded.name),
     );
   },
 } as FieldDefinition<ResolvedFileField>;

@@ -153,9 +153,7 @@ export class SqliteEntry implements Entry {
     if (!row) {
       throw new Error(`Item not found: ${this.source.path}`);
     }
-    return Object.fromEntries(
-      Object.entries(row).map(([key, value]) => [key, unserialize(value)]),
-    );
+    return Object.fromEntries(Object.entries(row).map(([key, value]) => [key, unserialize(value)]));
   }
   writeData(content: Data): void {
     const [table, id] = this.#getTableAndId();
@@ -163,8 +161,7 @@ export class SqliteEntry implements Entry {
     const values = Object.values(content).map(serialize);
     const placeholders = values.map(() => "?").join(", ");
 
-    const query =
-      `INSERT OR REPLACE INTO ${table} (id, ${keys}) VALUES (?, ${placeholders})`;
+    const query = `INSERT OR REPLACE INTO ${table} (id, ${keys}) VALUES (?, ${placeholders})`;
     const stmt = this.#storage.db.prepare(query);
     stmt.run(id, ...values);
   }
@@ -204,7 +201,7 @@ function serialize(value: unknown): SQLOutputValue {
   }
 }
 
-const MAYBE_JSON = /^[\[{"].*[\]}"]$/;
+const MAYBE_JSON = /^[[{"].*[\]}"]$/;
 
 function unserialize(value: SQLOutputValue): unknown {
   if (typeof value !== "string" || !MAYBE_JSON.test(value)) {

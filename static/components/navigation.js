@@ -30,10 +30,7 @@ navigation.addEventListener("navigate", (event) => {
         const previewUrl = dom.querySelector("u-pagepreview")?.dataset.url;
 
         if (previewUrl) {
-          document.querySelector("u-pagepreview")?.setAttribute(
-            "data-url",
-            previewUrl,
-          );
+          document.querySelector("u-pagepreview")?.setAttribute("data-url", previewUrl);
         }
       }).finished;
     },
@@ -41,7 +38,7 @@ navigation.addEventListener("navigate", (event) => {
 });
 
 function parseHtml(html) {
-  html = html.trim().replace(/^\<!DOCTYPE html\>/i, "");
+  html = html.trim().replace(/^<!DOCTYPE html>/i, "");
   const doc = document.implementation.createHTMLDocument();
   doc.documentElement.innerHTML = html;
 

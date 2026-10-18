@@ -12,17 +12,21 @@ customElements.define(
       button.setAttribute("popovertarget", id);
       const template = this.querySelector("template");
 
-      dom("div", {
-        id,
-        class: "popover",
-        popover: "auto",
-        onbeforetoggle() {
-          if (!init) {
-            this.append(template.content.cloneNode(true));
-            init = true;
-          }
+      dom(
+        "div",
+        {
+          id,
+          class: "popover",
+          popover: "auto",
+          onbeforetoggle() {
+            if (!init) {
+              this.append(template.content.cloneNode(true));
+              init = true;
+            }
+          },
         },
-      }, this);
+        this,
+      );
     }
   },
 );

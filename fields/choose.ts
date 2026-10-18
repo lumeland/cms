@@ -1,10 +1,5 @@
 import { transform } from "./utils.ts";
-import type {
-  Data,
-  FieldDefinition,
-  GroupField,
-  ResolvedGroupField,
-} from "../types.ts";
+import type { Data, FieldDefinition, GroupField, ResolvedGroupField } from "../types.ts";
 
 /** Field for choose values */
 interface ChooseField extends GroupField<ResolvedChooseField> {
@@ -12,9 +7,7 @@ interface ChooseField extends GroupField<ResolvedChooseField> {
   value?: Record<string, unknown>;
 }
 
-interface ResolvedChooseField
-  extends Omit<ChooseField, "fields">, ResolvedGroupField {
-}
+interface ResolvedChooseField extends Omit<ChooseField, "fields">, ResolvedGroupField {}
 
 export default {
   tag: "f-choose",
@@ -40,13 +33,7 @@ export default {
     const newValue = { type } as Data;
 
     for (const f of chooseField?.fields || []) {
-      await f.applyChanges(
-        newValue,
-        changes[field.name] as Data || {},
-        f,
-        document,
-        cmsContent,
-      );
+      await f.applyChanges(newValue, (changes[field.name] as Data) || {}, f, document, cmsContent);
     }
 
     data[field.name] = transform(field, newValue);
@@ -56,10 +43,10 @@ export default {
 declare global {
   namespace Lume.CMS {
     export interface ParentFields {
-      "choose": ChooseField;
+      choose: ChooseField;
     }
     export interface ResolvedFields {
-      "choose": ResolvedChooseField;
+      choose: ResolvedChooseField;
     }
   }
 }

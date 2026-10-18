@@ -1,12 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { transform } from "./utils.ts";
 import { isEmpty } from "../core/utils/string.ts";
-import type {
-  FieldDefinition,
-  Option,
-  ResolvedField,
-  UIField,
-} from "../types.ts";
+import type { FieldDefinition, Option, ResolvedField, UIField } from "../types.ts";
 
 /** Field for map values */
 interface MapField extends UIField<ResolvedMapField> {
@@ -17,8 +12,7 @@ interface MapField extends UIField<ResolvedMapField> {
   options?: Option[];
 }
 
-interface ResolvedMapField extends MapField, ResolvedField {
-}
+interface ResolvedMapField extends MapField, ResolvedField {}
 
 export default {
   tag: "f-map",

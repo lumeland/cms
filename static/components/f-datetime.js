@@ -1,11 +1,4 @@
-import {
-  getFieldName,
-  getNow,
-  initField,
-  oninvalid,
-  t,
-  updateField,
-} from "./utils.js";
+import { getFieldName, getNow, initField, oninvalid, t, updateField } from "./utils.js";
 import { Component } from "./component.js";
 import dom from "dom";
 
@@ -29,33 +22,49 @@ export class Input extends Component {
     const id = `field_${name}`;
 
     initField(this);
-    dom("label", {
-      for: id,
-      html: schema.label,
-    }, this);
+    dom(
+      "label",
+      {
+        for: id,
+        html: schema.label,
+      },
+      this,
+    );
 
-    dom("div", {
-      class: "field-description",
-      html: schema.description,
-    }, this);
+    dom(
+      "div",
+      {
+        class: "field-description",
+        html: schema.description,
+      },
+      this,
+    );
 
     const div = dom("div", { class: "ly-rowStack" }, this);
-    const input = dom("input", {
-      ...schema.attributes,
-      id,
-      name,
-      value: this.format(isNew ? value ?? schema.value : value),
-      class: "input",
-      ...this.inputAttributes,
-      oninvalid,
-    }, div);
+    const input = dom(
+      "input",
+      {
+        ...schema.attributes,
+        id,
+        name,
+        value: this.format(isNew ? (value ?? schema.value) : value),
+        class: "input",
+        ...this.inputAttributes,
+        oninvalid,
+      },
+      div,
+    );
 
-    dom("button", {
-      type: "button",
-      html: this.nowButtonLabel,
-      class: "button is-secondary",
-      onclick: () => input.value = this.format(getNow().toISOString()),
-    }, div);
+    dom(
+      "button",
+      {
+        type: "button",
+        html: this.nowButtonLabel,
+        class: "button is-secondary",
+        onclick: () => (input.value = this.format(getNow().toISOString())),
+      },
+      div,
+    );
   }
 
   get currentValue() {

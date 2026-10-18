@@ -10,17 +10,17 @@ customElements.define(
       const { schema, value, isNew } = this;
       initField(this);
       const namePrefix = getFieldName(this);
-      const details = dom("details", {
-        class: "accordion",
-        "oncms:invalid": () => details.open = true,
-        ...schema.attributes,
-      }, this);
-
-      const summary = dom(
-        "summary",
-        { slot: "content", class: "is-header" },
-        details,
+      const details = dom(
+        "details",
+        {
+          class: "accordion",
+          "oncms:invalid": () => (details.open = true),
+          ...schema.attributes,
+        },
+        this,
       );
+
+      const summary = dom("summary", { slot: "content", class: "is-header" }, details);
 
       const shadow = this.attachShadow({ mode: "open" });
       shadow.innerHTML = `
@@ -43,27 +43,43 @@ customElements.define(
       </div>
       `;
 
-      dom("strong", {
-        class: "accordion-title",
-        html: schema.label,
-      }, summary);
+      dom(
+        "strong",
+        {
+          class: "accordion-title",
+          html: schema.label,
+        },
+        summary,
+      );
 
-      dom("div", {
-        class: "accordion-description",
-        html: schema.description,
-      }, summary);
+      dom(
+        "div",
+        {
+          class: "accordion-description",
+          html: schema.description,
+        },
+        summary,
+      );
 
-      const div = dom("div", {
-        class: "accordion-body fieldset is-separated",
-      }, details);
+      const div = dom(
+        "div",
+        {
+          class: "accordion-body fieldset is-separated",
+        },
+        details,
+      );
 
       for (const field of schema.fields) {
-        dom(field.tag, {
-          ".schema": field,
-          ".namePrefix": namePrefix,
-          ".isNew": isNew,
-          value: value?.[field.name] ?? null,
-        }, div);
+        dom(
+          field.tag,
+          {
+            ".schema": field,
+            ".namePrefix": namePrefix,
+            ".isNew": isNew,
+            value: value?.[field.name] ?? null,
+          },
+          div,
+        );
       }
     }
 
@@ -77,9 +93,7 @@ customElements.define(
 
     update(schema, value) {
       this.querySelector(".accordion-title").innerHTML = schema.label ?? "";
-      this.querySelector(".accordion-description").innerHTML =
-        schema.description ??
-          "";
+      this.querySelector(".accordion-description").innerHTML = schema.description ?? "";
       const items = Array.from(this.querySelector(".fieldset").children);
 
       for (const field of schema.fields) {
@@ -97,17 +111,25 @@ customElements.define(
       const { schema, value, isNew } = this;
       const namePrefix = getFieldName(this);
 
-      const div = dom("div", {
-        class: "fieldset is-root is-separated",
-      }, this);
+      const div = dom(
+        "div",
+        {
+          class: "fieldset is-root is-separated",
+        },
+        this,
+      );
 
       for (const field of schema.fields) {
-        dom(field.tag, {
-          ".schema": field,
-          ".namePrefix": namePrefix,
-          ".isNew": isNew,
-          value: value?.[field.name] ?? null,
-        }, div);
+        dom(
+          field.tag,
+          {
+            ".schema": field,
+            ".namePrefix": namePrefix,
+            ".isNew": isNew,
+            value: value?.[field.name] ?? null,
+          },
+          div,
+        );
       }
     }
 
