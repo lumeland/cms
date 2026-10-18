@@ -1,6 +1,7 @@
 const locale = new Map();
 
 export async function setLocale(lang) {
+  return;
   const url = new URL(`./locale/${lang}.json`, import.meta.url);
   const response = await fetch(url);
   const entries = await response.json();

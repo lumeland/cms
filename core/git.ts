@@ -1,3 +1,4 @@
+import { cwd, runPipedCommand } from "./services/process.ts";
 import { slugify } from "./utils/string.ts";
 
 import type User from "./user.ts";
@@ -27,7 +28,7 @@ export default class Git {
   constructor(userOptions?: Options) {
     const options = { ...defaults, ...userOptions } as Required<Options>;
 
-    this.root = options.root ?? Deno.cwd();
+    this.root = options.root ?? cwd();
     this.prodBranch = options.prodBranch;
     this.branchPrefix = options.branchPrefix;
     this.command = options.command;
@@ -206,27 +207,17 @@ export default class Git {
   /** Runs a git command and returns the stdout as string */
   #git(...args: string[]): string {
     const [cmd, ...rest] = args;
+    const [out, err] = runPipedCommand(this.command, [cmd, ...rest], this.root);
 
-    const command = new Deno.Command(this.command, {
-      args: [cmd, ...rest],
-      cwd: this.root,
-      stdout: "piped",
-      stderr: "piped",
-    });
-
-    const result = command.outputSync();
-
-    if (result.code !== 0) {
-      const decoder = new TextDecoder();
+    if (typeof err === "string") {
       throw new Error(`
 Git error:
-${decoder.decode(result.stdout)}
-${decoder.decode(result.stderr)}
+${out ?? ""}
+${err}
 `);
     }
 
-    const decoder = new TextDecoder();
-    return decoder.decode(result.stdout).trim();
+    return out?.trim() ?? "";
   }
 
   #gitLocalBranchExists(branch: string): boolean {

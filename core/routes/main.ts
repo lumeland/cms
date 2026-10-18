@@ -1,4 +1,4 @@
-import { Router } from "../../deps/galo.ts";
+import Router from "../router.ts";
 import User from "../user.ts";
 import { getCurrentVersion } from "../utils/env.ts";
 import { asset, getPath, normalizePath } from "../utils/path.ts";

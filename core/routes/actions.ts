@@ -1,5 +1,5 @@
+import Router from "../router.ts";
 import { getPath } from "../utils/path.ts";
-import { Router } from "../../deps/galo.ts";
 
 import type { RouterData } from "../cms.ts";
 

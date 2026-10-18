@@ -1,13 +1,13 @@
-import { getPath } from "../utils/path.ts";
-import { Router } from "../../deps/galo.ts";
-
-import type { RouterData } from "../cms.ts";
+import Router from "../router.ts";
 import {
   getDocument,
   getDocumentCode,
   saveDocument,
   saveDocumentCode,
 } from "../usecases/documents.ts";
+import { getPath } from "../utils/path.ts";
+
+import type { RouterData } from "../cms.ts";
 
 /**
  * Route for managing document editing in the CMS.

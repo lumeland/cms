@@ -2,12 +2,17 @@ import Collection from "./collection.ts";
 import Document from "./document.ts";
 import Upload from "./upload.ts";
 import FsStorage from "../storage/fs.ts";
+import Router from "./router.ts";
 import { normalizePath } from "./utils/path.ts";
-import { Router } from "../deps/galo.ts";
 import { basename, dirname } from "../deps/std.ts";
-import Git, { Options as GitOptions } from "./git.ts";
+import Git from "./git.ts";
 import User from "./user.ts";
+import init from "./routes/main.ts";
+import { Basic } from "../auth/Basic.ts";
+import Action from "./action.ts";
+import { cwd } from "./services/process.ts";
 
+import type { Options as GitOptions } from "./git.ts";
 import type {
   AuthProvider,
   CMSContent,
@@ -20,9 +25,6 @@ import type {
   Storage,
   UserConfiguration,
 } from "../types.ts";
-import init from "./routes/main.ts";
-import { Basic } from "../auth/Basic.ts";
-import Action from "./action.ts";
 
 export type SourcePath = (
   url: string,
@@ -149,7 +151,7 @@ export default class Cms {
       ...options,
     } as CmsOptions;
 
-    this.options.root = normalizePath(this.options.root ?? Deno.cwd());
+    this.options.root = normalizePath(this.options.root ?? cwd());
 
     // Set the .fetch method (https://github.com/denoland/deno/issues/24062)
     let fetch: ((request: Request) => Response | Promise<Response>) | undefined;

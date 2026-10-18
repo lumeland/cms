@@ -3,8 +3,6 @@ import { extname, posix } from "node:path";
 import {createReadStream, statSync} from "node:fs";
 import { Readable } from "node:stream";
 
-// import { type FileInfo, readStream, statSync } from "../services/fs.ts";
-
 /**
  * Note: The most part of this code is copied from
  * https://jsr.io/@std/http/1.1.4/file_server.ts
@@ -21,9 +19,9 @@ const STATUS: Record<string, [number, string]> = {
   MovedPermanently: [301, "Moved Permanently"],
 };
 
-export async function serveFile(root: string, req: Request): Promise<Response> {
+export async function serveFile(root: string, req: Request, path: string): Promise<Response> {
   const url = new URL(req.url);
-  const pathname = posix.normalize(decodeURIComponentSafe(url.pathname));
+  const pathname = posix.normalize(decodeURIComponentSafe(path));
   const fullPath = posix.join(root, pathname);
   let filePath = fullPath.endsWith("/") ? `${fullPath}index.html` : fullPath;
   let fileInfo = getInfo(filePath);

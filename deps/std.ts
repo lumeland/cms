@@ -1,11 +1,12 @@
+import "temporal-polyfill/global";
+
 export { escape } from "deno-std/html/entities.js";
-import { type ImplicitType, parse } from "jsr:@std/yaml@1.1.2/unstable-parse";
-import { stringify } from "jsr:@std/yaml@1.1.2/unstable-stringify";
+import { type ImplicitType, parse } from "deno-std/yaml/unstable_parse.js";
+import { stringify } from "deno-std/yaml/unstable_stringify.js";
 export { acceptsLanguages } from "deno-std/http/negotiation.js";
 export { test as testFrontMatter } from "deno-std/front_matter/test.js";
 export { extract as extractFrontMatter } from "deno-std/front_matter/yaml.js";
-export { emptyDir, ensureDir, expandGlob } from "jsr:@std/fs@1.0.24";
-export * as posix from "jsr:@std/path@1.1.6/posix";
+export * as posix from "deno-std/path/posix/mod.js";
 export {
   basename,
   dirname,
@@ -55,4 +56,8 @@ export function stringifyYaml(yaml: Record<string, unknown>) {
   return stringify(yaml, {
     extraTypes: [date, datetime],
   });
+}
+
+export function expandGlob() {
+  throw new Error("to-do")
 }

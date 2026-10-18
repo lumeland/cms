@@ -1,8 +1,8 @@
 import { posix } from "../../deps/std.ts";
-import { CMSContent, Data } from "../../types.ts";
 import { changesToData, getViews, prepareField } from "../utils/data.ts";
 import { getLanguageCode, normalizeName } from "../utils/path.ts";
 import createTree from "./tree.ts";
+import type { CMSContent, Data } from "../../types.ts";
 import type Collection from "../collection.ts";
 import type Document from "../document.ts";
 import type User from "../user.ts";

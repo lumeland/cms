@@ -1,6 +1,7 @@
 import { normalizeName, normalizePath } from "../core/utils/path.ts";
 import { generateId, slugify } from "../core/utils/string.ts";
-import { contentType, ensureDir, expandGlob, posix } from "../deps/std.ts";
+import { contentType, expandGlob, posix } from "../deps/std.ts";
+import { ensureDir } from "../core/utils/fs.ts";
 import { fromFilename } from "./transformers/mod.ts";
 
 import type { Data, Entry, EntrySource, Storage } from "../types.ts";

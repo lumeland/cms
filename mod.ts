@@ -1,5 +1,4 @@
-import Cms, { CmsOptions } from "./core/cms.ts";
-
+import Cms from "./core/cms.ts";
 import checkbox from "./fields/checkbox.ts";
 import chooseList from "./fields/choose-list.ts";
 import choose from "./fields/choose.ts";
@@ -27,6 +26,8 @@ import text from "./fields/text.ts";
 import textarea from "./fields/textarea.ts";
 import time from "./fields/time.ts";
 import url from "./fields/url.ts";
+
+import type { CmsOptions } from "./core/cms.ts";
 
 export default function (options?: Partial<CmsOptions>): Cms {
   const cms = new Cms(options);
