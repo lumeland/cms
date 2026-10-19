@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "build": "rm -f ../static/libs/* && npm run markdown && npm run tiptap && npm run markup_util && npm run code && npm run normalize && npm run terser",
     "markdown": "rollup markdown.js -d ../static/libs/ -p @rollup/plugin-node-resolve",

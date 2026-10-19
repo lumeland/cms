@@ -1,26 +1,15 @@
 {
   "name": "@lumeland/cms",
-  "version": "1.0.0-beta-1",
+  "version": "1.0.0-beta-2",
   "description": "A framework-agnostic CMS",
   "license": "MIT",
-  "files": [
-    "auth",
-    "core",
-    "deps",
-    "fields",
-    "static",
-    "storage",
-    "mod.ts",
-    "types.ts",
-    "CHANGELOG.md"
-  ],
   "type": "module",
   "exports": {
     ".": "./mod.ts",
-    "./*": "./*"
+    "./*.ts": "./src/*.ts"
   },
   "scripts": {
-    "build": "rm -rf build && tsc -p .",
+    "build": "rm -rf build && tsc -p . && node scripts/build.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:update": "vitest run -u",
