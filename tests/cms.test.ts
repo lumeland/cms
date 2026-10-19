@@ -1,13 +1,14 @@
+import { describe, it, expect, TestContext } from "vitest";
 import cms from "./cms.ts";
 import type Memory from "../storage/memory.ts";
 
 const router = cms.init();
 const storage = cms.storages.get("src") as Memory;
 
-Deno.test("CMS test", async (t) => {
-  await t.step("Homepage", (t) => runTest(t, "/"));
+describe("CMS test", async (t) => {
+  it("Homepage", (t) => runTest(t, "/"));
 
-  await t.step("Document", async (t) => {
+  it("Document", async (t) => {
     await runTest(t, "/document/Homepage/edit");
     await runTest(t, "/document/Homepage/edit", {
       "root.title": "New title",
@@ -16,10 +17,10 @@ Deno.test("CMS test", async (t) => {
       "root.extra": "body { background: pink; }",
     });
     await runTest(t, "/document/Homepage/edit");
-    await assertStorage(t);
+    expect(storage).toMatchSnapshot();
   });
 
-  await t.step("Collection", async (t) => {
+  it("Collection", async (t) => {
     await runTest(t, "/collection/posts");
     await runTest(t, "/collection/posts/create");
     await runTest(t, "/collection/posts/create", {
@@ -39,7 +40,7 @@ Deno.test("CMS test", async (t) => {
       "root.content": "post content",
     });
     await runTest(t, "/collection/posts/new-post.md/edit");
-    await assertStorage(t);
+    expect(storage).toMatchSnapshot();
     await runTest(t, "/collection/posts/new-post.md/edit", {
       _id: "new-post.md",
       "root.title": "Title modified",
@@ -53,17 +54,17 @@ Deno.test("CMS test", async (t) => {
       "root.content": "post content",
     });
     await runTest(t, "/collection/posts/new-post.md/edit");
-    await assertStorage(t);
-    await t.step("Collection", (t) => runTest(t, "/collection/posts"));
+    expect(storage).toMatchSnapshot();
+    await runTest(t, "/collection/posts");
   });
 
-  await t.step("Uploads", async (t) => {
+  it("Uploads", async (t) => {
     await runTest(t, "/uploads/my_uploads");
     await runTest(t, "/uploads/my_uploads/create");
     await runTest(t, "/uploads/my_uploads/create", {
       files: new File(["Other"], "example3.txt", { type: "text/plain" }),
     });
-    await assertStorage(t);
+    expect(storage).toMatchSnapshot();
     await runTest(t, "/uploads/my_uploads");
     await runTest(t, "/uploads/my_uploads/example3.txt");
     await runTest(t, "/uploads/my_uploads/example3.txt/edit");
@@ -86,11 +87,11 @@ Deno.test("CMS test", async (t) => {
     await runTest(t, "/uploads/my_uploads/example5.txt");
     await runTest(t, "/uploads/my_uploads/example5.txt/code");
     await runTest(t, "/uploads/my_uploads/example5.txt/delete", {});
-    await assertStorage(t);
+    expect(storage).toMatchSnapshot();
   });
 });
 
-async function runTest(t: Deno.TestContext, url: string, data?: Record<string, string | Blob>) {
+async function runTest(t: TestContext, url: string, data?: Record<string, string | Blob>) {
   let body: FormData | undefined;
   if (data) {
     body = new FormData();
@@ -104,16 +105,12 @@ async function runTest(t: Deno.TestContext, url: string, data?: Record<string, s
   const response = await router.fetch(request);
 
   if (response.status === 302) {
-    return t.assertSnapshot(response.headers.get("Location"));
+    return expect(response.headers.get("Location")).toMatchSnapshot();
   }
 
   if (response.status === 200) {
-    return t.assertSnapshot(await response.text());
+    return expect(await response.text()).toMatchSnapshot();
   }
 
   throw new Error(`Response ${response.status}`);
-}
-
-async function assertStorage(t: Deno.TestContext) {
-  await t.assertSnapshot(storage.storageMap);
 }

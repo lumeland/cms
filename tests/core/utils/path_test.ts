@@ -1,12 +1,14 @@
-import { assertEquals } from "@std/assert";
+import { describe, it, expect } from "vitest";
 import { getRelativePath } from "../../../core/utils/path.ts";
 
-Deno.test("getRelativePath", () => {
-  assertEquals(getRelativePath("/data/foobar", "/data/foobar/asset.jpg"), "./asset.jpg");
-  assertEquals(getRelativePath("/data/foobar/", "/data/foobar/asset.jpg"), "./asset.jpg");
-  assertEquals(getRelativePath("/data/foobar", "/data/baz/asset.jpg"), "../baz/asset.jpg");
-  assertEquals(getRelativePath("/data/foobar/", "/data/baz/asset.jpg"), "../baz/asset.jpg");
-  assertEquals(getRelativePath("/data/foobar", "/data/foobar/.env"), "./.env");
-  assertEquals(getRelativePath("/data/foobar/", "/data/foobar/.env"), "./.env");
-  assertEquals(getRelativePath("/data/foobar", "/data/foobar/../foobar/file"), "./file");
+describe("getRelativePath", () => {
+  it("resolves", () => {
+    expect(getRelativePath("/data/foobar", "/data/foobar/asset.jpg")).toBe("./asset.jpg");
+    expect(getRelativePath("/data/foobar/", "/data/foobar/asset.jpg")).toBe("./asset.jpg");
+    expect(getRelativePath("/data/foobar", "/data/baz/asset.jpg")).toBe("../baz/asset.jpg");
+    expect(getRelativePath("/data/foobar/", "/data/baz/asset.jpg")).toBe("../baz/asset.jpg");
+    expect(getRelativePath("/data/foobar", "/data/foobar/.env")).toBe("./.env");
+    expect(getRelativePath("/data/foobar/", "/data/foobar/.env")).toBe("./.env");
+    expect(getRelativePath("/data/foobar", "/data/foobar/../foobar/file")).toBe("./file");
+  });
 });
