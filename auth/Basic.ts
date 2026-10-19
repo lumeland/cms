@@ -2,7 +2,9 @@ import type { AuthProvider, AuthProviderOptions } from "../types.ts";
 
 /** Basic auth provider */
 export class Basic implements AuthProvider {
-  #challengeHeader = ["WWW-Authenticate", 'Basic realm="Secure Area"'];
+  #challengeHeader = {
+    "WWW-Authenticate": 'Basic realm="Secure Area"',
+  };
 
   options: AuthProviderOptions | undefined;
 
@@ -32,13 +34,13 @@ export class Basic implements AuthProvider {
 
     return new Response("Unauthorized", {
       status: 401,
-      headers: [this.#challengeHeader],
+      headers: this.#challengeHeader,
     });
   }
 
   logout() {
     return new Response("Logged out", {
-      headers: [this.#challengeHeader],
+      headers: this.#challengeHeader,
       status: 401,
     });
   }

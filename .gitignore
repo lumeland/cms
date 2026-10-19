@@ -1,8 +1,6 @@
-/probas
-/demo/img
 TODO
-deno.lock
+/probas
 node_modules
-package-lock.json
+build
 /tests/src
 .vscode/

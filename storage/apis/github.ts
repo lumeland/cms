@@ -1,5 +1,5 @@
 import { encodeBase64, posix } from "../../deps/std.ts";
-import { Octokit } from "npm:octokit@5.0.3";
+import { Octokit } from "octokit";
 
 import type { CommitMessage, GitAPI, GitEntry } from "./types.ts";
 
