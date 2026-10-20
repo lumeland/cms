@@ -7,7 +7,7 @@ It works great with Lume but it can be used for any other static site generator.
 ## Usage
 
 ```js
-import lumeCms from "https://cdn.jsdelivr.net/gh/lumeland/cms@v0.2.0/mod.ts";
+import lumeCms from "@lumeland/cms";
 
 const cms = lumeCms();
 

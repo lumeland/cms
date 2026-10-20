@@ -21,7 +21,7 @@ export const FrontMatter: Transformer<string> = {
   },
 
   fromData(data) {
-    const { content, ...attrs } = data;
+    const { content, ...attrs } = data ?? {};
     const body = String(content || "").trimEnd() + "\n";
 
     if (Object.keys(attrs).length === 0) {

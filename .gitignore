@@ -1,6 +1,6 @@
-TODO
+/TODO
 /probas
-node_modules
-build
+/node_modules
+/build
 /tests/src
-.vscode/
+/static/libs

@@ -1,17 +1,27 @@
-@import "../libs/modern-normalize.css";
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
 
 html {
   scroll-padding-top: 2rem;
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
-}
-html,
-body {
-  font: var(--font-ui);
-  overflow-wrap: break-word;
-  background-color: var(--color-background);
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
 }
 
+body {
+  font: var(--font-ui);
+  line-height: 1.15;
+  overflow-wrap: break-word;
+  background-color: var(--color-background);
+  margin: 0;
+}
+
+kbd,
+samp,
 pre,
 code {
   font: var(--font-code);
@@ -52,6 +62,30 @@ b {
   font-weight: var(--bold);
 }
 
+small {
+  font-size: 80%;
+}
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+table {
+  border-color: currentcolor;
+}
+
 :where(a[href]) {
   color: var(--color-link);
 
@@ -74,4 +108,20 @@ input {
 
 :not(u-icon):not(:defined) {
   display: none;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 0;
+}
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
 }

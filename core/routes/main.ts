@@ -123,11 +123,18 @@ export default function init(options: InitOptions): Router<RouterData> {
             ],
           };
         })
-        .catch((params) => {
-          return renderTemplate("error.vto", {
+        .catch(async (params) => {
+          const content = await renderTemplate("error.vto", {
             t,
             user,
             error: params.error?.stack,
+          });
+
+          return new Response(content, {
+            status: 500,
+            headers: {
+              "Content-Type": "text/html; charset=utf-8",
+            },
           });
         });
     });

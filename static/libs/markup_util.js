@@ -1,1 +1,0 @@
-function isUrlLike(t){return!!URL.canParse(t)||!t.includes(" ")&&(t.startsWith("./")||t.startsWith("/")||t.startsWith("#")||t.startsWith("?"))}export{isUrlLike};

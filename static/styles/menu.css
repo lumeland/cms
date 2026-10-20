@@ -23,6 +23,7 @@
 @scope (.menu) to (dialog) {
   .button {
     width: 100%;
+    text-align: left;
   }
   hr {
     margin-block: 0.5em;
