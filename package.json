@@ -1,6 +1,6 @@
 {
   "name": "@lumeland/cms",
-  "version": "1.0.0-beta-2",
+  "version": "1.0.0-beta-3",
   "description": "A framework-agnostic CMS",
   "license": "MIT",
   "type": "module",
@@ -9,6 +9,7 @@
     "./*.ts": "./src/*.ts"
   },
   "scripts": {
+    "publish": "pnpm build && pnpm login && pnpm publish --dir build",
     "start": "node ./demo.ts",
     "build": "rm -rf build && pnpm run build:libs && tsc -p . && node scripts/build.js",
     "build:libs": "rm -f static/libs/* && pnpm run build:markdown && pnpm run build:tiptap && pnpm run build:utils && pnpm run build:code && pnpm run build:terser",

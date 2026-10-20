@@ -26,5 +26,5 @@ writeFileSync("build/package.json", JSON.stringify(pkg, null, 2));
 
 cpSync("core/templates", "build/core/templates", { recursive: true });
 cpSync("static", "build/static", { recursive: true });
-cpSync("CHANGELOG.md", "build/CHANGELOG.md", { recursive: true });
-cpSync("README.md", "build/README.md", { recursive: true });
+cpSync("CHANGELOG.md", "build/CHANGELOG.md");
+cpSync("README.md", "build/README.md");
