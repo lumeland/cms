@@ -1,29 +1,29 @@
-import { describe, it, expect, TestContext } from "vitest";
+import { describe, it, expect } from "vitest";
 import cms from "./cms.ts";
 import type Memory from "../storage/memory.ts";
 
 const router = cms.init();
 const storage = cms.storages.get("src") as Memory;
 
-describe("CMS test", async (t) => {
-  it("Homepage", (t) => runTest(t, "/"));
+describe("CMS test", async () => {
+  it("Homepage", () => runTest("/"));
 
-  it("Document", async (t) => {
-    await runTest(t, "/document/Homepage/edit");
-    await runTest(t, "/document/Homepage/edit", {
+  it("Document", async () => {
+    await runTest("/document/Homepage/edit");
+    await runTest("/document/Homepage/edit", {
       "root.title": "New title",
       "root.description": "New description",
       "root.content": "New content",
       "root.extra": "body { background: pink; }",
     });
-    await runTest(t, "/document/Homepage/edit");
+    await runTest("/document/Homepage/edit");
     expect(storage).toMatchSnapshot();
   });
 
-  it("Collection", async (t) => {
-    await runTest(t, "/collection/posts");
-    await runTest(t, "/collection/posts/create");
-    await runTest(t, "/collection/posts/create", {
+  it("Collection", async () => {
+    await runTest("/collection/posts");
+    await runTest("/collection/posts/create");
+    await runTest("/collection/posts/create", {
       _id: "new-post.md",
       "root.title": "New title",
       "root.tags.0": "Tag 1",
@@ -39,9 +39,9 @@ describe("CMS test", async (t) => {
       }),
       "root.content": "post content",
     });
-    await runTest(t, "/collection/posts/new-post.md/edit");
+    await runTest("/collection/posts/new-post.md/edit");
     expect(storage).toMatchSnapshot();
-    await runTest(t, "/collection/posts/new-post.md/edit", {
+    await runTest("/collection/posts/new-post.md/edit", {
       _id: "new-post.md",
       "root.title": "Title modified",
       "root.tags.0": "Tag 1",
@@ -53,45 +53,45 @@ describe("CMS test", async (t) => {
       "root.image.title": "Image title",
       "root.content": "post content",
     });
-    await runTest(t, "/collection/posts/new-post.md/edit");
+    await runTest("/collection/posts/new-post.md/edit");
     expect(storage).toMatchSnapshot();
-    await runTest(t, "/collection/posts");
+    await runTest("/collection/posts");
   });
 
-  it("Uploads", async (t) => {
-    await runTest(t, "/uploads/my_uploads");
-    await runTest(t, "/uploads/my_uploads/create");
-    await runTest(t, "/uploads/my_uploads/create", {
+  it("Uploads", async () => {
+    await runTest("/uploads/my_uploads");
+    await runTest("/uploads/my_uploads/create");
+    await runTest("/uploads/my_uploads/create", {
       files: new File(["Other"], "example3.txt", { type: "text/plain" }),
     });
     expect(storage).toMatchSnapshot();
-    await runTest(t, "/uploads/my_uploads");
-    await runTest(t, "/uploads/my_uploads/example3.txt");
-    await runTest(t, "/uploads/my_uploads/example3.txt/edit");
-    await runTest(t, "/uploads/my_uploads/example3.txt/edit", {
+    await runTest("/uploads/my_uploads");
+    await runTest("/uploads/my_uploads/example3.txt");
+    await runTest("/uploads/my_uploads/example3.txt/edit");
+    await runTest("/uploads/my_uploads/example3.txt/edit", {
       files: new File(["Modified"], "example3.txt", { type: "text/plain" }),
     });
-    await runTest(t, "/uploads/my_uploads/example3.txt");
-    await runTest(t, "/uploads/my_uploads/example3.txt/duplicate", {
+    await runTest("/uploads/my_uploads/example3.txt");
+    await runTest("/uploads/my_uploads/example3.txt/duplicate", {
       name: "example4.txt",
     });
-    await runTest(t, "/uploads/my_uploads/example3.txt");
-    await runTest(t, "/uploads/my_uploads/example4.txt");
-    await runTest(t, "/uploads/my_uploads/example4.txt/move", {
+    await runTest("/uploads/my_uploads/example3.txt");
+    await runTest("/uploads/my_uploads/example4.txt");
+    await runTest("/uploads/my_uploads/example4.txt/move", {
       name: "example5.txt",
     });
-    await runTest(t, "/uploads/my_uploads/example5.txt");
-    await runTest(t, "/uploads/my_uploads/example5.txt/edit", {
+    await runTest("/uploads/my_uploads/example5.txt");
+    await runTest("/uploads/my_uploads/example5.txt/edit", {
       files: new File(["Edited"], "example3.txt", { type: "text/plain" }),
     });
-    await runTest(t, "/uploads/my_uploads/example5.txt");
-    await runTest(t, "/uploads/my_uploads/example5.txt/code");
-    await runTest(t, "/uploads/my_uploads/example5.txt/delete", {});
+    await runTest("/uploads/my_uploads/example5.txt");
+    await runTest("/uploads/my_uploads/example5.txt/code");
+    await runTest("/uploads/my_uploads/example5.txt/delete", {});
     expect(storage).toMatchSnapshot();
   });
 });
 
-async function runTest(t: TestContext, url: string, data?: Record<string, string | Blob>) {
+async function runTest(url: string, data?: Record<string, string | Blob>) {
   let body: FormData | undefined;
   if (data) {
     body = new FormData();

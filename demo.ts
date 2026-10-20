@@ -89,7 +89,7 @@ cms.collection({
     {
       name: "color",
       type: "color",
-      transform: (value) => {
+      transform: (_value) => {
         return "#333444";
       },
     },

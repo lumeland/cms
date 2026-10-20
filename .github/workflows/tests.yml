@@ -1,32 +1,31 @@
-name: Tests
+name: Test
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
 
 jobs:
   test:
-    name: Run tests
-    strategy:
-      matrix:
-        deno_version:
-          - lts
-          - latest
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Setup Deno environment
-        uses: denoland/setup-deno@v2
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
         with:
-          deno-version: ${{ matrix.deno_version }}
+          node-version: 24.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Run linter
-        run: deno lint
+        run: pnpm lint
 
       - name: Run tests
-        run: deno task test
+        run: pnpm test
