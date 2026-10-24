@@ -1,8 +1,13 @@
 {
   "name": "@lumeland/cms",
-  "version": "1.0.0-beta-3",
+  "version": "1.0.0-beta-4",
   "description": "A framework-agnostic CMS",
+  "homepage": "https://lume.land/cms/",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://codeberg.org/lume/cms.git"
+  },
   "type": "module",
   "exports": {
     ".": "./mod.ts",
