@@ -3,8 +3,7 @@ import { generateId, slugify } from "../core/utils/string.ts";
 import { contentType, globToRegExp, posix } from "../deps/std.ts";
 import { ensureDir } from "../core/utils/fs.ts";
 import { fromFilename } from "./transformers/mod.ts";
-
-import type { Data, Entry, EntrySource, Storage } from "../types.ts";
+import { cwd } from "../core/services/process.ts";
 import {
   readDir,
   readFile,
@@ -14,7 +13,8 @@ import {
   writeFile,
   writeTextFile,
 } from "../core/services/fs.ts";
-import { cwd } from "../core/services/process.ts";
+
+import type { Data, Entry, EntrySource, Storage } from "../types.ts";
 
 export interface Options {
   root?: string;
