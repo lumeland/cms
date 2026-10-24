@@ -1,6 +1,6 @@
 {
   "name": "@lumeland/cms",
-  "version": "1.0.0-beta-4",
+  "version": "1.0.0",
   "description": "A framework-agnostic CMS",
   "homepage": "https://lume.land/cms/",
   "license": "MIT",
