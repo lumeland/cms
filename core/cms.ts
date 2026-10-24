@@ -8,7 +8,7 @@ import { basename, dirname } from "../deps/std.ts";
 import Git from "./git.ts";
 import User from "./user.ts";
 import init from "./routes/main.ts";
-import { Basic } from "../auth/Basic.ts";
+import { Basic } from "../auth/basic.ts";
 import Action from "./action.ts";
 import { cwd } from "./services/process.ts";
 
