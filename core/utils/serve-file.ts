@@ -1,4 +1,4 @@
-import { contentType } from "deno-std/media_types/content_type.js";
+import { contentType } from "../../deps/std.ts";
 import { extname, posix } from "node:path";
 import { createReadStream, statSync } from "node:fs";
 import { Readable } from "node:stream";
