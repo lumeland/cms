@@ -1,5 +1,5 @@
 import { prepareField } from "./utils/data.ts";
-import { TransformError } from "../storage/transformers/transform_error.ts";
+import { TransformError } from "../storage/transformers/transform-error.ts";
 import type { CMSContent, Data, Entry, PreviewUrl } from "../types.ts";
 
 export interface DocumentOptions {

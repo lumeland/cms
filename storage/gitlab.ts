@@ -1,6 +1,6 @@
 import { posix } from "../deps/std.ts";
 import { GitLabAPI } from "./apis/gitlab.ts";
-import { BaseGitAPI, defaultCommitMessage } from "./_base_git.ts";
+import { BaseGitAPI, defaultCommitMessage } from "./base-git.ts";
 
 import type { Storage } from "../types.ts";
 

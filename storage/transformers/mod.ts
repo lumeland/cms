@@ -1,5 +1,5 @@
 import { Json } from "./json.ts";
-import { FrontMatter } from "./front_matter.ts";
+import { FrontMatter } from "./front-matter.ts";
 import { Yaml } from "./yaml.ts";
 import { extname } from "../../deps/std.ts";
 

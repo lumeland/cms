@@ -1,4 +1,4 @@
-import { TransformError } from "./transform_error.ts";
+import { TransformError } from "./transform-error.ts";
 import type { Transformer } from "../../types.ts";
 
 export const Json: Transformer<string> = {

@@ -1,5 +1,5 @@
 import { parseYaml, stringifyYaml } from "../../deps/std.ts";
-import { TransformError } from "./transform_error.ts";
+import { TransformError } from "./transform-error.ts";
 import type { Transformer } from "../../types.ts";
 
 export const Yaml: Transformer<string> = {

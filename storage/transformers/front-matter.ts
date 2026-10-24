@@ -1,5 +1,5 @@
 import { extractFrontMatter, stringifyYaml, testFrontMatter } from "../../deps/std.ts";
-import { TransformError } from "./transform_error.ts";
+import { TransformError } from "./transform-error.ts";
 import type { Data, Transformer } from "../../types.ts";
 
 export const FrontMatter: Transformer<string> = {
