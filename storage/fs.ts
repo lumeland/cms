@@ -64,7 +64,8 @@ export class Fs implements Storage {
     const regexp = globToRegExp(pattern);
 
     for await (const name of readDir(posix.join(root, path))) {
-      if (!regexp.exec(name)) {
+      // Ignore dot files or not matching with the pattern
+      if (!regexp.exec(name) || name.startsWith(".")) {
         continue;
       }
 
