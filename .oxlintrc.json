@@ -1,3 +1,6 @@
 {
-  "ignorePatterns": ["static/libs/**", "probas/**"]
+  "ignorePatterns": ["**/*.js", "probas/**"],
+  "options": {
+    "typeAware": true
+  }
 }

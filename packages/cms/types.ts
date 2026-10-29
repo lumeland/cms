@@ -126,10 +126,17 @@ export type FieldDefinition<T extends ResolvedField & Field = ResolvedField & Fi
   jsImport: string;
 
   /** Function to execute on init the field definition  */
-  init?(field: T, content: CMSContent, data?: Data, document?: Document): void | Promise<void>;
+  init?(
+    this: void,
+    field: T,
+    content: CMSContent,
+    data?: Data,
+    document?: Document,
+  ): void | Promise<void>;
 
   /** Function to apply the changes in the data object */
   applyChanges(
+    this: void,
     data: Data,
     changes: Data,
     field: T,
@@ -137,7 +144,7 @@ export type FieldDefinition<T extends ResolvedField & Field = ResolvedField & Fi
     content: CMSContent,
   ): void | Promise<void>;
 
-  transform?(value: T["value"]): T["value"] | unknown;
+  transform?(value: T["value"]): T["value"];
 };
 
 /** Option item for a select or datalist */

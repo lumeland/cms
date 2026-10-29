@@ -63,7 +63,7 @@ export class Memory implements Storage {
     const { root, path, pattern } = this;
     const regexp = globToRegExp(posix.join(root, path, pattern));
 
-    for await (const entry of this.#storage.keys()) {
+    for (const entry of this.#storage.keys()) {
       if (entry.includes("/_") || entry.includes("/.") || !regexp.test(entry)) {
         continue;
       }

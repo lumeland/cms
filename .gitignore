@@ -1,6 +1,7 @@
 /TODO
-/probas
-/node_modules
-/build
-/tests/src
-/static/libs
+/packages/*/build
+/dist
+/pnpm-lock.yaml
+node_modules
+/testing
+packages/cms/static/libs

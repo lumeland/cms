@@ -67,7 +67,7 @@ export class Sqlite implements Storage {
     const stmt = this.#db.prepare(query);
 
     for (const row of stmt.iterate()) {
-      yield this.source(`${row.id}_${row[this.fieldName]}`);
+      yield this.source(`${row.id as string}_${row[this.fieldName] as string}`);
     }
   }
 
@@ -197,7 +197,7 @@ function serialize(value: unknown): SQLOutputValue {
         return JSON.stringify(value);
       }
 
-      return String(value);
+      return String(value as string);
   }
 }
 

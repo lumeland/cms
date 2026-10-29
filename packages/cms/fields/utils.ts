@@ -25,7 +25,7 @@ export function compareOptions(a: Option, b: Option): number {
     : a.toString().localeCompare(typeof b === "object" ? b.label.toString() : b.toString());
 }
 
-export function getSelectValue(options: Option[], value: unknown): unknown | undefined {
+export function getSelectValue(options: Option[], value: unknown): unknown {
   if (isEmpty(value)) {
     return;
   }
@@ -67,8 +67,7 @@ export function transform<V, T extends Field = Field>(
   field: T,
   value?: V | null,
 ): V | undefined | null {
-  const transform = field.transform;
-  return transform ? transform(value) : value;
+  return field.transform ? field.transform(value) : value;
 }
 
 // Matches content we want to ignore when searching for paths

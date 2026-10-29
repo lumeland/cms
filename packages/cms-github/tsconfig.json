@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "types": ["node"],
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "allowImportingTsExtensions": true,
+    "target": "ES2022",
+    "lib": ["ESNext", "ESNext.Iterator", "DOM", "DOM.Iterable"],
+    "rewriteRelativeImportExtensions": true,
+    "skipLibCheck": true,
+    "outDir": "build",
+    "rootDir": ".",
+    "declaration": true
+  },
+  "exclude": ["test", "build"]
+}

@@ -1,6 +1,5 @@
 import Router from "../router.ts";
 import User from "../user.ts";
-import { getCurrentVersion } from "../utils/env.ts";
 import { asset, getPath, normalizePath } from "../utils/path.ts";
 import { acceptsLanguages, fromFileUrl } from "../../deps/std.ts";
 import { filter, render } from "../../deps/vento.ts";
@@ -89,7 +88,6 @@ export default function init(options: InitOptions): Router<RouterData> {
           lang,
           jsImports: options.jsImports,
           extraHead: options.extraHead,
-          cmsVersion: getCurrentVersion(),
           git: options.content.git,
           actions: options.content.actions,
         });

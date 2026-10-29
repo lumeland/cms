@@ -184,7 +184,7 @@ export async function saveDocumentCode(
 
   // Save changes
   const code = changes["root.code"] as string | undefined;
-  document.writeText(code ?? "");
+  await document.writeText(code ?? "");
 
   let name = document.name;
   let finalDocument = document;

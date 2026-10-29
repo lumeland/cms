@@ -12,5 +12,5 @@
     "rootDir": ".",
     "declaration": true
   },
-  "exclude": ["tests", "static", "scripts", "probas", "build", "demo.ts"]
+  "exclude": ["tests", "static", "libs", "build", "demo.ts"]
 }
