@@ -60,8 +60,8 @@ export function mkdirSync(path: string, recursive?: boolean) {
 }
 
 /** Synchronously returns an iterable of a directory content */
-export async function* readDir(path: string): AsyncGenerator<string> {
-  const pathLength = path.length;
+export async function* readDir(path: string, basePath = path): AsyncGenerator<string> {
+  const pathLength = basePath.length;
 
   try {
     const entries = fsPromises.readdir(path, {
@@ -70,11 +70,17 @@ export async function* readDir(path: string): AsyncGenerator<string> {
     });
 
     for (const entry of await entries) {
-      if (!entry.isFile()) {
+      if (entry.name.startsWith(".")) {
         continue;
       }
-
-      yield posix.join(entry.parentPath.slice(pathLength), entry.name);
+      if (entry.isDirectory()) {
+        yield* readDir(posix.join(entry.parentPath, entry.name), basePath);
+        continue;
+      }
+      if (entry.isFile()) {
+        const file = posix.join(entry.parentPath.slice(pathLength), entry.name);
+        yield file.startsWith("/") ? file.slice(1) : file;
+      }
     }
   } catch (error) {
     throw new FsError(error as Error);
